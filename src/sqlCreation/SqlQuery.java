@@ -3,9 +3,18 @@ package sqlCreation;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * @author basti
+ * SQL Queries zum erstellen der Stammdatenbank
+ */
 public class SqlQuery {
 	
-	static void fillContinent(Statement stmt,String[] data) throws SQLException {
+	
+	/**
+	 * @param stmt SQL statement
+	 * @param data String[] der Werte
+	 */
+	static void fillContinent(Statement stmt,String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(",");
 			String id = dataArray[0].trim();
@@ -15,53 +24,86 @@ public class SqlQuery {
 			String sql =
 					"INSERT INTO continent (continent_id, continent_name, bonus)" +
 					"VALUES ('"+id+"', '"+name+"', '"+bonus+"');";
-				
-			stmt.executeUpdate(sql);
+			
+			try {
+				stmt.executeUpdate(sql);
+			} catch (SQLException e) {
+				System.out.println("fillContinent");
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	static void fillCountry(Statement stmt,String[] data) throws SQLException {
+	static void fillCountry(Statement stmt,String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(",");
 			String id = dataArray[0].trim();
 			String name = dataArray[1].trim();
 			String continent = dataArray[2].trim();
-			
-			String sql =
+			String sqlNeighbor = "";
+			String sqlCountry =
 					"INSERT INTO country (country_id, country_name, country_continent_id)" +
 					"VALUES ('"+id+"', '"+name+"', '"+continent+"');";
 			
 			for(int i = 3; i < dataArray.length; i++) {
-				
-				String sql2 = 
-						"INSERT INTO neighbor (country_id, neighbor_id)" +
-						"VALUES('"+id+"', '"+dataArray[i].trim()+"');";
-				stmt.executeUpdate(sql2);
+				sqlNeighbor = 
+					"INSERT INTO neighbor (country_id, neighbor_id)" +
+					"VALUES('"+id+"', '"+dataArray[i].trim()+"');";
 			}
-				
-			stmt.executeUpdate(sql);
+			
+			try {
+				stmt.executeUpdate(sqlNeighbor);
+				stmt.executeUpdate(sqlCountry);
+			} catch (SQLException e) {
+				System.out.println("fillCountry");
+				e.printStackTrace();
+			}
 		}
 		
 		
 	}
 	
-	static void dropCountry(Statement stmt) throws SQLException {
-		stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
-		stmt.executeUpdate("DROP TABLE IF EXISTS country");
-		stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+	static void dropCountry(Statement stmt) { 
+		try {
+			stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
+			stmt.executeUpdate("DROP TABLE IF EXISTS country");
+			stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+		} catch (SQLException e) {
+			System.out.println("dropCountry");
+			e.printStackTrace();
+		}	
 	}
 	
 	static void dropNeighbor(Statement stmt) throws SQLException {
-		stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
-		stmt.executeUpdate("DROP TABLE IF EXISTS neighbor");
-		stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+		try {
+			stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
+			stmt.executeUpdate("DROP TABLE IF EXISTS neighbor");
+			stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+		} catch (SQLException e) {
+			System.out.println("dropNeighbor");
+			e.printStackTrace();
+		}
 	}
 	
-	static void dropContinent(Statement stmt) throws SQLException {
-		stmt.executeUpdate("DROP TABLE IF EXISTS continent");
+	static void dropContinent(Statement stmt) {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS continent");
+		} catch (Exception e) {
+			System.out.println("dropContinent");
+			e.printStackTrace();
+		}
 	}
 	
-	static void createContinent(Statement stmt) throws SQLException {
+	static void dropPlayer(Statement stmt) {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS player");
+		} catch (Exception e) {
+			System.out.println("dropPlayer");
+			e.printStackTrace();
+		}
+	}
+	
+	static void createContinent(Statement stmt) {
 		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +
 				" continent_id INTEGER, " +
@@ -70,10 +112,15 @@ public class SqlQuery {
 				" PRIMARY KEY (continent_id)" +
 				");";
 		
-		stmt.executeUpdate(sqlContinent);	
+		try {
+			stmt.executeUpdate(sqlContinent);
+		} catch (Exception e) {
+			System.out.println("createContinent");
+			e.printStackTrace();
+		}	
 	}
 	
-	static void createCountry(Statement stmt) throws SQLException {
+	static void createCountry(Statement stmt) {
 		//Länder
 		String sqlCountry = "CREATE TABLE IF NOT EXISTS country (" +
 				" country_id INTEGER, " +
@@ -82,23 +129,30 @@ public class SqlQuery {
 				" PRIMARY KEY (country_id)" +
 	            ");";
 		
-		stmt.executeUpdate(sqlCountry);	
+		try {
+			stmt.executeUpdate(sqlCountry);
+		} catch (SQLException e) {
+			System.out.println("createCountry");
+			e.printStackTrace();
+		}	
 	}
 	
-	static void createPlayer(Statement stmt) throws SQLException {
+	static void createPlayer(Statement stmt) {
 		//Länder
 		String sqlPlayer = "CREATE TABLE IF NOT EXISTS player (" +
 				" player_id INTEGER, " +
-	            " player_name VARCHAR(255) NOT NULL, " + 
-				" country_continent_id INTEGER, " +
-				" PRIMARY KEY (country_id)" +
+	            " player_name VARCHAR(255) NOT NULL " + 
 	            ");";
 		
-		stmt.executeUpdate(sqlPlayer);	
+		try {
+			stmt.executeUpdate(sqlPlayer);
+		} catch (SQLException e) {
+			System.out.println(" createPlayer");
+			e.printStackTrace();
+		}	
 	}
 	
-	
-	static void createNeighbor(Statement stmt) throws SQLException {
+	static void createNeighbor(Statement stmt) {
 		String sqlNeighbor = "CREATE TABLE IF NOT EXISTS neighbor (" +
 				"nid int NOT NULL AUTO_INCREMENT, " +
 				"country_id int, " +
@@ -106,7 +160,12 @@ public class SqlQuery {
 				"PRIMARY KEY(nid) " +
 				");";
 		
-		stmt.executeUpdate(sqlNeighbor);	
+		try {
+			stmt.executeUpdate(sqlNeighbor);
+		} catch (SQLException e) {
+			System.out.println();
+			e.printStackTrace();
+		}	
 	}
 	
 }
