@@ -22,7 +22,7 @@ public class MySQLConnection {
 		String[] data = FileReader.readFile("src\\resources\\stammdaten4.csv");
 		String[] continentData = FileReader.getContinent(data);
 		String[] countryData = FileReader.getCountry(data);
-		SqlQuery.stmt = getStatement(new String[] {"jdbc:mysql://odroid/testdb","root","password"});
+		SqlQuery.stmt = getStatement(new String[] {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp"});
 		
 		// home
 		// "jdbc:mysql://192.168.178.27/testdb","root","password"
