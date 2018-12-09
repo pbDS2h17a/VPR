@@ -1,16 +1,31 @@
 package sqlConnection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player
 {
 	private String name;
 	private String color;
-	//private Country [] countryArr;
+	private List<Country> countryList = null;
 	private int einheitenProRunde;
+	private int id;
 	
-	public Player(String name, String color, /*country[] countryArr,*/ int einheiten){
+	public Player(int id, String name, String color)
+	{
+		this.id = id;
 		this.name = name;
 		this.color = color;
-		//this.countryArr = countryArr;
+		this.countryList = new ArrayList<>();
+		this.einheitenProRunde = 0;
+	}
+	
+	public Player(int id, String name, String color, List<Country> countryList, int einheiten)
+	{
+		this.id = id;
+		this.name = name;
+		this.color = color;
+		this.countryList = countryList;
 		this.einheitenProRunde = einheiten;
 	}
 
@@ -45,5 +60,22 @@ public class Player
 	{
 		this.einheitenProRunde = einheitenProRunde;
 	}
+
+	public List<Country> getCountryList() {
+		return countryList;
+	}
+
+	public void setCountryList(List<Country> countryList) {
+		this.countryList = countryList;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 }
 

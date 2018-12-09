@@ -6,7 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Land
+public class Country
 {
 	private int countryId;
 	private int countryContinentID;
@@ -14,15 +14,15 @@ public class Land
 	private List<Integer> neighbor = new ArrayList<Integer>();
 	private int armys;
 
-	public Land(int id,Statement stmt) throws SQLException{
+	public Country(int id, Statement stmt) throws SQLException{
 		this.countryId=id;
 		ResultSet rs =stmt.executeQuery("select neighbor_id from neighbor where country_id ="+id);	
 	 		 while(rs.next()){  //legt cursor auf nächste zeile, wenn leer --> false	
 				neighbor.add(rs.getInt(1));
-			this.countryContinentID=rs.getInt(3);
 			}
+	 	//this.countryContinentID=rs.getInt(3);
 		//rs=stmt.executeQuery("select nid,country_id,neighbor_id");
-			
+		this.name = getNameFromCountryId(stmt, id);
 		}
 	
 	public static String getNameFromCountryId(Statement stmt, int id) throws SQLException {

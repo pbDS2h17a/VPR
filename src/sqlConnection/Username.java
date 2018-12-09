@@ -115,7 +115,7 @@ public class Username extends Application{
 	    	String insert = "INSERT INTO continent (continent_id, continent_name, bonus)" +
 			"VALUES ("+playerNames.size()+", '"+username+"', 34);";
 	    	stmt.executeUpdate(insert);
-	    	Player p1 = new Player(username,"blue",3); // hier muss farbe und die einheiten noch eingebunden werden
+	    	Player p1 = new Player(1,username,"blue"); // hier muss farbe und die einheiten noch eingebunden werden
 	    	System.out.println("ok");
     	}
 	
