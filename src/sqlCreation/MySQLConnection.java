@@ -38,7 +38,6 @@ public class MySQLConnection {
 		countries.add(c2);
 		countries.add(c3);
 		
-		
 		Player p1 = new Player(1, "Spieler1", "Blau",countries,0);
 		Player p2= new Player(2, "Spieler2", "Rot");
 		Player p3 = new Player(3, "Spieler3", "Grün");
