@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -33,22 +34,24 @@ public class MainApp extends Application {
 	    Pane ctn_game = new Pane();
 	    ctn_game.setPrefSize(1920, 1080);
 	    resizeThat(stage, ctn_game);
-	    ctn_game.setStyle("-fx-background-color: rgba(255,255,255, .2)");
+
 	    
-	    // Start-Container
+	    // Start-Container (Child von Anwendungs_CTN)
 	    Pane ctn_start = new Pane();
 	    ctn_start.setPrefSize(1920, 1080);
-	    ctn_start.setStyle("-fx-background-color: green");
+	    ctn_start.setClip(new Rectangle(ctn_start.getPrefWidth(), ctn_start.getPrefHeight()));
 	    
-	    // Alles in den Anwendungs-Container
-	    app.getChildren().addAll(ctn_game, ctn_start);
+	    // Alles in die richtigen Container schieben
+	    ctn_game.getChildren().addAll(ctn_start);
+	    app.getChildren().add(ctn_game);
+
 	    
 		// GAME LOOP für Animationen
 		new AnimationTimer()
 	    {
 	        public void handle(long currentNanoTime)
 	        {
-	        	
+
 	        }
 	    }.start();
 	    
