@@ -1,1 +1,6 @@
-.classpath
+/resources/
+/gui/
+/network/
+/sqlConnection/
+/sqlCreation/
+../.classpath
