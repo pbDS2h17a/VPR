@@ -1,9 +1,8 @@
 hallo von sebastian
 Ein Test von Kevin
 Hallo von Lea
-
-
-
+Hallo von Marius
+Hallo von Lea
 
 
 
@@ -63,4 +62,3 @@ Hallo von Lea
 
 
 This is a test.
->>>>>>> f30cc9ad892e017fdd8eb2b7e34d2597cf679666
