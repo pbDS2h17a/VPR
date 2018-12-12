@@ -13,6 +13,7 @@ Beispiel:
 vim Beispiel.txt //Erstellt Datei (Daten eintragen)
 git add . ####ODER#### git add <Datei> //fügt neue Dateien der Branch hinzu
 git commit -m "Beispiel.txt hinzugefügt" //Datei übernehmen und optionale Message beifügen
-git checkout ####SHIFT+TAB für Übersicht####
+//git checkout ####SHIFT+TAB für Übersicht####
+git checkout Development
 git merge pbds2h17axy //Branch im Development hinzufügen/updaten
 git push pbds2h17axy //Branch-Übernahme und hinzufügen bestätigen
