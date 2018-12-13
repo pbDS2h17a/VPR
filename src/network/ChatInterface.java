@@ -23,6 +23,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
+
+import javax.print.attribute.standard.DateTimeAtProcessing;
 
 public class ChatInterface extends Application
 {
@@ -80,7 +86,7 @@ public class ChatInterface extends Application
 			{int c = 1;	
 				while(true)
 				{
-					ResultSet r = stmt.executeQuery("SELECT from_ip, message FROM chat"
+					ResultSet r = stmt.executeQuery("SELECT from_ip, timestamp, message FROM chat"
 							+ 						" WHERE '"+localIP+"' LIKE to_ip;");
 
 					List<List<String>> set = ResultSetManager.toList(r);
@@ -96,11 +102,10 @@ public class ChatInterface extends Application
 							for (List<String> list : set)
 							{
 								System.out.println(list);
-								vbWindow.getChildren().add(new Label(list.get(0) + ": " + list.get(1)));
+								vbWindow.getChildren().add(new Label(list.get(0) + " [" + list.get(1).substring(0,5) + "]" + ": " + list.get(2)));
 							}
 						});
 					}
-					System.out.println(c+" Pulls"); c++;
 					Thread.sleep(2000);
 				}
 				
@@ -121,22 +126,13 @@ public class ChatInterface extends Application
 	}
 
 	private void send(TextField tf){
-		if(tf.getText().toLowerCase().equals("reset"))
-		{
-			System.out.println("RESET");
-			try { stmt.executeUpdate("TRUNCATE TABLE chat;");
-			}
-			catch(SQLException s) {s.printStackTrace();}
-			tf.setText("");
+		LocalDateTime now = LocalDateTime.now();
+		
+		String date = String.format("%2d:%2d:%2d", now.getHour(), now.getMinute(), now.getSecond());
+		try { stmt.executeUpdate("INSERT into chat(timestamp, message, from_ip, to_ip)"
+				+ " VALUES('"+date+"', '"+ tf.getText() +"', '"+ localIP +"', '%');");
 		}
-		else
-		{
-			try { stmt.executeUpdate("INSERT into chat(timestamp, message, from_ip, to_ip)"
-					+ "			VALUES("+System.currentTimeMillis()%3600000+", '"+ tf.getText() +"', '"+ localIP +"', '%');");
-			}
-			catch(SQLException s) {s.printStackTrace();}
-			tf.setText("");
-		}
-
+		catch(SQLException s) {s.printStackTrace();}
+		tf.setText("");
 	}
 }
