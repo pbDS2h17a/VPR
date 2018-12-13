@@ -1,3 +1,4 @@
+//LEA-MARIE MOENIKES
 package sqlConnection;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ public class Player
 	private String name;
 	private String color;
 	private List<Country> countryList = null;
-	private int einheitenProRunde;
+	private int unitsPerRound;
 	private int id;
 	
 	public Player(int id, String name, String color)
@@ -17,16 +18,16 @@ public class Player
 		this.name = name;
 		this.color = color;
 		this.countryList = new ArrayList<>();
-		this.einheitenProRunde = 0;
+		this.unitsPerRound = 0;
 	}
 	
-	public Player(int id, String name, String color, List<Country> countryList, int einheiten)
+	public Player(int id, String name, String color, List<Country> countryList, int units)
 	{
 		this.id = id;
 		this.name = name;
 		this.color = color;
 		this.countryList = countryList;
-		this.einheitenProRunde = einheiten;
+		this.unitsPerRound = units;
 	}
 
 	public String getName()
@@ -48,17 +49,16 @@ public class Player
 	{
 		this.color = color;
 	}
-	//getter u setter fuer die laender fehlen noch
 	
 	
 	public int getEinheitenProRunde()
 	{
-		return einheitenProRunde;
+		return unitsPerRound;
 	}
 
 	public void setEinheitenProRunde(int einheitenProRunde)
 	{
-		this.einheitenProRunde = einheitenProRunde;
+		this.unitsPerRound = einheitenProRunde;
 	}
 
 	public List<Country> getCountryList() {

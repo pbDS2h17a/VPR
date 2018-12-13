@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 
 public class Username extends Application{
 	
+	
+	//als Test für die GUI
 	@Override
 	public void start(Stage stage) throws Exception
 	{
@@ -59,25 +61,6 @@ public class Username extends Application{
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		launch(args);
-		
-		/*
-		String[] arr = new String[5];
-		
-		String sql = "SELECT * FROM continent";
-		ResultSet r = stmt.executeQuery(sql);
-            
-		int counter = 0;
-        // loop through the result set
-        while (r.next()) {   	
-            arr[counter] = r.getString("continent_name");
-            counter++;
-        }
-        
-        for (String string : arr)
-		{
-			System.out.println(string);
-		}
-          */ 
 
 	}
 	
@@ -86,17 +69,17 @@ public class Username extends Application{
 	public void checkUsername(Statement stmt, String username) throws ClassNotFoundException, SQLException{
 		ArrayList <String> playerNames = new ArrayList<>();
         
-        String sql2 = "SELECT * FROM continent";
+        String sql2 = "SELECT * FROM continent"; //hier müssen noch Anpassungen zur richtigen Datenbank gemacht werden
 		ResultSet rs = stmt.executeQuery(sql2);
            
-        // geht durch die tabelle und holt alle Kontinenten-Namen
+        // geht durch die Tabelle und holt alle Kontinenten-Namen
         while (rs.next()) {   	
-            playerNames.add(rs.getString("continent_name"));
+            playerNames.add(rs.getString("continent_name")); //muss noch angepasst werden
         }
         
         System.out.println(playerNames.toString());
        
-        //ueberprufung ob der name schon in der DB existiert
+        //Ueberprufung ob der Name schon in der DB existiert
         boolean isOk = true;
         
         for (int i = 0; i < playerNames.size(); i++)
