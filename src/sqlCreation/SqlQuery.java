@@ -59,7 +59,7 @@ public class SqlQuery {
 			String continent = dataArray[2].trim();
 			String sqlNeighbor = "";
 			String sqlCountry =
-					"INSERT INTO country (country_id, country_name, country_continent_id)" +
+					"INSERT INTO country (country_id, country_name, continent_id)" +
 					"VALUES ('"+id+"', '"+name+"', '"+continent+"');";
 			
 			for(int i = 3; i < dataArray.length; i++) {
@@ -151,7 +151,7 @@ public class SqlQuery {
 		String sqlCountry = "CREATE TABLE IF NOT EXISTS country (" +
 				" country_id INTEGER, " +
 	            " country_name VARCHAR(255) NOT NULL, " + 
-				" country_continent_id INTEGER REFERENCES continent(countinent_id), " +
+				" continent_id INTEGER REFERENCES continent(countinent_id), " +
 				" PRIMARY KEY (country_id)" +
 	            ");";
 		
@@ -182,12 +182,10 @@ public class SqlQuery {
 	
 	static void createNeighbor() {
 		String sqlNeighbor = "CREATE TABLE IF NOT EXISTS neighbor (" +
-				"nid INTEGER NOT NULL AUTO_INCREMENT, " +
 				"country_id INTEGER REFERENCES country(country_id), " +
 				"neighbor_id INTEGER REFERENCES country(country_id), " +
-				"PRIMARY KEY(nid) " +
+				"PRIMARY KEY(country_id, neighbor_id) " +
 				");";
-		
 		try {
 			stmt.executeUpdate(sqlNeighbor);
 		} catch (SQLException e) {
