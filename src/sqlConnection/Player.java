@@ -1,64 +1,82 @@
+//LEA-MARIE MOENIKES
+// Peroscku
 package sqlConnection;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.paint.Color;
 
-public class Player
-{
+public class Player {
+	
+	
 	private String name;
-	private String color;
-	private List<Country> countryList = null;
-	private int einheitenProRunde;
+	private Color color;
+	private List<Country> countryList;
+	private int unitsPerRound;
 	private int id;
+	private String adress;
+	private int lobbyId;
 	
-	public Player(int id, String name, String color)
-	{
+	
+	public Player(int id, String name, String color) {
 		this.id = id;
 		this.name = name;
-		this.color = color;
 		this.countryList = new ArrayList<>();
-		this.einheitenProRunde = 0;
+		this.unitsPerRound = 0;
+		
+		// extracting the three rgb-values from the string color and creating an object Color
+		String[] sa = color.split(",");
+		this.color =Color.rgb(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]));
 	}
 	
-	public Player(int id, String name, String color, List<Country> countryList, int einheiten)
+<<<<<<< HEAD
+	public Player(int id, String name, String color, List<Country> countryList, int units, String adress, int lobbyId)
 	{
+=======
+	public Player(int id, String name, String color, List<Country> countryList, int units) {
+>>>>>>> 1f70f32ba09ac02374d9278c9c658026b86c6eb2
 		this.id = id;
 		this.name = name;
-		this.color = color;
 		this.countryList = countryList;
-		this.einheitenProRunde = einheiten;
+		this.unitsPerRound = units;
+<<<<<<< HEAD
+		this.setLobbyId(lobbyId);
+		this.setAdress(adress);
+=======
+		
+		// extracting the three rgb-values from the string color and creating an object Color
+		String[] sa = color.split(",");
+		this.color =Color.rgb(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]));
+>>>>>>> 1f70f32ba09ac02374d9278c9c658026b86c6eb2
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getColor()
-	{
+	public Color getColor() {
 		return color;
 	}
 
-	public void setColor(String color)
-	{
+	public void setColor(Color color) {
 		this.color = color;
 	}
-	//getter u setter fuer die laender fehlen noch
 	
 	
-	public int getEinheitenProRunde()
-	{
-		return einheitenProRunde;
+	public int getEinheitenProRunde() {
+		return unitsPerRound;
 	}
 
-	public void setEinheitenProRunde(int einheitenProRunde)
-	{
-		this.einheitenProRunde = einheitenProRunde;
+	public void setEinheitenProRunde (int einheitenProRunde) {
+		this.unitsPerRound = einheitenProRunde;
 	}
 
 	public List<Country> getCountryList() {
@@ -75,6 +93,26 @@ public class Player
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getAdress()
+	{
+		return adress;
+	}
+
+	public void setAdress(String adress)
+	{
+		this.adress = adress;
+	}
+
+	public int getLobbyId()
+	{
+		return lobbyId;
+	}
+
+	public void setLobbyId(int lobbyId)
+	{
+		this.lobbyId = lobbyId;
 	}
 
 }
