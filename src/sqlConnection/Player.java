@@ -11,6 +11,8 @@ public class Player
 	private List<Country> countryList = null;
 	private int unitsPerRound;
 	private int id;
+	private String adress;
+	private int lobbyId;
 	
 	public Player(int id, String name, String color)
 	{
@@ -21,13 +23,15 @@ public class Player
 		this.unitsPerRound = 0;
 	}
 	
-	public Player(int id, String name, String color, List<Country> countryList, int units)
+	public Player(int id, String name, String color, List<Country> countryList, int units, String adress, int lobbyId)
 	{
 		this.id = id;
 		this.name = name;
 		this.color = color;
 		this.countryList = countryList;
 		this.unitsPerRound = units;
+		this.setLobbyId(lobbyId);
+		this.setAdress(adress);
 	}
 
 	public String getName()
@@ -75,6 +79,26 @@ public class Player
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getAdress()
+	{
+		return adress;
+	}
+
+	public void setAdress(String adress)
+	{
+		this.adress = adress;
+	}
+
+	public int getLobbyId()
+	{
+		return lobbyId;
+	}
+
+	public void setLobbyId(int lobbyId)
+	{
+		this.lobbyId = lobbyId;
 	}
 
 }

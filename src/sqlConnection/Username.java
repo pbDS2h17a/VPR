@@ -96,13 +96,11 @@ public class Username extends Application{
 	            	break;
 	            }
 			}
+	    
         }
-  
-       
-        //wenn der name ok ist, wird er in die DB geschoben und als Player gesetzt
         
-        if(isOk){
-        	Player player = new Player(1,username,color);
+        if(isOk || playerNames.isEmpty()){
+        	Player player = new Player(playerNames.size()+1,username,color); // ÜBERARBEITEN
         	
         	SqlQuery.fillPlayer(player); //ruft Bastis Methode auf
         	System.out.println("klappt");
@@ -111,7 +109,12 @@ public class Username extends Application{
         
         else{
         	System.out.println("anderer Username");
-        }
+        }  
+        
+  
+       
+        //wenn der name ok ist, wird er in die DB geschoben und als Player gesetzt
+        
         
 	
 	}

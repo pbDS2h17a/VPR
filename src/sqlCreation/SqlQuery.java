@@ -35,16 +35,17 @@ public class SqlQuery {
 		}
 	}
 	
-<<<<<<< HEAD
-	public static void fillPlayer(Player player) {
-				
-=======
+
 	//TODO implement lobby und address
-	static void fillPlayer(Player player) {			
->>>>>>> 6b5fd57e5c82d4b65343874a947dff076f860b65
+	public static void fillPlayer(Player player) {			
+
 		String sql =
-				"INSERT INTO player (name, color, lobby_id, address)" +
-				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";
+				"INSERT INTO player (player_id, name, color, lobby_id, address)" +
+				"VALUES ("+player.getId()+", '"+
+							player.getName()+"', '"+
+							player.getColor()+"', "
+									+ "NULL, NULL);";
+		
 		try {
 			stmt.executeUpdate(sql);
 			if(!player.getCountryList().isEmpty()) {
@@ -54,6 +55,7 @@ public class SqlQuery {
 			System.out.println("fillPlayer");
 			e.printStackTrace();
 		}
+		
 	}
 	
 	static void fillCountry(String[] data) {
@@ -171,7 +173,7 @@ public class SqlQuery {
 	static void createPlayer() {
 		//Länder
 		String sqlPlayer = "CREATE TABLE IF NOT EXISTS player (" +
-				" player_id INTEGER NOT NULL AUTO_INCREMENT, " +
+				" player_id INTEGER NOT NULL, " +
 	            " name VARCHAR(255) NOT NULL, " + 
 				" color VARCHAR(255) NOT NULL," +
 				" lobby_id INTEGER," +
