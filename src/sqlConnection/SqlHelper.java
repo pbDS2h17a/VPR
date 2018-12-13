@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SqlHelper
@@ -19,13 +20,35 @@ public class SqlHelper
 	}
 	
 	public static String getCountryName(int countryId) throws SQLException{
-		ResultSet rs =stmt.executeQuery("select country_name from country where country_id ="+countryId);
+		ResultSet rs =stmt.executeQuery("select name from country where country_id ="+countryId);
 		 rs.next(); 
 			 return rs.getString(1);	
 	}
 	
-	public static List<Integer> getCountryNeighbor(){
+	/*public static List<Integer> getCountryNeighbor(){
 		
+	}*/
+	
+	public static String getContintentName(int continentID) throws SQLException{		
+		ResultSet rs = stmt.executeQuery("select name from continent where continent_id ="+continentID+";");
+		rs.next();
+		return rs.getString("name");
+	}
+	
+	public static int Bonus(int continentID) throws SQLException{
+		ResultSet rs = stmt.executeQuery("select bonus from continent where continent_id ="+continentID+";");
+		rs.next();
+		return rs.getInt("bonus");
+	}
+	
+	public static List <String> ContinentCountries(int continentID) throws SQLException{
+		List <String> countries = new ArrayList<>();
+		ResultSet rs = stmt.executeQuery("select name from country where continent_id ="+continentID+";");
+		while(rs.next()){	   		
+	   		countries.add(rs.getString("name"));	   				   			
+	   		}
+		rs.next();
+		return countries;
 	}
 
 }

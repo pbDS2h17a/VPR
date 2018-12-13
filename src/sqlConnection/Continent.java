@@ -1,5 +1,6 @@
 package sqlConnection;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Continent
@@ -46,12 +47,12 @@ public class Continent
 	}
 	
 	//Konstruktor
-	public Continent(int id, String name, List <String> laender, int additionalUnits)
+	public Continent(int id)throws SQLException
 	{
 		this.id = id;
-		this.name = name;
-		this.countries = laender;
-		this.additionalUnits = additionalUnits;
+		this.name = SqlHelper.getContintentName(id);
+		this.countries =SqlHelper.ContinentCountries(id) ;
+		this.additionalUnits = SqlHelper.Bonus(id);
 	}
 	@Override
 	public String toString()
