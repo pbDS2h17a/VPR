@@ -7,10 +7,12 @@ public class ResultSetManager
 {
 	public static List<List<String>> toList(ResultSet r) throws SQLException
 	{
-		List<List<String>> set = new ArrayList<>();
+		List<List<String>> set;
 		
 		try { r.next(); } 
-		catch (SQLException s) { return set; }
+		catch (SQLException s) { return null; }
+		
+		set = new ArrayList<>();
 		
 		//Erste Zeile -> Bestimmung der Länge der Datensätze
 		List<String> zeile = new ArrayList<>();

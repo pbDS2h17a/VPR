@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatInterface extends Application
 {
@@ -54,8 +55,6 @@ public class ChatInterface extends Application
 	public void start(Stage arg0) throws Exception
 	{
 		BorderPane bp = new BorderPane();
-		VBox chatVerlauf = new VBox();
-//		chatVerlauf.setPrefSize(100, 200);
 		TextField tf = new TextField();
 		Button send = new Button("Send");
 		HBox hb = new HBox();
@@ -65,48 +64,42 @@ public class ChatInterface extends Application
 			if(k.getCode() == KeyCode.ENTER) send(tf);
 		});
 		
-		ScrollPane window = new ScrollPane(chatVerlauf);
-		window.setPrefSize(200,400);
-		bp.setTop(window);
+		
 		hb.getChildren().add(tf);
 		hb.getChildren().add(send);
 		bp.setBottom(hb);
+		
+		VBox vbWindow = new VBox();
 		
 		Task<Void> task = new Task<Void>()
 		{
 
 			@Override
 			protected Void call() throws Exception
-			{
+			{				
 				while(true)
 				{
-					ResultSet r = stmt.executeQuery("SELECT fromIP,nachricht FROM chat"
-							+ 						" WHERE '"+localIP+"' LIKE toIP"
-							+	 					" AND "+(System.currentTimeMillis()-2000)%3600000+" < timestamp;");
-					ArrayList<String> currentSet = new ArrayList<>();
-					while(r.next()) {
-						StringBuilder sb = new StringBuilder();
-						sb.append(r.getString(1));
-						sb.append(": ");
-						sb.append(r.getString(2));
+					ResultSet r = stmt.executeQuery("SELECT fromIP,message FROM chat;");
+//							+ 						" WHERE '"+localIP+"' LIKE toIP"
+//							+	 					" AND "+(System.currentTimeMillis()-2000)%3600000+" < timestamp;");
+					
+					List<List<String>> set = ResultSetManager.toList(r);
+					
+					if(set != null){
+						Platform.runLater(() -> {
+							
+							for (int i = vbWindow.getChildren().size()-1; i >= 0; i--)
+							{
+								vbWindow.getChildren().remove(i);
+							}
+							
+							for (List<String> list : set)
+							{
+								vbWindow.getChildren().add(new Label(list.get(0) + ": " + list.get(1)));
+							}
+						});
 					}
 					
-					Platform.runLater(() -> {
-						try {
-							int index = -1;
-							if(r.next()) {
-								index = currentSet.indexOf(r.getString(1) + ": " + r.getString(2));
-							}
-							while(r.next()) {
-								index++;
-								if(currentSet.get(index) != r.getString(1) + ": " + r.getString(2)) break;
-							}
-							while(r.next()) {
-								chatVerlauf.getChildren().add(new Label(r.getString(1) + ": " + r.getString(2)));
-							}
-						}
-						catch(SQLException s) {s.printStackTrace();}
-					});
 					Thread.sleep(2000);
 				}
 				
@@ -117,6 +110,9 @@ public class ChatInterface extends Application
 		readThread.setDaemon(true);
 		readThread.start();
 	
+		ScrollPane chatHistory = new ScrollPane(vbWindow);
+		chatHistory.setPrefSize(200,400);
+		bp.setTop(chatHistory);
 		
 		Scene sc= new Scene(bp);
 		arg0.setScene(sc);
@@ -124,7 +120,7 @@ public class ChatInterface extends Application
 	}
 
 	private void send(TextField tf){
-		try { stmt.executeUpdate("INSERT into chat(timestamp, nachricht, fromIP, toIP)"
+		try { stmt.executeUpdate("INSERT into chat(timestamp, message, fromIP, toIP)"
 				+ "			VALUES("+System.currentTimeMillis()%3600000+", '"+ tf.getText() +"', '"+ localIP +"', '%');");
 		}
 		catch(SQLException s) {s.printStackTrace();}
