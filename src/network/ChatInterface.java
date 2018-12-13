@@ -1,3 +1,5 @@
+package network;
+
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.sql.Connection;
@@ -119,10 +121,22 @@ public class ChatInterface extends Application
 	}
 
 	private void send(TextField tf){
-		try { stmt.executeUpdate("INSERT into chat(timestamp, message, from_ip, to_ip)"
-				+ "			VALUES("+System.currentTimeMillis()%3600000+", '"+ tf.getText() +"', '"+ localIP +"', '%');");
+		if(tf.getText().toLowerCase().equals("reset"))
+		{
+			System.out.println("RESET");
+			try { stmt.executeUpdate("TRUNCATE TABLE chat;");
+			}
+			catch(SQLException s) {s.printStackTrace();}
+			tf.setText("");
 		}
-		catch(SQLException s) {s.printStackTrace();}
-		tf.setText("");
+		else
+		{
+			try { stmt.executeUpdate("INSERT into chat(timestamp, message, from_ip, to_ip)"
+					+ "			VALUES("+System.currentTimeMillis()%3600000+", '"+ tf.getText() +"', '"+ localIP +"', '%');");
+			}
+			catch(SQLException s) {s.printStackTrace();}
+			tf.setText("");
+		}
+
 	}
 }
