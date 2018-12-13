@@ -23,7 +23,7 @@ public class SqlQuery {
 			String bonus = dataArray[2].trim();
 			
 			String sql =
-					"INSERT INTO continent (continent_id, continent_name, bonus)" +
+					"INSERT INTO continent (continent_id, name, bonus)" +
 					"VALUES ('"+id+"', '"+name+"', '"+bonus+"');";
 			
 			try {
@@ -35,10 +35,11 @@ public class SqlQuery {
 		}
 	}
 	
-	static void fillPlayer(Player player) {
-				
+
+	//TODO implement lobby und address
+	static void fillPlayer(Player player) {			
 		String sql =
-				"INSERT INTO player (player_name, player_color)" +
+				"INSERT INTO player (name, color, lobby_id, address)" +
 				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";
 		try {
 			stmt.executeUpdate(sql);
@@ -59,7 +60,7 @@ public class SqlQuery {
 			String continent = dataArray[2].trim();
 			String sqlNeighbor = "";
 			String sqlCountry =
-					"INSERT INTO country (country_id, country_name, continent_id)" +
+					"INSERT INTO country (country_id, name, continent_id)" +
 					"VALUES ('"+id+"', '"+name+"', '"+continent+"');";
 			
 			for(int i = 3; i < dataArray.length; i++) {
@@ -133,7 +134,7 @@ public class SqlQuery {
 		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +
 				" continent_id INTEGER, " +
-                " continent_name VARCHAR(255), " +
+                " name VARCHAR(255), " +
 				" bonus INTEGER," +
 				" PRIMARY KEY (continent_id)" +
 				");";
@@ -150,7 +151,7 @@ public class SqlQuery {
 		//Länder
 		String sqlCountry = "CREATE TABLE IF NOT EXISTS country (" +
 				" country_id INTEGER, " +
-	            " country_name VARCHAR(255) NOT NULL, " + 
+	            " name VARCHAR(255) NOT NULL, " + 
 				" continent_id INTEGER REFERENCES continent(countinent_id), " +
 				" PRIMARY KEY (country_id)" +
 	            ");";
@@ -167,8 +168,10 @@ public class SqlQuery {
 		//Länder
 		String sqlPlayer = "CREATE TABLE IF NOT EXISTS player (" +
 				" player_id INTEGER NOT NULL AUTO_INCREMENT, " +
-	            " player_name VARCHAR(255) NOT NULL, " + 
-				" player_color VARCHAR(255) NOT NULL," +
+	            " name VARCHAR(255) NOT NULL, " + 
+				" color VARCHAR(255) NOT NULL," +
+				" lobby_id INTEGER," +
+				" address INTEGER," +
 	            " PRIMARY KEY (player_id)" +
 	            ");";
 		
