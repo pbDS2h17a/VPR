@@ -35,7 +35,7 @@ public class SqlQuery {
 		}
 	}
 	
-	static void fillPlayer(Player player) {
+	public static void fillPlayer(Player player) {
 				
 		String sql =
 				"INSERT INTO player (player_name, player_color)" +
