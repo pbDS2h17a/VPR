@@ -37,8 +37,12 @@ public class SqlQuery {
 	
 
 	//TODO implement lobby und address
+<<<<<<< HEAD
 	public static void fillPlayer(Player player) {			
 
+=======
+	static void fillPlayer(Player player) {			
+>>>>>>> 1f70f32ba09ac02374d9278c9c658026b86c6eb2
 		String sql =
 				"INSERT INTO player (player_id, name, color, lobby_id, address)" +
 				"VALUES ("+player.getId()+", '"+
