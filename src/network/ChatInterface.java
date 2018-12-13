@@ -27,7 +27,6 @@ public class ChatInterface extends Application
 	static Connection con;
 	static Statement stmt;
 	static String localIP = "127.0.0.1";
-	static ResultSet lastSet;
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException 
 	{
@@ -52,7 +51,7 @@ public class ChatInterface extends Application
 	}
 
 	@Override
-	public void start(Stage arg0) throws Exception
+	public void start(Stage arg0) throws SQLException
 	{
 		BorderPane bp = new BorderPane();
 		TextField tf = new TextField();
@@ -76,13 +75,12 @@ public class ChatInterface extends Application
 
 			@Override
 			protected Void call() throws Exception
-			{				
+			{int c = 1;	
 				while(true)
 				{
-					ResultSet r = stmt.executeQuery("SELECT fromIP,message FROM chat;");
-//							+ 						" WHERE '"+localIP+"' LIKE toIP"
-//							+	 					" AND "+(System.currentTimeMillis()-2000)%3600000+" < timestamp;");
-					
+					ResultSet r = stmt.executeQuery("SELECT from_ip, message FROM chat"
+							+ 						" WHERE '"+localIP+"' LIKE to_ip;");
+
 					List<List<String>> set = ResultSetManager.toList(r);
 					
 					if(set != null){
@@ -95,11 +93,12 @@ public class ChatInterface extends Application
 							
 							for (List<String> list : set)
 							{
+								System.out.println(list);
 								vbWindow.getChildren().add(new Label(list.get(0) + ": " + list.get(1)));
 							}
 						});
 					}
-					
+					System.out.println(c+" Pulls"); c++;
 					Thread.sleep(2000);
 				}
 				
@@ -120,7 +119,7 @@ public class ChatInterface extends Application
 	}
 
 	private void send(TextField tf){
-		try { stmt.executeUpdate("INSERT into chat(timestamp, message, fromIP, toIP)"
+		try { stmt.executeUpdate("INSERT into chat(timestamp, message, from_ip, to_ip)"
 				+ "			VALUES("+System.currentTimeMillis()%3600000+", '"+ tf.getText() +"', '"+ localIP +"', '%');");
 		}
 		catch(SQLException s) {s.printStackTrace();}

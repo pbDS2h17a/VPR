@@ -22,6 +22,8 @@ public class ResultSetManager
 			catch (SQLException s) { break; }
 		}
 		
+		if(length == 1 && zeile.size() == 0) {return null;}
+		
 		set.add(zeile);
 		
 		while(r.next())
