@@ -13,7 +13,7 @@ public class StartRisiko
 	public static void main(String[] args) throws ClassNotFoundException, SQLException
 	{
 		// TODO Auto-generated method stub
-		ArrayList <Kontinent> kontinente = new ArrayList <>();
+		ArrayList <Continent> kontinente = new ArrayList <>();
 		
 		Class.forName("com.mysql.cj.jdbc.Driver"); 
 		
@@ -41,9 +41,9 @@ public class StartRisiko
 	   				laender.add(rsLaender.getString("country_name"));
 	   			}	   			
 	   		}
-           kontinente.add(new Kontinent(id,name,laender,bonus));
+           kontinente.add(new Continent(id,name,laender,bonus));
         }
-       	for (Kontinent k : kontinente)
+       	for (Continent k : kontinente)
 		{
 			System.out.println(k);
 		}
