@@ -14,16 +14,12 @@ public class Country
 	private List<Integer> neighbor = new ArrayList<Integer>();
 	private int armys;
 
-	public Country(int id) throws SQLException{
+	public Country(int id,int armys) throws SQLException{
 		this.countryId=id;
+		this.countryContinentID=SqlHelper.getCountryContinentId(id);
 		this.name=SqlHelper.getCountryName(id);
+		this.neighbor=SqlHelper.getCountryNeighbor
 		}
-	
-//	public static String getNameFromCountryId(Statement stmt, int id) throws SQLException {
-//		ResultSet rs =stmt.executeQuery("select country_name from country where country_id ="+id);
-//	 		 rs.next(); //legt cursor auf nächste zeile, wenn leer --> false	
-//	 			 return rs.getString(1);
-//	}
 	
 	public List<Integer> getNeighbor() {
 		return this.neighbor;

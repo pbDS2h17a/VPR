@@ -1,5 +1,4 @@
-/gui/
-/network/
-/resources/
-/sqlConnection/
-/sqlCreation/
+/.project
+/README.md
+/img/
+/src/
