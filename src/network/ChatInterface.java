@@ -108,7 +108,7 @@ public class ChatInterface extends Application {
 	 */
 	private void send(TextField tf) {
 		if (tf.getText().toLowerCase().equals("reset")) {
-			deleteAll(tf);
+			deleteAll("chat", tf);
 			System.out.println("test 2");
 		}
 		else {
@@ -118,21 +118,23 @@ public class ChatInterface extends Application {
 				stmt.executeUpdate("INSERT into chat(timestamp, message, from_ip, to_ip)"
 				+ " VALUES('"+date+"', '"+ tf.getText() +"', '"+ localIP +"', '%');");
 			} catch(SQLException s) {
-				s.printStackTrace();
+					s.printStackTrace();
 				}
 			tf.setText("");
 		}
 	}
 	
 	/**
-	 * 
-	 * @param tf
+	 * Deletes all entries of the specified table and sets the specified TextField = "".
+	 * @param tableName	Name of the table to truncate
+	 * @param tf				TextField to set = ""
 	 */
-	private void deleteAll (TextField tf) {
+	private void deleteAll (String tableName, TextField tf) {
 		try { 
-			stmt.executeUpdate("TRUNCATE chat");
+			stmt.executeUpdate("TRUNCATE TABLE "+tableName+";");
 		} catch(SQLException s) {
-			s.printStackTrace();}
+				s.printStackTrace();
+			}
 		tf.setText("");
 	}
 }
