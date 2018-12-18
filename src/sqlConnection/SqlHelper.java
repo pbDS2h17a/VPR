@@ -20,21 +20,25 @@ public class SqlHelper {
 		stmt= con.createStatement();
 	}
 	
-<<<<<<< HEAD
-	public static String getCountryName(int countryId) throws SQLException{
-		ResultSet rs =stmt.executeQuery("select name from country where country_id ="+countryId);
-=======
 	
 	public static String getCountryName (int countryId) throws SQLException {
 		ResultSet rs =stmt.executeQuery("select country_name from country where country_id ="+countryId);
->>>>>>> 72571804184158035900585f3210328ac383fe6c
+	
 		 rs.next(); 
 			 return rs.getString(1);	
 	}
 	
-<<<<<<< HEAD
-	/*public static List<Integer> getCountryNeighbor(){
-=======
+	public static int getCountryContinentId(int countryId) throws SQLException{
+		ResultSet rs =stmt.executeQuery("select continent_id from country where country_id ="+countryId);
+		
+		 rs.next(); 
+		 	return rs.getInt(1);	
+	}
+
+	public static List<Integer> getCountryNeighbor(int countryId){
+		return null;
+		
+	}
 	
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.cj.jdbc.Driver"); 
@@ -46,13 +50,7 @@ public class SqlHelper {
 	}
 	
 	
-	public static List<Integer> getCountryNeighbor() {
-		
-		// provisorisch
-		return null;
->>>>>>> 72571804184158035900585f3210328ac383fe6c
-		
-	}*/
+
 	
 	public static String getContintentName(int continentID) throws SQLException{		
 		ResultSet rs = stmt.executeQuery("select name from continent where continent_id ="+continentID+";");

@@ -14,6 +14,10 @@ import sqlConnection.Player;
 public class SqlQuery {
 	
 	public static Statement stmt;
+	/*
+	 * _____________________________________________________________________________________________________________________________________________________
+	 * FILL STATEMENTS
+	 */
 	
 	static void fillContinent(String[] data) {
 		for (String string : data) {
@@ -35,21 +39,13 @@ public class SqlQuery {
 		}
 	}
 	
-
 	//TODO implement lobby und address
-<<<<<<< HEAD
-	public static void fillPlayer(Player player) {			
-
-=======
+	
+	
 	static void fillPlayer(Player player) {			
->>>>>>> 1f70f32ba09ac02374d9278c9c658026b86c6eb2
 		String sql =
-				"INSERT INTO player (player_id, name, color, lobby_id, address)" +
-				"VALUES ("+player.getId()+", '"+
-							player.getName()+"', '"+
-							player.getColor()+"', "
-									+ "NULL, NULL);";
-		
+				"INSERT INTO player (name, color, lobby_id, address)" +
+				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";
 		try {
 			stmt.executeUpdate(sql);
 			if(!player.getCountryList().isEmpty()) {
@@ -59,7 +55,6 @@ public class SqlQuery {
 			System.out.println("fillPlayer");
 			e.printStackTrace();
 		}
-		
 	}
 	
 	static void fillCountry(String[] data) {
@@ -90,6 +85,26 @@ public class SqlQuery {
 		
 		
 	}
+	static void fillPlayerCountry(Player p) {
+		List<Country> countryList = p.getCountryList();
+		
+		for (Country country : countryList) {
+			String sql =
+					"INSERT INTO player_country (player_id, country_id)" +
+					"VALUES ('"+p.getId()+"', '"+country.getId()+"');";
+			try {
+				stmt.executeUpdate(sql);
+			} catch (SQLException e) {
+				System.out.println("fillPlayer");
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	/*
+	 * _____________________________________________________________________________________________________________________________________________________
+	 * DROP STATEMENTS
+	 */
 	
 	static void dropCountry() { 
 		try {
@@ -140,6 +155,11 @@ public class SqlQuery {
 		}
 	}
 	
+	// TODO Drop Statments LOBBY, CARD, MISSION, MISSIONPLAYER, CARDSPLAYER
+	/*
+	 * _____________________________________________________________________________________________________________________________________________________
+	 * CREATE STATEMENTS
+	 */
 	static void createContinent() {
 		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +
@@ -163,6 +183,7 @@ public class SqlQuery {
 				" country_id INTEGER, " +
 	            " name VARCHAR(255) NOT NULL, " + 
 				" continent_id INTEGER REFERENCES continent(countinent_id), " +
+				" view VARCHAR(15000), " +
 				" PRIMARY KEY (country_id)" +
 	            ");";
 		
@@ -177,11 +198,11 @@ public class SqlQuery {
 	static void createPlayer() {
 		//Länder
 		String sqlPlayer = "CREATE TABLE IF NOT EXISTS player (" +
-				" player_id INTEGER NOT NULL, " +
+				" player_id INTEGER NOT NULL AUTO_INCREMENT, " +
 	            " name VARCHAR(255) NOT NULL, " + 
 				" color VARCHAR(255) NOT NULL," +
-				" lobby_id INTEGER," +
-				" address INTEGER," +
+				" lobby_id INTEGER REFERENCES lobby(lobby_id)," +
+				" address INTEGER(20)," +
 	            " PRIMARY KEY (player_id)" +
 	            ");";
 		
@@ -207,35 +228,97 @@ public class SqlQuery {
 		}	
 	}
 	
-	static void fillPlayerCountry(Player p) {
-		List<Country> countryList = p.getCountryList();
-		
-		for (Country country : countryList) {
-			String sql =
-					"INSERT INTO player_country (player_id, country_id)" +
-					"VALUES ('"+p.getId()+"', '"+country.getId()+"');";
-			try {
-				stmt.executeUpdate(sql);
-			} catch (SQLException e) {
-				System.out.println("fillPlayer");
-				e.printStackTrace();
-			}
-		}
-		
-	}
 	
 	static void createPlayerCountry() {
-		String sqlNeighbor = "CREATE TABLE IF NOT EXISTS player_country (" +
+		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS player_country (" +
 				"player_id INTEGER REFERENCES player(player_id), " +
 				"country_id INTEGER REFERENCES country(country_id), " +
-				"PRIMARY KEY(player_id, country_id) " +
+				"lobby_id INTEGER REFERENCES lobby(lobby_id), " +
+				"army_count INTEGER , " +
+				"PRIMARY KEY(country_id, lobby_id) " +
 				");";
 		try {
-			stmt.executeUpdate(sqlNeighbor);
+			stmt.executeUpdate(sqlPlayerCountry);
 		} catch (SQLException e) {
 			System.out.println("createPlayerCountry");
 			e.printStackTrace();
 		}	
 	}
+	
+	
+	static void createLobby() {
+		String sqlLobby = "CREATE TABLE IF NOT EXISTS lobby (" +
+				"lobby_id INTEGER NOT NULL AUTO_INCREMENT, " +
+				"date DATETIME," +
+				"passwort VARCHAR(255)," +
+				"last_change DATETIME," +
+				"player_order VARCHAR(255)," +
+				"leader_id INTEGER REFERENCES player(player_id)," +
+				"players_turn_id INTEGER REFERENCES player(player_id)," +
+				"PRIMARY KEY(lobby_id) " +
+				");";
+		try {
+			stmt.executeUpdate(sqlLobby);
+		} catch (SQLException e) {
+			System.out.println("createLobby");
+			e.printStackTrace();
+		}	
+	}
+
+	static void createCard() {
+		String sqlCard = "CREATE TABLE IF NOT EXISTS card (" +
+				"card_id INTEGER NOT NULL AUTO_INCEMENT, " +
+				"value INTEGER, " +
+				"country_id REFERENCES country(country_id),"+
+				"PRIMARY KEY(card_id) " +
+				");";
+		try {
+			stmt.executeUpdate(sqlCard);
+		} catch (SQLException e) {
+			System.out.println("createCard");
+			e.printStackTrace();
+		}	
+	}
+	static void createMission() {
+		String sqlMission = "CREATE TABLE IF NOT EXISTS mission (" +
+				"mission_id INTEGER AUTO_INCREMENT NOT NULL, " +
+				"description VARCHAR(255), " +
+				");";
+		try {
+			stmt.executeUpdate(sqlMission);
+		} catch (SQLException e) {
+			System.out.println("createMission");
+			e.printStackTrace();
+		}	
+	}
+	static void createCardsPlayer() {
+		String sqlCardsPlayer = "CREATE TABLE IF NOT EXISTS cards_player (" +
+				"player_id INTEGER REFERENCES player(player_id), " +
+				"card_id INTEGER REFERENCES card(card_id), " +
+				"lobby_id INTEGER REFERENCES lobby(lobby_id), " +
+				"PRIMARY KEY(card_id, lobby_id) " +
+				");";
+		try {
+			stmt.executeUpdate(sqlCardsPlayer);
+		} catch (SQLException e) {
+			System.out.println("createCardsPlayer");
+			e.printStackTrace();
+		}	
+	}
+	static void createMissionPlayer() {
+		String sqlMissionPlayer = "CREATE TABLE IF NOT EXISTS mission_player (" +
+				"mission_id INTEGER REFERENCES mission(mission_id), " +
+				"player_id INTEGER REFERENCES player(player_id), " +
+				"lobby_id INTEGER REFERENCES lobby(lobby_id), " +
+				"PRIMARY KEY(lobby_id, mission_id) " +
+				");";
+		try {
+			stmt.executeUpdate(sqlMissionPlayer);
+		} catch (SQLException e) {
+			System.out.println("createMissionPlayer");
+			e.printStackTrace();
+		}	
+	}
+	
 	
 }
