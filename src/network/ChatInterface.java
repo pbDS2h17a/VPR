@@ -1,5 +1,3 @@
-package network;
-
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.sql.Connection;
@@ -12,8 +10,14 @@ import javafx.concurrent.Task;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.*;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -51,20 +55,19 @@ public class ChatInterface extends Application
 	{
 		BorderPane bp = new BorderPane();
 		VBox chatVerlauf = new VBox();
-		chatVerlauf.setPrefSize(100, 200);
+//		chatVerlauf.setPrefSize(100, 200);
 		TextField tf = new TextField();
 		Button send = new Button("Send");
 		HBox hb = new HBox();
 		
-		send.setOnAction(a -> {
-			try { stmt.executeUpdate("INSERT into chat(timestamp, nachricht, fromIP, toIP)"
-					+ "			VALUES("+System.currentTimeMillis()%3600000+", '"+ tf.getText() +"', '"+ localIP +"', '%');");
-			}
-			catch(SQLException s) {s.printStackTrace();}
-			tf.setText("");
+		send.setOnAction(a -> send(tf));
+		tf.setOnKeyPressed(k -> {
+			if(k.getCode() == KeyCode.ENTER) send(tf);
 		});
 		
-		bp.setTop(chatVerlauf);
+		ScrollPane window = new ScrollPane(chatVerlauf);
+		window.setPrefSize(200,400);
+		bp.setTop(window);
 		hb.getChildren().add(tf);
 		hb.getChildren().add(send);
 		bp.setBottom(hb);
@@ -81,11 +84,27 @@ public class ChatInterface extends Application
 							+ 						" WHERE '"+localIP+"' LIKE toIP"
 							+	 					" AND "+(System.currentTimeMillis()-2000)%3600000+" < timestamp;");
 					ArrayList<String> currentSet = new ArrayList<>();
+					while(r.next()) {
+						StringBuilder sb = new StringBuilder();
+						sb.append(r.getString(1));
+						sb.append(": ");
+						sb.append(r.getString(2));
+					}
 					
 					Platform.runLater(() -> {
-						try {while(r.next()) {
-							chatVerlauf.getChildren().add(new Label(r.getString(1) + ": " + r.getString(2)));
-						}}
+						try {
+							int index = -1;
+							if(r.next()) {
+								index = currentSet.indexOf(r.getString(1) + ": " + r.getString(2));
+							}
+							while(r.next()) {
+								index++;
+								if(currentSet.get(index) != r.getString(1) + ": " + r.getString(2)) break;
+							}
+							while(r.next()) {
+								chatVerlauf.getChildren().add(new Label(r.getString(1) + ": " + r.getString(2)));
+							}
+						}
 						catch(SQLException s) {s.printStackTrace();}
 					});
 					Thread.sleep(2000);
@@ -104,4 +123,11 @@ public class ChatInterface extends Application
 		arg0.show();
 	}
 
+	private void send(TextField tf){
+		try { stmt.executeUpdate("INSERT into chat(timestamp, nachricht, fromIP, toIP)"
+				+ "			VALUES("+System.currentTimeMillis()%3600000+", '"+ tf.getText() +"', '"+ localIP +"', '%');");
+		}
+		catch(SQLException s) {s.printStackTrace();}
+		tf.setText("");
+	}
 }
