@@ -46,7 +46,7 @@ public class Username extends Application{
 	
 		b1.setOnAction(a ->{
 			String username = t1.getText();
-			String color = t1.getText();
+			String color = t2.getText();
 			try
 			{
 				checkUsername(stmt,username,color);
@@ -72,14 +72,54 @@ public class Username extends Application{
 	//LEA-MARIE MOENIKES
 	
 	public void checkUsername(Statement stmt, String username, String color) throws ClassNotFoundException, SQLException{
+		
 		ArrayList <String> playerNames = new ArrayList<>();
+        
+        String sql2 = "SELECT * FROM player";
+		ResultSet rs = stmt.executeQuery(sql2);
+           
+        // geht durch die tabelle und holt alle Kontinenten-Namen
+        while (rs.next()) {   	
+            playerNames.add(rs.getString("name"));
+        }
+        
+        System.out.println(playerNames.toString());
+       
+        //ueberprufung ob der name schon in der DB existiert
+        boolean isOk = true;
+        
+        for (int i = 0; i < playerNames.size(); i++)
+		{
+        	if(playerNames.get(i).equals(username)){
+            	isOk = false;
+            	break;
+            }
+		}
+  
+        //zusätzliche loeschen
+        //String insert2 = "DELETE FROM continent WHERE continent_name = 'LeaTest' OR continent_name = 'TestLea' OR continent_name ='LeaTestet'";
+        
+        //wenn der name ok ist, wird er in die DB geschoben und als Player gesetzt
+        if(isOk){
+	    	String insert = "INSERT INTO player (player_id, name, color)" +
+			"VALUES ("+playerNames.size()+1+", '"+username+"', 'blau');";
+	    	stmt.executeUpdate(insert);
+	    	Player p1 = new Player(playerNames.size()+1,username,"blue"); // hier muss farbe und die einheiten noch eingebunden werden
+	    	System.out.println("ok");
+    	}
+		
+		
+		
+		
+		// noch fehlerhaft
+		/*ArrayList <String> playerNames = new ArrayList<>();
         
         String sql2 = "SELECT * FROM player"; 
 		ResultSet rs = stmt.executeQuery(sql2);
            
         // geht durch die Tabelle und holt alle Spielernamen
         while (rs.next()) {   	
-            playerNames.add(rs.getString("player_name"));
+            playerNames.add(rs.getString("player_name")); 
         }
         
         System.out.println(playerNames.toString());
@@ -100,7 +140,7 @@ public class Username extends Application{
         }
         
         if(isOk || playerNames.isEmpty()){
-        	Player player = new Player(playerNames.size()+1,username,color); // ÜBERARBEITEN
+        	Player player = new Player(1,username,"blau"); // ÜBERARBEITEN
         	
         	SqlQuery.fillPlayer(player); //ruft Bastis Methode auf
         	System.out.println("klappt");
@@ -114,7 +154,7 @@ public class Username extends Application{
   
        
         //wenn der name ok ist, wird er in die DB geschoben und als Player gesetzt
-        
+        */
         
 	
 	}

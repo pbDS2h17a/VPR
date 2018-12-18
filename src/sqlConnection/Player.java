@@ -14,7 +14,7 @@ public class Player {
 	
 	
 	private String name;
-	private Color color;
+	private String color;
 	private List<Country> countryList;
 	private int unitsPerRound;
 	private int id;
@@ -29,29 +29,22 @@ public class Player {
 		this.unitsPerRound = 0;
 		
 		// extracting the three rgb-values from the string color and creating an object Color
-		String[] sa = color.split(",");
-		this.color =Color.rgb(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]));
+		//String[] sa = color.split(",");
+		//this.color =Color.rgb(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]));
 	}
 	
-<<<<<<< HEAD
-	public Player(int id, String name, String color, List<Country> countryList, int units, String adress, int lobbyId)
-	{
-=======
+
 	public Player(int id, String name, String color, List<Country> countryList, int units) {
->>>>>>> 1f70f32ba09ac02374d9278c9c658026b86c6eb2
 		this.id = id;
 		this.name = name;
 		this.countryList = countryList;
 		this.unitsPerRound = units;
-<<<<<<< HEAD
 		this.setLobbyId(lobbyId);
 		this.setAdress(adress);
-=======
 		
 		// extracting the three rgb-values from the string color and creating an object Color
-		String[] sa = color.split(",");
-		this.color =Color.rgb(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]));
->>>>>>> 1f70f32ba09ac02374d9278c9c658026b86c6eb2
+		//String[] sa = color.split(",");
+		//this.color =Color.rgb(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]));
 	}
 
 	public String getName() {
@@ -62,18 +55,30 @@ public class Player {
 		this.name = name;
 	}
 
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
+//	public Color getColor() {
+//		return color;
+//	}
+//
+//	public void setColor(Color color) {
+//		this.color = color;
+//	}
 	
 	
 	public int getEinheitenProRunde() {
 		return unitsPerRound;
 	}
+
+	public String getColor()
+	{
+		return color;
+	}
+
+
+	public void setColor(String color)
+	{
+		this.color = color;
+	}
+
 
 	public void setEinheitenProRunde (int einheitenProRunde) {
 		this.unitsPerRound = einheitenProRunde;

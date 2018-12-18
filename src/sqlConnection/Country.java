@@ -18,7 +18,7 @@ public class Country
 		this.countryId=id;
 		this.countryContinentID=SqlHelper.getCountryContinentId(id);
 		this.name=SqlHelper.getCountryName(id);
-		this.neighbor=SqlHelper.getCountryNeighbor
+		this.neighbor=SqlHelper.getCountryNeighbor(0);
 		}
 	
 	public List<Integer> getNeighbor() {

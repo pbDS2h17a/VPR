@@ -1,3 +1,5 @@
+package network;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,10 +9,12 @@ public class ResultSetManager
 {
 	public static List<List<String>> toList(ResultSet r) throws SQLException
 	{
-		List<List<String>> set = new ArrayList<>();
+		List<List<String>> set;
 		
 		try { r.next(); } 
-		catch (SQLException s) { return set; }
+		catch (SQLException s) { return null; }
+		
+		set = new ArrayList<>();
 		
 		//Erste Zeile -> Bestimmung der Länge der Datensätze
 		List<String> zeile = new ArrayList<>();
@@ -19,6 +23,8 @@ public class ResultSetManager
 			try { zeile.add(r.getString(length).trim()); length++; }
 			catch (SQLException s) { break; }
 		}
+		
+		if(length == 1 && zeile.size() == 0) {return null;}
 		
 		set.add(zeile);
 		
