@@ -41,7 +41,6 @@ public class SqlQuery {
 	
 	//TODO implement lobby und address
 	
-	
 	static void fillPlayer(Player player) {			
 		String sql =
 				"INSERT INTO player (name, color, lobby_id, address)" +
@@ -81,10 +80,9 @@ public class SqlQuery {
 				System.out.println("fillCountry");
 				e.printStackTrace();
 			}
-		}
-		
-		
+		}	
 	}
+	
 	static void fillPlayerCountry(Player p) {
 		List<Country> countryList = p.getCountryList();
 		
@@ -99,10 +97,9 @@ public class SqlQuery {
 				e.printStackTrace();
 			}
 		}
-		
 	}
-	/*
-	 * _____________________________________________________________________________________________________________________________________________________
+	
+	/*____________________________________________________________________________________________________________________________________________________
 	 * DROP STATEMENTS
 	 */
 	
@@ -227,8 +224,7 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
-	
+		
 	static void createPlayerCountry() {
 		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS player_country (" +
 				"player_id INTEGER REFERENCES player(player_id), " +
@@ -244,7 +240,6 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
 	
 	static void createLobby() {
 		String sqlLobby = "CREATE TABLE IF NOT EXISTS lobby (" +
@@ -279,6 +274,7 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
+	
 	static void createMission() {
 		String sqlMission = "CREATE TABLE IF NOT EXISTS mission (" +
 				"mission_id INTEGER AUTO_INCREMENT NOT NULL, " +
@@ -291,6 +287,7 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
+	
 	static void createCardsPlayer() {
 		String sqlCardsPlayer = "CREATE TABLE IF NOT EXISTS cards_player (" +
 				"player_id INTEGER REFERENCES player(player_id), " +
@@ -305,6 +302,7 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
+	
 	static void createMissionPlayer() {
 		String sqlMissionPlayer = "CREATE TABLE IF NOT EXISTS mission_player (" +
 				"mission_id INTEGER REFERENCES mission(mission_id), " +
@@ -319,6 +317,5 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
 	
 }
