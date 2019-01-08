@@ -9,6 +9,7 @@ import javafx.application.*;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
+import sqlConnection.SqlHelper;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -32,10 +33,8 @@ public class ChatInterface extends Application {
 		}
 		Class.forName("com.mysql.cj.jdbc.Driver"); 
 		// Datenbankverbindung aufbauen
-		con = DriverManager.getConnection(
-					"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");
-		// Verbindung zum Abschicken von SQL-Abfragen 
-		stmt = con.createStatement();
+		SqlHelper.setStatement(SqlHelper.loginStringArray);
+		stmt = SqlHelper.stmt;
 		// GUI launchen
 		launch(args);
 	}
