@@ -13,6 +13,8 @@ import sqlConnection.Player;
  */
 public class SqlQuery {
 	
+	public static String splitter = ";";
+	
 	public static Statement stmt;
 	/*
 	 * _____________________________________________________________________________________________________________________________________________________
@@ -21,7 +23,7 @@ public class SqlQuery {
 	
 	static void fillContinent(String[] data) {
 		for (String string : data) {
-			String[] dataArray = string.split(",");
+			String[] dataArray = string.split(splitter);
 			String id = dataArray[0].trim();
 			String name = dataArray[1].trim();
 			String bonus = dataArray[2].trim();
@@ -58,7 +60,7 @@ public class SqlQuery {
 	
 	static void fillCountry(String[] data) {
 		for (String string : data) {
-			String[] dataArray = string.split(",");
+			String[] dataArray = string.split(splitter);
 			String id = dataArray[0].trim();
 			String name = dataArray[1].trim();
 			String continent = dataArray[2].trim();
