@@ -6,6 +6,7 @@ import java.util.List;
 
 import sqlConnection.Country;
 import sqlConnection.Player;
+import sqlConnection.SqlHelper;
 
 /**
  * @author basti
@@ -15,7 +16,7 @@ public class SqlQuery {
 	
 	public static String splitter = ";";
 	
-	public static Statement stmt;
+	public static Statement stmt = SqlHelper.stmt;
 	/*
 	 * _____________________________________________________________________________________________________________________________________________________
 	 * FILL STATEMENTS
@@ -43,7 +44,7 @@ public class SqlQuery {
 	
 	//TODO implement lobby und address
 	
-	static void fillPlayer(Player player) {			
+	public static void fillPlayer(Player player) {			
 		String sql =
 				"INSERT INTO player (name, color, lobby_id, address)" +
 				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";

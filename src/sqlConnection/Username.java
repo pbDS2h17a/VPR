@@ -33,11 +33,11 @@ public class Username extends Application{
 		t1.relocate(0,10);
 		t2.relocate(0, 40);
 		
-		Class.forName("com.mysql.cj.jdbc.Driver"); 
-		Connection con = DriverManager.getConnection(  
-				"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");  
-		Statement stmt = con.createStatement();
 		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		SqlHelper.setStatement(SqlHelper.loginStringArray);
+		Statement stmt = SqlHelper.stmt;
+	
 		Button b1 = new Button("Username");
 		b1.relocate(30, 100);
 		pane.getChildren().add(b1);
@@ -59,9 +59,7 @@ public class Username extends Application{
 	
 		stage.setScene(scene);
 		
-		
 		stage.show();
-		
 	}
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
@@ -72,7 +70,7 @@ public class Username extends Application{
 	//LEA-MARIE MOENIKES
 	
 	public void checkUsername(Statement stmt, String username, String color) throws ClassNotFoundException, SQLException{
-		
+		/*
 		ArrayList <String> playerNames = new ArrayList<>();
         
         String sql2 = "SELECT * FROM player";
@@ -108,11 +106,10 @@ public class Username extends Application{
 	    	System.out.println("ok");
     	}
 		
-		
-		
+		*/
 		
 		// noch fehlerhaft
-		/*ArrayList <String> playerNames = new ArrayList<>();
+		ArrayList <String> playerNames = new ArrayList<>();
         
         String sql2 = "SELECT * FROM player"; 
 		ResultSet rs = stmt.executeQuery(sql2);
@@ -136,7 +133,6 @@ public class Username extends Application{
 	            	break;
 	            }
 			}
-	    
         }
         
         if(isOk || playerNames.isEmpty()){
@@ -153,8 +149,8 @@ public class Username extends Application{
         
   
        
-        //wenn der name ok ist, wird er in die DB geschoben und als Player gesetzt
-        */
+        //wenn der Name ok ist, wird er in die DB geschoben und als Player gesetzt
+        
         
 	
 	}
