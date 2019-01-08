@@ -103,7 +103,9 @@ public class Sprite extends ImageView
 				colorAdjust.setHue(0.025);
 				this.setEffect(colorAdjust);
 			}
-			getScene().setCursor(Cursor.HAND);
+			
+			if(isButtonMode())
+				getScene().setCursor(Cursor.HAND);
 		});
 		setOnMouseExited(eventExited->{
 			if(isButtonMode() && isActive()) {
@@ -112,7 +114,9 @@ public class Sprite extends ImageView
 				colorAdjust.setHue(0);
 				this.setEffect(colorAdjust);
 			}
-			getScene().setCursor(Cursor.DEFAULT);
+			
+			if(isButtonMode())
+				getScene().setCursor(Cursor.DEFAULT);
 		});
 	}
 }
