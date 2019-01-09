@@ -17,7 +17,6 @@ public class SqlQuery {
 	//TODO Tabellen Namen als Variablen auslagern
 	//Koordinaten bei Country???,  Validieren der Create & Fill Statements mit aktueller modelierung!  Auto Increment <-> IDs Probleme???? Andere Teams Fragen!!!!
 	public static String splitter = ";";
-	
 	public static Statement stmt;
 	
 	//#######################################################################
@@ -42,7 +41,7 @@ public class SqlQuery {
 		}
 	}
 	
-	static void fillPlayer(Player player) {			
+	static void fillPlayer(Player player) {		
 		String sql =
 				"INSERT INTO player (name, color, lobby_id, address)" +
 				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";
@@ -71,9 +70,16 @@ public class SqlQuery {
 			
 			// Nachbarn
 			for(int i = 3; i < dataArray.length; i++) {
+				System.out.println(dataArray[i]);
 				sqlNeighbor = 
 					"INSERT INTO neighbor (country_id, neighbor_id)" +
 					"VALUES('"+id+"', '"+dataArray[i].trim()+"');";
+				try {
+					stmt.executeUpdate(sqlNeighbor);
+				} catch (SQLException e) {
+					System.out.println("fillNeighbor");
+					e.printStackTrace();
+				}
 			}
 			
 			// SQL ausführen
@@ -84,12 +90,7 @@ public class SqlQuery {
 				e.printStackTrace();
 			}
 			
-			try {
-				stmt.executeUpdate(sqlNeighbor);
-			} catch (SQLException e) {
-				System.out.println("fillNeighbor");
-				e.printStackTrace();
-			}
+			
 		}	
 	}
 	
@@ -113,20 +114,16 @@ public class SqlQuery {
 	//#DROP STATEMENTS
 	static void dropCountry() { 
 		try {
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 			stmt.executeUpdate("DROP TABLE IF EXISTS country");
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
 		} catch (SQLException e) {
 			System.out.println("dropCountry");
 			e.printStackTrace();
 		}	
 	}
 	
-	static void dropNeighbor() throws SQLException {
+	static void dropNeighbor(){
 		try {
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 			stmt.executeUpdate("DROP TABLE IF EXISTS neighbor");
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
 		} catch (SQLException e) {
 			System.out.println("dropNeighbor");
 			e.printStackTrace();

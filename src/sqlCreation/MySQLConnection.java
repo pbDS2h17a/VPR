@@ -11,27 +11,23 @@ public class MySQLConnection {
 		String[] continentData = FileReader.getContinent();
 		String[] countryData = FileReader.getCountry();
 		
-		for (String string : countryData) {
-			System.out.println(string);
-		}
+		SqlHelper.setStatement(SqlHelper.loginStringArray);
+		SqlQuery.stmt = SqlHelper.stmt;
 		
-//		SqlHelper.setStatement(SqlHelper.loginStringArray);
-//		SqlQuery.stmt = SqlHelper.stmt;
+		SqlQuery.dropCountry();
+		SqlQuery.dropContinent();
+		SqlQuery.dropNeighbor();
+		SqlQuery.dropPlayer();
+		SqlQuery.dropPlayerCountry();
 		
-//		SqlQuery.dropCountry();
-//		SqlQuery.dropContinent();
-//		SqlQuery.dropNeighbor();
-//		SqlQuery.dropPlayer();
-//		SqlQuery.dropPlayerCountry();
-//		
-//		SqlQuery.createContinent();
-//		SqlQuery.createCountry();
-//		SqlQuery.createNeighbor();
-//		SqlQuery.createPlayer();
-//		SqlQuery.createPlayerCountry();
-//		
-//		SqlQuery.fillContinent(continentData);
-//		SqlQuery.fillCountry(countryData);
+		SqlQuery.createContinent();
+		SqlQuery.createCountry();
+		SqlQuery.createNeighbor();
+		SqlQuery.createPlayer();
+		SqlQuery.createPlayerCountry();
+		
+		SqlQuery.fillContinent(continentData);
+		SqlQuery.fillCountry(countryData);
 
 		
 	}
