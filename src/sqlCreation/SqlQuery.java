@@ -47,7 +47,8 @@ public class SqlQuery {
 				e.printStackTrace();
 			}
 		}
-	}
+	}	
+
 
 	//TODO implement lobby und address
 	
