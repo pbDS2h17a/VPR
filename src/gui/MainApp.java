@@ -39,40 +39,67 @@ public class MainApp extends Application {
 	    Lobby lobby = new Lobby();
 	    Join join = new Join();
 	    Match match = new Match();
-	    
+	    MediaPlayer mp = new MediaPlayer();
+
 	    // Alles in die richtigen Container schieben
 		ctn_app.getChildren().addAll(
 				title.getContainer(),
 				lobby.getContainer(),
 				join.getContainer(),
-				match.getContainer()
+				match.getContainer(),
+				mp.getPlayBtn(),
+				mp.getStopBtn(),
+				mp.getSlider()
 		);
+
 	    app.getChildren().add(ctn_app);
 
 		// Click Events
-	    title.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
-			paneTransitionStart(title.getBtnCreate(), title.getContainer(), lobby.getContainer())
-		);
+	    title.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			paneTransition(title.getBtnCreate(), title.getContainer(), lobby.getContainer());
+			mp.playBtnSFX();
+	    });
 	    	    
-	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
-	    	paneTransitionStart(title.getBtnJoin(), title.getContainer(), join.getContainer())
-	    );
+	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	paneTransition(title.getBtnJoin(), title.getContainer(), join.getContainer());
+	    	mp.playBtnSFX();
+	    });
 	    
-	    lobby.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
-			paneTransitionStart(lobby.getBtnBack(), lobby.getContainer(), title.getContainer())
-	    );
+	    lobby.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			paneTransition(lobby.getBtnBack(), lobby.getContainer(), title.getContainer());
+			mp.playBtnSFX();
+			mp.playBgmStart();
+			mp.stopBgmGame();
+	    });
 	    
-	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
-			paneTransitionStart(lobby.getBtnReady(), lobby.getContainer(), match.getContainer())
-	    );
+	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			paneTransition(lobby.getBtnReady(), lobby.getContainer(), match.getContainer());
+			mp.playBtnSFX();
+			mp.stopBgmStart();
+			mp.playBgmGame();
+	    });
    
-	    join.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
-			paneTransitionStart(join.getBtnBack(), join.getContainer(), title.getContainer())
-        );
+	    join.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			paneTransition(join.getBtnBack(), join.getContainer(), title.getContainer());
+			mp.playBtnSFX();
+			mp.playBgmStart();
+			mp.stopBgmGame();
+	    });
 	    
+		mp.getPlayBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			mp.playBgmStart();		
+		});
+		
+		mp.title_btn_stop_mediaPlayer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			mp.stopBgmStart();			
+		});
+	    
+		mp.playBgmStart();
+		
+	    /*
 	    join.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
 			paneTransitionStart(join.getBtnCheck(), join.getContainer(), lobby.getContainer())
-        );
+        );*/
 
 		// GAME LOOP Animationen
 		new AnimationTimer() {
@@ -103,6 +130,9 @@ public class MainApp extends Application {
 	        			toPane = false;
 	        		}
 	        	}
+	        	
+	        	mp.setVolumeGame();
+	        	mp.setVolumeStart();
 	        }
 	    }.start();
 	    
@@ -125,7 +155,7 @@ public class MainApp extends Application {
 		launch(args);
 	}
 	
-	public void paneTransitionStart(Sprite trigger, Pane v, Pane z) {
+	public void paneTransition(Sprite trigger, Pane v, Pane z) {
 		if(trigger.isActive()) {
 			von = v;
 			von.setCache(true);
