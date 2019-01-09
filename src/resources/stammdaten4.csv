@@ -1,11 +1,19 @@
-#KONTINENT; BONUSPUNKTE
+// Kommentare mit Doppelshlash werden ignoriert
+// "#" Wird benutzt um Datenbereiche zu markieren
+// Ein neuer Block beginnt mit "#START", der Name des Blockes wird nach 
+// einem leerzeichen dahinter geschrieben
+// Das ende eines Blockes wird mit "#END" definiert
+#START KONTINENT
+//KONTINENT; BONUSPUNKTE
 1; Nordamerika; 5
 2; Südamerika; 2
 3; Europa; 5
 4; Afrika; 3
 5; Asien; 7
 6; Australien; 2
-#ID; LAND; KONTINENT; [Nachbarländer]
+#END
+#START LAND
+//ID; LAND; KONTINENT; [Nachbarländer]
 1; Alaska; 1; 2; 6; 32
 2; Alberta; 1; 1; 6; 7; 9
 3; Mittelamerika; 1; 4; 9; 13
@@ -14,7 +22,7 @@
 6; Nordwest-Territorien; 1; 1; 2; 5; 7
 7; Ontario; 1; 2; 4; 5; 6; 8; 9
 8; Quebec; 1; 4; 7; 5
-9; Westlichen Vereinigten Staaten;1; 2; 3; 4; 7
+9; Westlichen Vereinigten Staaten; 1; 2; 3; 4; 7
 10; Argentinien; 2; 11; 12
 11; Brasilien; 2; 10; 12; 13; 25
 12; Peru; 2; 11; 12; 13
@@ -48,3 +56,4 @@
 40; Indonesien; 6; 35; 41; 42
 41; Neuguinea; 6; 39; 40; 42
 42; Westaustralien; 6; 39; 40; 41
+#END
