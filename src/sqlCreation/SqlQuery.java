@@ -12,15 +12,15 @@ import sqlConnection.Player;
  * SQL Queries zum erstellen der Stammdatenbank
  */
 public class SqlQuery {
-	
+	//TODO implement Fillstatements neighbor(?bei country?), card, mission, 
+	//TODO prepared statements https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html
+	//TODO Tabellen Namen als Variablen auslagern
+	//Koordinaten bei Country???,  Validieren der Create & Fill Statements mit aktueller modelierung!  Auto Increment <-> IDs Probleme???? Andere Teams Fragen!!!!
 	public static String splitter = ";";
-	
 	public static Statement stmt;
-	/*
-	 * _____________________________________________________________________________________________________________________________________________________
-	 * FILL STATEMENTS
-	 */
 	
+	//#######################################################################
+	//FILL STATEMENTS
 	static void fillContinent(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -41,9 +41,7 @@ public class SqlQuery {
 		}
 	}
 	
-	//TODO implement lobby und address
-	
-	static void fillPlayer(Player player) {			
+	static void fillPlayer(Player player) {		
 		String sql =
 				"INSERT INTO player (name, color, lobby_id, address)" +
 				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";
@@ -57,7 +55,8 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
-	
+	// Hier auch Neighbors befüllt!
+	//TODO in eigene Methode auslagern?
 	static void fillCountry(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -69,19 +68,29 @@ public class SqlQuery {
 					"INSERT INTO country (country_id, name, continent_id)" +
 					"VALUES ('"+id+"', '"+name+"', '"+continent+"');";
 			
+			// Nachbarn
 			for(int i = 3; i < dataArray.length; i++) {
+				System.out.println(dataArray[i]);
 				sqlNeighbor = 
 					"INSERT INTO neighbor (country_id, neighbor_id)" +
 					"VALUES('"+id+"', '"+dataArray[i].trim()+"');";
+				try {
+					stmt.executeUpdate(sqlNeighbor);
+				} catch (SQLException e) {
+					System.out.println("fillNeighbor");
+					e.printStackTrace();
+				}
 			}
 			
+			// SQL ausführen
 			try {
-				stmt.executeUpdate(sqlNeighbor);
 				stmt.executeUpdate(sqlCountry);
 			} catch (SQLException e) {
 				System.out.println("fillCountry");
 				e.printStackTrace();
 			}
+			
+			
 		}	
 	}
 	
@@ -101,26 +110,20 @@ public class SqlQuery {
 		}
 	}
 	
-	/*____________________________________________________________________________________________________________________________________________________
-	 * DROP STATEMENTS
-	 */
-	
+	//#############################################################################
+	//#DROP STATEMENTS
 	static void dropCountry() { 
 		try {
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 			stmt.executeUpdate("DROP TABLE IF EXISTS country");
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
 		} catch (SQLException e) {
 			System.out.println("dropCountry");
 			e.printStackTrace();
 		}	
 	}
 	
-	static void dropNeighbor() throws SQLException {
+	static void dropNeighbor(){
 		try {
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 			stmt.executeUpdate("DROP TABLE IF EXISTS neighbor");
-			stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
 		} catch (SQLException e) {
 			System.out.println("dropNeighbor");
 			e.printStackTrace();
@@ -154,11 +157,53 @@ public class SqlQuery {
 		}
 	}
 	
-	// TODO Drop Statments LOBBY, CARD, MISSION, MISSIONPLAYER, CARDSPLAYER
-	/*
-	 * _____________________________________________________________________________________________________________________________________________________
-	 * CREATE STATEMENTS
-	 */
+	static void dropLobby() {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS lobby");
+		} catch (Exception e) {
+			System.out.println("dropLobby");
+			e.printStackTrace();
+		}
+	}
+	
+	static void dropCard() {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS card");
+		} catch (Exception e) {
+			System.out.println("dropCard");
+			e.printStackTrace();
+		}
+	}
+	
+	static void dropMission() {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS mission");
+		} catch (Exception e) {
+			System.out.println("dropMission");
+			e.printStackTrace();
+		}
+	}
+	
+	static void dropMissionPlayer() {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS mission_player");
+		} catch (Exception e) {
+			System.out.println("dropMissionPlayer");
+			e.printStackTrace();
+		}
+	}
+	
+	static void dropCardsPlayer() {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS cards_player");
+		} catch (Exception e) {
+			System.out.println("dropCardPlayer");
+			e.printStackTrace();
+		}
+	}
+	
+	//###########################################################################
+	// CREATE STATEMENTS
 	static void createContinent() {
 		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +
@@ -223,22 +268,6 @@ public class SqlQuery {
 			stmt.executeUpdate(sqlNeighbor);
 		} catch (SQLException e) {
 			System.out.println("createNeighbor");
-			e.printStackTrace();
-		}	
-	}
-		
-	static void createPlayerCountry() {
-		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS player_country (" +
-				"player_id INTEGER REFERENCES player(player_id), " +
-				"country_id INTEGER REFERENCES country(country_id), " +
-				"lobby_id INTEGER REFERENCES lobby(lobby_id), " +
-				"army_count INTEGER , " +
-				"PRIMARY KEY(country_id, lobby_id) " +
-				");";
-		try {
-			stmt.executeUpdate(sqlPlayerCountry);
-		} catch (SQLException e) {
-			System.out.println("createPlayerCountry");
 			e.printStackTrace();
 		}	
 	}
@@ -316,6 +345,22 @@ public class SqlQuery {
 			stmt.executeUpdate(sqlMissionPlayer);
 		} catch (SQLException e) {
 			System.out.println("createMissionPlayer");
+			e.printStackTrace();
+		}	
+	}
+	
+	static void createPlayerCountry() {
+		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS player_country (" +
+				"player_id INTEGER REFERENCES player(player_id), " +
+				"country_id INTEGER REFERENCES country(country_id), " +
+				"lobby_id INTEGER REFERENCES lobby(lobby_id), " +
+				"army_count INTEGER , " +
+				"PRIMARY KEY(country_id, lobby_id) " +
+				");";
+		try {
+			stmt.executeUpdate(sqlPlayerCountry);
+		} catch (SQLException e) {
+			System.out.println("createPlayerCountry");
 			e.printStackTrace();
 		}	
 	}
