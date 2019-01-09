@@ -69,7 +69,7 @@ public class SqlQuery {
 					"VALUES ('"+id+"', '"+name+"', '"+continent+"');";
 			
 			// Nachbarn
-			for(int i = 3; i < dataArray.length; i++) {
+			for(int i = 3; i < (dataArray.length-1); i++) {
 				System.out.println(dataArray[i]);
 				sqlNeighbor = 
 					"INSERT INTO neighbor (country_id, neighbor_id)" +
@@ -89,8 +89,7 @@ public class SqlQuery {
 				System.out.println("fillCountry");
 				e.printStackTrace();
 			}
-			
-			
+				
 		}	
 	}
 	
