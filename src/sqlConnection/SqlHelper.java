@@ -77,5 +77,13 @@ public class SqlHelper {
 		rs.next();
 		return countries;
 	}
+	
+	public static int getPlayerID(String name) throws SQLException{
+		ResultSet rs = stmt.executeQuery("select player_id from player where name ="+name+";");
+		
+		 rs.next(); 
+		 return rs.getInt(1);	
+		
+	}
 
 }

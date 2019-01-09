@@ -55,7 +55,7 @@ public class SqlQuery {
 
 		String sql =
 				"INSERT INTO player (name, color, lobby_id, address)" +
-				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";
+				"VALUES ('"+player.getName()+"', '"+player.getColor()+"', NULL, NULL);";
 		try {
 			stmt.executeUpdate(sql);
 			if(!player.getCountryList().isEmpty()) {
