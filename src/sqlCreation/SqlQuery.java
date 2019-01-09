@@ -19,11 +19,9 @@ public class SqlQuery {
 	public static String splitter = ";";
 	
 	public static Statement stmt;
-	/*
-	 * _____________________________________________________________________________________________________________________________________________________
-	 * FILL STATEMENTS
-	 */
 	
+	//#######################################################################
+	//FILL STATEMENTS
 	static void fillContinent(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -59,6 +57,7 @@ public class SqlQuery {
 		}
 	}
 	// Hier auch Neighbors befüllt!
+	//TODO in eigene Methode auslagern?
 	static void fillCountry(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -70,17 +69,25 @@ public class SqlQuery {
 					"INSERT INTO country (country_id, name, continent_id)" +
 					"VALUES ('"+id+"', '"+name+"', '"+continent+"');";
 			
+			// Nachbarn
 			for(int i = 3; i < dataArray.length; i++) {
 				sqlNeighbor = 
 					"INSERT INTO neighbor (country_id, neighbor_id)" +
 					"VALUES('"+id+"', '"+dataArray[i].trim()+"');";
 			}
 			
+			// SQL ausführen
 			try {
-				stmt.executeUpdate(sqlNeighbor);
 				stmt.executeUpdate(sqlCountry);
 			} catch (SQLException e) {
 				System.out.println("fillCountry");
+				e.printStackTrace();
+			}
+			
+			try {
+				stmt.executeUpdate(sqlNeighbor);
+			} catch (SQLException e) {
+				System.out.println("fillNeighbor");
 				e.printStackTrace();
 			}
 		}	
@@ -102,10 +109,8 @@ public class SqlQuery {
 		}
 	}
 	
-	/*____________________________________________________________________________________________________________________________________________________
-	 * DROP STATEMENTS
-	 */
-	
+	//#############################################################################
+	//#DROP STATEMENTS
 	static void dropCountry() { 
 		try {
 			stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
@@ -200,10 +205,8 @@ public class SqlQuery {
 		}
 	}
 	
-	/*
-	 * _____________________________________________________________________________________________________________________________________________________
-	 * CREATE STATEMENTS
-	 */
+	//###########################################################################
+	// CREATE STATEMENTS
 	static void createContinent() {
 		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +
