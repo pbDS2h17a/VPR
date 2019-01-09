@@ -13,6 +13,8 @@ import sqlConnection.Player;
  */
 public class SqlQuery {
 	//TODO implement Fillstatements neighbor(?bei country?), card, mission, 
+	//TODO prepared statements https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html
+	//TODO Tabellen Namen als Variablen auslagern
 	//Koordinaten bei Country???,  Validieren der Create & Fill Statements mit aktueller modelierung!  Auto Increment <-> IDs Probleme???? Andere Teams Fragen!!!!
 	public static String splitter = ";";
 	
