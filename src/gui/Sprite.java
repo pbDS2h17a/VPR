@@ -97,22 +97,28 @@ public class Sprite extends ImageView
 	}
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
+			MediaPlayer.menuHover.play();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0.1);
 				colorAdjust.setContrast(0.3);
 				colorAdjust.setHue(0.025);
 				this.setEffect(colorAdjust);
 			}
-			getScene().setCursor(Cursor.HAND);
+			
+			if(isButtonMode())
+				getScene().setCursor(Cursor.HAND);
 		});
 		setOnMouseExited(eventExited->{
+			MediaPlayer.menuHover.stop();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0);
 				colorAdjust.setContrast(0);
 				colorAdjust.setHue(0);
 				this.setEffect(colorAdjust);
 			}
-			getScene().setCursor(Cursor.DEFAULT);
+			
+			if(isButtonMode())
+				getScene().setCursor(Cursor.DEFAULT);
 		});
 	}
 }
