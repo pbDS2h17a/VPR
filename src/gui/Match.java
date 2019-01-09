@@ -174,7 +174,83 @@ public class Match {
     	territoryNameLabel.relocate(65, ctn.getPrefHeight() - 130);
     	territoryNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 40px;");
 
-		ctn.getChildren().addAll(bg, groupLands, groupTerritoryInfo, playerName, playerNameLabel, territoryName, territoryNameLabel);
+    	// Spieler-Infos Gruppe
+    	Group playerInfoGroup = new Group();
+    	playerInfoGroup.relocate(10, 80);
+    	
+    	// Spieler-Infos
+    	// Einheiten
+    	Sprite playerInfoUnits = new Sprite("resources/game_icon_units.png");
+    	playerInfoUnits.relocate(10, playerInfoGroup.getLayoutY());
+    	playerInfoGroup.getChildren().add(playerInfoUnits);
+    	
+    	Label playerInfoUnitsLabel = new Label("999");
+    	playerInfoUnitsLabel.relocate(90, playerInfoUnits.getLayoutY() + 18);
+    	playerInfoUnitsLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+    	playerInfoGroup.getChildren().add(playerInfoUnitsLabel);
+    	
+    	// Laender
+    	Sprite playerInfoLand = new Sprite("resources/game_icon_lands.png");
+    	playerInfoLand.relocate(10, playerInfoUnits.getLayoutY() + 85);
+    	playerInfoGroup.getChildren().add(playerInfoLand);
+    	
+    	Label playerInfoLandLabel = new Label("999");
+    	playerInfoLandLabel.relocate(90, playerInfoLand.getLayoutY() + 18);
+    	playerInfoLandLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+    	playerInfoGroup.getChildren().add(playerInfoLandLabel);
+    	
+    	// Karten
+    	Sprite playerInfoCard1 = new Sprite("resources/game_icon_card1.png");
+    	playerInfoCard1.relocate(10, playerInfoLand.getLayoutY() + 120);
+    	playerInfoGroup.getChildren().add(playerInfoCard1);
+    	
+    	Label playerInfoCard1Label = new Label("999");
+    	playerInfoCard1Label.relocate(80, playerInfoCard1.getLayoutY() + 18);
+    	playerInfoCard1Label.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+    	playerInfoGroup.getChildren().add(playerInfoCard1Label);
+    	
+    	Sprite playerInfoCard2 = new Sprite("resources/game_icon_card2.png");
+    	playerInfoCard2.relocate(10, playerInfoCard1.getLayoutY() + 100);
+    	playerInfoGroup.getChildren().add(playerInfoCard2);
+    	
+    	Label playerInfoCard2Label = new Label("999");
+    	playerInfoCard2Label.relocate(80, playerInfoCard2.getLayoutY() + 18);
+    	playerInfoCard2Label.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+    	playerInfoGroup.getChildren().add(playerInfoCard2Label);
+    	
+    	Sprite playerInfoCard3 = new Sprite("resources/game_icon_card3.png");
+    	playerInfoCard3.relocate(10, playerInfoCard2.getLayoutY() + 100);
+    	playerInfoGroup.getChildren().add(playerInfoCard3);
+    	
+    	Label playerInfoCard3Label = new Label("999");
+    	playerInfoCard3Label.relocate(80, playerInfoCard3.getLayoutY() + 18);
+    	playerInfoCard3Label.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+    	playerInfoGroup.getChildren().add(playerInfoCard3Label);
+    	
+    	// Auftrag-Gruppe
+    	Group playerInfoAuftragGroup = new Group();
+    	playerInfoAuftragGroup.relocate(-180, 320);
+    	playerInfoGroup.getChildren().add(playerInfoAuftragGroup);
+    	
+    	playerInfoAuftragGroup.addEventHandler(MouseEvent.MOUSE_MOVED, event ->
+			playerInfoAuftragGroup.setLayoutX(160)
+	    );
+		
+    	playerInfoAuftragGroup.addEventHandler(MouseEvent.MOUSE_EXITED, event ->
+			playerInfoAuftragGroup.setLayoutX(-180)
+		);
+    	
+    	// Auftrag
+    	Sprite playerInfoAuftrag = new Sprite("resources/btn_phase_goal.png");
+    	playerInfoAuftrag.relocate(playerInfoAuftragGroup.getLayoutX(), playerInfoAuftragGroup.getLayoutY());
+    	playerInfoAuftragGroup.getChildren().add(playerInfoAuftrag);
+    	
+    	Label playerInfoAuftragLabel = new Label("Vernichte Einheit Rot");
+    	playerInfoAuftragLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+    	playerInfoAuftragLabel.relocate(playerInfoAuftrag.getLayoutX() + 20, playerInfoAuftrag.getLayoutY() + 60);
+    	playerInfoAuftragGroup.getChildren().add(playerInfoAuftragLabel);
+    	
+		ctn.getChildren().addAll(bg, groupLands, groupTerritoryInfo, playerName, playerNameLabel, territoryName, territoryNameLabel, playerInfoGroup);
 	}
 	
 	static int randomInt(int min, int max) {
