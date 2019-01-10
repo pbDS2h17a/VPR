@@ -97,6 +97,20 @@ public class SqlHelper {
 		rs.next();
 		return countries;
 	}
+	
+	public static int getCardCountryId(int cardId) throws SQLException{
+		ResultSet rs = stmt.executeQuery("select country_id from card where card_id ="+cardId+";");
+		
+		rs.next();
+			return rs.getInt("country_id");
+	}
+
+	public static int getCardValue(int value) throws SQLException{
+		ResultSet rs = stmt.executeQuery("select value from card where value="+value+";");
+		
+		rs.next();
+		return rs.getInt("value");
+	}
 
 	public static String getMissionDescription(int missionID) throws SQLException {
 		ResultSet rs = stmt.executeQuery("select description from mission where mission_id ="+missionID+";");

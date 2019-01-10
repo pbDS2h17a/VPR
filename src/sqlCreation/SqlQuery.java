@@ -82,6 +82,8 @@ public class SqlQuery {
 			
 			// Nachbarn
 			for(int i = 3; i < (dataArray.length-1); i++) {
+				System.out.println(dataArray[i]);
+
 				sqlNeighbor = 
 					"INSERT INTO neighbor (country_id, neighbor_id)" +
 					"VALUES('"+id+"', '"+dataArray[i].trim()+"');";
@@ -127,7 +129,7 @@ public class SqlQuery {
 			} catch (SQLException e) {
 				System.out.println("fillMission");
 				e.printStackTrace();
-			}
+			}	
 		}		
 	}
 	
