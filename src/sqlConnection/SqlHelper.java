@@ -24,7 +24,6 @@ public class SqlHelper {
 	
 	
 	/**
-	 * 
 	 * @return Statement der aktuellen Verbindung
 	 * Falls Statement nochnicht initalisiert wurde (null) wird setStatement aufgerufen
 	 * @throws ClassNotFoundException
@@ -38,7 +37,6 @@ public class SqlHelper {
 	}
 	
 	/**
-	 * 
 	 * @param connection Die Connection basierend auf den Login Daten
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -65,6 +63,12 @@ public class SqlHelper {
 
 	public static List<Integer> getCountryNeighbor(int countryId){
 		return null;
+	}
+
+	public static String getCountrySVG(int countryId) throws SQLException {
+		ResultSet rs = stmt.executeQuery("SELECT svg FROM country WHERE country_id = "+countryId);
+		rs.next();
+			return  rs.getString(1);
 	}
 	
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
