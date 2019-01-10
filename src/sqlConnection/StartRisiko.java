@@ -16,7 +16,6 @@ public class StartRisiko
 //		Connection con = DriverManager.getConnection(  
 //				"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");  
 		//String [] connection = {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp"};
-		SqlHelper.setStatement(SqlHelper.loginStringArray);
 		for (int i = 1; i < 6; i++) {
 			try{
 				continente.add(new Continent(i));

@@ -7,15 +7,20 @@ import sqlConnection.SqlHelper;
 public class MySQLConnection {
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
+		// Datei einlesen
 		FileReader.readFile("src\\resources\\stammdaten4.csv");
+		// Daten über getter erhalten
 		String[] continentData = FileReader.getContinent();
 		String[] countryData = FileReader.getCountry();
 		String[] missionData = FileReader.getMission();
 		String[] cardData = FileReader.getCard();
 		
-		SqlHelper.setStatement(SqlHelper.loginStringArray);
-		SqlQuery.stmt = SqlHelper.stmt;
+		// Statement hilfsfunktion
 		
+		SqlQuery.stmt = SqlHelper.getStatement();
+		
+		// Alle Drop statements werden aufgeführt
+		// um Fehler vorzubeugen
 		SqlQuery.dropCountry();
 		SqlQuery.dropContinent();
 		SqlQuery.dropNeighbor();
@@ -24,6 +29,7 @@ public class MySQLConnection {
 		SqlQuery.dropCard();
 		SqlQuery.dropMission();
 		
+		// Tabllen werden erstellt
 		SqlQuery.createContinent();
 		SqlQuery.createCountry();
 		SqlQuery.createNeighbor();
@@ -32,7 +38,7 @@ public class MySQLConnection {
 		SqlQuery.createCard();
 		SqlQuery.createMission();
 		
-		
+		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);
 		SqlQuery.fillCountry(countryData);
 		SqlQuery.fillNeighbor(countryData);
