@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -71,7 +72,7 @@ public class Match {
 		"M1159,627.22a3,3,0,0,0-2.09-2.55c-1.39-.46-3.71-.93-4.41,0s-2.32,3.48-3.94,4.18-9.51.23-11.37,1.16-3.48,2.09-4.64,2.78a8.46,8.46,0,0,0-2.63,2l-3.15-1.43a7.06,7.06,0,0,0,1.14-2.43,8.08,8.08,0,0,0-.23-4.64c-.7-2.09-2.55-5.8-2.78-8.35a29.76,29.76,0,0,1-.23-6.26c.23-1.86,1.86-1.86,3.94-4.41s2.55-1.39,2.55-5.1-.23-8.35-1.39-9.28-1.62-.46-4.18-1.39-3.71-3.25-7.19-5.34-5.8-2.32-6.5-1.16l-.08.12c-.06.42-.23,1.28-.62,2.9-1.39,5.8-1.16,7.19-2.78,8.35s-4.18,1.86-4.87,4.18,1.86,3.94-1.86,7.89-10.44,11.37-15.31,12.29-8.35,2.09-8.35,3.71,2.09,3.71,1.62,5.57-3.71,3.71-3.25,4.64,1.62,0,2.55,2.09a20.4,20.4,0,0,1,.84,5.65l-8.73,3.66a2.12,2.12,0,0,0-.47-1.85c-1-1.31,0-3.94-.33-5.91s-.66-5.58-.66-5.58l-1.31,3.28-2.11-1.58a8.72,8.72,0,0,1-2.78-.93c-2.09-.93-2.32-3-3.25-5.34s-.7-1.62-.7-1.62l-4.18,2.78c-2.09,1.39-.7-.46-.7-4.41s-1.39-.93-1.86-1.86-.46-1.62-1.16-3-1.86.7-3,1.39-2.09.7-3.25-.7-1.16-2.32-2.32-4.87-1.62-2.55-3.94-5.34-1.86-.93-3.25-.93a14.77,14.77,0,0,1-4.41-.23c-1.86-.46-2.09-2.09-4.41-3.48s-2.78-.7-5.1,0,.23,4.41,0,8.12.7,4.18,4.41,7,4.18,3.25,8.35,8.58,3.71,3.71,4.64,7.19,1.16,3.25,2.78,6.5,1.86,3,1.86,6.5,0,1.86,1.16,4.87,2.09.23,4.41.93,3.48,3.71,6.26,8.12,4.87,5.8,5.57,11.6,2.32,1.39,7.19,7.89,2.09,1.86,5.34,3,.7,2.09,1.62,4.41.7,1.16,5.1,1.39.93-1.39,1.39-3,.93-1.62,2.32-1.86a10.91,10.91,0,0,0,3-.78l4.63,2.82c-1.31.88-.94.19-1.59,2.37s-1.39,3.48-2.09,3c1.62,2.55.7,3,4.41,3s6-.7,8.12-.23,1.16,1.16,3.48.93,4.41-1.62,6.26-1.86,4.18-.46,5.57,0,3.48,2.09,6,2.32,8.35.23,9.28.46,3.94,2.55,5.34.93,1.86-1.16,2.32-3.71.46-3.94-1.16-4.41-.46-1.39-4.41-1.62a20.85,20.85,0,0,1-5.18-.76l2.09-9.43c.73-.22,1.34-.61,1.23-.71.93-3.25.23-2.78.46-5.57s.93-2.09,2.09-3.94.46-4.87,2.55-1.39,1.39,4.87,3.94,7,3,4.41,5.1,2.32,6-4.18,3.71-6.73-3.71,0-3.94-6-.46-8.12-2.09-7.89-3,2.55-3.25-.7-1.16-7.19,1.39-7.42,5.1,1.39,6.73-1.62,3.48-3.94.46-4.41-5.34-.93-7-.7-2.78.23-2.55-1.16-1.62-2.78,1.62-2.78,2.55.7,5.57.46a13.08,13.08,0,0,0,7-2.78c.93-.93,2.09-5.1,3.48-6S1159.24,628.38,1159,627.22Zm-79.11,18.09,4.41,4.87s-3.25,4.87-1.62,6.26a28.29,28.29,0,0,1,4.18,3.71c1.86,2.09,4.18,4.41,7,4.64s4.41,1.62,6.5,2.55,2.78,0,5.34-.23,7.19.7,6.5.46c0,0-.46-2.32,3.48-6.26s5.1-4.18,5.1-8.12-.23-3.71-2.09-5.57-4.41-3-2.09-5.8,2.09-3.48,5.1-4.18a6.33,6.33,0,0,0,2.45-1.31l5.4,2.45a38.93,38.93,0,0,1,.27,4.88c0,1.16-2.32,4.41-2.78,5.57s.23,4.64-.46,6.26-1.16.7-1.16,3-.46,2.78.23,4.41,1.86,1.62,1.16,3.94-1.86.93-.93,3.48c.8,2.2,1.77,1.82,2.17,3.15l-.08,1L1125,687.7a9,9,0,0,0-2.19-1.32c-1.39-.46-5.34-2.09-7.89-2.09s-7.66-.46-10.21-.46-3-1.16-5.8.93a39.07,39.07,0,0,1-4.73,3l-5.08-3.09c.58-1.08.2-1.9,1-2.88.93-1.16.93-3,.7-5.57s-1.16-2.78-2.09-4.64-.46-2.55-1.86-2.55a29.64,29.64,0,0,1-6-.46c-2.09-.46-.23-1.39-.23-3v-4.18a4.36,4.36,0,0,1-2.09-1.86,17.33,17.33,0,0,0-1.62-2.78l-2.55-.46-2.4-2.83a13.85,13.85,0,0,1-1.35-4.5l9.31-3.91C1079.91,645.19,1079.91,645.32,1079.91,645.32Z"
 	};
     
-	private SVGPath[] territorySVG = new SVGPath[territoryArray.length];
+	private Land[] territorySVG = new Land[territoryArray.length];
 	private Group[] territory_group = new Group[territoryArray.length];
 	
 	public Match() {
@@ -90,11 +91,14 @@ public class Match {
 	    // Land
 	    // Land-Gruppe
 	    Group groupLands = new Group();
+	    groupLands.setScaleX(.9);
+	    groupLands.setScaleY(.9);
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 	    
 	    // Land-Infos
 	    groupTerritoryInfo = new Pane();
 	    groupTerritoryInfo.setPrefSize(80,80);
+	    groupTerritoryInfo.relocate(1130, 940);
 	    
     	territoryInfo = new Rectangle(80, 80);
     	territoryInfo.setStroke(Color.WHITE);
@@ -104,7 +108,7 @@ public class Match {
     	territoryInfo.setArcHeight(200);
     	territoryInfo.setArcWidth(200);
    
-    	territoryInfoLabel = new Label("1");
+    	territoryInfoLabel = new Label("");
     	territoryInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
     	territoryInfoLabel.relocate(25, 10);
     	
@@ -112,33 +116,26 @@ public class Match {
 	    
 	    // Einzelnes Land
 	    for(int i = 0; i < territoryArray.length; i++) {
-		    	Color randomColor = Color.web(colorArray[randomInt(0, colorArray.length-1)]);
-		    	
 		    	territory_group[i] = new Group();
 	
 		    	// System.out.println(territoryArray[i].length());
 		    	
-		    	territorySVG[i] = new SVGPath();
+		    	territorySVG[i] = new Land();
 		    	territorySVG[i].setContent(territoryArray[i]);
-		    	territorySVG[i].setFill(randomColor);
+		    	territorySVG[i].setFill(Color.WHITE);
 		    	territorySVG[i].setStroke(Color.WHITE);
 		    	territorySVG[i].setStrokeWidth(2);
-		    	territorySVG[i].setId("Land Nr. " + String.valueOf(i)); 
 		    	
 		    	final int tmp = i;
 		    	
-		    	territorySVG[i].addEventHandler(MouseEvent.MOUSE_MOVED, event ->
-		    		updateTerritoryInfo(territorySVG[tmp].getFill(), event.getX() + groupTerritoryInfo.getPrefWidth()*4, event.getY() + groupTerritoryInfo.getPrefHeight()*1.5, territorySVG[tmp].getId())
+		    	territorySVG[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+		    			updateTerritoryInfo(tmp);
+		    		}
 			    );
-		    	
-		    	territorySVG[i].addEventHandler(MouseEvent.MOUSE_EXITED, event ->
-		    		groupTerritoryInfo.setVisible(false)
-		    	);
-			    
 		    	groupLands.getChildren().add(territorySVG[i]);
 	    	}
 	    
-	    
+
 	    // Spieler-Name
     	playerName = new Polygon();
     	playerName.getPoints().addAll(new Double[]{
@@ -153,26 +150,29 @@ public class Match {
     	playerName.setStrokeType(StrokeType.INSIDE);
     	playerName.relocate(-5, 50);
     	
-    	playerNameLabel = new Label("Maximilian");
+    	playerNameLabel = new Label("");
     	playerNameLabel.relocate(40, 65);
     	playerNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 40px;");
 	    
     	territoryName = new Polygon();
     	territoryName.getPoints().addAll(new Double[]{
-            0.0, 0.0,
-            430.0, 0.0,
-            430.0, 50.0,
-            400.0, 80.0,
-            0.0, 80.0});
+    		0.0,   0.0,
+    		0.0,   30.0,
+    		30.0,  60.0,
+    		430.0, 60.0,
+    		430.0, 30.0,
+    		400.0, 0.0});
     	territoryName.setFill(Color.GREY);
     	territoryName.setStroke(Color.WHITE);
     	territoryName.setStrokeWidth(5);
     	territoryName.setStrokeType(StrokeType.INSIDE);
-    	territoryName.relocate(-5, ctn.getPrefHeight() - 150);
+    	territoryName.relocate(ctn.getPrefWidth()/2 - 215, ctn.getPrefHeight() - 130);
     	
-    	territoryNameLabel = new Label("Mittlerer Osten");
-    	territoryNameLabel.relocate(65, ctn.getPrefHeight() - 130);
-    	territoryNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 40px;");
+    	territoryNameLabel = new Label("");
+    	territoryNameLabel.setPrefWidth(430);
+    	territoryNameLabel.relocate(territoryName.getLayoutX(), territoryName.getLayoutY() + 10);
+    	territoryNameLabel.setAlignment(Pos.BASELINE_CENTER);
+    	territoryNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
 
     	// Spieler-Infos Gruppe
     	Group playerInfoGroup = new Group();
@@ -250,23 +250,70 @@ public class Match {
     	playerInfoAuftragLabel.relocate(playerInfoAuftrag.getLayoutX() + 20, playerInfoAuftrag.getLayoutY() + 60);
     	playerInfoAuftragGroup.getChildren().add(playerInfoAuftragLabel);
     	
-		ctn.getChildren().addAll(bg, groupLands, groupTerritoryInfo, playerName, playerNameLabel, territoryName, territoryNameLabel, playerInfoGroup);
+    	// Phasen-Buttons
+    	Group phaseBtnGroup = new Group();
+    	phaseBtnGroup.relocate(1150, 50);
+    	
+    	Sprite phaseBtn1 = new Sprite("resources/btn_phase_add.png");
+    	phaseBtn1.setActive(false);
+    	phaseBtnGroup.getChildren().add(phaseBtn1);
+    	
+    	Sprite phaseBtn2 = new Sprite("resources/btn_phase_battle.png");
+    	phaseBtn2.setButtonMode(true);
+    	phaseBtn2.relocate(phaseBtn1.getLayoutX() + 115, phaseBtn1.getLayoutY());
+    	phaseBtnGroup.getChildren().add(phaseBtn2);
+    	
+    	Sprite phaseBtn3 = new Sprite("resources/btn_phase_move.png");
+    	phaseBtn3.setButtonMode(true);
+    	phaseBtn3.relocate(phaseBtn2.getLayoutX() + 115, phaseBtn2.getLayoutY());
+    	phaseBtnGroup.getChildren().add(phaseBtn3);
+    	
+    	Sprite phaseBtn4 = new Sprite("resources/btn_phase_end.png");
+    	phaseBtn4.setButtonMode(true);
+    	phaseBtn4.relocate(phaseBtn3.getLayoutX() + 180, phaseBtn3.getLayoutY());
+    	phaseBtnGroup.getChildren().add(phaseBtn4);
+    	
+		ctn.getChildren().addAll(bg, groupLands, playerName, playerNameLabel, territoryName, territoryNameLabel, playerInfoGroup, phaseBtnGroup, groupTerritoryInfo);
+	
+		String[][] testUserList = {
+				{"Kevin", "#FFD800"},
+				{"Lea", "#C42B2B"},
+				{"Jessica", "#26BF00"},
+				{"Sebastian", "#0066ED"},
+		};
+
+		startMatch(testUserList);
 	}
 	
 	static int randomInt(int min, int max) {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void updateTerritoryInfo(Paint color, double x, double y, String s) {
-		groupTerritoryInfo.relocate(x, y);
+	private void startMatch(String[][] userAndColors) {
+		int userCount = userAndColors.length-1;
 		
-		if(territoryInfo.getFill() != color)
-			territoryInfo.setFill(color);
+		for(int i = 0; i < territorySVG.length; i++) {
+			int randInt = randomInt(0, territorySVG.length-1);
+			
+			while(territorySVG[randInt].getOwner() != null)
+				randInt = randomInt(0, territorySVG.length-1);
+			
+			territorySVG[randInt].setOwner(userAndColors[userCount][0]);	
+			territorySVG[randInt].setFill(Color.web(userAndColors[userCount][1]));
+			
+			if(userCount == 0)
+				userCount = userAndColors.length-1;
+			else
+				userCount--;
+		}
+	}
+	
+	private void updateTerritoryInfo(int id) {
 		
-		groupTerritoryInfo.setVisible(true);
+		if(territoryInfo.getFill() != territorySVG[id].getFill())
+			territoryInfo.setFill(territorySVG[id].getFill());
 		
-		gameChangeCountry(s, color);
-		gameChangePlayer(s, color);
+		gameChangeCountry(id);
 	}
 
 	private void gameChangePlayer(String s, Paint p) {
@@ -277,12 +324,12 @@ public class Match {
 			playerName.setFill(p);
 	}
 	
-	private void gameChangeCountry(String s, Paint p) {
-		if(!territoryNameLabel.getText().equals(s))
-			territoryNameLabel.setText(s);
+	private void gameChangeCountry(int id) {
+		if(!territoryNameLabel.getText().equals(territorySVG[id].getOwner()))
+			territoryNameLabel.setText(territorySVG[id].getOwner());
 
-		if(territoryName.getFill() != p)
-			territoryName.setFill(p);
+		if(territoryName.getFill() != territorySVG[id].getFill())
+			territoryName.setFill(territorySVG[id].getFill());
 	}
 	
 	public Pane getContainer() {

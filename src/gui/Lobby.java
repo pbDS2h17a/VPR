@@ -45,7 +45,7 @@ public class Lobby {
 	    // Bereit-Button
 	    btnReady = new Sprite("resources/btn_bereit.png");
 	    btnReady.relocate(ctn.getPrefWidth() - 400, ctn.getPrefHeight() - 200);
-	    btnReady.setIsActive(false);
+	    btnReady.setActive(false);
 	    
 	    // Namens-Input Hintergrund
 	    Sprite inputNameBG = new Sprite("resources/input_bg.png");
@@ -105,7 +105,7 @@ public class Lobby {
 	    
 	    for(int i = 0; i < slotArray.length; i++) {
 	    	slotArray[i] = new Sprite("resources/lobby_player_name.png"); 
-	    	((Sprite) slotArray[i]).setIsActive(false);
+	    	((Sprite) slotArray[i]).setActive(false);
 	    	((Sprite) slotArray[i]).setButtonMode(false);
 	    	
 	    	if(i > 0)
@@ -196,7 +196,7 @@ public class Lobby {
 			labelArray[id].setText(name);
 			
 			if(triangleArray[id].getFill() != Color.GREY) {
-				btnReady.setIsActive(true);
+				btnReady.setActive(true);
 				btnReady.setButtonMode(true);
 			}
 		}
@@ -206,20 +206,20 @@ public class Lobby {
 		triangleArray[id].setFill(paint);
 		
 		if(!labelArray[id].getText().isEmpty()) {
-			btnReady.setIsActive(true);
+			btnReady.setActive(true);
 			btnReady.setButtonMode(true);
 		}
 	}
 	
 	private void lobbyAddPlayer(int id) {
-		((Sprite) slotArray[id]).setIsActive(true);
+		((Sprite) slotArray[id]).setActive(true);
 		slotRolesArray[id].setVisible(true);
 	}
 	
 	private void lobbyRemovePlayer(int id) {
-		((Sprite) slotArray[id]).setIsActive(false);
+		((Sprite) slotArray[id]).setActive(false);
 		slotRolesArray[id].setVisible(false);
-		((Sprite) slotArray[id]).setIsActive(false);
+		((Sprite) slotArray[id]).setActive(false);
 		triangleArray[id].setFill(Color.GREY);
 		labelArray[id].setText(null);
 	}

@@ -47,9 +47,7 @@ public class MainApp extends Application {
 				lobby.getContainer(),
 				join.getContainer(),
 				match.getContainer(),
-				mp.getPlayBtn(),
-				mp.getStopBtn(),
-				mp.getSlider()
+				mp.getContainer()
 		);
 
 	    app.getChildren().add(ctn_app);
@@ -142,7 +140,7 @@ public class MainApp extends Application {
 
 		stage.widthProperty().addListener(stageSizeListener);
 		stage.heightProperty().addListener(stageSizeListener); 
-	    
+		
 	    // Scene
 		Scene scene = new Scene(app);
 		stage.setTitle("CONQUER | All risk all fun");
