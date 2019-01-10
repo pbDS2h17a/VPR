@@ -3,7 +3,6 @@ package network;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import javafx.application.*;
 import javafx.application.Platform;
@@ -33,8 +32,8 @@ public class ChatInterface extends Application {
 		}
 		Class.forName("com.mysql.cj.jdbc.Driver"); 
 		// Datenbankverbindung aufbauen
-		SqlHelper.setStatement(SqlHelper.loginStringArray);
-		stmt = SqlHelper.stmt;
+
+		stmt = SqlHelper.getStatement();
 		// GUI launchen
 		launch(args);
 	}
