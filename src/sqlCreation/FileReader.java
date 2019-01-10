@@ -2,14 +2,20 @@ package sqlCreation;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class FileReader {
 	private static String[] continentData = null;
 	private static String[] countryData = null;
+	private static String[] missionData = null;
+	private static String[] cardData = null;
 	
 	static void readFile(String path) throws IOException {
-		BufferedReader br = new BufferedReader(new java.io.FileReader(new File(path)));
+		//BufferedReader br = new BufferedReader(new FileInputStream(path));
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+			    new FileInputStream(path), "UTF-8"));
 		try {  
 		    String line;
 		    String currentBlock = "";
@@ -40,6 +46,12 @@ public class FileReader {
 						case "LAND":
 							countryData = currentData.split("\n");
 							break;
+						case "KARTE":
+							cardData = currentData.split("\n");
+							break;
+						case "MISSION":
+							missionData = currentData.split("\n");
+							break;
 						}
 						
 						// Blöcke und Daten zurücksetzen
@@ -63,6 +75,14 @@ public class FileReader {
 	// Werden in der SqlQuery fill methode weiter aufgeteilt
 	static String[] getCountry() {
 		return countryData;
+	}
+	
+	static String[] getMission() {
+		return missionData;
+	}
+	
+	static String[] getCard() {
+		return cardData;
 	}
 	
 }

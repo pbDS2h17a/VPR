@@ -10,6 +10,8 @@ public class MySQLConnection {
 		FileReader.readFile("src\\resources\\stammdaten4.csv");
 		String[] continentData = FileReader.getContinent();
 		String[] countryData = FileReader.getCountry();
+		String[] missionData = FileReader.getMission();
+		String[] cardData = FileReader.getCard();
 		
 		SqlHelper.setStatement(SqlHelper.loginStringArray);
 		SqlQuery.stmt = SqlHelper.stmt;
@@ -19,15 +21,23 @@ public class MySQLConnection {
 		SqlQuery.dropNeighbor();
 		SqlQuery.dropPlayer();
 		SqlQuery.dropPlayerCountry();
+		SqlQuery.dropCard();
+		SqlQuery.dropMission();
 		
 		SqlQuery.createContinent();
 		SqlQuery.createCountry();
 		SqlQuery.createNeighbor();
 		SqlQuery.createPlayer();
 		SqlQuery.createPlayerCountry();
+		SqlQuery.createCard();
+		SqlQuery.createMission();
+		
 		
 		SqlQuery.fillContinent(continentData);
 		SqlQuery.fillCountry(countryData);
+		SqlQuery.fillNeighbor(countryData);
+		SqlQuery.fillCard(cardData);
+		SqlQuery.fillMissions(missionData);
 
 		
 	}

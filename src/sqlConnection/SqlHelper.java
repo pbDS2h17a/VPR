@@ -78,4 +78,9 @@ public class SqlHelper {
 		return countries;
 	}
 
+	public static String getMissionDescription(int missionID) throws SQLException {
+		ResultSet rs = stmt.executeQuery("select description from mission where mission_id ="+missionID+";");
+		rs.next();
+		return rs.getString("description");
+	}
 }
