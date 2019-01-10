@@ -28,6 +28,11 @@ public class StartRisiko
 		for (Continent continent : continente) {
 			System.out.println(continent);
 		}
+		
+		Card card = new Card();
+		System.out.println(card);
+		
+			
 		            
 	    // loop through the result set
 //        while (rs.next()) {
