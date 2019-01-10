@@ -2,13 +2,8 @@
 // Peroscku
 package sqlConnection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.paint.Color;
 
 public class Player {
 	
@@ -20,7 +15,6 @@ public class Player {
 	private int id;
 	private String adress;
 	private int lobbyId;
-	
 	
 	public Player(int id, String name, String color) {
 		this.id = id;

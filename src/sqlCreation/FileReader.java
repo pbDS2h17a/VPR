@@ -1,17 +1,22 @@
 package sqlCreation;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+/**
+ * @author pbs2h17awb
+ */
 public class FileReader {
 	private static String[] continentData = null;
 	private static String[] countryData = null;
 	private static String[] missionData = null;
 	private static String[] cardData = null;
-	
+	/**
+	 * 
+	 * @param path Pfad your Stammdaten datei
+	 * @throws IOException 
+	 */
 	static void readFile(String path) throws IOException {
 		//BufferedReader br = new BufferedReader(new FileInputStream(path));
 		BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -39,6 +44,7 @@ public class FileReader {
 					// End befehl
 					if(line.startsWith("#END")) {
 						// Zuweisung der Aktuellen Daten in den richtigen Block
+						// Name hier muss übereinstimmen mit Name in Stammdaten datei! 
 						switch(currentBlock) {
 						case "KONTINENT":				
 							continentData = currentData.split("\n");						
@@ -65,22 +71,36 @@ public class FileReader {
 		}
 
 	}
-	// getter für Kontinent Daten
-	// Werden in der SqlQuery fill methode weiter aufgeteilt
+	
+	/**
+	 * @return getter für Kontinent Daten
+	 * 		   Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
 	static String[] getContinent() {
 		return continentData;	
 	}
 	
-	// getter für Länder Daten
-	// Werden in der SqlQuery fill methode weiter aufgeteilt
+	/**
+	 *
+	 * @return getter für Länder Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
 	static String[] getCountry() {
 		return countryData;
 	}
-	
+	/**
+	 * 
+	 * @return getter für Mission Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
 	static String[] getMission() {
 		return missionData;
 	}
-	
+	/**
+	 *
+	 * @return getter für Karten Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
 	static String[] getCard() {
 		return cardData;
 	}

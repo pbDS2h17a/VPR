@@ -2,9 +2,6 @@ package sqlCreation;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-
-import sqlConnection.Country;
 import sqlConnection.Player;
 
 /**
@@ -12,7 +9,6 @@ import sqlConnection.Player;
  * SQL Queries zum erstellen der Stammdatenbank
  */
 public class SqlQuery {
-	//TODO implement Fillstatements neighbor(SRD), card
 	//TODO prepared statements https://docs.oraclecom/javase/tutorial/jdbc/basics/prepared.html
 	//TODO Tabellen Namen als Variablen auslagern
 	//TODO Validieren der Create & Fill Statements mit aktueller modelierung!  Andere Teams Fragen!!!!
@@ -55,8 +51,7 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
-	// Hier auch Neighbors befüllt!
-	//TODO in eigene Methode auslagern?
+
 	static void fillCountry(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -139,6 +134,7 @@ public class SqlQuery {
 	static void fillCard(String[] data) {	
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
+			// cardId und countryId sind identisch
 			String cardId = dataArray[0];
 			String countryId = dataArray[0];
 			String value = dataArray[1];
