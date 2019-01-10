@@ -19,8 +19,8 @@ public class StartRisiko
 //		
 //		Connection con = DriverManager.getConnection(  
 //				"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");  
-		String [] connection = {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp"};
-		SqlHelper.setStatement(connection);
+		//String [] connection = {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp"};
+		SqlHelper.setStatement(SqlHelper.loginStringArray);
 		for (int i = 0; i < 10; i++) {
 			try{
 				continente.add(new Continent(i));
@@ -30,18 +30,10 @@ public class StartRisiko
 			
 		}
 		
-		
-		
 		for (Continent continent : continente) {
 			System.out.println(continent);
 		}
-			
-	
-		
-// 		BIB verbindung
-//		"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");  
-		
-//	            
+		            
 	    // loop through the result set
 //        while (rs.next()) {
 //        	
