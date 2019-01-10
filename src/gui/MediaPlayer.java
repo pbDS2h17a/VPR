@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.scene.Group;
 import javafx.scene.control.Slider;
 
 public class MediaPlayer {
@@ -11,23 +12,38 @@ public class MediaPlayer {
 	Sprite title_btn_play_mediaPlayer;
 	Sprite title_btn_stop_mediaPlayer;
 	Slider volumeSlider;
+	Group mediaPlayerGroup;
 	
 	public MediaPlayer() {
+		
+		mediaPlayerGroup = new Group();
+		mediaPlayerGroup.relocate(0, 940);
 		
 		//Button - Mediaplayer starten
 		title_btn_play_mediaPlayer = new Sprite("resources/play_button.png");
 		title_btn_play_mediaPlayer.setButtonMode(true);
+		title_btn_play_mediaPlayer.setScaleX(.25);
+		title_btn_play_mediaPlayer.setScaleY(.25);
 		title_btn_play_mediaPlayer.relocate(0, 0);
+		mediaPlayerGroup.getChildren().add(title_btn_play_mediaPlayer);
 		
 		//Button - Mediaplayer stoppen
 		title_btn_stop_mediaPlayer = new Sprite("resources/stop_button.png");
 		title_btn_stop_mediaPlayer.setButtonMode(true);
-		title_btn_stop_mediaPlayer.relocate(100, 100);
+		title_btn_stop_mediaPlayer.setScaleX(.25);
+		title_btn_stop_mediaPlayer.setScaleY(.25);
+		title_btn_stop_mediaPlayer.relocate(40, 0);
+		mediaPlayerGroup.getChildren().add(title_btn_stop_mediaPlayer);
 		
 		//Slider - Lautstärke anpassen
 		volumeSlider = new Slider(0, 1, 1);
-		volumeSlider.relocate(200,200);
+		volumeSlider.relocate(150, 80);
+		mediaPlayerGroup.getChildren().add(volumeSlider);
 
+	}
+	
+	public Group getContainer() {
+		return mediaPlayerGroup;
 	}
 	
 	public Sprite getPlayBtn() {
