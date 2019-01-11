@@ -1,5 +1,7 @@
 bin/
+out/
 .settings/
 .idea/
+.classpath
 .project
 VPR_Risiko.iml

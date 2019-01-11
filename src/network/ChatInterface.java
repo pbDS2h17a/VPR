@@ -33,7 +33,7 @@ public class ChatInterface extends Application {
 		Class.forName("com.mysql.cj.jdbc.Driver"); 
 		// Datenbankverbindung aufbauen
 
-		stmt = SqlHelper.getStatement();
+		stmt = SqlHelper.createStatement();
 		// GUI launchen
 		launch(args);
 	}
