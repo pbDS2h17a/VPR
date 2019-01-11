@@ -1,18 +1,16 @@
 package sqlConnection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * @author Lea-Marie Mönikes
@@ -36,8 +34,8 @@ public class Username extends Application{
 		TextField t2 = new TextField();
 		t1.relocate(0,10);
 		t2.relocate(0, 40);
-		
-		Statement stmt = SqlHelper.createStatement();
+
+		Statement stmt = SqlHelper.getStatement();
 	
 		Button b1 = new Button("Username");
 		b1.relocate(30, 100);

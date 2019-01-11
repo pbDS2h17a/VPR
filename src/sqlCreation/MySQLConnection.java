@@ -1,7 +1,5 @@
 package sqlCreation;
 
-import sqlConnection.SqlHelper;
-
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -16,9 +14,6 @@ public class MySQLConnection {
 		String[] missionData = FileReader.getMission();
 		String[] cardData = FileReader.getCard();
 		String[] colorData = FileReader.getColor();
-		
-		// Statement hilfsfunktion
-		SqlQuery.stmt = SqlHelper.createStatement();
 
 		// Constraint werden deaktiviert
 		// damit alle Tabellen erstellt werden können

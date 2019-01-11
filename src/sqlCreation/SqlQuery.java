@@ -19,7 +19,7 @@ public class SqlQuery {
 	//TODO statt alle Drop statments einzeln auszuführen komplette Datenbank droppen (performance effizentier)
 	public static String splitter = ";";
 
-	public static Statement stmt = SqlHelper.createStatement();
+	public static Statement stmt = SqlHelper.getStatement();
 
 	//#################################################################################################################
 	// FILL STATEMENTS
