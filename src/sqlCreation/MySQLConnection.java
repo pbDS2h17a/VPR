@@ -17,8 +17,7 @@ public class MySQLConnection {
 		String[] cardData = FileReader.getCard();
 		
 		// Statement hilfsfunktion
-		
-		SqlQuery.stmt = SqlHelper.getStatement();
+		SqlQuery.stmt = SqlHelper.createStatement();
 		
 		// Alle Drop statements werden aufgeführt
 		// um Fehler vorzubeugen

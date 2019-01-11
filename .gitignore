@@ -1,5 +1,5 @@
 bin/
+out/
 .settings/
 .idea/
-.project
 VPR_Risiko.iml

@@ -20,18 +20,17 @@ public class SqlHelper {
 	 * 2=Password
 	 * Erstellt ein Statement mit den Werten
 	 */
-	public static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
-	
-	
+	private static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
+
 	/**
 	 * @return Statement der aktuellen Verbindung
 	 * Falls Statement nochnicht initalisiert wurde (null) wird setStatement aufgerufen
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static Statement getStatement() throws ClassNotFoundException, SQLException {
+	public static Statement createStatement() throws ClassNotFoundException, SQLException {
 		if(stmt == null) {
-			setStatement(loginStringArray);
+			setStatement();
 		}
 		return con.createStatement();
 	}
@@ -41,9 +40,9 @@ public class SqlHelper {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	private static void setStatement(String[] connection) throws ClassNotFoundException, SQLException {
+	private static void setStatement() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		con = DriverManager.getConnection(connection[0],connection[1],connection[2]);
+		con = DriverManager.getConnection(loginStringArray[0],loginStringArray[1],loginStringArray[2]);
 		stmt= con.createStatement();
 	}
 	
@@ -66,9 +65,32 @@ public class SqlHelper {
 	}
 
 	public static String getCountrySVG(int countryId) throws SQLException {
+		if(stmt == null) {
+			try {
+				stmt = createStatement();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		ResultSet rs = stmt.executeQuery("SELECT svg FROM country WHERE country_id = "+countryId);
 		rs.next();
 			return  rs.getString(1);
+	}
+	
+	public static String[] getAllCountrySVG() {
+		
+		String[] allCountrySVG = new String[42];
+		for (int i = 0; i < 42; i++) {
+			try {
+				allCountrySVG[i] = SqlHelper.getCountrySVG((i+1));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return allCountrySVG;
 	}
 	
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
