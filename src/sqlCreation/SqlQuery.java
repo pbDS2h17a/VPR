@@ -137,7 +137,7 @@ public class SqlQuery {
 			String id = dataArray[0];
 			String description = dataArray[1];
 			String sql = "INSERT INTO mission(mission_id, description)"
-					+"VALUES("+id+",'"+description+"');";
+					+"VALUES('"+id+"','"+description+"');";
 			
 			try {
 				stmt.executeUpdate(sql);
@@ -155,7 +155,7 @@ public class SqlQuery {
 			String countryId = dataArray[0];
 			String value = dataArray[1];
 			String sql = "INSERT INTO card(card_id, value, country_id)"
-					+"VALUES("+cardId+","+value+",'"+countryId+"');";
+					+"VALUES('"+cardId+"','"+value+"','"+countryId+"');";
 			
 			try {
 				stmt.executeUpdate(sql);
@@ -165,6 +165,28 @@ public class SqlQuery {
 			}
 		}		
 	}
+	
+	static void fillColor(String[] data){
+		for (String string : data) {
+			
+			String[] dataArray = string.split(splitter);
+			String colorId = dataArray[0].trim();
+			String colorName = dataArray[1].trim();
+			String value = dataArray[2].trim();
+			
+			String sql = "INSERT INTO color(color_id, color_name, color_value)"
+					+"VALUES('"+colorId+"','"+colorName+"','"+value+"');";
+			
+			try {
+				stmt.executeUpdate(sql);
+			} catch (SQLException e) {
+				System.out.println("fillColor");
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
 	
 	//#############################################################################
 	//#DROP STATEMENTS
@@ -254,6 +276,15 @@ public class SqlQuery {
 			stmt.executeUpdate("DROP TABLE IF EXISTS cards_player");
 		} catch (Exception e) {
 			System.out.println("dropCardPlayer");
+			e.printStackTrace();
+		}
+	}
+	
+	static void dropColor() {
+		try {
+			stmt.executeUpdate("DROP TABLE IF EXISTS color");
+		} catch (Exception e) {
+			System.out.println("dropColor");
 			e.printStackTrace();
 		}
 	}
@@ -417,6 +448,21 @@ public class SqlQuery {
 			stmt.executeUpdate(sqlPlayerCountry);
 		} catch (SQLException e) {
 			System.out.println("createPlayerCountry");
+			e.printStackTrace();
+		}	
+	}
+	
+	static void createColor() {
+		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS color (" +
+				"color_id INTEGER, " +
+				"color_name VARCHAR(7), " +
+				"color_value VARCHAR(6), " +
+				"PRIMARY KEY(color_id) " +
+				");";
+		try {
+			stmt.executeUpdate(sqlPlayerCountry);
+		} catch (SQLException e) {
+			System.out.println("createColor");
 			e.printStackTrace();
 		}	
 	}

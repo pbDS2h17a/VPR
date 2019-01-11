@@ -12,6 +12,7 @@ public class MySQLConnection {
 		String[] countryData = FileReader.getCountry();
 		String[] missionData = FileReader.getMission();
 		String[] cardData = FileReader.getCard();
+		String[] colorData = FileReader.getColor();
 		
 		SqlHelper.setStatement(SqlHelper.loginStringArray);
 		SqlQuery.stmt = SqlHelper.stmt;
@@ -23,6 +24,7 @@ public class MySQLConnection {
 		SqlQuery.dropPlayerCountry();
 		SqlQuery.dropCard();
 		SqlQuery.dropMission();
+		SqlQuery.dropColor();
 		
 		SqlQuery.createContinent();
 		SqlQuery.createCountry();
@@ -31,6 +33,7 @@ public class MySQLConnection {
 		SqlQuery.createPlayerCountry();
 		SqlQuery.createCard();
 		SqlQuery.createMission();
+		SqlQuery.createColor();
 		
 		
 		SqlQuery.fillContinent(continentData);
@@ -38,6 +41,7 @@ public class MySQLConnection {
 		SqlQuery.fillNeighbor(countryData);
 		SqlQuery.fillCard(cardData);
 		SqlQuery.fillMissions(missionData);
+		SqlQuery.fillColor(colorData);
 
 		
 	}

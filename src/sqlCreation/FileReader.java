@@ -11,6 +11,7 @@ public class FileReader {
 	private static String[] countryData = null;
 	private static String[] missionData = null;
 	private static String[] cardData = null;
+	private static String[] colorData = null;
 	
 	static void readFile(String path) throws IOException {
 		//BufferedReader br = new BufferedReader(new FileInputStream(path));
@@ -52,6 +53,9 @@ public class FileReader {
 						case "MISSION":
 							missionData = currentData.split("\n");
 							break;
+						case "FARBE":
+							colorData = currentData.split("\n");
+							break;
 						}
 						
 						// Blöcke und Daten zurücksetzen
@@ -83,6 +87,10 @@ public class FileReader {
 	
 	static String[] getCard() {
 		return cardData;
+	}
+	
+	static String[] getColor(){
+		return colorData;
 	}
 	
 }
