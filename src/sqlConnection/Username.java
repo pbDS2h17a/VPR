@@ -13,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import sqlCreation.SqlQuery;
 
 /**
  * @author Lea-Marie Mönikes
@@ -38,10 +37,7 @@ public class Username extends Application{
 		t1.relocate(0,10);
 		t2.relocate(0, 40);
 		
-		
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		SqlHelper.setStatement(SqlHelper.loginStringArray);
-		Statement stmt = SqlHelper.stmt;
+		Statement stmt = SqlHelper.createStatement();
 	
 		Button b1 = new Button("Username");
 		b1.relocate(30, 100);
@@ -104,7 +100,7 @@ public class Username extends Application{
         if(isOk || playerNames.isEmpty()){
         	Player player = new Player(playerNames.size()+1,username,"blau"); 
         	
-        	SqlQuery.fillPlayer(player); 
+        	//SqlQuery.fillPlayer(player); 
         	
     	}
         

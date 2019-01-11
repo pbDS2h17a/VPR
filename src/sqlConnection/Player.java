@@ -1,12 +1,7 @@
 package sqlConnection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.paint.Color;
 
 /**
  * @author Lea, PEROSCKU
@@ -24,7 +19,7 @@ public class Player {
 	private String adress;
 	private int lobbyId;
 	
-	public Player(int id,String name, String color) throws SQLException {
+	public Player(int id,String name, String color) {
 		this.id = id; //SqlHelper.getPlayerID(name);
 		this.name = name;
 		this.color = color;

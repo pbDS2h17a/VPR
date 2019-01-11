@@ -1,5 +1,7 @@
 package sqlCreation;
 
+import sqlConnection.Player;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -8,27 +10,28 @@ import sqlConnection.Country;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
+
 /**
  * @author basti
  * SQL Queries zum erstellen der Stammdatenbank
  */
 public class SqlQuery {
-	//TODO implement Fillstatements neighbor(SRD), card
 	//TODO prepared statements https://docs.oraclecom/javase/tutorial/jdbc/basics/prepared.html
 	//TODO Tabellen Namen als Variablen auslagern
 	//TODO Validieren der Create & Fill Statements mit aktueller modelierung!  Andere Teams Fragen!!!!
 	public static String splitter = ";";
 
 	
-	public static Statement stmt = SqlHelper.stmt;
+	public static Statement stmt = SqlHelper.createStatement();
 	/*
 	 * _____________________________________________________________________________________________________________________________________________________
 	 * FILL STATEMENTS
 	 */
 
 	
-	//#######################################################################
+	//#################################################################################################################
 	//FILL STATEMENTS
+	//#################################################################################################################
 	static void fillContinent(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -59,16 +62,12 @@ public class SqlQuery {
 				"VALUES ('"+player.getName()+"', '"+player.getColor()+"', NULL, NULL);";
 		try {
 			stmt.executeUpdate(sql);
-//			if(!player.getCountryList().isEmpty()) {
-//				fillPlayerCountry(player);
-//			}
 		} catch (SQLException e) {
 			System.out.println("fillPlayer");
 			e.printStackTrace();
 		}
 	}
-	// Hier auch Neighbors befüllt!
-	//TODO in eigene Methode auslagern?
+
 	static void fillCountry(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -114,7 +113,8 @@ public class SqlQuery {
 		
 		
 	}
-	
+
+	//TODO in SqlHelper auslagern
 //	static void fillPlayerCountry(Player p) {
 //		List<Country> countryList = p.getCountryList();
 //		
@@ -144,13 +144,14 @@ public class SqlQuery {
 			} catch (SQLException e) {
 				System.out.println("fillMission");
 				e.printStackTrace();
-			}
+			}	
 		}		
 	}
 	
 	static void fillCard(String[] data) {	
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
+			// cardId und countryId sind identisch
 			String cardId = dataArray[0];
 			String countryId = dataArray[0];
 			String value = dataArray[1];
@@ -166,6 +167,7 @@ public class SqlQuery {
 		}		
 	}
 	
+
 	static void fillColor(String[] data){
 		for (String string : data) {
 			
@@ -187,9 +189,10 @@ public class SqlQuery {
 		
 	}
 	
-	
-	//#############################################################################
+
+	//#################################################################################################################
 	//#DROP STATEMENTS
+	//#################################################################################################################
 	static void dropCountry() { 
 		try {
 			stmt.executeUpdate("DROP TABLE IF EXISTS country");
@@ -289,8 +292,9 @@ public class SqlQuery {
 		}
 	}
 	
-	//###########################################################################
+	//#################################################################################################################
 	// CREATE STATEMENTS
+	//#################################################################################################################
 	static void createContinent() {
 		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +

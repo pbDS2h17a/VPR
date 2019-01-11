@@ -9,35 +9,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlHelper {
-
-	public static Statement stmt;
-	public static Connection con;
 	
-	// String Array der Logindaten der Datenbank
-	public static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
+	private static Statement stmt = null;
+	private static Connection con;
 	
-	/* setStatement
-	 * erhält ein String Array mit Drei werten
+	/*
+	 * String Array der Logindaten der Datenbank
 	 * 0=Addresse
 	 * 1=Datenbankname
 	 * 2=Password
 	 * Erstellt ein Statement mit den Werten
 	 */
-	public static void setStatement(String[] connection) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		con = DriverManager.getConnection(connection[0],connection[1],connection[2]);
-		stmt= con.createStatement();
+	private static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
+
+	/**
+	 * @return Statement der aktuellen Verbindung
+	 * Falls Statement nochnicht initalisiert wurde (null) wird setStatement aufgerufen
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public static Statement createStatement() {
+		if(stmt == null) {
+			setStatement();
+		}
+		try
+		{
+			return con.createStatement();
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * @param connection Die Connection basierend auf den Login Daten
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	private static void setStatement()  {
+		try
+		{
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection(loginStringArray[0],loginStringArray[1],loginStringArray[2]);
+			stmt= con.createStatement();
+		} catch (ClassNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static String getCountryName (int countryId) throws SQLException {
-		ResultSet rs =stmt.executeQuery("select country_name from country where country_id ="+countryId);
+		ResultSet rs = stmt.executeQuery("select country_name from country where country_id ="+countryId);
 	
 		 rs.next(); 
 			 return rs.getString(1);	
 	}
 	
 	public static int getCountryContinentId(int countryId) throws SQLException{
-		ResultSet rs =stmt.executeQuery("select continent_id from country where country_id ="+countryId);
+		ResultSet rs = stmt.executeQuery("select continent_id from country where country_id ="+countryId);
 		
 		 rs.next(); 
 		 	return rs.getInt(1);	
@@ -45,6 +81,30 @@ public class SqlHelper {
 
 	public static List<Integer> getCountryNeighbor(int countryId){
 		return null;
+	}
+
+	public static String getCountrySVG(int countryId) throws SQLException {
+		if(stmt == null) {
+			stmt = createStatement();
+		}
+		ResultSet rs = stmt.executeQuery("SELECT svg FROM country WHERE country_id = "+countryId);
+		rs.next();
+			return  rs.getString(1);
+	}
+	
+	public static String[] getAllCountrySVG() {
+		
+		String[] allCountrySVG = new String[42];
+		for (int i = 0; i < 42; i++) {
+			try {
+				allCountrySVG[i] = SqlHelper.getCountrySVG((i+1));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return allCountrySVG;
 	}
 	
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
@@ -63,7 +123,7 @@ public class SqlHelper {
 	}
 	
 	public static int Bonus(int continentID) throws SQLException{
-		ResultSet rs = stmt.executeQuery("select bonus from continent where continent_id ="+continentID+";");
+		ResultSet rs = stmt.executeQuery("select bonus from tinent where tinent_id ="+continentID+";");
 		rs.next();
 		return rs.getInt("bonus");
 	}
@@ -78,12 +138,26 @@ public class SqlHelper {
 		return countries;
 	}
 	
+
 	public static int getPlayerID(String name) throws SQLException{
 		ResultSet rs = stmt.executeQuery("select player_id from player where name ="+name+";");
 		
 		 rs.next(); 
 		 return rs.getInt(1);	
+	}
+	
+	public static int getCardCountryId(int cardId) throws SQLException{
+		ResultSet rs = stmt.executeQuery("select country_id from card where card_id ="+cardId+";");
 		
+		rs.next();
+			return rs.getInt("country_id");
+	}
+
+	public static int getCardValue(int value) throws SQLException{
+		ResultSet rs = stmt.executeQuery("select value from card where value="+value+";");
+		
+		rs.next();
+		return rs.getInt("value");
 	}
 
 	public static String getMissionDescription(int missionID) throws SQLException {

@@ -47,9 +47,7 @@ public class MainApp extends Application {
 				lobby.getContainer(),
 				join.getContainer(),
 				match.getContainer(),
-				mp.getPlayBtn(),
-				mp.getStopBtn(),
-				mp.getSlider()
+				mp.getContainer()
 		);
 
 	    app.getChildren().add(ctn_app);
@@ -104,13 +102,12 @@ public class MainApp extends Application {
 		// GAME LOOP Animationen
 		new AnimationTimer() {
 	        public void handle(long currentNanoTime) {
-	        	
 	        	if(toPane) {
 	        		if(von.getScaleY() < 1.5) {
 		        		von.setScaleX(von.getScaleX() + .02);
 		        		von.setScaleY(von.getScaleY() + .02);
 	        		}
-	        		
+
 	        		if(von.getOpacity() > 0)
 	        			von.setOpacity(von.getOpacity() - .05);
 	        		
@@ -142,7 +139,7 @@ public class MainApp extends Application {
 
 		stage.widthProperty().addListener(stageSizeListener);
 		stage.heightProperty().addListener(stageSizeListener); 
-	    
+		
 	    // Scene
 		Scene scene = new Scene(app);
 		stage.setTitle("CONQUER | All risk all fun");
