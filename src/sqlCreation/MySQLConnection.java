@@ -1,8 +1,9 @@
 package sqlCreation;
 
+import sqlConnection.SqlHelper;
+
 import java.io.IOException;
 import java.sql.SQLException;
-import sqlConnection.SqlHelper;
 
 public class MySQLConnection {
 	
@@ -37,6 +38,7 @@ public class MySQLConnection {
 		SqlQuery.createPlayerCountry();
 		SqlQuery.createCard();
 		SqlQuery.createMission();
+		SqlQuery.createLobby();
 		
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);
@@ -45,7 +47,6 @@ public class MySQLConnection {
 		SqlQuery.fillCard(cardData);
 		SqlQuery.fillMissions(missionData);
 
-		
 	}
 
 }

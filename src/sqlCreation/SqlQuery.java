@@ -1,8 +1,9 @@
 package sqlCreation;
 
+import sqlConnection.Player;
+
 import java.sql.SQLException;
 import java.sql.Statement;
-import sqlConnection.Player;
 
 /**
  * @author basti
@@ -15,8 +16,9 @@ public class SqlQuery {
 	public static String splitter = ";";
 	public static Statement stmt;
 	
-	//#######################################################################
+	//#################################################################################################################
 	//FILL STATEMENTS
+	//#################################################################################################################
 	static void fillContinent(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -43,9 +45,6 @@ public class SqlQuery {
 				"VALUES ('"+player.getName()+"', '"+player.getColor()+"');";
 		try {
 			stmt.executeUpdate(sql);
-//			if(!player.getCountryList().isEmpty()) {
-//				fillPlayerCountry(player);
-//			}
 		} catch (SQLException e) {
 			System.out.println("fillPlayer");
 			e.printStackTrace();
@@ -82,8 +81,6 @@ public class SqlQuery {
 			
 			// Nachbarn
 			for(int i = 3; i < (dataArray.length-1); i++) {
-				System.out.println(dataArray[i]);
-
 				sqlNeighbor = 
 					"INSERT INTO neighbor (country_id, neighbor_id)" +
 					"VALUES('"+id+"', '"+dataArray[i].trim()+"');";
@@ -99,7 +96,8 @@ public class SqlQuery {
 		
 		
 	}
-	
+
+	//TODO in SqlHelper auslagern
 //	static void fillPlayerCountry(Player p) {
 //		List<Country> countryList = p.getCountryList();
 //		
@@ -152,8 +150,9 @@ public class SqlQuery {
 		}		
 	}
 	
-	//#############################################################################
+	//#################################################################################################################
 	//#DROP STATEMENTS
+	//#################################################################################################################
 	static void dropCountry() { 
 		try {
 			stmt.executeUpdate("DROP TABLE IF EXISTS country");
@@ -244,8 +243,9 @@ public class SqlQuery {
 		}
 	}
 	
-	//###########################################################################
+	//#################################################################################################################
 	// CREATE STATEMENTS
+	//#################################################################################################################
 	static void createContinent() {
 		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +

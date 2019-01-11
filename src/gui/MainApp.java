@@ -102,13 +102,12 @@ public class MainApp extends Application {
 		// GAME LOOP Animationen
 		new AnimationTimer() {
 	        public void handle(long currentNanoTime) {
-	        	
 	        	if(toPane) {
 	        		if(von.getScaleY() < 1.5) {
 		        		von.setScaleX(von.getScaleX() + .02);
 		        		von.setScaleY(von.getScaleY() + .02);
 	        		}
-	        		
+
 	        		if(von.getOpacity() > 0)
 	        			von.setOpacity(von.getOpacity() - .05);
 	        		

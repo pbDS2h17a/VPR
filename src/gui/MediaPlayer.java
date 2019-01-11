@@ -38,6 +38,7 @@ public class MediaPlayer {
 		//Slider - Lautstärke anpassen
 		volumeSlider = new Slider(0, 1, 1);
 		volumeSlider.relocate(150, 80);
+		volumeSlider.setValue(0.1);
 		mediaPlayerGroup.getChildren().add(volumeSlider);
 
 	}
