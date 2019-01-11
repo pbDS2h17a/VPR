@@ -19,28 +19,37 @@ public class MySQLConnection {
 		
 		// Statement hilfsfunktion
 		SqlQuery.stmt = SqlHelper.createStatement();
-		
+
+		// Constraint werden deaktiviert
+		// damit alle Tabellen erstellt werden können
+		SqlQuery.disableForeignKeyConstraints();
+
 		// Alle Drop statements werden aufgeführt
 		// um Fehler vorzubeugen
-		SqlQuery.dropCountry();
 		SqlQuery.dropContinent();
+		SqlQuery.dropCountry();
 		SqlQuery.dropNeighbor();
 		SqlQuery.dropPlayer();
+		SqlQuery.dropLobby();
 		SqlQuery.dropPlayerCountry();
 		SqlQuery.dropCard();
 		SqlQuery.dropMission();
 		SqlQuery.dropColor();
+
 		
 		// Tabllen werden erstellt
 		SqlQuery.createContinent();
 		SqlQuery.createCountry();
 		SqlQuery.createNeighbor();
+		SqlQuery.createColor();
 		SqlQuery.createPlayer();
+		SqlQuery.createLobby();
 		SqlQuery.createPlayerCountry();
 		SqlQuery.createCard();
 		SqlQuery.createMission();
-		SqlQuery.createColor();
-		SqlQuery.createLobby();
+
+		// Constraint werden wieder aktiviert
+		SqlQuery.enableForeignKeyConstraints();
 
 		
 		// Tabellen werden gefüllt
