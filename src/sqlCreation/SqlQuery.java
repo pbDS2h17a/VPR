@@ -14,13 +14,15 @@ import java.sql.Statement;
 public class SqlQuery {
 	//TODO prepared statements https://docs.oraclecom/javase/tutorial/jdbc/basics/prepared.html
 	//TODO Tabellen Namen als Variablen auslagern
-	//TODO Validieren der Create & Fill Statements mit aktueller modelierung!  Andere Teams Fragen!!!!
+	//TODO Validieren der Fill Statements mit aktueller modelierung!  Andere Teams Fragen!!!!
+	//TODO createChat hier implemntierung
+	//TODO statt alle Drop statments einzeln auszuführen komplette Datenbank droppen (performance effizentier)
 	public static String splitter = ";";
 
 	public static Statement stmt = SqlHelper.createStatement();
 
 	//#################################################################################################################
-	//FILL STATEMENTS
+	// FILL STATEMENTS
 	//#################################################################################################################
 	static void fillContinent(String[] data) {
 		for (String string : data) {
@@ -44,8 +46,7 @@ public class SqlQuery {
 
 	//TODO implement lobby und address
 	
-	public static void fillPlayer(Player player) {			
-
+	public static void fillPlayer(Player player) {
 		String sql =
 				"INSERT INTO player (name, color, lobby_id, address)" +
 				"VALUES ('"+player.getName()+"', '"+player.getColor()+"', NULL, NULL);";
@@ -57,6 +58,10 @@ public class SqlQuery {
 		}
 	}
 
+	/**
+	 *
+	 * @param data StringArray mit ID,Name,KontinentID und SVG
+	 */
 	static void fillCountry(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -78,7 +83,11 @@ public class SqlQuery {
 			}		
 		}	
 	}
-	
+
+	/**
+	 *
+	 * @param data StringArray mit LandID und variablen vielen NachbarIDs
+	 */
 	static void fillNeighbor(String[] data) {
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -119,7 +128,11 @@ public class SqlQuery {
 //			}
 //		}
 //	}
-	
+
+	/**
+	 *
+	 * @param data StringArray mit MissionID und Beschreibung
+	 */
 	static void fillMissions(String[] data) {	
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -136,7 +149,16 @@ public class SqlQuery {
 			}	
 		}		
 	}
-	
+
+	/**
+	 *
+	 * @param data StringArray mit KartenID, LandID, und Wert
+	 *             der Wert ist eine Zahl zwischen 1 und 3
+	 *             und entspricht der Einheit der Karte
+	 *             1 = Infanterie (Fußsoldat)
+	 *             2 = Kavallerie (Pferd)
+	 *             3 = Artillerie (Kanone)
+	 */
 	static void fillCard(String[] data) {	
 		for (String string : data) {
 			String[] dataArray = string.split(splitter);
@@ -156,6 +178,11 @@ public class SqlQuery {
 		}		
 	}
 
+	/**
+	 *
+	 * @param data stringArray mit FarbID, Namen und wert
+	 *             Wert ist ein 6-Stelliger HEX code
+	 */
 	static void fillColor(String[] data){
 		for (String string : data) {
 			
@@ -198,7 +225,7 @@ public class SqlQuery {
 	}
 
 	//#################################################################################################################
-	//#DROP STATEMENTS
+	// DROP STATEMENTS
 	//#################################################################################################################
 	static void dropCountry() { 
 		try {
@@ -416,7 +443,8 @@ public class SqlQuery {
 	static void createMission() {
 		String sqlMission = "CREATE TABLE IF NOT EXISTS mission (" +
 				" mission_id INT NOT NULL, " +
-				" description VARCHAR(500) " +
+				" description VARCHAR(500), " +
+				" PRIMARY KEY(mission_id)" +
 				");";
 		try {
 			stmt.executeUpdate(sqlMission);
@@ -446,12 +474,12 @@ public class SqlQuery {
 	
 	static void createMissionPlayer() {
 		String sqlMissionPlayer = "CREATE TABLE IF NOT EXISTS mission_player (" +
-				" mission_id INT, " +
+				" mission_id INT NOT NULL, " +
 				" player_id INT, " +
 				" lobby_id INT, " +
+				" FOREIGN KEY(player_id)  REFERENCES player(player_id), " +
+				" FOREIGN KEY(lobby_id)   REFERENCES lobby(lobby_id), " +
 				" FOREIGN KEY(mission_id) REFERENCES mission(mission_id), " +
-				" FOREIGN KEY(player_id) REFERENCES player(player_id), " +
-				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id), " +
 				" PRIMARY KEY(lobby_id, mission_id) " +
 				");";
 		try {
@@ -468,9 +496,9 @@ public class SqlQuery {
 				" country_id INT, "+
 				" lobby_id INT, "+
 				" army_count INT, " +
-				" FOREIGN KEY (player_id) REFERENCES player(player_id), " +
-				" FOREIGN KEY (country_id) REFERENCES country(country_id), " +
-				" FOREIGN KEY (lobby_id) REFERENCES lobby(lobby_id), " +
+				" FOREIGN KEY(player_id) REFERENCES player(player_id), " +
+				" FOREIGN KEY(country_id) REFERENCES country(country_id), " +
+				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id), " +
 				" PRIMARY KEY(country_id, lobby_id) " +
 				");";
 		try {

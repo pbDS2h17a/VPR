@@ -35,6 +35,8 @@ public class MySQLConnection {
 		SqlQuery.dropCard();
 		SqlQuery.dropMission();
 		SqlQuery.dropColor();
+		SqlQuery.dropCardsPlayer();
+		SqlQuery.dropMissionPlayer();
 
 		
 		// Tabllen werden erstellt
@@ -47,6 +49,8 @@ public class MySQLConnection {
 		SqlQuery.createPlayerCountry();
 		SqlQuery.createCard();
 		SqlQuery.createMission();
+		SqlQuery.createMissionPlayer();
+		SqlQuery.createCardsPlayer();
 
 		// Constraint werden wieder aktiviert
 		SqlQuery.enableForeignKeyConstraints();
