@@ -3,7 +3,6 @@
 // Ein neuer Block beginnt mit "#START", der Name des Blockes wird nach 
 // einem leerzeichen dahinter geschrieben
 // Das ende eines Blockes wird mit "#END" definiert
-
 //KONTINENT; BONUSPUNKTE
 #START KONTINENT
 1; Nordamerika; 5
@@ -57,7 +56,6 @@
 40; Indonesien; 6; 35; 41; 42
 41; Neuguinea; 6; 39; 40; 42
 42; Westaustralien; 6; 39; 40; 41
-=======
 //Karten
 //1 = Infrantrie
 //2 = Kavalarie
@@ -170,6 +168,7 @@
 14; Befreien Sie alle Länder von den schwarzen Armeen. - Wenn Sie selbst diese Armeen besitzen, oder bereits ein anderer Spieler das letzte Land von diesen befreit hat, heißt ihr Auftrag: Befreien Sie 24 Länder ihrer Wahl.
 15; Befreien Sie alle Länder von den grünen Armeen. - Wenn Sie selbst diese Armeen besitzen, oder bereits ein anderer Spieler das letzte Land von diesen befreit hat, heißt ihr Auftrag: Befreien Sie 24 Länder ihrer Wahl.
 #END
+//ID; farbname; hex wert
 #START FARBE
 1; gelb; FFD800
 2; rot; C42B2B
