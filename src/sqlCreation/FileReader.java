@@ -6,14 +6,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 /**
  * @author pbs2h17awb
+ * Ließt die Daten aus der Stammdaten.csv datei aus und trennt sie an den marktieren Bereichen in
+ * Datenbklöcke auf.
+ * Die Datenblöcke werden an die SqlQeury fillStatements übergeben
  */
 public class FileReader {
 	private static String[] continentData = null;
 	private static String[] countryData = null;
 	private static String[] missionData = null;
 	private static String[] cardData = null;
+	private static String[] colorData = null;
+	
+
 	/**
-	 * 
 	 * @param path Pfad your Stammdaten datei
 	 * @throws IOException 
 	 */
@@ -57,6 +62,9 @@ public class FileReader {
 							break;
 						case "MISSION":
 							missionData = currentData.split("\n");
+							break;
+						case "FARBE":
+							colorData = currentData.split("\n");
 							break;
 						}
 						
@@ -103,6 +111,10 @@ public class FileReader {
 	 */
 	static String[] getCard() {
 		return cardData;
+	}
+	
+	static String[] getColor(){
+		return colorData;
 	}
 	
 }

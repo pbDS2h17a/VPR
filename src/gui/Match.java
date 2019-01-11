@@ -27,7 +27,7 @@ public class Match {
 	
 	private String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
 	
-	private String[] territoryArray = SqlHelper.getAllCountrySVG();
+	private String[] territoryArray = SqlHelper.getAllCountrySVG2();
     
 	private Land[] territorySVG = new Land[territoryArray.length];
 	private Group[] territory_group = new Group[territoryArray.length];
