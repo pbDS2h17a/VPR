@@ -31,7 +31,7 @@ public class MySQLConnection {
 		SqlQuery.dropNeighbor();
 		SqlQuery.dropPlayer();
 		SqlQuery.dropLobby();
-		SqlQuery.dropPlayerCountry();
+		SqlQuery.dropCountryPlayer();
 		SqlQuery.dropCard();
 		SqlQuery.dropMission();
 		SqlQuery.dropColor();
@@ -46,7 +46,7 @@ public class MySQLConnection {
 		SqlQuery.createColor();
 		SqlQuery.createPlayer();
 		SqlQuery.createLobby();
-		SqlQuery.createPlayerCountry();
+		SqlQuery.createCountryPlayer();
 		SqlQuery.createCard();
 		SqlQuery.createMission();
 		SqlQuery.createMissionPlayer();

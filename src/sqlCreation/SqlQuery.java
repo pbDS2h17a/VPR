@@ -264,11 +264,11 @@ public class SqlQuery {
 		}
 	}
 	
-	static void dropPlayerCountry() {
+	static void dropCountryPlayer() {
 		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS player_country");
+			stmt.executeUpdate("DROP TABLE IF EXISTS country_player");
 		} catch (Exception e) {
-			System.out.println("dropPlayerCountry");
+			System.out.println("droprCountryPlayer");
 			e.printStackTrace();
 		}
 	}
@@ -490,8 +490,8 @@ public class SqlQuery {
 		}	
 	}
 	
-	static void createPlayerCountry() {
-		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS player_country (" +
+	static void createCountryPlayer() {
+		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS country_player (" +
 				" player_id INT, "+
 				" country_id INT, "+
 				" lobby_id INT, "+
@@ -504,11 +504,11 @@ public class SqlQuery {
 		try {
 			stmt.executeUpdate(sqlPlayerCountry);
 		} catch (SQLException e) {
-			System.out.println("createPlayerCountry");
+			System.out.println("createCountryPlayer");
 			e.printStackTrace();
-		}	
+		}
 	}
-	
+
 	static void createColor() {
 		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS color (" +
 				" color_id INT, " +
@@ -521,7 +521,7 @@ public class SqlQuery {
 		} catch (SQLException e) {
 			System.out.println("createColor");
 			e.printStackTrace();
-		}	
+		}
 	}
-	
+
 }
