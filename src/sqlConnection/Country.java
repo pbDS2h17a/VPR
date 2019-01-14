@@ -9,6 +9,7 @@ import javafx.scene.shape.SVGPath;
 public class Country extends SVGPath {
 	private int countryId;
 	private int ownerId;
+	private String owner;
 	private int units;
 	private int countryContinentID;
 	private String countryName;
@@ -21,8 +22,10 @@ public class Country extends SVGPath {
 //		this.units = units;
 		this.countryContinentID = SqlHelper.getCountryContinentId(id);
 		this.countryName = SqlHelper.getCountryName(id);
-		this.neighborIdArray = SqlHelper.getCountryNeighbor(0);
+		this.neighborIdArray = SqlHelper.getCountryNeighbor(id);
 		super.setContent(SqlHelper.getCountrySVG(id));
+		// -1 = noch kein Besitzer
+		this.ownerId = -1;
 	}
 	
 	public int[] getNeighborIdArray() {
@@ -63,8 +66,17 @@ public class Country extends SVGPath {
 		this.ownerId = playerId;
 	}
 	
-	public int getOwnerId() {
-		return 0;
+	public void setOwner(String name) {
+		this.owner = name;
 	}
+	
+	public int getOwnerId() {
+		return this.ownerId;
+	}
+
+	public String getOwner() {
+		return this.owner;
+	}
+	
 	
 }

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SqlHelper {
@@ -20,7 +21,8 @@ public class SqlHelper {
 	 * 2=Password
 	 * Erstellt ein Statement mit den Werten
 	 */
-	private static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
+//	loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
+	private static String[] loginStringArray =  {"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"};
 
 	/**
 	 * Versucht ein neues Statement zu erstellen
@@ -38,6 +40,16 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void closeStatement() {
+		try {
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	/**
 	 * Gibt ein Statement zurück
@@ -51,6 +63,26 @@ public class SqlHelper {
 		}
 
 		return stmt;
+	}
+	
+	public static Player[] getAllPlayersForLobby(int lobbyId) {
+		ResultSet rs = null;
+		Player[] playerArray = new Player[6];
+		int index = 0;
+		
+		try {
+			rs = stmt.executeQuery("SELECT player_id, player.name, value FROM player, color WHERE lobby_id="+lobbyId+" AND player.color_id = color.color_id;");
+			while(rs.next()) {
+				Player p = new Player(rs.getInt("player_id"), rs.getString("player.name"), rs.getString("value"));
+				playerArray[index] = p;
+				index++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return playerArray;
 	}
 	
 	public static int[] getAllLobbyId() {

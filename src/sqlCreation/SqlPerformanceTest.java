@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
 public class SqlPerformanceTest {
@@ -26,12 +27,26 @@ public class SqlPerformanceTest {
 			e.printStackTrace();
 		}
         
-//        Statement stmt = SqlHelper.getStatement();
+        Statement stmt = SqlHelper.getStatement();
+        SqlQuery.disableForeignKeyConstraints();
         
-//        SqlQuery.disableForeignKeyConstraints();
-//        stmt.executeUpdate("INSERT INTO player VALUES(1,'Testuser1','"+localIP+"',NULL,NULL)");
-//        stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
-//        SqlQuery.enableForeignKeyConstraints();
+        SqlHelper.clearTable("player");
+        SqlHelper.clearTable("lobby");
+       
+        stmt.executeUpdate("INSERT INTO player VALUES(1,'Testuser1','"+localIP+"',1, 1)");
+        stmt.executeUpdate("INSERT INTO player VALUES(2,'Testuser2','"+localIP+"',1, 2)");
+        stmt.executeUpdate("INSERT INTO player VALUES(3,'Testuser3','"+localIP+"',1, 3)");
+        stmt.executeUpdate("INSERT INTO player VALUES(4,'Testuser4','"+localIP+"',1, 4)");
+    	stmt.executeUpdate("INSERT INTO player VALUES(5,'Testuser5','"+localIP+"',1, 5)");
+        stmt.executeUpdate("INSERT INTO player VALUES(6,'Testuser6','"+localIP+"',1, 6)");
+        stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
+        SqlQuery.enableForeignKeyConstraints();
+        
+        Player[] data = SqlHelper.getAllPlayersForLobby(1);
+        
+        for(Player p : data) {
+        	System.out.println(p.getName());
+        }
         
         if(useTimer) {
             endTime = System.nanoTime();

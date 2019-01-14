@@ -19,7 +19,7 @@ public class Player {
 	private String adress;
 	private int lobbyId;
 	
-	public Player(int id,String name, String color) {
+	public Player(int id, String name, String color) {
 		this.id = id; //SqlHelper.getPlayerID(name);
 		this.name = name;
 		this.color = color;
@@ -27,8 +27,7 @@ public class Player {
 		this.unitsPerRound = 0;
 	}
 	
-	
-	public Player(String name, String color, List<Country> countryList, int units) {
+	public Player(int id, String name, String color, List<Country> countryList, int units) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
@@ -52,14 +51,12 @@ public class Player {
 		return unitsPerRound;
 	}
 
-	public String getColor()
-	{
+	public String getColor() {
 		return color;
 	}
 
 
-	public void setColor(String color)
-	{
+	public void setColor(String color) {
 		this.color = color;
 	}
 
@@ -84,18 +81,15 @@ public class Player {
 		this.id = id;
 	}
 
-	public String getAdress()
-	{
+	public String getAdress() {
 		return adress;
 	}
 
-	public void setAdress(String adress)
-	{
+	public void setAdress(String adress) {
 		this.adress = adress;
 	}
 
-	public int getLobbyId()
-	{
+	public int getLobbyId() {
 		return lobbyId;
 	}
 

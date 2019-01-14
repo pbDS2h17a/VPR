@@ -204,7 +204,7 @@ public class SqlQuery {
 		
 	}
 
-	static void disableForeignKeyConstraints() {
+	public static void disableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 0");
 
@@ -214,7 +214,7 @@ public class SqlQuery {
 		}
 	}
 
-	static void enableForeignKeyConstraints() {
+	public static void enableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 1");
 

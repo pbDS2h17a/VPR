@@ -1,7 +1,5 @@
 package gui;
 
-import java.sql.SQLException;
-
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -14,7 +12,14 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Country;
+import sqlConnection.Player;
 import sqlConnection.SqlHelper;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class Match {
 
@@ -28,14 +33,11 @@ public class Match {
 	private Polygon territoryName;
 	private Rectangle territoryInfo;
 	
-	private String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
-	
 	private Country[] countryArray = new Country[42];
 	
 	private Group[] territory_group = new Group[countryArray.length];
 	
-	public Match() {
-
+	public Match(Lobby lobby) {
 		// Partie-Container (Child von Anwendungs_CTN)
 	    ctn = new Pane();
 	    ctn.setCache(true);
@@ -97,7 +99,7 @@ public class Match {
 		    	final int tmp = i;
 		    	
 		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-//		    			updateTerritoryInfo(tmp);
+		    			updateTerritoryInfo(tmp);
 		    		}
 			    );
 		    	groupLands.getChildren().add(countryArray[i]);
@@ -243,26 +245,39 @@ public class Match {
     	
 		ctn.getChildren().addAll(bg, groupLands, playerName, playerNameLabel, territoryName, territoryNameLabel, playerInfoGroup, phaseBtnGroup, groupTerritoryInfo);
 	
-		String[][] testUserList = {
-				{"Kevin", "#FFD800"},
-				{"Lea", "#C42B2B"},
-				{"Jessica", "#26BF00"},
-				{"Sebastian", "#0066ED"},
-		};
-
-		startMatch(testUserList);
+		
+		startMatch(lobby);
 	}
 	
 	static int randomInt(int min, int max) {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void startMatch(String[][] userAndColors) {	
-		// Verteilung der Länder auf die Spieler
-		int randomCountryId = randomInt(0,countryArray.length-1);
+	private void startMatch(Lobby lobby) {	
+		// Verteilung der Länder auf die Spieler		
+		// Länderarray wird in eine Liste konvertiert
+		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
+		lobby.setLobbyId(1);
+		Player[] players = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
 		
-		for(int i = 0; i < countryArray.length; i++) {	
-			countryArray[i].setFill(Color.web(userAndColors[0][1]));				
+		
+		int userCount = players.length-1;
+		Random rand = new Random();
+		
+		for (int i = 0; i < countryArray.length; i++) {	
+			// zufälliges Land aus Liste
+			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
+			// Werte werden zugewiesen
+			randomCountry.setOwnerId(players[userCount].getId());	
+			randomCountry.setFill(Color.web(players[userCount].getColor()));	
+			countryList.remove(randomCountry);
+
+			if(userCount == 0) {
+				userCount = players.length-1;
+			} else {
+				userCount--;
+			}
+	
 		}
 	}
 	
@@ -284,16 +299,20 @@ public class Match {
 	}
 	
 	private void gameChangeCountry(int id) {
-		if(!territoryNameLabel.getText().equals(countryArray[id].getOwnerId()))
+		if(!territoryNameLabel.getText().equals(countryArray[id].getOwner())) {
 			try {
 				territoryNameLabel.setText(SqlHelper.getPlayerName(countryArray[id].getOwnerId()));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+					
 
-		if(territoryName.getFill() != countryArray[id].getFill())
+		if(territoryName.getFill() != countryArray[id].getFill()) {
 			territoryName.setFill(countryArray[id].getFill());
+		}
+			
 	}
 	
 	public Pane getContainer() {

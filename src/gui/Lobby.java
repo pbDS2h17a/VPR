@@ -11,6 +11,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import sqlConnection.Player;
 
 public class Lobby {
 
@@ -20,15 +21,46 @@ public class Lobby {
 	private Sprite btnBack;
 	private Sprite btnCheck;
 	
-	ImageView[] slotArray = new ImageView[6];
+	// Daten
+	private int playerCount = 0;
+	private final int MAX_PLAYER_COUNT = 6;
+	
+	Player[] players = new Player[MAX_PLAYER_COUNT];
+	int lobbyId;
+	
+	public int getLobbyId() {
+		return lobbyId;
+	}
+
+	public void setLobbyId(int lobbyId) {
+		this.lobbyId = lobbyId;
+	}
+
+	//FX
+	ImageView[] slotArray = new ImageView[MAX_PLAYER_COUNT];
     Label[] labelArray = new Label[slotArray.length];
     Polygon[] triangleArray = new Polygon[slotArray.length];
     Sprite[] slotRolesArray = new Sprite[slotArray.length];
     String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
     Rectangle[] colorRectArray = new Rectangle[colorArray.length];
+    
 	
-	public Lobby() {
-		
+   
+	
+	public void addPlayer(Player player) {
+		if (playerCount < MAX_PLAYER_COUNT) {
+			players[playerCount] = player;
+			playerCount++;
+		}
+	}
+	
+	public Player[] getPlayers() {
+		return this.players;
+	}
+	
+
+	
+	public Lobby() {	
 	    // Lobby-Container (Child von Anwendungs_CTN)
 	    ctn = new Pane();
 	    ctn.setId("Lobby");
@@ -216,7 +248,7 @@ public class Lobby {
 		((Sprite) slotArray[id]).setActive(true);
 		slotRolesArray[id].setVisible(true);
 	}
-	
+		
 	private void lobbyRemovePlayer(int id) {
 		((Sprite) slotArray[id]).setActive(false);
 		slotRolesArray[id].setVisible(false);
