@@ -36,9 +36,8 @@ public class ChatInterface extends Application {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		Class.forName("com.mysql.cj.jdbc.Driver"); 
+		
 		// Datenbankverbindung aufbauen
-
 		stmt = SqlHelper.getStatement();
 		// GUI launchen
 		launch(args);
@@ -134,11 +133,7 @@ public class ChatInterface extends Application {
 	 * @param tf				TextField to set = ""
 	 */
 	private void deleteAll (String tableName, TextField tf) {
-		try { 
-			stmt.executeUpdate("TRUNCATE TABLE "+tableName+";");
-		} catch(SQLException s) {
-				s.printStackTrace();
-			}
+		SqlHelper.clearTable(tableName);
 		tf.setText("");
 	}
 }

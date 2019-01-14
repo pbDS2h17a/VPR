@@ -53,48 +53,115 @@ public class SqlHelper {
 		return stmt;
 	}
 	
+	public static int[] getAllLobbyId() {
+		ResultSet rs = null;
+		ArrayList<Integer> lobbyIdList = new ArrayList<Integer>();
+		
+		try {
+			rs = getStatement().executeQuery("SELECT lobby_id FROM lobby;");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			while(rs.next()) {
+				lobbyIdList.add(rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Konvertiere Integer Liste in Integer Array
+		return lobbyIdList.stream().mapToInt(Integer::intValue).toArray();
+	}
+	
+	public static void clearTable(String tableName) {
+		try { 
+			stmt.executeUpdate("TRUNCATE TABLE "+tableName+";");
+		} catch(SQLException s) {
+			s.printStackTrace();
+		}
+	}
+	
+	public static int[] getAllCountryId() throws SQLException {
+		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM country;");
+		int[] countryIdArray = new int[42];
+		int i = 0;
+		
+		while(rs.next()) {
+			countryIdArray[i] = rs.getInt(1);
+			i++;
+		}
+		
+		return countryIdArray;
+		
+	}
+	
+	public static void createPlayer(int playerId) {
+		
+	}
+	
+	public static void createPlayer(int playerId, int lobbyId) {
+		
+	}
+	
+	public static String getPlayerName(int playerId) throws SQLException {
+		ResultSet rs = getStatement().executeQuery("SELECT name FROM player WHERE player_id = "+playerId+";");
+		
+		 rs.next(); 
+		 return rs.getString(1);
+	}
+	
 	public static String getCountryName (int countryId) throws SQLException {
-		ResultSet rs = getStatement().executeQuery("select country_name from country where country_id ="+countryId);
+		ResultSet rs = getStatement().executeQuery("SELECT name FROM country WHERE country_id ="+countryId);
 	
 		 rs.next(); 
 			 return rs.getString(1);	
 	}
 	
 	public static int getCountryContinentId(int countryId) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("select continent_id from country where country_id ="+countryId);
+		ResultSet rs = getStatement().executeQuery("SELECT continent_id FROM country WHERE country_id ="+countryId);
 		
 		 rs.next(); 
 		 	return rs.getInt(1);	
 	}
 
-	public static List<Integer> getCountryNeighbor(int countryId){
-		return null;
+	public static int[] getCountryNeighbor(int countryId) {
+		ResultSet rs = null;
+		try {
+			rs = getStatement().executeQuery("SELECT neighbor_id FROM neighbor WHERE country_id ="+countryId);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ArrayList<Integer> neighborIdList = new ArrayList<Integer>();
+		int[] neighborIdArray = null;
+		
+		try {
+			while(rs.next()) {
+				neighborIdList.add(rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Konvertiere Integer Liste in Integer Array
+		neighborIdArray = neighborIdList.stream().mapToInt(Integer::intValue).toArray();
+
+		return neighborIdArray;	 	
 	}
 
 	public static String getCountrySVG(int countryId) throws SQLException {
-
 		ResultSet rs = getStatement().executeQuery("SELECT svg FROM country WHERE country_id = "+countryId);
 		rs.next();
 			return  rs.getString(1);
 	}
-	//Langsamer als getAllCountrySVG2 (400% performance gain)
-	@Deprecated
+	
 	public static String[] getAllCountrySVG() {
-		
-		String[] allCountrySVG = new String[42];
-		for (int i = 0; i < 42; i++) {
-			try {
-				allCountrySVG[i] = SqlHelper.getCountrySVG((i+1));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		return allCountrySVG;
-	}
-
-	public static String[] getAllCountrySVG2() {
 		String[] data = new String[42];
 		int i = 0;
 		try {
@@ -110,26 +177,27 @@ public class SqlHelper {
 		return data;
 	}
 	
+	//TODO outdated
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
 		String dbStatement = "INSERT INTO lobby (host_id) values (" + player.getId() + ");";
 		getStatement().executeQuery(dbStatement);
 	}
 	
 	public static String getContintentName(int continentID) throws SQLException{		
-		ResultSet rs = getStatement().executeQuery("select name from continent where continent_id ="+continentID+";");
+		ResultSet rs = getStatement().executeQuery("SELECT name FROM continent where continent_id = "+continentID+";");
 		rs.next();
 		return rs.getString("name");
 	}
 	
 	public static int Bonus(int continentID) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("select bonus from tinent where tinent_id ="+continentID+";");
+		ResultSet rs = getStatement().executeQuery("SELECT bonus FROM continent where continent_id = "+continentID+";");
 		rs.next();
 		return rs.getInt("bonus");
 	}
 	
 	public static List <String> ContinentCountries(int continentID) throws SQLException{
 		List <String> countries = new ArrayList<>();
-		ResultSet rs = getStatement().executeQuery("select name from country where continent_id ="+continentID+";");
+		ResultSet rs = getStatement().executeQuery("SELECT name FROM country where continent_id = "+continentID+";");
 		while(rs.next()){	   		
 	   		countries.add(rs.getString("name"));	   				   			
 	   		}
@@ -139,28 +207,28 @@ public class SqlHelper {
 	
 
 	public static int getPlayerID(String name) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("select player_id from player where name ="+name+";");
+		ResultSet rs = getStatement().executeQuery("SELECT player_id FROM player WHERE name = "+name+";");
 		
 		 rs.next(); 
 		 return rs.getInt(1);	
 	}
 	
 	public static int getCardCountryId(int cardId) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("select country_id from card where card_id ="+cardId+";");
+		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM card WHERE card_id = "+cardId+";");
 		
 		rs.next();
 			return rs.getInt("country_id");
 	}
 
 	public static int getCardValue(int value) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("select value from card where value="+value+";");
+		ResultSet rs = getStatement().executeQuery("SELECT value FROM card WHERE value = "+value+";");
 		
 		rs.next();
 		return rs.getInt("value");
 	}
 
 	public static String getMissionDescription(int missionID) throws SQLException {
-		ResultSet rs = getStatement().executeQuery("select description from mission where mission_id ="+missionID+";");
+		ResultSet rs = getStatement().executeQuery("SELECT description FROM mission WHERE mission_id = "+missionID+";");
 		rs.next();
 		return rs.getString("description");
 	}

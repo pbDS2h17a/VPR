@@ -32,7 +32,6 @@ public class MySQLConnection {
 		SqlQuery.dropColor();
 		SqlQuery.dropCardsPlayer();
 		SqlQuery.dropMissionPlayer();
-
 		
 		// Tabllen werden erstellt
 		SqlQuery.createContinent();
@@ -49,8 +48,7 @@ public class MySQLConnection {
 
 		// Constraint werden wieder aktiviert
 		SqlQuery.enableForeignKeyConstraints();
-
-		
+	
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);
 		SqlQuery.fillCountry(countryData);

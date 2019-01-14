@@ -1,47 +1,70 @@
 package sqlConnection;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Country
-{
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.SVGPath;
+
+public class Country extends SVGPath {
 	private int countryId;
+	private int ownerId;
+	private int units;
 	private int countryContinentID;
-	private String name;
-	private List<Integer> neighbor = new ArrayList<Integer>();
-	private int armys;
-
-	public Country(int id,int armys) throws SQLException{
-		this.countryId=id;
-		this.countryContinentID=SqlHelper.getCountryContinentId(id);
-		this.name=SqlHelper.getCountryName(id);
-		this.neighbor=SqlHelper.getCountryNeighbor(0);
-		}
+	private String countryName;
+//	private int units;
+	private int[] neighborIdArray;
+	private SVGPath svgPath;
 	
-	public List<Integer> getNeighbor() {
-		return this.neighbor;
+	public Country(int id) throws SQLException {
+		this.countryId = id;
+//		this.units = units;
+		this.countryContinentID = SqlHelper.getCountryContinentId(id);
+		this.countryName = SqlHelper.getCountryName(id);
+		this.neighborIdArray = SqlHelper.getCountryNeighbor(0);
+		super.setContent(SqlHelper.getCountrySVG(id));
 	}
 	
-	public int getId(){
+	public int[] getNeighborIdArray() {
+		return this.neighborIdArray;
+	}
+	
+	public int getCountryId(){
 		return this.countryId;
 	}
 	
-	public String getName(){
-		return this.name;
+	public String getCountryName() {
+		return this.countryName;
 	}
 	
-	public int getCountryContinentID(){
+	
+	
+	public int getCountryContinentID() {
 		return this.countryContinentID;
 	}
 
-	public int getArmys()
-	{
-		return armys;
+	public int getUnits() {
+		return units;
 	}
 
-	public void setArmys(int armys)
-	{
-		this.armys = armys;
+	public void setUnits(int armys) {
+		this.units = armys;
 	}
+	
+	public Paint getColor() {
+		return svgPath.getFill();
+	}
+	
+	public void setColor(String C) {
+		svgPath.setFill(Color.web(C));
+	}
+	
+	public void setOwnerId(int playerId) {
+		this.ownerId = playerId;
+	}
+	
+	public int getOwnerId() {
+		return 0;
+	}
+	
 }

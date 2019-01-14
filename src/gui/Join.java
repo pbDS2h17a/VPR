@@ -5,12 +5,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import sqlConnection.SqlHelper;
 
 public class Join {
 	
 	private Pane ctn;
 	private Sprite btnBack;
-	private Label[] listUsers = new Label[10];
+	private int[] lobbyIdArray = SqlHelper.getAllLobbyId();
+	private Label[] listUsers = new Label[lobbyIdArray.length];
 	
 	public Join() {
 		
@@ -37,8 +39,12 @@ public class Join {
 	    ctn.getChildren().add(listBG);
 	    
 	    // Listen aufrufen
-	    for(int i = 0; i < listUsers.length; i++) {
-	    	listUsers[i] = new Label("Lobby Nummer " + i + " (klicken zum beitreten)");
+	    for(int i = 0; i < lobbyIdArray.length; i++) {
+	    	String s = "";
+	    	
+	    	s += "Lobby Nummer " + i + " (klicken zum beitreten)";
+	    	
+	    	listUsers[i] = new Label(s);
 	    	listUsers[i].setPrefWidth(850);
 	    	listUsers[i].setStyle("-fx-font-size: 40px; -fx-font-family: Arial; -fx-font-weight: bold; -fx-text-fill: white;");
 	    	listUsers[i].relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() + 25);
