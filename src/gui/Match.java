@@ -11,7 +11,15 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import sqlConnection.Country;
+import sqlConnection.Player;
 import sqlConnection.SqlHelper;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class Match {
 
@@ -25,15 +33,11 @@ public class Match {
 	private Polygon territoryName;
 	private Rectangle territoryInfo;
 	
-	private String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
+	private Country[] countryArray = new Country[42];
 	
-	private String[] territoryArray = SqlHelper.getAllCountrySVG2();
-    
-	private Land[] territorySVG = new Land[territoryArray.length];
-	private Group[] territory_group = new Group[territoryArray.length];
+	private Group[] territory_group = new Group[countryArray.length];
 	
-	public Match() {
-
+	public Match(Lobby lobby) {
 		// Partie-Container (Child von Anwendungs_CTN)
 	    ctn = new Pane();
 	    ctn.setCache(true);
@@ -72,24 +76,33 @@ public class Match {
     	groupTerritoryInfo.getChildren().addAll(territoryInfo, territoryInfoLabel);
 	    
 	    // Einzelnes Land
-	    for(int i = 0; i < territoryArray.length; i++) {
+	    for(int i = 0; i < countryArray.length; i++) {	
+		    	try {
+					countryArray[i] = new Country(i+1);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    	territory_group[i] = new Group();
-	
 		    	// System.out.println(territoryArray[i].length());
-		    	
-		    	territorySVG[i] = new Land();
-		    	territorySVG[i].setContent(territoryArray[i]);
-		    	territorySVG[i].setFill(Color.WHITE);
-		    	territorySVG[i].setStroke(Color.WHITE);
-		    	territorySVG[i].setStrokeWidth(2);
+
+		    	countryArray[i].setFill(Color.WHITE);
+		    	countryArray[i].setStroke(Color.WHITE);
+		    	countryArray[i].setStrokeWidth(2);
+//		    	territorySVG[i].setNeighborIDArray(SqlHelper.getCountryNeighbor((i+1)));
+		    	for (int j : SqlHelper.getCountryNeighbor((i+1))) {
+		    		System.out.print(j + " ");
+		    	}
+		    	System.out.println();
+
 		    	
 		    	final int tmp = i;
 		    	
-		    	territorySVG[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 		    			updateTerritoryInfo(tmp);
 		    		}
 			    );
-		    	groupLands.getChildren().add(territorySVG[i]);
+		    	groupLands.getChildren().add(countryArray[i]);
 	    	}
 	    
 
@@ -232,48 +245,52 @@ public class Match {
     	
 		ctn.getChildren().addAll(bg, groupLands, playerName, playerNameLabel, territoryName, territoryNameLabel, playerInfoGroup, phaseBtnGroup, groupTerritoryInfo);
 	
-		String[][] testUserList = {
-				{"Kevin", "#FFD800"},
-				{"Lea", "#C42B2B"},
-				{"Jessica", "#26BF00"},
-				{"Sebastian", "#0066ED"},
-		};
-
-		startMatch(testUserList);
+		
+		startMatch(lobby);
 	}
 	
 	static int randomInt(int min, int max) {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void startMatch(String[][] userAndColors) {
-		int userCount = userAndColors.length-1;
+	private void startMatch(Lobby lobby) {	
+		// Verteilung der Länder auf die Spieler		
+		// Länderarray wird in eine Liste konvertiert
+		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
+		lobby.setLobbyId(1);
+		Player[] players = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
 		
-		for(int i = 0; i < territorySVG.length; i++) {
-			int randInt = randomInt(0, territorySVG.length-1);
-			
-			while(territorySVG[randInt].getOwner() != null)
-				randInt = randomInt(0, territorySVG.length-1);
-			
-			territorySVG[randInt].setOwner(userAndColors[userCount][0]);	
-			territorySVG[randInt].setFill(Color.web(userAndColors[userCount][1]));
-			
-			if(userCount == 0)
-				userCount = userAndColors.length-1;
-			else
+		
+		int userCount = players.length-1;
+		Random rand = new Random();
+		
+		for (int i = 0; i < countryArray.length; i++) {	
+			// zufälliges Land aus Liste
+			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
+			// Werte werden zugewiesen
+			randomCountry.setOwnerId(players[userCount].getId());	
+			randomCountry.setFill(Color.web(players[userCount].getColor()));	
+			countryList.remove(randomCountry);
+
+			if(userCount == 0) {
+				userCount = players.length-1;
+			} else {
 				userCount--;
+			}
+	
 		}
 	}
 	
-	private void updateTerritoryInfo(int id) {
+	void updateTerritoryInfo(int id) {
 		
-		if(territoryInfo.getFill() != territorySVG[id].getFill())
-			territoryInfo.setFill(territorySVG[id].getFill());
+		if(territoryInfo.getFill() != countryArray[id].getFill())
+			territoryInfo.setFill(countryArray[id].getFill());
 		
 		gameChangeCountry(id);
+
 	}
 
-	private void gameChangePlayer(String s, Paint p) {
+	void gameChangePlayer(String s, Paint p) {
 		if(!playerNameLabel.getText().equals(s))
 			playerNameLabel.setText(s);
 		
@@ -282,11 +299,20 @@ public class Match {
 	}
 	
 	private void gameChangeCountry(int id) {
-		if(!territoryNameLabel.getText().equals(territorySVG[id].getOwner()))
-			territoryNameLabel.setText(territorySVG[id].getOwner());
+		if(!territoryNameLabel.getText().equals(countryArray[id].getOwner())) {
+			try {
+				territoryNameLabel.setText(SqlHelper.getPlayerName(countryArray[id].getOwnerId()));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+					
 
-		if(territoryName.getFill() != territorySVG[id].getFill())
-			territoryName.setFill(territorySVG[id].getFill());
+		if(territoryName.getFill() != countryArray[id].getFill()) {
+			territoryName.setFill(countryArray[id].getFill());
+		}
+			
 	}
 	
 	public Pane getContainer() {

@@ -11,6 +11,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import sqlConnection.Player;
 
 public class Lobby {
 
@@ -20,15 +21,46 @@ public class Lobby {
 	private Sprite btnBack;
 	private Sprite btnCheck;
 	
-	ImageView[] slotArray = new ImageView[6];
+	// Daten
+	private int playerCount = 0;
+	private final int MAX_PLAYER_COUNT = 6;
+	
+	Player[] players = new Player[MAX_PLAYER_COUNT];
+	int lobbyId;
+	
+	public int getLobbyId() {
+		return lobbyId;
+	}
+
+	public void setLobbyId(int lobbyId) {
+		this.lobbyId = lobbyId;
+	}
+
+	//FX
+	ImageView[] slotArray = new ImageView[MAX_PLAYER_COUNT];
     Label[] labelArray = new Label[slotArray.length];
     Polygon[] triangleArray = new Polygon[slotArray.length];
     Sprite[] slotRolesArray = new Sprite[slotArray.length];
     String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
     Rectangle[] colorRectArray = new Rectangle[colorArray.length];
+    
 	
-	public Lobby() {
-		
+   
+	
+	public void addPlayer(Player player) {
+		if (playerCount < MAX_PLAYER_COUNT) {
+			players[playerCount] = player;
+			playerCount++;
+		}
+	}
+	
+	public Player[] getPlayers() {
+		return this.players;
+	}
+	
+
+	
+	public Lobby() {	
 	    // Lobby-Container (Child von Anwendungs_CTN)
 	    ctn = new Pane();
 	    ctn.setId("Lobby");
@@ -78,11 +110,13 @@ public class Lobby {
 	    	colorRectArray[i].setStrokeType(StrokeType.INSIDE);
 	    	colorRectArray[i].setFill(Color.web(colorArray[i]));
 	    	
-	    	if(i > 0)
-	    		if(i % 2 != 0)
+	    	if(i > 0) {
+	    		if(i % 2 != 0) {
 	    			colorRectArray[i].relocate(colorRectArray[i-1].getLayoutX() + 90, colorRectArray[i-1].getLayoutY());
-	    		else
+	    		} else {
 	    			colorRectArray[i].relocate(colorRectArray[i-1].getLayoutX() - 90, colorRectArray[i-1].getLayoutY() + 90);
+	    		}
+	    	}
 	    	
 	    	final int tmp = i;
 
@@ -94,7 +128,7 @@ public class Lobby {
 	    }
 	    
 	    // Farben Label
-	    Label colorLabel = new Label("Farbe auswå©¬en");
+	    Label colorLabel = new Label("Farbe auswählen");
 	    colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    colorLabel.setRotate(90);
 	    colorLabel.relocate(groupColors.getLayoutX() + 70, groupColors.getLayoutY() + 110);
@@ -125,13 +159,13 @@ public class Lobby {
 	    	
 	    	final int tmp = i;
 	    	
-	    	if(i == 0) {
-	    		slotRolesArray[i] = new Sprite("resources/btn_lobby_host.png");
-	    		slotRolesArray[i].setButtonMode(false);
-	    		
-		    	slotRolesArray[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-	    		lobbyAddPlayer(1)
-	    	);
+		    	if(i == 0) {
+		    		slotRolesArray[i] = new Sprite("resources/btn_lobby_host.png");
+		    		slotRolesArray[i].setButtonMode(false);
+		    		
+			    	slotRolesArray[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+		    		lobbyAddPlayer(tmp)
+		    	);
 	    	}
 	    	else {
 	    		slotRolesArray[i] = new Sprite("resources/btn_lobby_kick.png");
@@ -177,7 +211,7 @@ public class Lobby {
 	    	groupSlots.getChildren().add(labelArray[i]);
 	    }
 		
-	    ctn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
+	    ctn.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
 			lobbyChangeName(1, inputName.getText())
 	    );
 	    
@@ -193,8 +227,7 @@ public class Lobby {
 	
 	public void lobbyChangeName(int id, String name) {
 		if(!name.isEmpty()) {
-			labelArray[id].setText(name);
-			
+			labelArray[id].setText(name);			
 			if(triangleArray[id].getFill() != Color.GREY) {
 				btnReady.setActive(true);
 				btnReady.setButtonMode(true);
@@ -215,7 +248,7 @@ public class Lobby {
 		((Sprite) slotArray[id]).setActive(true);
 		slotRolesArray[id].setVisible(true);
 	}
-	
+		
 	private void lobbyRemovePlayer(int id) {
 		((Sprite) slotArray[id]).setActive(false);
 		slotRolesArray[id].setVisible(false);

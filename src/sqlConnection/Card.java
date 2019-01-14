@@ -11,8 +11,7 @@ public class Card
 		return cardId;
 	}
 
-	public void setCardID(int cardId)
-	{
+	public void setCardID(int cardId) {
 		this.cardId = cardId;
 	}
 	

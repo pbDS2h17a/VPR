@@ -20,7 +20,7 @@ public class SqlQuery {
 	public static String splitter = ";";
 
 	public static Statement stmt = SqlHelper.getStatement();
-
+	
 	//#################################################################################################################
 	// FILL STATEMENTS
 	//#################################################################################################################
@@ -204,7 +204,7 @@ public class SqlQuery {
 		
 	}
 
-	static void disableForeignKeyConstraints() {
+	public static void disableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 0");
 
@@ -214,7 +214,7 @@ public class SqlQuery {
 		}
 	}
 
-	static void enableForeignKeyConstraints() {
+	public static void enableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 1");
 
@@ -371,7 +371,7 @@ public class SqlQuery {
 		String sqlPlayer = "CREATE TABLE IF NOT EXISTS player (" +
 				" player_id INT NOT NULL AUTO_INCREMENT, " +/**/
 	            " name VARCHAR(255) NOT NULL, " + 
-				" address INT(20)," +
+				" address CHAR(15)," +
 				" lobby_id INT, " +
 				" color_id INT, " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id)," +
@@ -389,8 +389,8 @@ public class SqlQuery {
 	
 	static void createNeighbor() {
 		String sqlNeighbor = "CREATE TABLE IF NOT EXISTS neighbor (" +
-				" country_id INT, " +
-				" neighbor_id INT, " +
+				" country_id INT NOT NULL, " +
+				" neighbor_id INT NOT NULL, " +
 				" FOREIGN KEY(country_id) REFERENCES country(country_id), " +
 				" FOREIGN KEY(neighbor_id) REFERENCES country(country_id), " +
 				" PRIMARY KEY(country_id, neighbor_id) " +
@@ -406,11 +406,10 @@ public class SqlQuery {
 	static void createLobby() {
 		String sqlLobby = "CREATE TABLE IF NOT EXISTS lobby (" +
 				" lobby_id INT NOT NULL AUTO_INCREMENT, " +
-				" date DATETIME, " +
-				" passwort VARCHAR(255), " +
+				" date DATETIME DEFAULT CURRENT_TIMESTAMP, " +
 				" last_change DATETIME, " +
 				" player_order VARCHAR(255), " +
-				" leader_id INT, " +
+				" leader_id INT NOT NULL, " +
 				" player_turn_id INT, " +
 				" FOREIGN KEY(leader_id) REFERENCES player(player_id)," +
 				" FOREIGN KEY(player_turn_id) REFERENCES player(player_id)," +
