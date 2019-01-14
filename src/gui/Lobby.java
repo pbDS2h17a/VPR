@@ -78,11 +78,13 @@ public class Lobby {
 	    	colorRectArray[i].setStrokeType(StrokeType.INSIDE);
 	    	colorRectArray[i].setFill(Color.web(colorArray[i]));
 	    	
-	    	if(i > 0)
-	    		if(i % 2 != 0)
+	    	if(i > 0) {
+	    		if(i % 2 != 0) {
 	    			colorRectArray[i].relocate(colorRectArray[i-1].getLayoutX() + 90, colorRectArray[i-1].getLayoutY());
-	    		else
+	    		} else {
 	    			colorRectArray[i].relocate(colorRectArray[i-1].getLayoutX() - 90, colorRectArray[i-1].getLayoutY() + 90);
+	    		}
+	    	}
 	    	
 	    	final int tmp = i;
 
@@ -94,7 +96,7 @@ public class Lobby {
 	    }
 	    
 	    // Farben Label
-	    Label colorLabel = new Label("Farbe auswå©¬en");
+	    Label colorLabel = new Label("Farbe auswählen");
 	    colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    colorLabel.setRotate(90);
 	    colorLabel.relocate(groupColors.getLayoutX() + 70, groupColors.getLayoutY() + 110);
@@ -125,13 +127,13 @@ public class Lobby {
 	    	
 	    	final int tmp = i;
 	    	
-	    	if(i == 0) {
-	    		slotRolesArray[i] = new Sprite("resources/btn_lobby_host.png");
-	    		slotRolesArray[i].setButtonMode(false);
-	    		
-		    	slotRolesArray[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-	    		lobbyAddPlayer(1)
-	    	);
+		    	if(i == 0) {
+		    		slotRolesArray[i] = new Sprite("resources/btn_lobby_host.png");
+		    		slotRolesArray[i].setButtonMode(false);
+		    		
+			    	slotRolesArray[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+		    		lobbyAddPlayer(tmp)
+		    	);
 	    	}
 	    	else {
 	    		slotRolesArray[i] = new Sprite("resources/btn_lobby_kick.png");
@@ -177,7 +179,7 @@ public class Lobby {
 	    	groupSlots.getChildren().add(labelArray[i]);
 	    }
 		
-	    ctn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
+	    ctn.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
 			lobbyChangeName(1, inputName.getText())
 	    );
 	    
@@ -193,8 +195,7 @@ public class Lobby {
 	
 	public void lobbyChangeName(int id, String name) {
 		if(!name.isEmpty()) {
-			labelArray[id].setText(name);
-			
+			labelArray[id].setText(name);			
 			if(triangleArray[id].getFill() != Color.GREY) {
 				btnReady.setActive(true);
 				btnReady.setButtonMode(true);

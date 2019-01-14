@@ -34,7 +34,7 @@ public class MainApp extends Application {
 	    ctn_app.setPrefSize(1920, 1080);
 	    resizeThat(stage, ctn_app);
 	    
-	    // Spiel-OberflÃ¤chen
+	    // Spiel-Oberflächen
 	    Title title = new Title();
 	    Lobby lobby = new Lobby();
 	    Join join = new Join();
@@ -58,10 +58,10 @@ public class MainApp extends Application {
 			mp.playBtnSFX();
 	    });
 	    	    
-	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	paneTransition(title.getBtnJoin(), title.getContainer(), join.getContainer());
-	    	mp.playBtnSFX();
-	    });
+//	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+//	    	paneTransition(title.getBtnJoin(), title.getContainer(), join.getContainer());
+//	    	mp.playBtnSFX();
+//	    });
 	    
 	    lobby.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			paneTransition(lobby.getBtnBack(), lobby.getContainer(), title.getContainer());
@@ -128,8 +128,8 @@ public class MainApp extends Application {
 	        		}
 	        	}
 	        	
-	        	mp.setVolumeGame();
-	        	mp.setVolumeStart();
+//	        	mp.setVolumeGame();
+//	        	mp.setVolumeStart();
 	        }
 	    }.start();
 	    

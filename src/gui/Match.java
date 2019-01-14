@@ -1,5 +1,7 @@
 package gui;
 
+import java.sql.SQLException;
+
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -11,6 +13,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import sqlConnection.Country;
 import sqlConnection.SqlHelper;
 
 public class Match {
@@ -27,10 +30,9 @@ public class Match {
 	
 	private String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
 	
-	private String[] territoryArray = SqlHelper.getAllCountrySVG2();
-    
-	private Land[] territorySVG = new Land[territoryArray.length];
-	private Group[] territory_group = new Group[territoryArray.length];
+	private Country[] countryArray = new Country[42];
+	
+	private Group[] territory_group = new Group[countryArray.length];
 	
 	public Match() {
 
@@ -72,24 +74,33 @@ public class Match {
     	groupTerritoryInfo.getChildren().addAll(territoryInfo, territoryInfoLabel);
 	    
 	    // Einzelnes Land
-	    for(int i = 0; i < territoryArray.length; i++) {
+	    for(int i = 0; i < countryArray.length; i++) {	
+		    	try {
+					countryArray[i] = new Country(i+1);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    	territory_group[i] = new Group();
-	
 		    	// System.out.println(territoryArray[i].length());
-		    	
-		    	territorySVG[i] = new Land();
-		    	territorySVG[i].setContent(territoryArray[i]);
-		    	territorySVG[i].setFill(Color.WHITE);
-		    	territorySVG[i].setStroke(Color.WHITE);
-		    	territorySVG[i].setStrokeWidth(2);
+
+		    	countryArray[i].setFill(Color.WHITE);
+		    	countryArray[i].setStroke(Color.WHITE);
+		    	countryArray[i].setStrokeWidth(2);
+//		    	territorySVG[i].setNeighborIDArray(SqlHelper.getCountryNeighbor((i+1)));
+		    	for (int j : SqlHelper.getCountryNeighbor((i+1))) {
+		    		System.out.print(j + " ");
+		    	}
+		    	System.out.println();
+
 		    	
 		    	final int tmp = i;
 		    	
-		    	territorySVG[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-		    			updateTerritoryInfo(tmp);
+		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+//		    			updateTerritoryInfo(tmp);
 		    		}
 			    );
-		    	groupLands.getChildren().add(territorySVG[i]);
+		    	groupLands.getChildren().add(countryArray[i]);
 	    	}
 	    
 
@@ -246,34 +257,25 @@ public class Match {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void startMatch(String[][] userAndColors) {
-		int userCount = userAndColors.length-1;
+	private void startMatch(String[][] userAndColors) {	
+		// Verteilung der Länder auf die Spieler
+		int randomCountryId = randomInt(0,countryArray.length-1);
 		
-		for(int i = 0; i < territorySVG.length; i++) {
-			int randInt = randomInt(0, territorySVG.length-1);
-			
-			while(territorySVG[randInt].getOwner() != null)
-				randInt = randomInt(0, territorySVG.length-1);
-			
-			territorySVG[randInt].setOwner(userAndColors[userCount][0]);	
-			territorySVG[randInt].setFill(Color.web(userAndColors[userCount][1]));
-			
-			if(userCount == 0)
-				userCount = userAndColors.length-1;
-			else
-				userCount--;
+		for(int i = 0; i < countryArray.length; i++) {	
+			countryArray[i].setFill(Color.web(userAndColors[0][1]));				
 		}
 	}
 	
-	private void updateTerritoryInfo(int id) {
+	void updateTerritoryInfo(int id) {
 		
-		if(territoryInfo.getFill() != territorySVG[id].getFill())
-			territoryInfo.setFill(territorySVG[id].getFill());
+		if(territoryInfo.getFill() != countryArray[id].getFill())
+			territoryInfo.setFill(countryArray[id].getFill());
 		
 		gameChangeCountry(id);
+
 	}
 
-	private void gameChangePlayer(String s, Paint p) {
+	void gameChangePlayer(String s, Paint p) {
 		if(!playerNameLabel.getText().equals(s))
 			playerNameLabel.setText(s);
 		
@@ -282,11 +284,16 @@ public class Match {
 	}
 	
 	private void gameChangeCountry(int id) {
-		if(!territoryNameLabel.getText().equals(territorySVG[id].getOwner()))
-			territoryNameLabel.setText(territorySVG[id].getOwner());
+		if(!territoryNameLabel.getText().equals(countryArray[id].getOwnerId()))
+			try {
+				territoryNameLabel.setText(SqlHelper.getPlayerName(countryArray[id].getOwnerId()));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-		if(territoryName.getFill() != territorySVG[id].getFill())
-			territoryName.setFill(territorySVG[id].getFill());
+		if(territoryName.getFill() != countryArray[id].getFill())
+			territoryName.setFill(countryArray[id].getFill());
 	}
 	
 	public Pane getContainer() {
