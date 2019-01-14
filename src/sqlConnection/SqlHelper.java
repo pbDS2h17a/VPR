@@ -21,8 +21,10 @@ public class SqlHelper {
 	 * 2=Password
 	 * Erstellt ein Statement mit den Werten
 	 */
-//	loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
-	private static String[] loginStringArray =  {"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"};
+	
+	// Private TestDb für home server
+	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
+	private static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
 
 	/**
 	 * Versucht ein neues Statement zu erstellen
