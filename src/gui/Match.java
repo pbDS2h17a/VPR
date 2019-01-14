@@ -261,14 +261,8 @@ public class Match {
 		// Verteilung der Länder auf die Spieler
 		int randomCountryId = randomInt(0,countryArray.length-1);
 		
-		for(int i = 0; i < countryArray.length; i++) {
-			
-			for(String[] data : userAndColors) {
-				while(countryArray[randomCountryId].getFill().equals("0xffffffff")) {
-					countryArray[randomCountryId].setFill(Web.get(data[1]));
-				}
-			}
-			
+		for(int i = 0; i < countryArray.length; i++) {	
+			countryArray[i].setFill(Color.web(userAndColors[0][1]));				
 		}
 	}
 	

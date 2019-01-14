@@ -1,7 +1,5 @@
 package gui;
 
-import java.sql.SQLException;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;

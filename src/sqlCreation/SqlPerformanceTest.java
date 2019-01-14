@@ -26,11 +26,11 @@ public class SqlPerformanceTest {
 			e.printStackTrace();
 		}
         
-        Statement stmt = SqlHelper.getStatement();
+//        Statement stmt = SqlHelper.getStatement();
         
 //        SqlQuery.disableForeignKeyConstraints();
-        stmt.executeUpdate("INSERT INTO player VALUES(1,'Testuser1','"+localIP+"',NULL,NULL)");
-        stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
+//        stmt.executeUpdate("INSERT INTO player VALUES(1,'Testuser1','"+localIP+"',NULL,NULL)");
+//        stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
 //        SqlQuery.enableForeignKeyConstraints();
         
         if(useTimer) {
