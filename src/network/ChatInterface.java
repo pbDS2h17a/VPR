@@ -20,21 +20,15 @@ import java.util.List;
 import java.time.*;
 
 public class ChatInterface extends Application {
-	static Connection con;
-	static Statement stmt;
-	static String localIP = "127.0.0.1";
+
+	static String myIP = "127.0.0.1";
+	static int myID = 0;
+	static int lobbyID = 0;
+	static ChatManager cm;
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		try {
-			// Eigene IP speichern
-			localIP = Inet4Address.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		Class.forName("com.mysql.cj.jdbc.Driver"); 
-		// Datenbankverbindung aufbauen
-		SqlHelper.setStatement(SqlHelper.loginStringArray);
-		stmt = SqlHelper.stmt;
+		
+		cm = new ChatManager(myIP, myID, lobbyID);
 		// GUI launchen
 		launch(args);
 	}
@@ -43,7 +37,7 @@ public class ChatInterface extends Application {
 	public void start(Stage arg0) throws SQLException {
 		BorderPane bp = new BorderPane();
 		TextField tf = new TextField();
-		Button send = new Button("Send");
+		Button send = new Button("Senden");
 		HBox hb = new HBox();
 		
 		// Nachricht abschicken (action)
@@ -64,9 +58,8 @@ public class ChatInterface extends Application {
 			protected Void call() throws Exception {
 				while(true) {
 					// Ergebnisse der Query im ResultSet speichern
-					ResultSet r = stmt.executeQuery("SELECT from_ip, timestamp, message FROM chat"
-																+ " WHERE '"+localIP+"' LIKE to_ip;");
-					List<List<String>> set = ResultSetManager.toList(r);
+					
+					List<List<String>> set = cm.getChatHistory(0);
 					// Wenn Ergebnis != Null: Ergebnisse ausgeben
 					if(set != null) {
 						Platform.runLater(() -> {

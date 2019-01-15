@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import network.ResultSetManager;
+
 public class SqlHelper {
 
 	public static Statement stmt;
@@ -82,5 +84,22 @@ public class SqlHelper {
 		ResultSet rs = stmt.executeQuery("select description from mission where mission_id ="+missionID+";");
 		rs.next();
 		return rs.getString("description");
+	}
+	
+	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
+		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.pid = c.pid AND c.lid = %d AND c.timestamp > %d;", lid, timestamp));
+		return ResultSetManager.toList(r);
+	}
+	
+	public static void sendMessage(String message, int pid, int lid) throws SQLException
+	{
+		stmt.executeUpdate(String.format("INSERT into %s(timestamp, message, pid, lid) VALUES(CURDATE(), '%s', %d, %d);", message, pid, lid));
+	}
+	
+	public static List<List<String>> getLobbies() throws SQLException
+	{
+		//TODO: WHERE player_6 IS NULL
+		ResultSet r = stmt.executeQuery("SELECT * FROM lobby;");
+		return ResultSetManager.toList(r);
 	}
 }
