@@ -1,15 +1,18 @@
 package gui;
 
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
+import sqlConnection.SqlHelper;
 
 public class Join {
 	
 	private Pane ctn;
 	private Sprite btnBack;
-	private Sprite btnCheck;
+	private int[] lobbyIdArray = SqlHelper.getAllLobbyId();
+	private Label[] listUsers = new Label[lobbyIdArray.length];
 	
 	public Join() {
 		
@@ -26,39 +29,49 @@ public class Join {
 	    btnBack.relocate(50, 50);
 	    btnBack.setButtonMode(true);
 	    
-	    // Namens-Input Hintergrund
-	    Sprite inputNameBG = new Sprite("resources/input_bg.png");
-	    inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight()/2 - 119/2);		
+	    // Listen-Hintergrund
+	    Rectangle listBG = new Rectangle(900, 650);
+	    listBG.setFill(Color.web("rgba(113, 188, 120, .85)"));
+	    listBG.relocate(ctn.getPrefWidth()/2 - listBG.getWidth()/2, ctn.getPrefHeight()/2 - listBG.getHeight()/2);
+	    listBG.setStroke(Color.WHITE);
+	    listBG.setStrokeWidth(5);
+	    listBG.setStrokeType(StrokeType.INSIDE);
+	    ctn.getChildren().add(listBG);
 	    
-	    // Namens-Input TextField
-	    TextField inputName = new TextField();
-	    inputName.setPrefSize(653, 119);
-	    inputName.setStyle("-fx-background-color: transparent; -fx-font-size: 60px; -fx-alignment: center;  -fx-font-weight: bold; -fx-text-fill: white;");
-	    inputName.relocate(inputNameBG.getLayoutX(), inputNameBG.getLayoutY());
-
-	    // Namens-Input Check-Button
-	    btnCheck = new Sprite("resources/btn_confirm.png");
-	    btnCheck.relocate(inputNameBG.getLayoutX() + 653 - 7, inputNameBG.getLayoutY() - 40);
-	    btnCheck.setButtonMode(true);
-
+	    // Listen aufrufen
+	    for(int i = 0; i < lobbyIdArray.length; i++) {
+	    	String s = "";
+	    	
+	    	s += "Lobby Nummer " + i + " (klicken zum beitreten)";
+	    	
+	    	listUsers[i] = new Label(s);
+	    	listUsers[i].setPrefWidth(850);
+	    	listUsers[i].setStyle("-fx-font-size: 40px; -fx-font-family: Arial; -fx-font-weight: bold; -fx-text-fill: white;");
+	    	listUsers[i].relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() + 25);
+	    	
+	    	if(i != 0)
+	    		listUsers[i].relocate(listBG.getLayoutX() + 25, listUsers[i-1].getLayoutY() + 62);
+	    	
+	    	ctn.getChildren().add(listUsers[i]);
+	    }
 	    // Namens-Input Label
-	    Label inputNameLabel = new Label("IP eingeben");
-	    inputNameLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
-	    inputNameLabel.relocate(inputNameBG.getLayoutX() + 20, inputNameBG.getLayoutY() - 50);
+	    Label listLabel = new Label("Partie aussuchen");
+	    listLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
+	    listLabel.relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() - 50);
 	  
-		ctn.getChildren().addAll(btnBack, inputNameBG, inputName, btnCheck, inputNameLabel);
+		ctn.getChildren().addAll(btnBack, listLabel);
 	}
 
 	public Pane getContainer() {
 		return ctn;
 	}
 
-	public Sprite getBtnCheck() {
-		return btnCheck;
-	}
-
 	public Sprite getBtnBack() {
 		return btnBack;
+	}
+	
+	public Label[] getBtnLobby() {
+		return listUsers;
 	}
 	
 }

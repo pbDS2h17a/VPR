@@ -1,40 +1,120 @@
 package sqlCreation;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import java.io.InputStreamReader;
+/**
+ * @author pbs2h17awb
+ * Ließt die Daten aus der Stammdaten.csv datei aus und trennt sie an den marktieren Bereichen in
+ * Datenbklöcke auf.
+ * Die Datenblöcke werden an die SqlQeury fillStatements übergeben
+ */
 public class FileReader {
+	private static String[] continentData = null;
+	private static String[] countryData = null;
+	private static String[] missionData = null;
+	private static String[] cardData = null;
+	private static String[] colorData = null;
+	
 
-	static String[] readFile(String path) {
-		String data = ""; 
-	    try {
-			data = new String(Files.readAllBytes(Paths.get(path)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	/**
+	 * @param path Pfad your Stammdaten datei
+	 * @throws IOException 
+	 */
+	static void readFile(String path) throws IOException {
+		//BufferedReader br = new BufferedReader(new FileInputStream(path));
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+			    new FileInputStream(path), "UTF-8"));
+		try {  
+		    String line;
+		    String currentBlock = "";
+		    String currentData = ""; 
+		    // Zeile für Zeile lesen
+		    while ((line = br.readLine()) != null) {
+	    		// Kommentare (//) werden ignoriert
+		    	if(!line.startsWith("//")) {
+					// START und END befehle werden nicht bearbeitet
+					if(!line.startsWith("#")) {
+						//System.out.println(line);
+						currentData += line + "\n";
+					}
+					   
+					// Start befehl
+					if(line.startsWith("#START")) {
+						currentBlock = line.substring(7);
+						currentData = "";
+					}
+					
+					// End befehl
+					if(line.startsWith("#END")) {
+						// Zuweisung der Aktuellen Daten in den richtigen Block
+						// Name hier muss übereinstimmen mit Name in Stammdaten datei! 
+						switch(currentBlock) {
+						case "KONTINENT":				
+							continentData = currentData.split("\n");						
+							break;
+						case "LAND":
+							countryData = currentData.split("\n");
+							break;
+						case "KARTE":
+							cardData = currentData.split("\n");
+							break;
+						case "MISSION":
+							missionData = currentData.split("\n");
+							break;
+						case "FARBE":
+							colorData = currentData.split("\n");
+							break;
+						}
+						
+						// Blöcke und Daten zurücksetzen
+						currentBlock = "";
+						currentData = "";
+					}  	   
+		     	}
+		    }
+		} finally {
+		    br.close();
 		}
-	    return data.split("\n");
+
 	}
 	
-	static String[] getContinent(String[] data) {
-		String[] continentData = new String[5];
-		for (int i = 0; i < 5; i++) {
-			continentData[i] = data[(i+1)].trim();
-		}
-		
-		return continentData;
-		
+	/**
+	 * @return getter für Kontinent Daten
+	 * 		   Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
+	static String[] getContinent() {
+		return continentData;	
 	}
 	
-	static String[] getCountry(String[] data) {
-		String[] countryData = new String[42];
-		for (int i = 0; i < 42; i++) {
-			countryData[i] = data[(i+8)].trim();
-		}
-		
+	/**
+	 *
+	 * @return getter für Länder Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
+	static String[] getCountry() {
 		return countryData;
-		
+	}
+	/**
+	 * 
+	 * @return getter für Mission Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
+	static String[] getMission() {
+		return missionData;
+	}
+	/**
+	 *
+	 * @return getter für Karten Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
+	static String[] getCard() {
+		return cardData;
+	}
+	
+	static String[] getColor(){
+		return colorData;
 	}
 	
 }

@@ -1,41 +1,44 @@
 package network;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import sqlConnection.SqlHelper;
+
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import javafx.application.*;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.stage.Stage;
-import javafx.scene.layout.*;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.*;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.time.*;
 
 public class ChatInterface extends Application {
 	static Connection con;
 	static Statement stmt;
 	static String localIP = "127.0.0.1";
 
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+	public static void main(String[] args) {
 		try {
 			// Eigene IP speichern
 			localIP = Inet4Address.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		Class.forName("com.mysql.cj.jdbc.Driver"); 
+
 		// Datenbankverbindung aufbauen
-		con = DriverManager.getConnection(
-					"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");
-		// Verbindung zum Abschicken von SQL-Abfragen 
-		stmt = con.createStatement();
+		stmt = SqlHelper.getStatement();
 		// GUI launchen
 		launch(args);
 	}
@@ -130,11 +133,7 @@ public class ChatInterface extends Application {
 	 * @param tf				TextField to set = ""
 	 */
 	private void deleteAll (String tableName, TextField tf) {
-		try { 
-			stmt.executeUpdate("TRUNCATE TABLE "+tableName+";");
-		} catch(SQLException s) {
-				s.printStackTrace();
-			}
+		SqlHelper.clearTable(tableName);
 		tf.setText("");
 	}
 }

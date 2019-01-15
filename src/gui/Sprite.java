@@ -1,20 +1,32 @@
 package gui;
 
+/**
+ * @author Dang, Hoang-Ha
+ */
+
+
 import javafx.scene.Cursor;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-
+/**
+ * Sprite Klasse
+ * @param imagePath		: String
+ * @param image			: Image
+ * @param isButton		: boolean
+ * @param isActive		: boolean
+ * @param vx			: double
+ * @param vy			: double
+ * @param scale			: double
+ * @param vscale		: double
+ * @param colorAdjust	: Coloradjust
+ */
 public class Sprite extends ImageView
 {
-	//der aktuelle Pfad zum Bild
 	private String imagePath;
-	//Bild für die ImageView
-	Image image;
-	//ist das Bild ein Button
+	private Image image;
 	private boolean isButton;
-	
 	private boolean isActive = true;
 	private double vx;
 	private double vy;
@@ -30,6 +42,9 @@ public class Sprite extends ImageView
 		initializeListeners();
 	}
 	
+	public Sprite() {
+		initializeListeners();
+	}
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -41,7 +56,7 @@ public class Sprite extends ImageView
 		this.isButton = mode;
 	}
 	
-	public void setIsActive(boolean mode) {
+	public void setActive(boolean mode) {
 		if (mode) {
 			colorAdjust.setSaturation(0);
 			this.setEffect(colorAdjust);			
@@ -97,6 +112,7 @@ public class Sprite extends ImageView
 	}
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
+			MediaPlayer.menuHover.play();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0.1);
 				colorAdjust.setContrast(0.3);
@@ -108,6 +124,7 @@ public class Sprite extends ImageView
 				getScene().setCursor(Cursor.HAND);
 		});
 		setOnMouseExited(eventExited->{
+			MediaPlayer.menuHover.stop();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0);
 				colorAdjust.setContrast(0);
