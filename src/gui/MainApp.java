@@ -1,13 +1,18 @@
 package gui;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.scene.image.Image;
-import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import sqlConnection.SqlHelper;
+import sqlCreation.SqlQuery;
 
 public class MainApp extends Application {
 	
@@ -34,11 +39,11 @@ public class MainApp extends Application {
 	    ctn_app.setPrefSize(1920, 1080);
 	    resizeThat(stage, ctn_app);
 	    
-	    // Spiel-OberflÃ¤chen
+	    // Spiel-Oberflächen
 	    Title title = new Title();
 	    Lobby lobby = new Lobby();
 	    Join join = new Join();
-	    Match match = new Match();
+	    Match match = new Match(lobby);
 	    MediaPlayer mp = new MediaPlayer();
 
 	    // Alles in die richtigen Container schieben
@@ -47,9 +52,7 @@ public class MainApp extends Application {
 				lobby.getContainer(),
 				join.getContainer(),
 				match.getContainer(),
-				mp.getPlayBtn(),
-				mp.getStopBtn(),
-				mp.getSlider()
+				mp.getContainer()
 		);
 
 	    app.getChildren().add(ctn_app);
@@ -60,10 +63,10 @@ public class MainApp extends Application {
 			mp.playBtnSFX();
 	    });
 	    	    
-	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	paneTransition(title.getBtnJoin(), title.getContainer(), join.getContainer());
-	    	mp.playBtnSFX();
-	    });
+//	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+//	    	paneTransition(title.getBtnJoin(), title.getContainer(), join.getContainer());
+//	    	mp.playBtnSFX();
+//	    });
 	    
 	    lobby.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			paneTransition(lobby.getBtnBack(), lobby.getContainer(), title.getContainer());
@@ -104,13 +107,12 @@ public class MainApp extends Application {
 		// GAME LOOP Animationen
 		new AnimationTimer() {
 	        public void handle(long currentNanoTime) {
-	        	
 	        	if(toPane) {
 	        		if(von.getScaleY() < 1.5) {
 		        		von.setScaleX(von.getScaleX() + .02);
 		        		von.setScaleY(von.getScaleY() + .02);
 	        		}
-	        		
+
 	        		if(von.getOpacity() > 0)
 	        			von.setOpacity(von.getOpacity() - .05);
 	        		
@@ -131,8 +133,8 @@ public class MainApp extends Application {
 	        		}
 	        	}
 	        	
-	        	mp.setVolumeGame();
-	        	mp.setVolumeStart();
+//	        	mp.setVolumeGame();
+//	        	mp.setVolumeStart();
 	        }
 	    }.start();
 	    
@@ -142,7 +144,7 @@ public class MainApp extends Application {
 
 		stage.widthProperty().addListener(stageSizeListener);
 		stage.heightProperty().addListener(stageSizeListener); 
-	    
+		
 	    // Scene
 		Scene scene = new Scene(app);
 		stage.setTitle("CONQUER | All risk all fun");
@@ -151,7 +153,36 @@ public class MainApp extends Application {
 	    
 	}
 	
-	public static void main(String[] args) {
+	@Override
+	public void stop(){
+		SqlQuery.disableForeignKeyConstraints();
+		
+		System.out.println("Lobby table clearen");
+		SqlHelper.clearTable("lobby");
+		
+		System.out.println("Player table clearen");
+		SqlHelper.clearTable("player");
+		
+		SqlQuery.enableForeignKeyConstraints();
+	    System.out.println("Sql verbindung beenden");
+	    SqlHelper.closeStatement();
+	    // Save file
+	}
+	
+	public static void main(String[] args) throws SQLException {
+      Statement stmt = SqlHelper.getStatement();
+      
+      // testspieler in Lobby eintragen
+      SqlQuery.disableForeignKeyConstraints();
+
+      stmt.executeUpdate("INSERT INTO player VALUES(1,'Testuser1','127.0.0.1', 1 ,1)");
+      stmt.executeUpdate("INSERT INTO player VALUES(2,'Testuser2','127.0.0.1', 1 ,2)");
+      stmt.executeUpdate("INSERT INTO player VALUES(3,'Testuser3','127.0.0.1', 1 ,3)");
+      stmt.executeUpdate("INSERT INTO player VALUES(4,'Testuser4','127.0.0.1', 1 ,4)");
+      stmt.executeUpdate("INSERT INTO player VALUES(5,'Testuser5','127.0.0.1', 1 ,5)");
+      stmt.executeUpdate("INSERT INTO player VALUES(6,'Testuser6','127.0.0.1', 1 ,6)");
+      stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
+      SqlQuery.enableForeignKeyConstraints();
 		launch(args);
 	}
 	
