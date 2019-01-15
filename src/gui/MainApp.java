@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 import sqlCreation.SqlQuery;
 
@@ -59,6 +60,14 @@ public class MainApp extends Application {
 
 		// Click Events
 	    title.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	try
+			{
+				SqlHelper.createLobby(new Player(1, "Jona", "red"));
+			} catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			paneTransition(title.getBtnCreate(), title.getContainer(), lobby.getContainer());
 			mp.playBtnSFX();
 	    });
