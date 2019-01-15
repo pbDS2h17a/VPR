@@ -14,7 +14,6 @@ public class Continent
 	//Getters/Setters
 	public int getId()
 	{
-		
 		return id;
 	}
 	public void setId(int id)

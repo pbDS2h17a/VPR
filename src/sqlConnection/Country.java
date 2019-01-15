@@ -7,14 +7,14 @@ import java.util.List;
 public class Country
 {
 	private int countryId;
-	private int countryContinentID;
+	private int countryContinentId;
 	private String name;
 	private List<Integer> neighbor = new ArrayList<Integer>();
 	private int armys;
 
 	public Country(int id,int armys) throws SQLException{
 		this.countryId=id;
-		this.countryContinentID=SqlHelper.getCountryContinentId(id);
+		this.countryContinentId=SqlHelper.getCountryContinentId(id);
 		this.name=SqlHelper.getCountryName(id);
 		this.neighbor=SqlHelper.getCountryNeighbor(0);
 		}
@@ -32,7 +32,7 @@ public class Country
 	}
 	
 	public int getCountryContinentID(){
-		return this.countryContinentID;
+		return this.countryContinentId;
 	}
 
 	public int getArmys()
