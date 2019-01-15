@@ -344,10 +344,12 @@ public class Match {
 			}
 		}
 		
+		System.out.println(country.getCountryName());
+		
 		int[] cArr = country.getNeighborIdArray();
 		
 		for (int i = 0; i < cArr.length; i++) {
-			System.out.print(cArr[i] + " ");
+			
 			countryArray[cArr[i]-1].setStroke(Color.RED);
 			country.setStroke(Color.RED);
 		}
