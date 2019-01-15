@@ -56,6 +56,8 @@ public class MySQLConnection {
 		SqlQuery.fillCard(cardData);
 		SqlQuery.fillMissions(missionData);
 		SqlQuery.fillColor(colorData);
+		
+		System.out.println("Tabellen erfolgreich zurückgesetzt");
 
 	}
 
