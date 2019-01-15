@@ -226,9 +226,9 @@ public class Lobby {
 	    
 	    ctn.getChildren().add(groupRoles);
 	    
-	    btnCheck.addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-			lobbyChangeName(1, inputName.getText())
-	    );
+	    btnCheck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			lobbyChangeName(1, inputName.getText());
+	    });
 	    	    
 	    lobbyAddPlayer(0);
 	    lobbyAddPlayer(1);

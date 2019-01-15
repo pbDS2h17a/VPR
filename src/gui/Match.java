@@ -136,7 +136,7 @@ public class Match {
 		    	final int tmp = i;
 		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 		    			updateTerritoryInfo(tmp);
-		    			gameChangeCountryStroke(countryArray[tmp].getNeighborIdArray(), Color.RED);
+		    			gameChangeCountryStroke(countryArray[tmp], Color.RED);
 		    		}
 			    );
 		    	
@@ -337,19 +337,19 @@ public class Match {
 	 * Change the Stroke-Color of all Countrys to WHITE if it's color differs.
 	 * Change the Stroke-Color of the current and neighbour-countrys
 	 */
-	private void gameChangeCountryStroke(int[] neighbourCountryArray, Paint color) {
+	private void gameChangeCountryStroke(Country country, Paint color) {
 		for (int i = 0; i < countryArray.length; i++) {
 			if(countryArray[i].getStroke() != Color.WHITE) {
 				countryArray[i].setStroke(Color.WHITE);
 			}
 		}
 		
-		int[] cArr = neighbourCountryArray;
+		int[] cArr = country.getNeighborIdArray();
 		
 		for (int i = 0; i < cArr.length; i++) {
 			System.out.print(cArr[i] + " ");
-			
-			countryArray[cArr[i]].setStroke(Color.RED);
+			countryArray[cArr[i]-1].setStroke(Color.RED);
+			country.setStroke(Color.RED);
 		}
 		System.out.println();
 	}
