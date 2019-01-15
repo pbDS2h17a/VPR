@@ -175,12 +175,12 @@ public class MainApp extends Application {
       // testspieler in Lobby eintragen
       SqlQuery.disableForeignKeyConstraints();
 
-      stmt.executeUpdate("INSERT INTO player VALUES(1,'Testuser1','127.0.0.1', 1 ,1)");
-      stmt.executeUpdate("INSERT INTO player VALUES(2,'Testuser2','127.0.0.1', 1 ,2)");
-      stmt.executeUpdate("INSERT INTO player VALUES(3,'Testuser3','127.0.0.1', 1 ,3)");
-      stmt.executeUpdate("INSERT INTO player VALUES(4,'Testuser4','127.0.0.1', 1 ,4)");
-      stmt.executeUpdate("INSERT INTO player VALUES(5,'Testuser5','127.0.0.1', 1 ,5)");
-      stmt.executeUpdate("INSERT INTO player VALUES(6,'Testuser6','127.0.0.1', 1 ,6)");
+      stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 ,1)");
+      stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 ,2)");
+      stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 ,3)");
+      stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 ,4)");
+      stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 ,5)");
+      stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 ,6)");
       stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
       SqlQuery.enableForeignKeyConstraints();
 		launch(args);
