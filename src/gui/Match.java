@@ -18,28 +18,68 @@ import sqlConnection.SqlHelper;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
+
+/**
+ * @author Daniels, Kevin
+ * @author pbs2h17ale
+ *
+ */
 
 public class Match {
 
-	// Globale Variablen
-	private Pane ctn;
-	private Pane groupTerritoryInfo;
-	private Label territoryInfoLabel;
-	private Label playerNameLabel;
-	private Label territoryNameLabel;
-	private Polygon playerName;
-	private Polygon territoryName;
-	private Rectangle territoryInfo;
-	
+	/**
+	 * @param ctn				 : Pane
+	 * @param groupTerritoryInfo : Pane
+	 * @param territoryInfoLabel : Label
+	 * @param playerNameLabel	 : Label
+	 * @param territoryNameLabel : Label
+	 * @param playerName		 : Polygon
+	 * @param territoryName		 : Polygon
+	 * @param territoryInfo		 : Rectangle
+	 * @param bg				 : ImageView
+	 * @param groupLands		 : Group
+	 * @param colorArray		 : String[]
+	 * @param territoryArray	 : String[]
+	 * @param territorySVG		 : SVGPath[]
+	 * @param territory_group	 : Group[]
+	 */
+	private Pane ctn = new Pane();
+	private Pane groupTerritoryInfo = new Pane();
+	private Label territoryInfoLabel = new Label("1");
+	private Label playerNameLabel = new Label();
+	private Label territoryNameLabel = new Label();
+	private Polygon playerName = new Polygon();
+	private Polygon territoryName = new Polygon();
+	private Rectangle territoryInfo = new Rectangle(80, 80);
+	private Group playerInfoGroup = new Group();
+	private Sprite playerInfoUnits = new Sprite("resources/game_icon_units.png");
+	private Label playerInfoUnitsLabel = new Label("999");
+	private Sprite playerInfoLand = new Sprite("resources/game_icon_lands.png");
+	private Label playerInfoLandLabel = new Label("999");
+	private Sprite playerInfoCard1 = new Sprite("resources/game_icon_card1.png");
+	private Label playerInfoCard1Label = new Label("999");
+	private Sprite playerInfoCard2 = new Sprite("resources/game_icon_card2.png");
+	private Label playerInfoCard2Label = new Label("999");
+	private Sprite playerInfoCard3 = new Sprite("resources/game_icon_card3.png");
+	private Label playerInfoCard3Label = new Label("999");
+	private Group playerInfoAuftragGroup = new Group();
+	private Sprite playerInfoAuftrag = new Sprite("resources/btn_phase_goal.png");
+	private Label playerInfoAuftragLabel = new Label("Vernichte Einheit Rot");
+	private Group phaseBtnGroup = new Group();
+	private Sprite phaseBtn1 = new Sprite("resources/btn_phase_add.png");
+	private Sprite phaseBtn2 = new Sprite("resources/btn_phase_battle.png");
+	private Sprite phaseBtn3 = new Sprite("resources/btn_phase_move.png");
+	private Sprite phaseBtn4 = new Sprite("resources/btn_phase_end.png");
+	private Group groupLands = new Group();
 	private Country[] countryArray = new Country[42];
-	
 	private Group[] territory_group = new Group[countryArray.length];
 	
+	/**
+	 * Constructor.
+	 */
 	public Match(Lobby lobby) {
 		// Partie-Container (Child von Anwendungs_CTN)
-	    ctn = new Pane();
 	    ctn.setCache(true);
 	    ctn.setId("Partie");
 	    ctn.setPrefSize(1920, 1080);
@@ -48,32 +88,29 @@ public class Match {
 	    
 	    // Partie-Hintergrund
 	    ImageView bg = new ImageView("resources/game_bg.png");
+	    ctn.getChildren().add(bg);
 	    
 	    // Land
 	    // Land-Gruppe
-	    Group groupLands = new Group();
 	    groupLands.setScaleX(.9);
 	    groupLands.setScaleY(.9);
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 	    
 	    // Land-Infos
-	    groupTerritoryInfo = new Pane();
 	    groupTerritoryInfo.setPrefSize(80,80);
 	    groupTerritoryInfo.relocate(1130, 940);
 	    
-    	territoryInfo = new Rectangle(80, 80);
     	territoryInfo.setStroke(Color.WHITE);
     	territoryInfo.setStrokeWidth(5);
     	territoryInfo.setStrokeType(StrokeType.INSIDE);
     	territoryInfo.setFill(Color.GREY);
     	territoryInfo.setArcHeight(200);
     	territoryInfo.setArcWidth(200);
-   
-    	territoryInfoLabel = new Label("");
+    	groupTerritoryInfo.getChildren().add(territoryInfo);
+    	
     	territoryInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
     	territoryInfoLabel.relocate(25, 10);
-    	
-    	groupTerritoryInfo.getChildren().addAll(territoryInfo, territoryInfoLabel);
+    	groupTerritoryInfo.getChildren().add(territoryInfoLabel);
 	    
 	    // Einzelnes Land
 	    for(int i = 0; i < countryArray.length; i++) {	
@@ -90,24 +127,25 @@ public class Match {
 		    	countryArray[i].setStroke(Color.WHITE);
 		    	countryArray[i].setStrokeWidth(2);
 //		    	territorySVG[i].setNeighborIDArray(SqlHelper.getCountryNeighbor((i+1)));
-		    	for (int j : SqlHelper.getCountryNeighbor((i+1))) {
-		    		System.out.print(j + " ");
-		    	}
-		    	System.out.println();
+//		    	for (int j : SqlHelper.getCountryNeighbor((i+1))) {
+//		    		System.out.print(j + " ");
+//		    	}
+//		    	System.out.println();
 
 		    	
 		    	final int tmp = i;
-		    	
 		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 		    			updateTerritoryInfo(tmp);
+		    			gameChangeCountryStroke(countryArray[tmp].getNeighborIdArray(), Color.RED);
 		    		}
 			    );
+		    	
 		    	groupLands.getChildren().add(countryArray[i]);
 	    	}
 	    
+	    ctn.getChildren().add(groupLands);
 
 	    // Spieler-Name
-    	playerName = new Polygon();
     	playerName.getPoints().addAll(new Double[]{
             0.0, 0.0,
             380.0, 0.0,
@@ -119,12 +157,12 @@ public class Match {
     	playerName.setStrokeWidth(5);
     	playerName.setStrokeType(StrokeType.INSIDE);
     	playerName.relocate(-5, 50);
+    	ctn.getChildren().add(playerName);
     	
-    	playerNameLabel = new Label("");
     	playerNameLabel.relocate(40, 65);
     	playerNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 40px;");
-	    
-    	territoryName = new Polygon();
+    	ctn.getChildren().add(playerNameLabel);
+    	
     	territoryName.getPoints().addAll(new Double[]{
     		0.0,   0.0,
     		0.0,   30.0,
@@ -137,68 +175,59 @@ public class Match {
     	territoryName.setStrokeWidth(5);
     	territoryName.setStrokeType(StrokeType.INSIDE);
     	territoryName.relocate(ctn.getPrefWidth()/2 - 215, ctn.getPrefHeight() - 130);
+    	ctn.getChildren().add(territoryName);
     	
-    	territoryNameLabel = new Label("");
     	territoryNameLabel.setPrefWidth(430);
     	territoryNameLabel.relocate(territoryName.getLayoutX(), territoryName.getLayoutY() + 10);
     	territoryNameLabel.setAlignment(Pos.BASELINE_CENTER);
     	territoryNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
-
+    	ctn.getChildren().add(territoryNameLabel);
+    	
     	// Spieler-Infos Gruppe
-    	Group playerInfoGroup = new Group();
     	playerInfoGroup.relocate(10, 80);
     	
     	// Spieler-Infos
     	// Einheiten
-    	Sprite playerInfoUnits = new Sprite("resources/game_icon_units.png");
     	playerInfoUnits.relocate(10, playerInfoGroup.getLayoutY());
     	playerInfoGroup.getChildren().add(playerInfoUnits);
     	
-    	Label playerInfoUnitsLabel = new Label("999");
     	playerInfoUnitsLabel.relocate(90, playerInfoUnits.getLayoutY() + 18);
     	playerInfoUnitsLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	playerInfoGroup.getChildren().add(playerInfoUnitsLabel);
     	
     	// Laender
-    	Sprite playerInfoLand = new Sprite("resources/game_icon_lands.png");
     	playerInfoLand.relocate(10, playerInfoUnits.getLayoutY() + 85);
     	playerInfoGroup.getChildren().add(playerInfoLand);
     	
-    	Label playerInfoLandLabel = new Label("999");
     	playerInfoLandLabel.relocate(90, playerInfoLand.getLayoutY() + 18);
     	playerInfoLandLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	playerInfoGroup.getChildren().add(playerInfoLandLabel);
     	
     	// Karten
-    	Sprite playerInfoCard1 = new Sprite("resources/game_icon_card1.png");
     	playerInfoCard1.relocate(10, playerInfoLand.getLayoutY() + 120);
     	playerInfoGroup.getChildren().add(playerInfoCard1);
     	
-    	Label playerInfoCard1Label = new Label("999");
     	playerInfoCard1Label.relocate(80, playerInfoCard1.getLayoutY() + 18);
     	playerInfoCard1Label.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	playerInfoGroup.getChildren().add(playerInfoCard1Label);
     	
-    	Sprite playerInfoCard2 = new Sprite("resources/game_icon_card2.png");
     	playerInfoCard2.relocate(10, playerInfoCard1.getLayoutY() + 100);
     	playerInfoGroup.getChildren().add(playerInfoCard2);
     	
-    	Label playerInfoCard2Label = new Label("999");
     	playerInfoCard2Label.relocate(80, playerInfoCard2.getLayoutY() + 18);
     	playerInfoCard2Label.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	playerInfoGroup.getChildren().add(playerInfoCard2Label);
     	
-    	Sprite playerInfoCard3 = new Sprite("resources/game_icon_card3.png");
     	playerInfoCard3.relocate(10, playerInfoCard2.getLayoutY() + 100);
     	playerInfoGroup.getChildren().add(playerInfoCard3);
     	
-    	Label playerInfoCard3Label = new Label("999");
     	playerInfoCard3Label.relocate(80, playerInfoCard3.getLayoutY() + 18);
     	playerInfoCard3Label.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	playerInfoGroup.getChildren().add(playerInfoCard3Label);
     	
+    	ctn.getChildren().add(playerInfoGroup);
+    	
     	// Auftrag-Gruppe
-    	Group playerInfoAuftragGroup = new Group();
     	playerInfoAuftragGroup.relocate(-180, 320);
     	playerInfoGroup.getChildren().add(playerInfoAuftragGroup);
     	
@@ -211,44 +240,45 @@ public class Match {
 		);
     	
     	// Auftrag
-    	Sprite playerInfoAuftrag = new Sprite("resources/btn_phase_goal.png");
     	playerInfoAuftrag.relocate(playerInfoAuftragGroup.getLayoutX(), playerInfoAuftragGroup.getLayoutY());
     	playerInfoAuftragGroup.getChildren().add(playerInfoAuftrag);
     	
-    	Label playerInfoAuftragLabel = new Label("Vernichte Einheit Rot");
     	playerInfoAuftragLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	playerInfoAuftragLabel.relocate(playerInfoAuftrag.getLayoutX() + 20, playerInfoAuftrag.getLayoutY() + 60);
     	playerInfoAuftragGroup.getChildren().add(playerInfoAuftragLabel);
     	
+    	ctn.getChildren().add(playerInfoAuftragGroup);
+    	
     	// Phasen-Buttons
-    	Group phaseBtnGroup = new Group();
     	phaseBtnGroup.relocate(1150, 50);
     	
-    	Sprite phaseBtn1 = new Sprite("resources/btn_phase_add.png");
     	phaseBtn1.setActive(false);
     	phaseBtnGroup.getChildren().add(phaseBtn1);
     	
-    	Sprite phaseBtn2 = new Sprite("resources/btn_phase_battle.png");
     	phaseBtn2.setButtonMode(true);
     	phaseBtn2.relocate(phaseBtn1.getLayoutX() + 115, phaseBtn1.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn2);
     	
-    	Sprite phaseBtn3 = new Sprite("resources/btn_phase_move.png");
     	phaseBtn3.setButtonMode(true);
     	phaseBtn3.relocate(phaseBtn2.getLayoutX() + 115, phaseBtn2.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn3);
     	
-    	Sprite phaseBtn4 = new Sprite("resources/btn_phase_end.png");
     	phaseBtn4.setButtonMode(true);
     	phaseBtn4.relocate(phaseBtn3.getLayoutX() + 180, phaseBtn3.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn4);
     	
-		ctn.getChildren().addAll(bg, groupLands, playerName, playerNameLabel, territoryName, territoryNameLabel, playerInfoGroup, phaseBtnGroup, groupTerritoryInfo);
+		ctn.getChildren().add(phaseBtnGroup);
 	
 		
 		startMatch(lobby);
 	}
 	
+	/**
+	 * @param min 	  : Integer
+	 * @param max 	  : Integer
+	 * @return random : Integer
+	 * Returns a random integer between min and max. 
+	 */
 	static int randomInt(int min, int max) {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
@@ -279,8 +309,19 @@ public class Match {
 			}
 	
 		}
+		
+		gameChangePlayer(players[0].toString(), Color.web(players[1].getColor()));
 	}
 	
+	/**
+	 * @param color : Paint
+	 * @param x 	: Double
+	 * @param y 	: Double
+	 * @param s 	: String
+	 * Checks if the input paint color equals the current territoryInfo fill.
+	 * If so: Sets the territoryInfo fill.
+	 * Calls gameChangeCountry and gameChangePlayer.
+	 */
 	void updateTerritoryInfo(int id) {
 		
 		if(territoryInfo.getFill() != countryArray[id].getFill())
@@ -289,8 +330,39 @@ public class Match {
 		gameChangeCountry(id);
 
 	}
-
-	void gameChangePlayer(String s, Paint p) {
+	
+	/**
+	 * @param neighbourCountryArray : Integer[]
+	 * @param color : Paint
+	 * Change the Stroke-Color of all Countrys to WHITE if it's color differs.
+	 * Change the Stroke-Color of the current and neighbour-countrys
+	 */
+	private void gameChangeCountryStroke(int[] neighbourCountryArray, Paint color) {
+		for (int i = 0; i < countryArray.length; i++) {
+			if(countryArray[i].getStroke() != Color.WHITE) {
+				countryArray[i].setStroke(Color.WHITE);
+			}
+		}
+		
+		int[] cArr = neighbourCountryArray;
+		
+		for (int i = 0; i < cArr.length; i++) {
+			System.out.print(cArr[i] + " ");
+			
+			countryArray[cArr[i]].setStroke(Color.RED);
+		}
+		System.out.println();
+	}
+	
+	/**
+	 * @param s : String
+	 * @param p : Paint
+	 * Checks if the input string s equals the current playerName.
+	 * If so: Sets the playerName.
+	 * Checks if the input paint p equals the current paint of the playerName fill.
+	 * If so: Sets the playerName fill.
+	 */
+	private void gameChangePlayer(String s, Color p) {
 		if(!playerNameLabel.getText().equals(s))
 			playerNameLabel.setText(s);
 		
@@ -298,6 +370,14 @@ public class Match {
 			playerName.setFill(p);
 	}
 	
+	/**
+	 * @param s : String
+	 * @param p : Paint
+	 * Checks if the input string s equals the current name of the territory.
+	 * If so: Sets the territoryName.
+	 * Checks if the input paint p equals the current paint of the territoryName fill.
+	 * If so: Sets the territoryName fill.
+	 */
 	private void gameChangeCountry(int id) {
 		if(!territoryNameLabel.getText().equals(countryArray[id].getOwner())) {
 			try {
