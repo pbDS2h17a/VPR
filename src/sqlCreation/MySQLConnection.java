@@ -45,9 +45,6 @@ public class MySQLConnection {
 		SqlQuery.createMission();
 		SqlQuery.createMissionPlayer();
 		SqlQuery.createCardsPlayer();
-
-		// Constraint werden wieder aktiviert
-		SqlQuery.enableForeignKeyConstraints();
 	
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);
@@ -56,6 +53,13 @@ public class MySQLConnection {
 		SqlQuery.fillCard(cardData);
 		SqlQuery.fillMissions(missionData);
 		SqlQuery.fillColor(colorData);
+		
+		// Testdaten einfügen
+		SqlQuery.fillTestData();
+		
+		// Constraint werden wieder aktiviert
+		SqlQuery.enableForeignKeyConstraints();
+			
 		
 		System.out.println("Tabellen erfolgreich zurückgesetzt");
 
