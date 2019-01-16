@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import network.ResultSetManager;
+
 public class SqlHelper {
 	
 	private static Statement stmt = null;
@@ -266,5 +268,24 @@ public class SqlHelper {
 		rs.next();
 		return rs.getString("description");
 	}
-
+	
+	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
+		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
+		System.out.println("Call läuft");
+		return ResultSetManager.toList(r);
+	}
+	
+	public static void sendMessage(String message, int pid, int lid) throws SQLException
+	{
+		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
+		System.out.println(sql);
+		stmt.executeUpdate(sql);
+	}
+	
+	public static List<List<String>> getLobbies() throws SQLException
+	{
+		//TODO: WHERE player_6 IS NULL
+		ResultSet r = stmt.executeQuery("SELECT * FROM lobby;");
+		return ResultSetManager.toList(r);
+	}
 }
