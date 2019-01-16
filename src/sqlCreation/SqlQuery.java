@@ -21,6 +21,22 @@ public class SqlQuery {
 
 	public static Statement stmt = SqlHelper.getStatement();
 	
+	public static void fillTestData() {
+		try {
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 ,1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 ,2)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 ,3)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 ,4)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 ,5)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 ,6)");
+			stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
+		} catch (SQLException e) {
+			System.out.println("fillTestData");
+			e.printStackTrace();
+		}
+		System.out.println("Testdaten einfügen");
+	}
+	
 	//#################################################################################################################
 	// FILL STATEMENTS
 	//#################################################################################################################
