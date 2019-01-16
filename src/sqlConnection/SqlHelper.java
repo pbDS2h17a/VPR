@@ -270,13 +270,16 @@ public class SqlHelper {
 	}
 	
 	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
-		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.pid = c.pid AND c.lid = %d AND c.timestamp > %d;", lid, timestamp));
+		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
+		System.out.println("Call läuft");
 		return ResultSetManager.toList(r);
 	}
 	
 	public static void sendMessage(String message, int pid, int lid) throws SQLException
 	{
-		stmt.executeUpdate(String.format("INSERT into %s(timestamp, message, pid, lid) VALUES(CURDATE(), '%s', %d, %d);", message, pid, lid));
+		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
+		System.out.println(sql);
+		stmt.executeUpdate(sql);
 	}
 	
 	public static List<List<String>> getLobbies() throws SQLException

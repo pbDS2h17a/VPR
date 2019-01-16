@@ -28,8 +28,8 @@ public class StartRisiko
 			System.out.println(continent);
 		}
 		
-		Card card = new Card();
-		System.out.println(card);
+//		Card card = new Card();
+//		System.out.println(card);
 		
 			
 		            

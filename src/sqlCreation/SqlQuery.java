@@ -522,5 +522,20 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
+	
+	static void createChat() {
+		String sqlChat = "CREATE TABLE IF NOT EXISTS chat (" +
+				"message_id INT PRIMARY KEY AUTO_INCREMENT, " +
+				"pid INT REFERENCES player(pid), " +
+				"lid INT REFERENCES lobby(lid), " +
+				"timestamp LONG NOT NULL, " +
+				"message VARCHAR(255));";
+		try {
+			stmt.executeUpdate(sqlChat);
+		} catch (SQLException e) {
+			System.out.println("createChat");
+			e.printStackTrace();
+		}
+	}
 
 }

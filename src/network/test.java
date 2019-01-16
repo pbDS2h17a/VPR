@@ -2,16 +2,21 @@ package network;
 
 import java.sql.SQLException;
 
-import sqlConnection.*;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class test
-{
-
-	public static void main(String[] args) throws SQLException, ClassNotFoundException
-	{
-		SqlHelper.setStatement(SqlHelper.loginStringArray);
-		System.out.println(SqlHelper.getLobbies());
-
+public class test extends Application {
+	public static void main(String[] args) throws SQLException, ClassNotFoundException {
+		launch(args);
 	}
 
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		// TODO Auto-generated method stub
+		ChatInterface chat = new ChatInterface(1, 1);
+		Scene sc = new Scene(chat.getPane());
+		primaryStage.setScene(sc);
+		primaryStage.show();
+	}
 }

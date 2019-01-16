@@ -5,23 +5,22 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.print.attribute.standard.DateTimeAtProcessing;
+
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import sqlConnection.SqlHelper;
 
 public class ChatManager {
-	private String ip;
 	private int lobby_id;
 	private int player_id;
 	
-	public ChatManager(String ip, int lobby_id, int player_id) {
-		this.ip = ip;
+	public ChatManager(int lobby_id, int player_id) {
 		this.lobby_id = lobby_id;
 		this.player_id = player_id;
-	}
-
-	public String getIp() {
-		return ip;
+		SqlHelper.getStatement();
 	}
 	
 	public List<List<String>> getChatHistory(long timestamp) throws SQLException {
@@ -29,7 +28,7 @@ public class ChatManager {
 	}
 	
 	public String formatMessage(List<String> message) {
-		return String.format("%s [%s]: %s", message.get(0), message.get(1).substring(0,5), message.get(2));
+		return String.format("%s [%s:%s] %s", message.get(0), message.get(1).substring(8,10), message.get(1).substring(10,12), message.get(2));
 	}
 	
 	public void sendMessage(String message, int pid, int lid) throws SQLException {
@@ -37,7 +36,14 @@ public class ChatManager {
 	}
 	
 	public long getTimestamp() {
-		//Datet
-		return 0;
+		LocalDateTime dt = LocalDateTime.now();
+		long timestamp = 0;
+		timestamp += dt.getSecond();
+		timestamp += dt.getMinute()*100;
+		timestamp += dt.getHour()*10000;
+		timestamp += dt.getDayOfMonth()*1000000;
+		timestamp += dt.getMonthValue()*100000000;
+		timestamp += (long)dt.getYear()*100000*100000;
+		return timestamp;
 	}
 }
