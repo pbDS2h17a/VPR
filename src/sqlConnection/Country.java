@@ -1,59 +1,82 @@
 package sqlConnection;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Country
-{
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.SVGPath;
+
+public class Country extends SVGPath {
 	private int countryId;
+	private int ownerId;
+	private String owner;
+	private int units;
 	private int countryContinentID;
-	private String name;
-	private List<Integer> neighbor = new ArrayList<Integer>();
-	private int armys;
-
-	public Country(int id, Statement stmt) throws SQLException{
-		this.countryId=id;
-		ResultSet rs =stmt.executeQuery("select neighbor_id from neighbor where country_id ="+id);	
-	 		 while(rs.next()){  //legt cursor auf nächste zeile, wenn leer --> false	
-				neighbor.add(rs.getInt(1));
-			}
-	 	//this.countryContinentID=rs.getInt(3);
-		//rs=stmt.executeQuery("select nid,country_id,neighbor_id");
-		this.name = getNameFromCountryId(stmt, id);
-		}
+	private String countryName;
+//	private int units;
+	private int[] neighborIdArray;
+	private SVGPath svgPath;
 	
-	public static String getNameFromCountryId(Statement stmt, int id) throws SQLException {
-		ResultSet rs =stmt.executeQuery("select country_name from country where country_id ="+id);
-	 		 rs.next(); //legt cursor auf nächste zeile, wenn leer --> false	
-	 			 return rs.getString(1);
+	public Country(int id) throws SQLException {
+		this.countryId = id;
+//		this.units = units;
+		this.countryContinentID = SqlHelper.getCountryContinentId(id);
+		this.countryName = SqlHelper.getCountryName(id);
+		this.neighborIdArray = SqlHelper.getCountryNeighbor(id);
+		super.setContent(SqlHelper.getCountrySVG(id));
+		// -1 = noch kein Besitzer
+		this.ownerId = -1;
 	}
 	
-	public List<Integer> getNeighbor() {
-		return this.neighbor;
+	public int[] getNeighborIdArray() {
+		return this.neighborIdArray;
 	}
 	
-	public int getId(){
+	public int getCountryId(){
 		return this.countryId;
 	}
 	
-	public String getName(){
-		return this.name;
+	public String getCountryName() {
+		return this.countryName;
 	}
 	
-	public int getCountryContinentID(){
+	
+	
+	public int getCountryContinentID() {
 		return this.countryContinentID;
 	}
 
-	public int getArmys()
-	{
-		return armys;
+	public int getUnits() {
+		return units;
 	}
 
-	public void setArmys(int armys)
-	{
-		this.armys = armys;
+	public void setUnits(int armys) {
+		this.units = armys;
 	}
+	
+	public Paint getColor() {
+		return svgPath.getFill();
+	}
+	
+	public void setColor(String C) {
+		svgPath.setFill(Color.web(C));
+	}
+	
+	public void setOwnerId(int playerId) {
+		this.ownerId = playerId;
+	}
+	
+	public void setOwner(String name) {
+		this.owner = name;
+	}
+	
+	public int getOwnerId() {
+		return this.ownerId;
+	}
+
+	public String getOwner() {
+		return this.owner;
+	}
+	
+	
 }

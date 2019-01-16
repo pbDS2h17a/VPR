@@ -3,62 +3,66 @@ package sqlConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player
-{
+/**
+ * @author Lea, PEROSCKU
+ * Player-Klasse
+ */
+
+
+public class Player {
+	
 	private String name;
 	private String color;
-	private List<Country> countryList = null;
-	private int einheitenProRunde;
+	private List<Country> countryList;
+	private int unitsPerRound;
 	private int id;
+	private String adress;
+	private int lobbyId;
 	
-	public Player(int id, String name, String color)
-	{
-		this.id = id;
+	public Player(int id, String name, String color) {
+		this.id = id; //SqlHelper.getPlayerID(name);
 		this.name = name;
 		this.color = color;
 		this.countryList = new ArrayList<>();
-		this.einheitenProRunde = 0;
+		this.unitsPerRound = 0;
 	}
 	
-	public Player(int id, String name, String color, List<Country> countryList, int einheiten)
-	{
+	public Player(int id, String name, String color, List<Country> countryList, int units) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
 		this.countryList = countryList;
-		this.einheitenProRunde = einheiten;
+		this.unitsPerRound = units;
+		this.setLobbyId(lobbyId);
+		this.setAdress(adress);
 	}
 
-	public String getName()
-	{
+	
+	// Getter und Setter
+	public String getName() {
 		return name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public int getEinheitenProRunde() {
+		return unitsPerRound;
+	}
 
-	public String getColor()
-	{
+	public String getColor() {
 		return color;
 	}
 
-	public void setColor(String color)
-	{
+
+	public void setColor(String color) {
 		this.color = color;
 	}
-	//getter u setter fuer die laender fehlen noch
-	
-	
-	public int getEinheitenProRunde()
-	{
-		return einheitenProRunde;
-	}
 
-	public void setEinheitenProRunde(int einheitenProRunde)
-	{
-		this.einheitenProRunde = einheitenProRunde;
+
+	public void setEinheitenProRunde (int einheitenProRunde) {
+		this.unitsPerRound = einheitenProRunde;
 	}
 
 	public List<Country> getCountryList() {
@@ -75,6 +79,23 @@ public class Player
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getAdress() {
+		return adress;
+	}
+
+	public void setAdress(String adress) {
+		this.adress = adress;
+	}
+
+	public int getLobbyId() {
+		return lobbyId;
+	}
+
+	public void setLobbyId(int lobbyId)
+	{
+		this.lobbyId = lobbyId;
 	}
 
 }
