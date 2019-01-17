@@ -290,7 +290,6 @@ public class Match {
 		lobby.setLobbyId(1);
 		Player[] players = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
 		
-		
 		int userCount = players.length-1;
 		Random rand = new Random();
 		
@@ -331,6 +330,8 @@ public class Match {
 
 	}
 	
+	private Country currentCountry = null;
+	
 	/**
 	 * @param neighbourCountryArray : Integer[]
 	 * @param color : Paint
@@ -338,6 +339,12 @@ public class Match {
 	 * Change the Stroke-Color of the current and neighbour-countrys
 	 */
 	private void gameChangeCountryStroke(Country country, Paint color) {
+		// Ignorier anfragen wenn sich das Land nicht ändert
+		if(currentCountry != null && currentCountry.getCountryId() == country.getCountryId()) {
+			return;
+		}
+		
+		currentCountry = country;
 		for (int i = 0; i < countryArray.length; i++) {
 			if(countryArray[i].getStroke() != Color.WHITE) {
 				countryArray[i].setStroke(Color.WHITE);
@@ -353,7 +360,7 @@ public class Match {
 			countryArray[cArr[i]-1].setStroke(Color.RED);
 			country.setStroke(Color.RED);
 		}
-		System.out.println();
+
 	}
 	
 	/**

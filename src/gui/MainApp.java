@@ -1,7 +1,6 @@
 package gui;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -13,7 +12,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import sqlConnection.SqlHelper;
-import sqlCreation.SqlQuery;
 
 /**
  * @author Daniels, Kevin

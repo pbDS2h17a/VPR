@@ -50,8 +50,8 @@ public class Country extends SVGPath {
 		return units;
 	}
 
-	public void setUnits(int armys) {
-		this.units = armys;
+	public void setUnits(int units) {
+		this.units = units;
 	}
 	
 	public Paint getColor() {

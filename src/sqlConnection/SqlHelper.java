@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import network.ResultSetManager;
@@ -231,16 +230,16 @@ public class SqlHelper {
 		return rs.getInt("bonus");
 	}
 	
-	public static List <String> ContinentCountries(int continentID) throws SQLException{
-		List <String> countries = new ArrayList<>();
-		ResultSet rs = getStatement().executeQuery("SELECT name FROM country where continent_id = "+continentID+";");
+	public static int[] ContinentCountries(int continentID) throws SQLException{
+		List <Integer> countryIdList = new ArrayList<>();
+		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM country where continent_id = "+continentID+";");
 		while(rs.next()){	   		
-	   		countries.add(rs.getString("name"));	   				   			
+	   		countryIdList.add(rs.getInt("country_id"));	   				   			
 	   		}
 		rs.next();
-		return countries;
+		
+		return countryIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
-	
 
 	public static int getPlayerID(String name) throws SQLException{
 		ResultSet rs = getStatement().executeQuery("SELECT player_id FROM player WHERE name = "+name+";");

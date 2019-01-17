@@ -243,104 +243,13 @@ public class SqlQuery {
 	//#################################################################################################################
 	// DROP STATEMENTS
 	//#################################################################################################################
-	static void dropCountry() { 
+	public static void dropTable(String tableName) {
 		try {
-			stmt.executeUpdate("SET foreign_key_checks = 0");
-			stmt.executeUpdate("DROP TABLE IF EXISTS country");
+			stmt.executeUpdate("DROP TABLE IF EXISTS "+tableName);
 		} catch (SQLException e) {
-			System.out.println("dropCountry");
+			System.out.println("Fehler beim Löschen der Tabelle: "+tableName);
 			e.printStackTrace();
 		}	
-	}
-	
-	static void dropNeighbor(){
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS neighbor");
-		} catch (SQLException e) {
-			System.out.println("dropNeighbor");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropContinent() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS continent");
-		} catch (Exception e) {
-			System.out.println("dropContinent");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS player");
-		} catch (Exception e) {
-			System.out.println("dropPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropCountryPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS country_player");
-		} catch (Exception e) {
-			System.out.println("droprCountryPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropLobby() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS lobby");
-		} catch (Exception e) {
-			System.out.println("dropLobby");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropCard() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS card");
-		} catch (Exception e) {
-			System.out.println("dropCard");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropMission() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS mission");
-		} catch (Exception e) {
-			System.out.println("dropMission");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropMissionPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS mission_player");
-		} catch (Exception e) {
-			System.out.println("dropMissionPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropCardsPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS cards_player");
-		} catch (Exception e) {
-			System.out.println("dropCardPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropColor() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS color");
-		} catch (Exception e) {
-			System.out.println("dropColor");
-			e.printStackTrace();
-		}
 	}
 	
 	//#################################################################################################################
@@ -510,7 +419,7 @@ public class SqlQuery {
 				" player_id INT, "+
 				" country_id INT, "+
 				" lobby_id INT, "+
-				" army_count INT, " +
+				" unit_count INT, " +
 				" FOREIGN KEY(player_id) REFERENCES player(player_id), " +
 				" FOREIGN KEY(country_id) REFERENCES country(country_id), " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id), " +
