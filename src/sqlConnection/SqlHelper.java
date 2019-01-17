@@ -287,4 +287,52 @@ public class SqlHelper {
 		ResultSet r = stmt.executeQuery("SELECT * FROM lobby;");
 		return ResultSetManager.toList(r);
 	}
+	
+	
+	/**
+	 * Methode zum einfügen von Daten in die Tabelle country_player
+	 * @param lobbyID
+	 * @param playerID
+	 * @param countryID
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void insertCountryOwner(int lobbyID, int playerID, int countryID) throws SQLException{
+		stmt.executeUpdate("INSERT INTO country_player VALUES("+playerID+","+countryID+","+lobbyID+", 1)");
+	};
+	/**
+	 * Methode zum ändern des Besatzers eines Landes 
+	 * @param lobbyID
+	 * @param playerID
+	 * @param countryID
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void changeCountryOwner(int lobbyID, int playerID, int countryID)throws SQLException{
+		stmt.executeUpdate("UPDATE country_player SET player_id = "+playerID+") WHERE country_id ="+countryID+" AND lobby_id="+lobbyID);
+	};
+	/**
+	 * Methode zum anpassen der Armeen anzahl
+	 * @param lobbyID
+	 * @param playerID
+	 * @param countryID
+	 * @param amountUnits
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void changeArmy(int lobbyID, int playerID, int countryID, int amountUnits) throws SQLException{
+		stmt.executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryID+" AND lobby_id="+lobbyID);
+	};
+	/**
+	 * Methode zum hinzufügen von Player
+	 * @param name
+	 * @param lobbyID
+	 * @param colorID
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void insertPlayer(String name, int lobbyID, int colorID) throws SQLException{
+		stmt.executeUpdate("INSERT INTO player VALUES(NULL,'"+name+"','127.0.0.1', "+lobbyID+" ,"+colorID+")");
+
+	};
 }
