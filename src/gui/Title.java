@@ -4,14 +4,29 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * @author Daniels, Kevin
+ * @author pbs2h17ale
+ */
+
 public class Title {
 	
-	// Globale Variablen
-	private Pane title;
-	private Sprite btnCreate;
-	private Sprite btnJoin;
-	private Sprite btnTutorial;
+	/**
+	 *	@param title	   : Pane
+	 *	@param logo        : Sprite
+	 *	@param btnCreate   : Sprite
+	 *	@param btnJoin	   : Sprite
+	 *	@param btnTutorial : Sprite
+	 */
+	private Pane title = new Pane();
+	private Sprite logo = new Sprite("resources/logo.png");
+	private Sprite btnCreate = new Sprite("resources/btn_erstellen.png");
+	private Sprite btnJoin = new Sprite("resources/btn_beitreten.png");
+	private Sprite btnTutorial = new Sprite("resources/btn_tutorial.png");
 	
+	/**
+	 * Constructor.
+	 */
 	public Title() {
 		// Start-Container (Child von Anwendungs_CTN)
 	    title = new Pane();
@@ -21,28 +36,33 @@ public class Title {
 	    
 	    // Spiel-Container INHALTE
 		// Logo
-	    Sprite logo = new Sprite("resources/logo.png");
 	    logo.relocate(title.getPrefWidth()/2 - 1073/2, title.getPrefHeight()/2 - 416/2 - 200);
 	    logo.setVy(.25);
+	    title.getChildren().add(logo);
 	    
 	    // Button - Erstellen
-	    btnCreate = new Sprite("resources/btn_erstellen.png");
 	    btnCreate.setButtonMode(true);
 	    btnCreate.relocate(title.getPrefWidth()/2 - 303/2, title.getPrefHeight() - 303 - 100);		
-		
+	    title.getChildren().add(btnTutorial);
+	    
 	    // Button - Anleitung
-	    btnTutorial = new Sprite("resources/btn_tutorial.png");
 	    btnTutorial.setButtonMode(true);
 	    btnTutorial.relocate(btnCreate.getLayoutX() - 303 - 50, btnCreate.getLayoutY());	
-		
+	    title.getChildren().add(btnCreate);
+	    
 	    // Button - Beitreten
-	    btnJoin = new Sprite("resources/btn_beitreten.png");
 	    btnJoin.setButtonMode(true);
 	    btnJoin.relocate(btnCreate.getLayoutX() + 303 + 50, btnCreate.getLayoutY());
-	    
-		title.getChildren().addAll(logo, btnTutorial, btnCreate, btnJoin);
+		title.getChildren().add(btnJoin);
 		
 		// GAME LOOP Animationen
+		gameLoop();
+	}
+	
+	/**
+	 * Game loop to animate the title logo.
+	 */
+	public void gameLoop() {
 		new AnimationTimer() {
 	        public void handle(long currentNanoTime) {
 	        	
@@ -53,17 +73,28 @@ public class Title {
 
 	        }
 	    }.start();
-		
 	}
 	
+	/**
+	 * @return title : Pane
+	 * Returns the pane for the MainApp.
+	 */
 	public Pane getContainer() {
 		return title;
 	}
 	
+	/**
+	 * @return btnCreate : Sprite
+	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 */
 	public Sprite getBtnCreate() {
 		return btnCreate;
 	}
-
+	
+	/**
+	 * @return btnJoin : Sprite
+	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 */
 	public Sprite getBtnJoin() {
 		return btnJoin;
 	}

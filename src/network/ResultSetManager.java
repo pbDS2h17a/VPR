@@ -33,7 +33,14 @@ public class ResultSetManager
 			zeile = new ArrayList<>();
 			for (int i = 1; i < length; i++)
 			{
-				zeile.add(r.getString(i).trim());
+				String s = null;
+				try{s = r.getString(i);}
+				catch(NullPointerException n)
+				{
+					zeile.add(null);
+					continue;
+				}
+				zeile.add(s.trim());
 			}
 			set.add(zeile);
 		}

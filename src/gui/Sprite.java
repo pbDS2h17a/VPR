@@ -5,16 +5,27 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * @author Dang, Hoang-Ha
+ */
 
+/**
+ * Sprite Klasse
+ * @param imagePath		: String
+ * @param image			: Image
+ * @param isButton		: boolean
+ * @param isActive		: boolean
+ * @param vx			: double
+ * @param vy			: double
+ * @param scale			: double
+ * @param vscale		: double
+ * @param colorAdjust	: Coloradjust
+ */
 public class Sprite extends ImageView
 {
-	//der aktuelle Pfad zum Bild
 	private String imagePath;
-	//Bild für die ImageView
-	Image image;
-	//ist das Bild ein Button
+	private Image image;
 	private boolean isButton;
-	
 	private boolean isActive = true;
 	private double vx;
 	private double vy;
@@ -22,7 +33,11 @@ public class Sprite extends ImageView
 	private double vscale;
 	
 	ColorAdjust colorAdjust = new ColorAdjust();
-	
+/**
+ * Sprite Constructor
+ * @param path : String
+ * Sprite wird durch einen Pfad erstellt und Listener werden hinzugefügt
+ */
 	public Sprite(String path) {
 		image = new Image(path);
 		this.setImage(image);
@@ -30,6 +45,9 @@ public class Sprite extends ImageView
 		initializeListeners();
 	}
 	
+	public Sprite() {
+		initializeListeners();
+	}
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -40,8 +58,12 @@ public class Sprite extends ImageView
 	public void setButtonMode(boolean mode) {
 		this.isButton = mode;
 	}
-	
-	public void setIsActive(boolean mode) {
+/**
+ * setActive(boolean mode)
+ * @param mode
+ * Sollte der mode false sein wird das Bild zusätzlich ausgegraut
+ */
+	public void setActive(boolean mode) {
 		if (mode) {
 			colorAdjust.setSaturation(0);
 			this.setEffect(colorAdjust);			
@@ -95,6 +117,11 @@ public class Sprite extends ImageView
 	public void click() {
 		
 	}
+/**
+ * initializeListeners()
+ * fügt beim Erstellen einer Sprite Events ein
+ * beim hovern wird ein Soundeffekt abgespielt
+ */
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
 			MediaPlayer.menuHover.play();

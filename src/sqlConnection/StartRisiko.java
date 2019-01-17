@@ -1,10 +1,6 @@
 package sqlConnection;
+
 import java.util.ArrayList;
-import java.util.List;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.SQLException;
 
 public class StartRisiko
@@ -20,19 +16,22 @@ public class StartRisiko
 //		Connection con = DriverManager.getConnection(  
 //				"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");  
 		//String [] connection = {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp"};
-		SqlHelper.setStatement(SqlHelper.loginStringArray);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 1; i < 6; i++) {
 			try{
 				continente.add(new Continent(i));
 			}catch(SQLException sql){
 				System.out.println(i+"Id nicht vergeben!");
-			}
-			
+			}			
 		}
 		
 		for (Continent continent : continente) {
 			System.out.println(continent);
 		}
+		
+//		Card card = new Card();
+//		System.out.println(card);
+		
+			
 		            
 	    // loop through the result set
 //        while (rs.next()) {
@@ -67,6 +66,16 @@ public class StartRisiko
 //			String country_name = rsc.getString("country_name");
 //			int country_continent_id = rsc.getInt("country_continent_id");
 //
-		
+		ArrayList <Mission> missions = new ArrayList <>();
+		for (int i = 0; i < 17; i++) {
+			try{
+			missions.add(new Mission(i));
+			}catch(SQLException sql){
+				System.out.println("Id nicht vergeben!");
+			};
+		}
+		for (Mission mission : missions) {		
+				System.out.println(mission);			
+		}
 	}
 }

@@ -1,15 +1,31 @@
 package sqlCreation;
 
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.io.InputStreamReader;
+/**
+ * @author pbs2h17awb
+ * Ließt die Daten aus der Stammdaten.csv datei aus und trennt sie an den marktieren Bereichen in
+ * Datenbklöcke auf.
+ * Die Datenblöcke werden an die SqlQeury fillStatements übergeben
+ */
 public class FileReader {
 	private static String[] continentData = null;
 	private static String[] countryData = null;
+	private static String[] missionData = null;
+	private static String[] cardData = null;
+	private static String[] colorData = null;
 	
+
+	/**
+	 * @param path Pfad your Stammdaten datei
+	 * @throws IOException 
+	 */
 	static void readFile(String path) throws IOException {
-		BufferedReader br = new BufferedReader(new java.io.FileReader(new File(path)));
+		//BufferedReader br = new BufferedReader(new FileInputStream(path));
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+			    new FileInputStream(path), "UTF-8"));
 		try {  
 		    String line;
 		    String currentBlock = "";
@@ -33,12 +49,22 @@ public class FileReader {
 					// End befehl
 					if(line.startsWith("#END")) {
 						// Zuweisung der Aktuellen Daten in den richtigen Block
+						// Name hier muss übereinstimmen mit Name in Stammdaten datei! 
 						switch(currentBlock) {
 						case "KONTINENT":				
 							continentData = currentData.split("\n");						
 							break;
 						case "LAND":
 							countryData = currentData.split("\n");
+							break;
+						case "KARTE":
+							cardData = currentData.split("\n");
+							break;
+						case "MISSION":
+							missionData = currentData.split("\n");
+							break;
+						case "FARBE":
+							colorData = currentData.split("\n");
 							break;
 						}
 						
@@ -53,16 +79,42 @@ public class FileReader {
 		}
 
 	}
-	// getter für Kontinent Daten
-	// Werden in der SqlQuery fill methode weiter aufgeteilt
+	
+	/**
+	 * @return getter für Kontinent Daten
+	 * 		   Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
 	static String[] getContinent() {
 		return continentData;	
 	}
 	
-	// getter für Länder Daten
-	// Werden in der SqlQuery fill methode weiter aufgeteilt
+	/**
+	 *
+	 * @return getter für Länder Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
 	static String[] getCountry() {
 		return countryData;
+	}
+	/**
+	 * 
+	 * @return getter für Mission Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
+	static String[] getMission() {
+		return missionData;
+	}
+	/**
+	 *
+	 * @return getter für Karten Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 */
+	static String[] getCard() {
+		return cardData;
+	}
+	
+	static String[] getColor(){
+		return colorData;
 	}
 	
 }
