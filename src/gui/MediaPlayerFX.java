@@ -3,7 +3,7 @@ package gui;
 import javafx.scene.Group;
 import javafx.scene.control.Slider;
 
-public class MediaPlayer {
+public class MediaPlayerFX {
 	
 	static Sounds menuBackgroundMusic = new Sounds("resources/Mechanolith.mp3");
 	static Sounds menuHover = new Sounds("resources/menuHover.wav");
@@ -14,7 +14,7 @@ public class MediaPlayer {
 	Slider volumeSlider;
 	Group mediaPlayerGroup;
 	
-	public MediaPlayer() {
+	public MediaPlayerFX() {
 		
 		mediaPlayerGroup = new Group();
 		mediaPlayerGroup.relocate(0, 940);
