@@ -45,8 +45,10 @@ public class LobbyFX {
 	private Pane ctn;
 	private Sprite btnReady;
 	private Sprite btnBack;
-	private Sprite btnCheck;
-	
+	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");;
+	private Sprite inputNameBG = new Sprite("resources/input_bg.png");
+    private TextField inputName = new TextField();
+    
 	// Daten
 	private int playerCount = 0;
 	private final int MAX_PLAYER_COUNT = 6;
@@ -61,7 +63,7 @@ public class LobbyFX {
     private Sprite[] slotRolesArray = new Sprite[slotArray.length];
     private String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
     private Rectangle[] colorRectArray = new Rectangle[colorArray.length];
-
+   
     
 	/**
 	 * Constructor.
@@ -88,19 +90,16 @@ public class LobbyFX {
 	    ctn.getChildren().add(btnReady);
 	    
 	    // Namens-Input Hintergrund
-	    Sprite inputNameBG = new Sprite("resources/input_bg.png");
 	    inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight() - 200);		
 	    ctn.getChildren().add(inputNameBG);
 	    
 	    // Namens-Input TextField
-	    TextField inputName = new TextField();
 	    inputName.setPrefSize(653, 119);
 	    inputName.setStyle("-fx-background-color: transparent; -fx-font-size: 60px; -fx-alignment: center;  -fx-font-weight: bold; -fx-text-fill: white;");
 	    inputName.relocate(inputNameBG.getLayoutX(), inputNameBG.getLayoutY());
 	    ctn.getChildren().add(inputName);
 	    
 	    // Namens-Input Check
-	    btnCheck = new Sprite("resources/btn_confirm.png");
 	    btnCheck.relocate(inputNameBG.getLayoutX() + 653 - 7, ctn.getPrefHeight() - 241);
 	    btnCheck.setButtonMode(true);
 	    ctn.getChildren().add(btnCheck);
