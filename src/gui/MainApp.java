@@ -46,19 +46,19 @@ public class MainApp extends Application {
 	 */
 	private final int APP_WIDTH = 1600;
 	private final int APP_HEIGHT = 900;
-	private Pane von = null;
-	private Pane zu  = null;
+	private Pane von;
+	private Pane zu;
 	private boolean toPane = false;
 	
 	private Pane app = new Pane();
     private Pane ctn_app = new Pane();
     
     // Spiel-Oberflächen
-	private Title title = new Title();
-    private Lobby lobby = new Lobby();
-    private Join join = new Join();
-    private Match match = new Match(lobby);
-    private MediaPlayer mp = new MediaPlayer();
+	private TitleFX title = new TitleFX();
+    private LobbyFX lobby = new LobbyFX();
+    private JoinFX join = new JoinFX();
+    private MatchFX match = new MatchFX(lobby);
+    private MediaPlayerFX mp = new MediaPlayerFX();
     
     // Scene
 	private Scene scene = new Scene(app);

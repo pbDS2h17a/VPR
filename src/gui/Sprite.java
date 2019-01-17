@@ -124,7 +124,7 @@ public class Sprite extends ImageView
  */
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
-			MediaPlayer.menuHover.play();
+			MediaPlayerFX.menuHover.play();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0.1);
 				colorAdjust.setContrast(0.3);
@@ -136,7 +136,7 @@ public class Sprite extends ImageView
 				getScene().setCursor(Cursor.HAND);
 		});
 		setOnMouseExited(eventExited->{
-			MediaPlayer.menuHover.stop();
+			MediaPlayerFX.menuHover.stop();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0);
 				colorAdjust.setContrast(0);

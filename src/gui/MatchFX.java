@@ -1,8 +1,10 @@
 package gui;
 
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -26,7 +28,7 @@ import java.util.Random;
  *
  */
 
-public class Match {
+public class MatchFX {
 
 	/**
 	 * @param ctn				 : Pane
@@ -46,7 +48,7 @@ public class Match {
 	 */
 	private Pane ctn = new Pane();
 	private Pane groupTerritoryInfo = new Pane();
-	private Label territoryInfoLabel = new Label("1");
+	private Label territoryInfoLabel = new Label();
 	private Label playerNameLabel = new Label();
 	private Label territoryNameLabel = new Label();
 	private Polygon playerName = new Polygon();
@@ -74,11 +76,12 @@ public class Match {
 	private Group groupLands = new Group();
 	private Country[] countryArray = new Country[42];
 	private Group[] territory_group = new Group[countryArray.length];
+	private ColorAdjust colorAdjust = new ColorAdjust();
 	
 	/**
 	 * Constructor.
 	 */
-	public Match(Lobby lobby) {
+	public MatchFX(LobbyFX lobby) {
 		// Partie-Container (Child von Anwendungs_CTN)
 	    ctn.setCache(true);
 	    ctn.setId("Partie");
@@ -95,23 +98,7 @@ public class Match {
 	    groupLands.setScaleX(.9);
 	    groupLands.setScaleY(.9);
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
-	    
-	    // Land-Infos
-	    groupTerritoryInfo.setPrefSize(80,80);
-	    groupTerritoryInfo.relocate(1130, 940);
-	    
-    	territoryInfo.setStroke(Color.WHITE);
-    	territoryInfo.setStrokeWidth(5);
-    	territoryInfo.setStrokeType(StrokeType.INSIDE);
-    	territoryInfo.setFill(Color.GREY);
-    	territoryInfo.setArcHeight(200);
-    	territoryInfo.setArcWidth(200);
-    	groupTerritoryInfo.getChildren().add(territoryInfo);
-    	
-    	territoryInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
-    	territoryInfoLabel.relocate(25, 10);
-    	groupTerritoryInfo.getChildren().add(territoryInfoLabel);
-	    
+
 	    // Einzelnes Land
 	    for(int i = 0; i < countryArray.length; i++) {	
 		    	try {
@@ -125,7 +112,9 @@ public class Match {
 
 		    	countryArray[i].setFill(Color.WHITE);
 		    	countryArray[i].setStroke(Color.WHITE);
-		    	countryArray[i].setStrokeWidth(2);
+		    	countryArray[i].setStrokeWidth(0);
+		    	countryArray[i].setScaleX(1.01);
+		    	countryArray[i].setScaleY(1.01);
 //		    	territorySVG[i].setNeighborIDArray(SqlHelper.getCountryNeighbor((i+1)));
 //		    	for (int j : SqlHelper.getCountryNeighbor((i+1))) {
 //		    		System.out.print(j + " ");
@@ -136,7 +125,7 @@ public class Match {
 		    	final int tmp = i;
 		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 		    			updateTerritoryInfo(tmp);
-		    			gameChangeCountryStroke(countryArray[tmp], Color.RED);
+		    			gameMarkNeighbourCountrys(countryArray[tmp]);
 		    		}
 			    );
 		    	
@@ -153,9 +142,6 @@ public class Match {
             340.0, 80.0,
             0.0, 80.0});
     	playerName.setFill(Color.GREY);
-    	playerName.setStroke(Color.WHITE);
-    	playerName.setStrokeWidth(5);
-    	playerName.setStrokeType(StrokeType.INSIDE);
     	playerName.relocate(-5, 50);
     	ctn.getChildren().add(playerName);
     	
@@ -167,21 +153,39 @@ public class Match {
     		0.0,   0.0,
     		0.0,   30.0,
     		30.0,  60.0,
-    		430.0, 60.0,
-    		430.0, 30.0,
-    		400.0, 0.0});
+    		530.0, 60.0,
+    		530.0, 30.0,
+    		500.0, 0.0});
     	territoryName.setFill(Color.GREY);
     	territoryName.setStroke(Color.WHITE);
     	territoryName.setStrokeWidth(5);
     	territoryName.setStrokeType(StrokeType.INSIDE);
-    	territoryName.relocate(ctn.getPrefWidth()/2 - 215, ctn.getPrefHeight() - 130);
+    	territoryName.relocate(ctn.getPrefWidth()/2 - 315, ctn.getPrefHeight() - 110);
     	ctn.getChildren().add(territoryName);
     	
-    	territoryNameLabel.setPrefWidth(430);
-    	territoryNameLabel.relocate(territoryName.getLayoutX(), territoryName.getLayoutY() + 10);
+    	territoryNameLabel.setPrefWidth(530);
+    	territoryNameLabel.relocate(territoryName.getLayoutX(), territoryName.getLayoutY() + 13);
     	territoryNameLabel.setAlignment(Pos.BASELINE_CENTER);
-    	territoryNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+    	territoryNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 27px;");
     	ctn.getChildren().add(territoryNameLabel);
+    	
+	    // Land-Infos
+	    groupTerritoryInfo.setPrefSize(80,80);
+	    groupTerritoryInfo.relocate(1130, 960);
+	    
+    	territoryInfo.setStroke(Color.WHITE);
+    	territoryInfo.setStrokeWidth(5);
+    	territoryInfo.setStrokeType(StrokeType.INSIDE);
+    	territoryInfo.setFill(Color.GREY);
+    	territoryInfo.setArcHeight(200);
+    	territoryInfo.setArcWidth(200);
+    	groupTerritoryInfo.getChildren().add(territoryInfo);
+    	
+    	territoryInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
+    	territoryInfoLabel.relocate(25, 10);
+    	groupTerritoryInfo.getChildren().add(territoryInfoLabel);
+    	
+    	ctn.getChildren().add(groupTerritoryInfo);
     	
     	// Spieler-Infos Gruppe
     	playerInfoGroup.relocate(10, 80);
@@ -277,19 +281,18 @@ public class Match {
 	 * @param min 	  : Integer
 	 * @param max 	  : Integer
 	 * @return random : Integer
-	 * Returns a random integer between min and max. 
+	 * Returns a random integer between min and max (inclusive). 
 	 */
 	static int randomInt(int min, int max) {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void startMatch(Lobby lobby) {	
+	private void startMatch(LobbyFX lobby) {	
 		// Verteilung der Länder auf die Spieler		
 		// Länderarray wird in eine Liste konvertiert
 		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
 		lobby.setLobbyId(1);
 		Player[] players = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
-		
 		
 		int userCount = players.length-1;
 		Random rand = new Random();
@@ -324,8 +327,13 @@ public class Match {
 	 */
 	void updateTerritoryInfo(int id) {
 		
-		if(territoryInfo.getFill() != countryArray[id].getFill())
+		if(territoryInfo.getFill() != countryArray[id].getFill()) {
 			territoryInfo.setFill(countryArray[id].getFill());
+		}
+		
+		if(!territoryInfoLabel.getText().equals(String.valueOf(countryArray[id].getUnits()))) {
+			territoryInfoLabel.setText(String.valueOf(countryArray[id].getUnits()));
+		}
 		
 		gameChangeCountry(id);
 
@@ -337,21 +345,27 @@ public class Match {
 	 * Change the Stroke-Color of all Countrys to WHITE if it's color differs.
 	 * Change the Stroke-Color of the current and neighbour-countrys
 	 */
-	private void gameChangeCountryStroke(Country country, Paint color) {
+	private void gameMarkNeighbourCountrys(Country country) {
+		// Reset all previous changes
+		colorAdjust.setBrightness(0.1);
+		colorAdjust.setContrast(0.3);
+		colorAdjust.setHue(0.025);
 		for (int i = 0; i < countryArray.length; i++) {
-			if(countryArray[i].getStroke() != Color.WHITE) {
-				countryArray[i].setStroke(Color.WHITE);
-			}
+			countryArray[i].setStrokeWidth(0);
+			countryArray[i].setEffect(null);
 		}
-		
+
+		// Add the new changes
 		int[] cArr = country.getNeighborIdArray();
-		
+
 		for (int i = 0; i < cArr.length; i++) {
-			System.out.print(cArr[i] + " ");
-			countryArray[cArr[i]-1].setStroke(Color.RED);
-			country.setStroke(Color.RED);
+//			System.out.print(cArr[i] + " ");
+
+			countryArray[cArr[i]-1].setStrokeWidth(5);
+			countryArray[cArr[i]-1].setEffect(colorAdjust);
+			country.setStrokeWidth(5);
+			country.setEffect(colorAdjust);
 		}
-		System.out.println();
 	}
 	
 	/**
@@ -363,11 +377,13 @@ public class Match {
 	 * If so: Sets the playerName fill.
 	 */
 	private void gameChangePlayer(String s, Color p) {
-		if(!playerNameLabel.getText().equals(s))
+		if(!playerNameLabel.getText().equals(s)) {
 			playerNameLabel.setText(s);
+		}
 		
-		if(playerName.getFill() != p)
+		if(playerName.getFill() != p) {
 			playerName.setFill(p);
+		}
 	}
 	
 	/**
@@ -379,16 +395,10 @@ public class Match {
 	 * If so: Sets the territoryName fill.
 	 */
 	private void gameChangeCountry(int id) {
-		if(!territoryNameLabel.getText().equals(countryArray[id].getOwner())) {
-			try {
-				territoryNameLabel.setText(SqlHelper.getPlayerName(countryArray[id].getOwnerId()));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(!territoryNameLabel.getText().equals(countryArray[id].getCountryName())) {
+			territoryNameLabel.setText(countryArray[id].getCountryName());
 		}
 					
-
 		if(territoryName.getFill() != countryArray[id].getFill()) {
 			territoryName.setFill(countryArray[id].getFill());
 		}
