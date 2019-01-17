@@ -15,7 +15,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sqlConnection.SqlHelper;
 
+
 public class ChatInterface{
+	private final static int PANE_WIDTH = 400;
+	private final static int PANE_HEIGHT = 400;
 	private int pid;
 	private int lid;
 	private ChatManager cm;
@@ -27,6 +30,7 @@ public class ChatInterface{
 	private HBox hb;
 	private VBox vbWindow;
 	private ScrollPane chatHistory;
+	private static boolean isScrolledToBottom = true;
 	
 	public ChatInterface(int player_id, int lobby_id) {
 		this.pid = player_id;
@@ -46,14 +50,18 @@ public class ChatInterface{
 		this.tf.setOnKeyPressed(k -> {
 			if(k.getCode() == KeyCode.ENTER) send(this.tf);
 		});
+		this.chatHistory.setOnScroll(s -> readScrollState(this.chatHistory));
 		
 		this.hb.getChildren().add(this.tf);
 		this.hb.getChildren().add(this.send);
+		this.hb.getChildren().add(this.reset);
 		this.bp.setBottom(this.hb);
 		this.vbWindow = new VBox();
 		this.chatHistory = new ScrollPane(this.vbWindow);
 		
-		this.chatHistory.setPrefSize(200,400);
+		this.chatHistory.setPrefSize(PANE_WIDTH,PANE_HEIGHT);
+		this.vbWindow.setPrefSize(this.chatHistory.getPrefWidth(), this.chatHistory.getPrefHeight());
+		setStyle();
 		this.bp.setTop(this.chatHistory);
 		
 		// neuen Thread starten
@@ -109,6 +117,7 @@ public class ChatInterface{
 					protected Void call() throws Exception {
 						while(true) {
 							// Ergebnisse der Query im ResultSet speichern
+							System.out.println(timestamp);
 							List<List<String>> set =  cm.getChatHistory(timestamp);
 							// Wenn Ergebnis != null: Ergebnisse ausgeben
 							if(set != null) {
@@ -132,5 +141,28 @@ public class ChatInterface{
 		for (List<String> message : chat) {
 			this.vbWindow.getChildren().add(new Label( this.cm.formatMessage(message)));
 		}
+		//nach unten scrollen (1.0 = 100% bottom)
+		if(this.isScrolledToBottom) {
+			this.chatHistory.setVvalue(1.0);
+		}
+	}
+	
+	private void readScrollState(ScrollPane sp) {
+		if (sp.getVvalue() == 1.0) {
+			this.isScrolledToBottom = true;
+		}
+		else {
+			this.isScrolledToBottom = false;
+		}
+	}
+	
+	private void setStyle() {
+		String lightgreen = "-fx-background-color: rgba(0,146,69,.5);";//#009245
+		String darkgreen = "-fx-background-color: rgba(0,129,55,1);";// #008137
+		String whiteBorder = "-fx-border: 2px solid white;";
+		this.chatHistory.setStyle(lightgreen);
+		this.vbWindow.setStyle(lightgreen);
+//		this.bp.setStyle(darkgreen);
+//		this.hb.setStyle(lightgreen);
 	}
 }
