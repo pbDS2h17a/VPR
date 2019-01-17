@@ -212,14 +212,9 @@ public class SqlHelper {
 
 		return data;
 	}
+
 	
-	//TODO outdated
-//	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
-//		String dbStatement = "INSERT INTO lobby (host_id) values (" + player.getId() + ");";
-//		getStatement().executeQuery(dbStatement);
-//	}
-	
-	// in Bearbeitung Petrikowski, Römmich
+	//  Petrikowski, Römmich
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
 		stmt = getStatement();
 
@@ -239,37 +234,19 @@ public class SqlHelper {
 			String querySetLobbyIdForLeader = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getId());
 			stmt.executeUpdate(querySetLobbyIdForLeader);
 			System.out.println("createLobby() successfull.");
-			
-			//TEST hier
-			//createPlayerOrder(player,2);
-
 		}
 		else {
-
 			System.out.println("createLobby(). Problem with getting lobby_id from returned ResultSet.");
 		}
 	}
 			
-	// in Bearbeitung Petrikowski, Römmich
+	// Petrikowski, Römmich
 	public static void joinLobby (Player player, int lobbyId) throws SQLException, ClassNotFoundException {
 		
 		String queryJoinLobby = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getId());
 		getStatement().executeUpdate(queryJoinLobby);
 	}
-	
-	//unfertig, nochmal testen
-	/*public static void createPlayerOrder (Player player, int lobbyId) throws SQLException, ClassNotFoundException {
-		String queryGetLobbyPlayers = String.format("SELECT player_id from player WHERE lobby_id = %d", lobbyId);
-		List<List<String>> listOfLobbyPlayers = ResultSetManager.toList(getStatement().executeQuery(queryGetLobbyPlayers));
-		List<Integer> playerId = new ArrayList<Integer>();
-		for (String result : listOfLobbyPlayers.get(0)) {
-			playerId.add(Integer.parseInt(result));
-		}
-		//Test
-		for(int e: playerId) {
-			System.out.println("value:"+e);
-		}
-	}*/
+
 
 			
 	public static String getContintentName(int continentID) throws SQLException{		
