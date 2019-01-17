@@ -223,7 +223,6 @@ public class SqlQuery {
 	public static void disableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 0");
-
 		} catch (SQLException e) {
 			System.out.println("disableForeignKeyRestraints");
 			e.printStackTrace();
@@ -450,11 +449,12 @@ public class SqlQuery {
 	
 	static void createChat() {
 		String sqlChat = "CREATE TABLE IF NOT EXISTS chat (" +
-				"message_id INT PRIMARY KEY AUTO_INCREMENT, " +
-				"pid INT REFERENCES player(pid), " +
-				"lid INT REFERENCES lobby(lid), " +
-				"timestamp LONG NOT NULL, " +
-				"message VARCHAR(255));";
+				" message_id INT PRIMARY KEY AUTO_INCREMENT, " +
+				" pid INT REFERENCES player(pid), " +
+				" lid INT REFERENCES lobby(lid), " +
+				" timestamp LONG NOT NULL, " +
+				" message VARCHAR(255)"
+				+");";
 		try {
 			stmt.executeUpdate(sqlChat);
 		} catch (SQLException e) {

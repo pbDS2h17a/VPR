@@ -2,6 +2,9 @@ package sqlCreation;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Statement;
+
+import sqlConnection.SqlHelper;
 
 public class SqlPerformanceTest {
 
@@ -13,9 +16,12 @@ public class SqlPerformanceTest {
         if(useTimer) {
             startTime = System.nanoTime();
         }
+        
+        Statement stmt = SqlHelper.getStatement();
+        
+        stmt.executeUpdate("INSERT INTO player (name) VALUES('Test21')");
 
         // Timed performance tests
-        
         
         if(useTimer) {
             endTime = System.nanoTime();
