@@ -62,7 +62,9 @@ public class MainApp extends Application {
 	    title.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	try
 			{
-				SqlHelper.createLobby(new Player(1, "Jona", "red"));
+				SqlHelper.createLobby(new Player(6, "Jörch", "red"));
+				SqlHelper.createLobby(new Player(4, "Kävin", "blue"));
+				SqlHelper.joinLobby(new Player(3, "Jano", "yellow"), 2);
 			} catch (Exception e)
 			{
 				// TODO Auto-generated catch block
