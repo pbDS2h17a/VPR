@@ -1,67 +1,90 @@
 package sqlConnection;
 
 import java.sql.SQLException;
-import java.util.List;
 
-public class Continent
-{
-	//Attribute
-	public int id;
-	public String name;
-	public List <String> countries;
-	public int additionalUnits;
+public class Continent {
+	// Attribute
+	private int continentId;
+	private String name;
+	private int[] countryIdArray;
+	private Country[] countryArray;
+	private int additionalUnits;
 	
-	//Getters/Setters
-	public int getId()
-	{
+	//Konstruktor
+	public Continent(int continentId) {
+		this.continentId = continentId;
+		initalizeContinent();
+	}
+	
+	private void initalizeContinent() {
+		try {
+			this.name = SqlHelper.getContintentName(continentId);
+			this.countryIdArray = SqlHelper.ContinentCountries(continentId) ;
+			this.additionalUnits = SqlHelper.Bonus(continentId);
+		} catch (SQLException e) {
+			System.out.println("initalizeContinent");
+			e.printStackTrace();
+		}
 		
-		return id;
 	}
-	public void setId(int id)
-	{
-		this.id = id;
+	
+	// Getters und Setters
+	public int getContinentId() {	
+		return continentId;
 	}
-	public String getName()
-	{
+	
+	public void setContinentId(int continentId) {
+		this.continentId = continentId;
+	}
+	
+	public String getName() {
 		return name;
 	}
-	public void setName(String name)
-	{
+	
+	public void setName(String name) {
 		this.name = name;
 	}
-	public List <String> getCountries()
-	{
-		return countries;
+	
+	public int[] getCountryIdArray() {
+		return countryIdArray;
 	}
-	public void setCountries(List <String> countries)
-	{
-		this.countries = countries;
+	
+	public void setCountryIdArray (int[] countriesId) {
+		this.countryIdArray = countriesId;
 	}
-	public int getAdditionalUnits()
-	{
+	
+	public Country[] getCountryArray() {
+		return countryArray;
+	}
+	
+	public void setCountryArray (Country[] countries) {
+		this.countryArray = countries;
+	}
+
+	
+	public int getAdditionalUnits() {
 		return additionalUnits;
 	}
-	public void setAdditionalUnits(int additionalUnits)
-	{
+	
+	public void setAdditionalUnits(int additionalUnits) {
 		this.additionalUnits = additionalUnits;
 	}
 	
-	//Konstruktor
-	public Continent(int id)throws SQLException
-	{
-		this.id = id;
-		this.name = SqlHelper.getContintentName(id);
-		this.countries =SqlHelper.ContinentCountries(id) ;
-		this.additionalUnits = SqlHelper.Bonus(id);
-	}
 	@Override
-	public String toString()
-	{
-		return "Kontinent " + name + ": Länder:" + countries + " Bonus:"
-				+ additionalUnits;
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Kontinent: ");
+		sb.append(name);
+		sb.append("\n");
+		sb.append("Länder: ");
+		for( Country country : countryArray) {
+			sb.append(country.getCountryName());
+			sb.append(",");
+		}
+		sb.append("\n");
+		sb.append("Bonus: ");
+		sb.append(additionalUnits);
+		return sb.toString();
 	}
-	
-	
-	
 	
 }

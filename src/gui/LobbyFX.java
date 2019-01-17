@@ -18,7 +18,7 @@ import sqlConnection.Player;
  * @author pbs2h17ale
  */
 
-public class Lobby {
+public class LobbyFX {
 
 	/**
 	 * @param ctn			 : Pane
@@ -66,7 +66,7 @@ public class Lobby {
 	/**
 	 * Constructor.
 	 */
-	public Lobby() {	
+	public LobbyFX() {	
 	    // Lobby-Container (Child von Anwendungs_CTN)
 	    ctn = new Pane();
 	    ctn.setId("Lobby");

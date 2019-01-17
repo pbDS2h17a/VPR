@@ -1,7 +1,6 @@
 package gui;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -13,7 +12,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import sqlConnection.SqlHelper;
-import sqlCreation.SqlQuery;
 
 /**
  * @author Daniels, Kevin
@@ -46,19 +44,19 @@ public class MainApp extends Application {
 	 */
 	private final int APP_WIDTH = 1600;
 	private final int APP_HEIGHT = 900;
-	private Pane von = null;
-	private Pane zu  = null;
+	private Pane von;
+	private Pane zu;
 	private boolean toPane = false;
 	
 	private Pane app = new Pane();
     private Pane ctn_app = new Pane();
     
     // Spiel-Oberflächen
-	private Title title = new Title();
-    private Lobby lobby = new Lobby();
-    private Join join = new Join();
-    private Match match = new Match(lobby);
-    private MediaPlayer mp = new MediaPlayer();
+	private TitleFX title = new TitleFX();
+    private LobbyFX lobby = new LobbyFX();
+    private JoinFX join = new JoinFX();
+    private MatchFX match = new MatchFX(lobby);
+    private MediaPlayerFX mp = new MediaPlayerFX();
     
     // Scene
 	private Scene scene = new Scene(app);
@@ -118,35 +116,11 @@ public class MainApp extends Application {
 	
 	@Override
 	public void stop(){
-		SqlQuery.disableForeignKeyConstraints();
-		
-		System.out.println("Lobby table clearen");
-		SqlHelper.clearTable("lobby");
-		
-		System.out.println("Player table clearen");
-		SqlHelper.clearTable("player");
-		
-		SqlQuery.enableForeignKeyConstraints();
 	    System.out.println("Sql verbindung beenden");
 	    SqlHelper.closeStatement();
-	    // Save file
 	}
 	
 	public static void main(String[] args) throws SQLException {
-		Statement stmt = SqlHelper.getStatement();
-		  
-		// Testspieler in Lobby eintragen
-		SqlQuery.disableForeignKeyConstraints();
-		
-		stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 ,1)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 ,2)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 ,3)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 ,4)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 ,5)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 ,6)");
-	    stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
-
-		SqlQuery.enableForeignKeyConstraints();
 		launch(args);
 	}
 	

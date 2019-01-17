@@ -17,11 +17,7 @@ public class StartRisiko
 //				"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");  
 		//String [] connection = {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp"};
 		for (int i = 1; i < 6; i++) {
-			try{
-				continente.add(new Continent(i));
-			}catch(SQLException sql){
-				System.out.println(i+"Id nicht vergeben!");
-			}			
+			continente.add(new Continent(i));	
 		}
 		
 		for (Continent continent : continente) {

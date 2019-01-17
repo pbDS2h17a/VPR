@@ -21,18 +21,20 @@ public class MySQLConnection {
 
 		// Alle Drop statements werden aufgeführt
 		// um Fehler vorzubeugen
-		SqlQuery.dropContinent();
-		SqlQuery.dropCountry();
-		SqlQuery.dropNeighbor();
-		SqlQuery.dropPlayer();
-		SqlQuery.dropLobby();
-		SqlQuery.dropCountryPlayer();
-		SqlQuery.dropCard();
-		SqlQuery.dropMission();
-		SqlQuery.dropColor();
-		SqlQuery.dropCardsPlayer();
-		SqlQuery.dropMissionPlayer();
-		
+		SqlQuery.dropTable("card");
+		SqlQuery.dropTable("card_player");
+//		SqlQuery.dropTable("chat");
+		SqlQuery.dropTable("color");
+		SqlQuery.dropTable("continent");
+		SqlQuery.dropTable("country");
+		SqlQuery.dropTable("country_player");
+		SqlQuery.dropTable("lobby");
+		SqlQuery.dropTable("mission");
+		SqlQuery.dropTable("mission_player");
+		SqlQuery.dropTable("neighbor");
+		SqlQuery.dropTable("player");
+		SqlQuery.dropTable("player_country");
+			
 		// Tabllen werden erstellt
 		SqlQuery.createContinent();
 		SqlQuery.createCountry();
@@ -45,9 +47,6 @@ public class MySQLConnection {
 		SqlQuery.createMission();
 		SqlQuery.createMissionPlayer();
 		SqlQuery.createCardsPlayer();
-
-		// Constraint werden wieder aktiviert
-		SqlQuery.enableForeignKeyConstraints();
 	
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);
@@ -57,6 +56,12 @@ public class MySQLConnection {
 		SqlQuery.fillMissions(missionData);
 		SqlQuery.fillColor(colorData);
 		
+		// Testdaten einfügen
+		SqlQuery.fillTestData();
+		
+		// Constraint werden wieder aktiviert
+		SqlQuery.enableForeignKeyConstraints();
+			
 		System.out.println("Tabellen erfolgreich zurückgesetzt");
 
 	}

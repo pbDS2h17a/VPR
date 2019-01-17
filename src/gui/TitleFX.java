@@ -9,7 +9,7 @@ import javafx.scene.shape.Rectangle;
  * @author pbs2h17ale
  */
 
-public class Title {
+public class TitleFX {
 	
 	/**
 	 *	@param title	   : Pane
@@ -27,7 +27,7 @@ public class Title {
 	/**
 	 * Constructor.
 	 */
-	public Title() {
+	public TitleFX() {
 		// Start-Container (Child von Anwendungs_CTN)
 	    title = new Pane();
 	    title.setId("Start");
