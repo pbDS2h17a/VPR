@@ -124,10 +124,10 @@ public class MatchFX {
 //		    	System.out.println();
 
 		    	
-		    	final int tmp = i;
+		    	final int COUNTRY_INDEX = i;
 		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-		    			updateTerritoryInfo(tmp);
-		    			gameMarkNeighbourCountrys(countryArray[tmp]);
+		    			updateTerritoryInfo(COUNTRY_INDEX);
+		    			gameMarkNeighbourCountrys(countryArray[COUNTRY_INDEX]);
 		    		}
 			    );
 		    	
@@ -186,8 +186,9 @@ public class MatchFX {
     	territoryInfo.setArcWidth(200);
     	groupTerritoryInfo.getChildren().add(territoryInfo);
     	
-    	territoryInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
-    	territoryInfoLabel.relocate(25, 10);
+    	territoryInfoLabel.setPrefSize(80, 80);
+    	territoryInfoLabel.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
+    	territoryInfoLabel.relocate(0, 0);
     	groupTerritoryInfo.getChildren().add(territoryInfoLabel);
     	
     	ctn.getChildren().add(groupTerritoryInfo);
@@ -262,22 +263,91 @@ public class MatchFX {
     	phaseBtnGroup.relocate(1150, 50);
     	
     	phaseBtn1.setActive(false);
+    	phaseBtn1.setButtonMode(false);
     	phaseBtnGroup.getChildren().add(phaseBtn1);
     	
     	phaseBtn2.setActive(false);
+    	phaseBtn2.setButtonMode(false);
     	phaseBtn2.relocate(phaseBtn1.getLayoutX() + 115, phaseBtn1.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn2);
     	
     	phaseBtn3.setActive(false);
+    	phaseBtn3.setButtonMode(false);
     	phaseBtn3.relocate(phaseBtn2.getLayoutX() + 115, phaseBtn2.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn3);
     	
     	phaseBtn4.setActive(false);
+    	phaseBtn4.setButtonMode(false);
     	phaseBtn4.relocate(phaseBtn3.getLayoutX() + 180, phaseBtn3.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn4);
     	
+	    phaseBtn1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.phaseAdd();
+	    });
+    	
+	    phaseBtn2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.phaseFight();
+	    });
+	    
+	    phaseBtn3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.phaseMove();
+	    });
+	    
+	    phaseBtn4.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.nextTurn();
+	    });
+    	
 		ctn.getChildren().add(phaseBtnGroup);
 	
+		Group battleGroup = new Group();
+		
+		Rectangle battleA_BG = new Rectangle(960, 1080);
+		battleA_BG.relocate(0, 0);
+		battleA_BG.setFill(Color.BLUE);
+		battleA_BG.setStroke(Color.WHITE);
+		battleA_BG.setStrokeWidth(10);
+		battleGroup.getChildren().add(battleA_BG);
+		
+		Label battleA_CountryName = new Label("Westliche Vereinigte Staaten");
+		battleA_CountryName.setPrefWidth(960);
+		battleA_CountryName.relocate(0, 50);
+		battleA_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleGroup.getChildren().add(battleA_CountryName);
+		
+		Rectangle battleB_BG = new Rectangle(960, 1080);
+		battleB_BG.relocate(960, 0);
+		battleB_BG.setFill(Color.RED);
+		battleB_BG.setStroke(Color.WHITE);
+		battleB_BG.setStrokeWidth(10);
+		battleGroup.getChildren().add(battleB_BG);
+		
+		Label battleB_CountryName = new Label("Östliche Vereinigte Staaten");
+		battleB_CountryName.setPrefWidth(960);
+		battleB_CountryName.relocate(960, 50);
+		battleB_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleGroup.getChildren().add(battleB_CountryName);
+		
+		Polygon battleArrow = new Polygon();
+		battleArrow.getPoints().addAll(new Double[]{
+				0.0, 0.0,
+				0.0, 30.0,
+				-230.0, 30.0,
+				-230.0, 90.0,
+				0.0, 90.0,
+				0.0, 120.0,
+				70.0, 60.0});
+		battleArrow.setFill(Color.WHITE);
+		battleArrow.relocate(810, 480);
+		battleGroup.getChildren().add(battleArrow);
+		
+		Sprite battleBtnReady = new Sprite("resources/btn_bereit.png");
+		battleBtnReady.setButtonMode(true);
+		battleBtnReady.relocate(960 - 167, 850);
+		battleGroup.getChildren().add(battleBtnReady);
+		
+		battleGroup.setVisible(false);
+		ctn.getChildren().add(battleGroup);
+		
 		startMatch(lobby);
 	}
 	
@@ -315,14 +385,14 @@ public class MatchFX {
 			} else {
 				userCount--;
 			}
-	
 		}
 		
 		gameChangePlayer(players[0].getName(), Color.web(players[0].getColor()));
 		
 	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round = new Round(this, 0, players, countryArray);
+	    	round = new Round(this, players, countryArray);
 	    });
+	    
 	}
 	
 	/**
@@ -344,7 +414,13 @@ public class MatchFX {
 			territoryInfoLabel.setText(String.valueOf(countryArray[id].getUnits()));
 		}
 		
-		gameChangeCountry(id);
+		if(territoryName.getFill() != countryArray[id].getFill()) {
+			territoryName.setFill(countryArray[id].getFill());
+		}
+		
+		if(!territoryNameLabel.getText().equals(countryArray[id].getCountryName())) {
+			territoryNameLabel.setText(countryArray[id].getCountryName());
+		}
 
 	}
 	
@@ -364,7 +440,7 @@ public class MatchFX {
 			countryArray[i].setEffect(null);
 		}
 		
-		System.out.println(country.getCountryName());
+		//System.out.println(country.getCountryName());
 
 		// Add the new changes
 		int[] cArr = country.getNeighborIdArray();
@@ -373,7 +449,7 @@ public class MatchFX {
 
 			countryArray[cArr[i]-1].setStrokeWidth(5);
 			countryArray[cArr[i]-1].setEffect(colorAdjust);
-			country.setStrokeWidth(8);
+			country.setStrokeWidth(5);
 			country.setEffect(colorAdjust);
 		}
 	}
@@ -416,27 +492,20 @@ public class MatchFX {
 		}
 	}
 	
-	/**
-	 * @param s : String
-	 * @param p : Paint
-	 * Checks if the input string s equals the current name of the territory.
-	 * If so: Sets the territoryName.
-	 * Checks if the input paint p equals the current paint of the territoryName fill.
-	 * If so: Sets the territoryName fill.
-	 */
-	private void gameChangeCountry(int id) {
-		if(!territoryNameLabel.getText().equals(countryArray[id].getCountryName())) {
-			territoryNameLabel.setText(countryArray[id].getCountryName());
-		}
-					
-		if(territoryName.getFill() != countryArray[id].getFill()) {
-			territoryName.setFill(countryArray[id].getFill());
-		}
-			
-	}
-	
 	public Pane getContainer() {
 		return ctn;
 	}
+	
+	public void editPhaseButtons(boolean add, boolean fight, boolean move, boolean end) {
+		phaseBtn1.setActive(add);
+		phaseBtn1.setButtonMode(add);
+		phaseBtn2.setActive(fight);
+		phaseBtn2.setButtonMode(fight);
+		phaseBtn3.setActive(move);
+		phaseBtn3.setButtonMode(move);
+		phaseBtn4.setActive(end);
+		phaseBtn4.setButtonMode(end);
+	}
+	
 	
 }

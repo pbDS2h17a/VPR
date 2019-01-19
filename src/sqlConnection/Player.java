@@ -28,7 +28,7 @@ public class Player {
 		this.name = name;
 		this.color = color;
 		this.countryList = new ArrayList<>();
-		this.unitsPerRound = 0;
+		this.unitsPerRound = 9;
 		this.unassignedUnits = 0;
 		this.card1 = 0;
 		this.card2 = 0;
