@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import network.ChatInterface;
 import sqlConnection.SqlHelper;
 
 /**
@@ -48,7 +49,7 @@ public class MainApp extends Application {
 	private Pane zu;
 	private boolean toPane = false;
 	
-	private Pane app = new Pane();
+	private static Pane app = new Pane();
     private Pane ctn_app = new Pane();
     
     // Spiel-Oberflächen
@@ -57,9 +58,10 @@ public class MainApp extends Application {
     private JoinFX join = new JoinFX();
     private MatchFX match = new MatchFX(lobby);
     private MediaPlayerFX mp = new MediaPlayerFX();
-    
+    private ChatInterface chat;
+
     // Scene
-	private Scene scene = new Scene(app);
+	private static Scene scene = new Scene(app);
 	
 	@Override
 	public void start(Stage stage) {
@@ -83,7 +85,7 @@ public class MainApp extends Application {
 				match.getContainer(),
 				mp.getContainer()
 		);
-
+		
 		// Click Events
 	    initializeClickEventHandlers();
 	    
@@ -132,6 +134,9 @@ public class MainApp extends Application {
 	    title.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	paneTransition(title.getBtnCreate(), title.getContainer(), lobby.getContainer());
 			mp.playBtnSFX();
+			chat = new ChatInterface(1,1);
+			ctn_app.getChildren().add(chat.getPane());
+			chat.getPane().relocate(63, 550);
 	    });
 	    	    
 	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -148,6 +153,9 @@ public class MainApp extends Application {
 	    
 	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			paneTransition(lobby.getBtnReady(), lobby.getContainer(), match.getContainer());
+			if(lobby.getBtnReady().isActive()) {
+				chat.getPane().relocate(1650, 600);
+			}
 			mp.playBtnSFX();
 			mp.stopBgmStart();
 			mp.playBgmGame();
@@ -288,4 +296,9 @@ public class MainApp extends Application {
 	        }
 	    }.start();
 	}
+
+	public static Scene getScene() {
+		return scene;
+	}
+
 }

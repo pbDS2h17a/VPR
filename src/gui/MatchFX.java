@@ -46,6 +46,7 @@ public class MatchFX {
 	 * @param territorySVG		 : SVGPath[]
 	 * @param territory_group	 : Group[]
 	 */
+	private Round round;
 	private Pane ctn = new Pane();
 	private Pane groupTerritoryInfo = new Pane();
 	private Label territoryInfoLabel = new Label();
@@ -56,15 +57,15 @@ public class MatchFX {
 	private Rectangle territoryInfo = new Rectangle(80, 80);
 	private Group playerInfoGroup = new Group();
 	private Sprite playerInfoUnits = new Sprite("resources/game_icon_units.png");
-	private Label playerInfoUnitsLabel = new Label("999");
+	private Label playerInfoUnitsLabel = new Label();
 	private Sprite playerInfoLand = new Sprite("resources/game_icon_lands.png");
-	private Label playerInfoLandLabel = new Label("999");
+	private Label playerInfoLandLabel = new Label();
 	private Sprite playerInfoCard1 = new Sprite("resources/game_icon_card1.png");
-	private Label playerInfoCard1Label = new Label("999");
+	private Label playerInfoCard1Label = new Label("0");
 	private Sprite playerInfoCard2 = new Sprite("resources/game_icon_card2.png");
-	private Label playerInfoCard2Label = new Label("999");
+	private Label playerInfoCard2Label = new Label("0");
 	private Sprite playerInfoCard3 = new Sprite("resources/game_icon_card3.png");
-	private Label playerInfoCard3Label = new Label("999");
+	private Label playerInfoCard3Label = new Label("0");
 	private Group playerInfoAuftragGroup = new Group();
 	private Sprite playerInfoAuftrag = new Sprite("resources/btn_phase_goal.png");
 	private Label playerInfoAuftragLabel = new Label("Vernichte Einheit Rot");
@@ -82,6 +83,7 @@ public class MatchFX {
 	 * Constructor.
 	 */
 	public MatchFX(LobbyFX lobby) {
+		
 		// Partie-Container (Child von Anwendungs_CTN)
 	    ctn.setCache(true);
 	    ctn.setId("Partie");
@@ -142,6 +144,9 @@ public class MatchFX {
             340.0, 80.0,
             0.0, 80.0});
     	playerName.setFill(Color.GREY);
+    	playerName.setStroke(Color.WHITE);
+    	playerName.setStrokeWidth(5);
+    	playerName.setStrokeType(StrokeType.INSIDE);
     	playerName.relocate(-5, 50);
     	ctn.getChildren().add(playerName);
     	
@@ -232,7 +237,7 @@ public class MatchFX {
     	ctn.getChildren().add(playerInfoGroup);
     	
     	// Auftrag-Gruppe
-    	playerInfoAuftragGroup.relocate(-180, 320);
+    	playerInfoAuftragGroup.relocate(-180, 360);
     	playerInfoGroup.getChildren().add(playerInfoAuftragGroup);
     	
     	playerInfoAuftragGroup.addEventHandler(MouseEvent.MOUSE_MOVED, event ->
@@ -259,21 +264,20 @@ public class MatchFX {
     	phaseBtn1.setActive(false);
     	phaseBtnGroup.getChildren().add(phaseBtn1);
     	
-    	phaseBtn2.setButtonMode(true);
+    	phaseBtn2.setActive(false);
     	phaseBtn2.relocate(phaseBtn1.getLayoutX() + 115, phaseBtn1.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn2);
     	
-    	phaseBtn3.setButtonMode(true);
+    	phaseBtn3.setActive(false);
     	phaseBtn3.relocate(phaseBtn2.getLayoutX() + 115, phaseBtn2.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn3);
     	
-    	phaseBtn4.setButtonMode(true);
+    	phaseBtn4.setActive(false);
     	phaseBtn4.relocate(phaseBtn3.getLayoutX() + 180, phaseBtn3.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn4);
     	
 		ctn.getChildren().add(phaseBtnGroup);
 	
-		
 		startMatch(lobby);
 	}
 	
@@ -302,6 +306,7 @@ public class MatchFX {
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwnerId(players[userCount].getId());	
+			randomCountry.setOwner(players[userCount].getName());
 			randomCountry.setFill(Color.web(players[userCount].getColor()));	
 			countryList.remove(randomCountry);
 
@@ -313,7 +318,11 @@ public class MatchFX {
 	
 		}
 		
-		gameChangePlayer(players[0].toString(), Color.web(players[1].getColor()));
+		gameChangePlayer(players[0].getName(), Color.web(players[0].getColor()));
+		
+	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round = new Round(this, 0, players, countryArray);
+	    });
 	}
 	
 	/**
@@ -347,9 +356,9 @@ public class MatchFX {
 		}
 		currentCountry = country;
 		// Reset all previous changes
-		colorAdjust.setBrightness(0.1);
-		colorAdjust.setContrast(0.3);
-		colorAdjust.setHue(0.025);
+		colorAdjust.setBrightness(0.2);
+		colorAdjust.setContrast(0.5);
+		colorAdjust.setHue(0.05);
 		for (int i = 0; i < countryArray.length; i++) {
 			countryArray[i].setStrokeWidth(0);
 			countryArray[i].setEffect(null);
@@ -364,11 +373,30 @@ public class MatchFX {
 
 			countryArray[cArr[i]-1].setStrokeWidth(5);
 			countryArray[cArr[i]-1].setEffect(colorAdjust);
-			country.setStrokeWidth(5);
+			country.setStrokeWidth(8);
 			country.setEffect(colorAdjust);
 		}
 	}
 	
+	void gameChangePlayerUnits(int i) {
+		playerInfoUnitsLabel.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerTerritories(int i) {
+		playerInfoLandLabel.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerCard1(int i) {
+		playerInfoCard1Label.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerCard2(int i) {
+		playerInfoCard2Label.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerCard3(int i) {
+		playerInfoCard3Label.setText(Integer.toString(i));
+	}
 	
 	/**
 	 * @param s : String
@@ -378,7 +406,7 @@ public class MatchFX {
 	 * Checks if the input paint p equals the current paint of the playerName fill.
 	 * If so: Sets the playerName fill.
 	 */
-	private void gameChangePlayer(String s, Color p) {
+	void gameChangePlayer(String s, Color p) {
 		if(!playerNameLabel.getText().equals(s)) {
 			playerNameLabel.setText(s);
 		}

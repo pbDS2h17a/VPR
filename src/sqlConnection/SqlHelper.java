@@ -88,6 +88,22 @@ public class SqlHelper {
 		return playerArray;
 	}
 	
+	public static String[] getAllColors() {
+		String[] data = new String[6];
+		int i = 0;
+		try {
+			ResultSet rs = getStatement().executeQuery("SELECT value FROM color");
+			while(rs.next()) {
+				data[i] = rs.getString(1);
+				i++;
+			}
+		} catch (SQLException e) {
+			//do nothing
+		}
+
+		return data;
+	}
+	
 	public static int[] getAllLobbyId() {
 		ResultSet rs = null;
 		ArrayList<Integer> lobbyIdList = new ArrayList<Integer>();
