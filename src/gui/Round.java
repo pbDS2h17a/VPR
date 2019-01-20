@@ -1,8 +1,14 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -21,6 +27,9 @@ public class Round {
 	private boolean move = false;
 	private Country countryA = null;
 	private Country countryB = null;
+	private int battleUnitsA;
+	private int battleUnitsB;
+	private int additionalAttacker;
 
 	public Round(MatchFX match, Player[] playerArray, Country[] countryArray) {
 		this.activePlayerIndex = 0;
@@ -128,32 +137,31 @@ public class Round {
 						if(this.getActivePlayer().getUnassignedUnits() > 0) {
 							this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() - 1);
 							this.getCountryArray()[COUNT].setUnits(this.getCountryArray()[COUNT].getUnits() + 1);
-							this.match.updateTerritoryInfo(COUNT);
+							this.match.updateTerritoryInfo(this.getCountryArray()[COUNT]);
 						}
 					}
 				}
 				
 				else if(this.fight) {
-					if(isOwnLand(this.getCountryArray()[COUNT])) {
-						if(this.countryA == null) {
+					if(this.countryA == null) {
+						if(isOwnLand(this.getCountryArray()[COUNT]) && this.getCountryArray()[COUNT].getUnits() > 1) {
 							this.countryA = this.getCountryArray()[COUNT];
 							this.countryA.setStrokeWidth(10);
 						}
-						
-						else {
-							this.countryB = this.getCountryArray()[COUNT];
-							
-							if(isNeighbour(countryA, countryB) && countryA.getUnits() > 1) {
-//								this.countryA.setUnits(this.countryA.getUnits() - 1);
-//								this.countryB.setUnits(this.countryB.getUnits() + 1);
-							}
-							
-							this.countryA.setStrokeWidth(0);
-							this.countryA = null;
-							this.countryB = null;
-						}
-							
 					}
+					
+					else {
+						if(!isOwnLand(this.getCountryArray()[COUNT]) && isNeighbour(countryA, this.getCountryArray()[COUNT])) {
+							this.countryA.setStrokeWidth(0);
+							this.countryB = this.getCountryArray()[COUNT];
+							startFight(this.countryA, this.countryB);
+						}
+						
+						this.countryA = null;
+						this.countryB = null;
+					}
+							
+					
 				}
 				
 				else if(this.move) {
@@ -190,12 +198,175 @@ public class Round {
 				}
 				
 				updatePlayerInterface(this.getActivePlayer());
-				this.match.updateTerritoryInfo(this.getCountryArray()[COUNT].getCountryId());
+				this.match.updateTerritoryInfo(this.getCountryArray()[COUNT]);
 		    });
 		}
 
 	}
 	
+	void startFight(Country cA, Country cB) {
+		this.countryA.setStrokeWidth(0);
+		this.countryA = null;
+		this.countryB = null;
+		
+		this.match.getBattleInputA().setText("0");
+		this.match.getBattleInputB().setText("0");
+		
+		this.match.getBattleInputA().setDisable(false);
+		this.match.getBattleInputB().setDisable(true);
+		
+		this.match.getBattleBackgroundA().setFill(cA.getFill());
+		this.match.getCountryNameA().setText(cA.getCountryName());
+		this.match.getCountryUnitsA().setText("/ " + String.valueOf(cA.getUnits()));
+		
+		this.match.getBattleBackgroundB().setFill(cB.getFill());
+		this.match.getCountryNameB().setText(cB.getCountryName());
+		this.match.getCountryUnitsB().setText("/ " + String.valueOf(cB.getUnits()));
+		
+		this.match.activateWorldMap(false);
+		this.match.getPhaseBtnGroup().setVisible(false);
+		this.match.getBattleInterface().setVisible(true);
+		
+	    this.match.getBattleReadyBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	if(this.match.getBattleInputB().isDisabled()) {
+	    		this.battleUnitsA  = Integer.parseInt(this.match.getBattleInputA().getText());
+		    	if(this.battleUnitsA > 0 && this.battleUnitsA < cA.getUnits()) {
+		    		this.match.getBattleInputA().setDisable(true);
+		    		this.match.getBattleInputB().setDisable(false);
+		    	}
+	    	}
+	    	
+	    	else if(this.match.getBattleInputA().isDisabled()) {
+	    		this.battleUnitsB = Integer.parseInt(this.match.getBattleInputB().getText());
+		    	if(this.battleUnitsB > 0 && this.battleUnitsB < 3 && this.battleUnitsB <= cB.getUnits()) {
+		    		System.out.println("*** Kampf beginnt ***");
+		    		System.out.println("A: " + cA.getCountryName() + " | B: " + cB.getCountryName());
+		    		System.out.println("A Einheiten vorher: " + cA.getUnits());
+		    		System.out.println("B Einheiten vorher: " + cB.getUnits());
+		    		System.out.println("A schickt in den Tod: " + this.battleUnitsA);
+		    		System.out.println("B schickt in den Tod: " + this.battleUnitsB);
+		    		
+		    		this.match.getBattleReadyBtn().setActive(false);
+		    		Integer[][] rolledDices = rollTheDice(this.battleUnitsA, this.battleUnitsB);
+		    		updateFightResults(rolledDices, cA, cB);
+		    		endFight();
+		    	}
+	    	}
+	    });
+	}
+
+	private void endFight() {
+		this.match.getBattleReadyBtn().setActive(true);
+		this.match.activateWorldMap(true);
+		this.match.getPhaseBtnGroup().setVisible(true);
+		this.match.getBattleInterface().setVisible(false);
+	}
+
+	private void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
+
+		List<Integer> diceListA = new ArrayList<Integer>();
+		for (int i = 0; i < rolledDices[0].length; i++) {
+			diceListA.add(rolledDices[0][i]);
+		}
+		
+		List<Integer> diceListB = new ArrayList<Integer>();
+		for (int i = 0; i < rolledDices[1].length; i++) {
+			diceListB.add(rolledDices[1][i]);
+		}
+		
+		int lostUnitsA = 0;
+		int lostUnitsB = 0;
+		int limit = diceListA.size();
+		
+		if(diceListA.size() > diceListB.size()) {
+			limit = diceListB.size();
+		}
+		
+		for (int i = 0; i < limit; i++) {
+			if(diceListA.get(i) > diceListB.get(i)) {
+				lostUnitsB++;
+			}
+			else {
+				lostUnitsA++;
+			}
+		}
+		
+		System.out.println("A verlorene Einheiten: " + lostUnitsA);
+		System.out.println("B verlorene Einheiten: " + lostUnitsB);
+		
+		int[] fightA = {diceListA.size(), lostUnitsA};
+		int[] fightB = {diceListB.size(), lostUnitsB};
+		
+		countryAftermath(fightA, fightB, countryAttack, countryDefense);
+	}
+
+	private void countryAftermath(int[] fightA, int[] fightB, Country countryAttack, Country countryDefense) {
+		if(countryDefense.getUnits() - fightB[1] == 0) {
+			countryDefense.setUnits(fightA[0] - fightA[1] + this.additionalAttacker);
+			countryDefense.setOwner(countryAttack.getOwner());
+			countryDefense.setFill(countryAttack.getFill());
+			
+			countryAttack.setUnits(countryAttack.getUnits() - fightA[0] - this.additionalAttacker);
+		}
+		
+		else {
+			countryAttack.setUnits(countryAttack.getUnits() - fightA[1]);
+			countryDefense.setUnits(countryDefense.getUnits() - fightB[1]);
+		}
+		
+		this.additionalAttacker = 0;
+		
+		System.out.println("A Einheiten nachher: " + countryAttack.getUnits());
+		System.out.println("B Einheiten nachher: " + countryDefense.getUnits());
+		System.out.println();
+	}
+
+	private Integer[][] rollTheDice(int battleUnitsA, int battleUnitsB) {
+		int limitA = battleUnitsA;
+		int limitB = battleUnitsB;
+		this.additionalAttacker = 0;
+		
+		if(battleUnitsA > 3) {
+			limitA = 3;
+			this.additionalAttacker = battleUnitsA - 3;
+		}
+		
+		if(battleUnitsB > 2) {
+			limitB = 2;
+		}
+		
+		Integer[] dicesA = new Integer[limitA];
+		Integer[] dicesB = new Integer[limitB];
+		
+		for (int i = 0; i < dicesA.length; i++) {
+			dicesA[i] = MatchFX.randomInt(1, 6);
+		}
+		
+		for (int i = 0; i < dicesB.length; i++) {
+			dicesB[i] = MatchFX.randomInt(1, 6);
+		}
+		
+		Arrays.sort(dicesA, Collections.reverseOrder());
+		Arrays.sort(dicesB, Collections.reverseOrder());
+		
+		// Ausgabe zum Testen:
+		System.out.print("A würfelte: ");
+		for (int i = 0; i < dicesA.length; i++) {
+			System.out.print(dicesA[i] + ", ");
+		}
+		System.out.println();
+		
+		System.out.print("B würfelte: ");
+		for (int i = 0; i < dicesB.length; i++) {
+			System.out.print(dicesB[i] + ", ");
+		}
+		System.out.println();
+		
+		Integer[][] diceResults = {dicesA, dicesB};
+		
+		return diceResults;
+	}
+
 	boolean isNeighbour(Country a, Country b) {
 		for (int i = 0; i < a.getNeighborIdArray().length; i++) {
 			if(a.getNeighborIdArray()[i] == b.getCountryId()) {

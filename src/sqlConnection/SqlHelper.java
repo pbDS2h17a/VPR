@@ -289,7 +289,7 @@ public class SqlHelper {
 	
 	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
 		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
-		System.out.println("Call läuft");
+		// System.out.println("Call läuft");
 		return ResultSetManager.toList(r);
 	}
 	

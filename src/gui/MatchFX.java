@@ -4,6 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -78,6 +80,24 @@ public class MatchFX {
 	private Country[] countryArray = new Country[42];
 	private Group[] territory_group = new Group[countryArray.length];
 	private ColorAdjust colorAdjust = new ColorAdjust();
+	private Group battleGroup = new Group();
+	private Rectangle battleA_BG = new Rectangle(960, 1080);
+	private Label battleA_CountryName = new Label();
+	private Rectangle battleB_BG = new Rectangle(960, 1080);
+	private Label battleB_CountryName = new Label();
+	private Polygon battleArrow = new Polygon();
+	private Sprite battleBtnReady = new Sprite("resources/btn_bereit.png");
+	private TextField battleA_Input = new TextField();
+	private Label battleA_LabelUnits = new Label();
+	private TextField battleB_Input = new TextField();
+	private Label battleB_LabelUnits = new Label();
+	private Group battleA_GroupDices = new Group();
+	private Label battleA_Dice1 = new Label();
+	private Label battleA_Dice2 = new Label();
+	private Label battleA_Dice3 = new Label();
+	private Group battleB_GroupDices = new Group();
+	private Label battleB_Dice1 = new Label();
+	private Label battleB_Dice2 = new Label();
 	
 	/**
 	 * Constructor.
@@ -126,7 +146,7 @@ public class MatchFX {
 		    	
 		    	final int COUNTRY_INDEX = i;
 		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-		    			updateTerritoryInfo(COUNTRY_INDEX);
+		    			updateTerritoryInfo(countryArray[COUNTRY_INDEX]);
 		    			gameMarkNeighbourCountrys(countryArray[COUNTRY_INDEX]);
 		    		}
 			    );
@@ -298,36 +318,31 @@ public class MatchFX {
 	    });
     	
 		ctn.getChildren().add(phaseBtnGroup);
-	
-		Group battleGroup = new Group();
+
+		battleGroup.setVisible(false);
 		
-		Rectangle battleA_BG = new Rectangle(960, 1080);
 		battleA_BG.relocate(0, 0);
 		battleA_BG.setFill(Color.BLUE);
 		battleA_BG.setStroke(Color.WHITE);
 		battleA_BG.setStrokeWidth(10);
 		battleGroup.getChildren().add(battleA_BG);
 		
-		Label battleA_CountryName = new Label("Westliche Vereinigte Staaten");
 		battleA_CountryName.setPrefWidth(960);
 		battleA_CountryName.relocate(0, 50);
 		battleA_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		battleGroup.getChildren().add(battleA_CountryName);
 		
-		Rectangle battleB_BG = new Rectangle(960, 1080);
 		battleB_BG.relocate(960, 0);
 		battleB_BG.setFill(Color.RED);
 		battleB_BG.setStroke(Color.WHITE);
 		battleB_BG.setStrokeWidth(10);
 		battleGroup.getChildren().add(battleB_BG);
 		
-		Label battleB_CountryName = new Label("Östliche Vereinigte Staaten");
 		battleB_CountryName.setPrefWidth(960);
 		battleB_CountryName.relocate(960, 50);
 		battleB_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		battleGroup.getChildren().add(battleB_CountryName);
 		
-		Polygon battleArrow = new Polygon();
 		battleArrow.getPoints().addAll(new Double[]{
 				0.0, 0.0,
 				0.0, 30.0,
@@ -340,12 +355,64 @@ public class MatchFX {
 		battleArrow.relocate(810, 480);
 		battleGroup.getChildren().add(battleArrow);
 		
-		Sprite battleBtnReady = new Sprite("resources/btn_bereit.png");
 		battleBtnReady.setButtonMode(true);
 		battleBtnReady.relocate(960 - 167, 850);
 		battleGroup.getChildren().add(battleBtnReady);
 		
-		battleGroup.setVisible(false);
+		battleA_Input.setPrefSize(120, 100);
+		battleA_Input.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleA_Input.relocate(600, 430);
+		battleGroup.getChildren().add(battleA_Input);
+		
+		battleA_LabelUnits.setPrefSize(120, 40);
+		battleA_LabelUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+		battleA_LabelUnits.relocate(600, 550);
+		battleGroup.getChildren().add(battleA_LabelUnits);
+		
+		battleB_Input.setPrefSize(120, 100);
+		battleB_Input.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleB_Input.relocate(1200, 430);
+		battleB_Input.setDisable(true);
+		battleGroup.getChildren().add(battleB_Input);
+		
+		battleB_LabelUnits.setPrefSize(120, 40);
+		battleB_LabelUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+		battleB_LabelUnits.relocate(1200, 550);
+		battleGroup.getChildren().add(battleB_LabelUnits);
+		
+		battleA_GroupDices.relocate(0, 0);
+		
+		battleA_Dice1.setPrefSize(150, 150);
+		battleA_Dice1.relocate(100, 265);
+		battleA_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(battleA_Dice1);
+		
+		battleA_Dice2.setPrefSize(150, 150);
+		battleA_Dice2.relocate(100, 465);
+		battleA_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(battleA_Dice2);
+		
+		battleA_Dice3.setPrefSize(150, 150);
+		battleA_Dice3.relocate(100, 665);
+		battleA_Dice3.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(battleA_Dice3);
+		
+		battleGroup.getChildren().add(battleA_GroupDices);
+
+		battleB_GroupDices.relocate(0, 0);
+		
+		battleB_Dice1.setPrefSize(150, 150);
+		battleB_Dice1.relocate(1670, 365);
+		battleB_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleB_GroupDices.getChildren().add(battleB_Dice1);
+		
+		battleB_Dice2.setPrefSize(150, 150);
+		battleB_Dice2.relocate(1670, 565);
+		battleB_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleB_GroupDices.getChildren().add(battleB_Dice2);
+		
+		battleGroup.getChildren().add(battleB_GroupDices);
+		
 		ctn.getChildren().add(battleGroup);
 		
 		startMatch(lobby);
@@ -404,22 +471,22 @@ public class MatchFX {
 	 * If so: Sets the territoryInfo fill.
 	 * Calls gameChangeCountry and gameChangePlayer.
 	 */
-	void updateTerritoryInfo(int id) {
+	void updateTerritoryInfo(Country country) {
 		
-		if(territoryInfo.getFill() != countryArray[id].getFill()) {
-			territoryInfo.setFill(countryArray[id].getFill());
+		if(territoryInfo.getFill() != country.getFill()) {
+			territoryInfo.setFill(country.getFill());
 		}
 		
-		if(!territoryInfoLabel.getText().equals(String.valueOf(countryArray[id].getUnits()))) {
-			territoryInfoLabel.setText(String.valueOf(countryArray[id].getUnits()));
+		if(!territoryInfoLabel.getText().equals(String.valueOf(country.getUnits()))) {
+			territoryInfoLabel.setText(String.valueOf(country.getUnits()));
 		}
 		
-		if(territoryName.getFill() != countryArray[id].getFill()) {
-			territoryName.setFill(countryArray[id].getFill());
+		if(territoryName.getFill() != country.getFill()) {
+			territoryName.setFill(country.getFill());
 		}
 		
-		if(!territoryNameLabel.getText().equals(countryArray[id].getCountryName())) {
-			territoryNameLabel.setText(countryArray[id].getCountryName());
+		if(!territoryNameLabel.getText().equals(country.getCountryName())) {
+			territoryNameLabel.setText(country.getCountryName());
 		}
 
 	}
@@ -494,6 +561,64 @@ public class MatchFX {
 	
 	public Pane getContainer() {
 		return ctn;
+	}
+	
+	public Group getBattleInterface() {
+		return battleGroup;
+	}
+	
+	public Rectangle getBattleBackgroundA() {
+		return battleA_BG;
+	}
+	
+	public Rectangle getBattleBackgroundB() {
+		return battleB_BG;
+	}
+	
+	public Group getDicesA() {
+		return battleA_GroupDices;
+	}
+	
+	public Group getDicesB() {
+		return battleB_GroupDices;
+	}
+	
+	public Label getCountryNameA() {
+		return battleA_CountryName;
+	}
+	
+	public Label getCountryNameB() {
+		return battleB_CountryName;
+	}
+	
+	public Label getCountryUnitsA() {
+		return battleA_LabelUnits;
+	}
+	
+	public Label getCountryUnitsB() {
+		return battleB_LabelUnits;
+	}
+	
+	public Sprite getBattleReadyBtn() {
+		return battleBtnReady;
+	}
+	
+	public TextField getBattleInputA() {
+		return battleA_Input;
+	}
+	
+	public TextField getBattleInputB() {
+		return battleB_Input;
+	}
+	
+	public void activateWorldMap(boolean isActive) {
+		for (int i = 0; i < countryArray.length; i++) {
+			countryArray[i].setVisible(isActive);
+		}
+	}
+	
+	public Group getPhaseBtnGroup() {
+		return phaseBtnGroup;
 	}
 	
 	public void editPhaseButtons(boolean add, boolean fight, boolean move, boolean end) {
