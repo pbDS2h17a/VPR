@@ -76,6 +76,39 @@ public class Round {
 		this.countryArray = countryArray;
 	}
 
+	
+	public Country getCountryA() {
+		return countryA;
+	}
+
+	public void setCountryA(Country countryA) {
+		this.countryA = countryA;
+	}
+
+	public Country getCountryB() {
+		return countryB;
+	}
+
+	public void setCountryB(Country countryB) {
+		this.countryB = countryB;
+	}
+
+	public int getBattleUnitsA() {
+		return battleUnitsA;
+	}
+
+	public void setBattleUnitsA(int battleUnitsA) {
+		this.battleUnitsA = battleUnitsA;
+	}
+
+	public int getBattleUnitsB() {
+		return battleUnitsB;
+	}
+
+	public void setBattleUnitsB(int battleUnitsB) {
+		this.battleUnitsB = battleUnitsB;
+	}
+
 	void startInitialRound() {
 			
 		int firstUnits;
@@ -143,6 +176,7 @@ public class Round {
 				}
 				
 				else if(this.fight) {
+					
 					if(this.countryA == null) {
 						if(isOwnLand(this.getCountryArray()[COUNT]) && this.getCountryArray()[COUNT].getUnits() > 1) {
 							this.countryA = this.getCountryArray()[COUNT];
@@ -151,14 +185,11 @@ public class Round {
 					}
 					
 					else {
-						if(!isOwnLand(this.getCountryArray()[COUNT]) && isNeighbour(countryA, this.getCountryArray()[COUNT])) {
-							this.countryA.setStrokeWidth(0);
+						if(!isOwnLand(this.getCountryArray()[COUNT]) && isNeighbour(this.countryA, this.getCountryArray()[COUNT])) {
 							this.countryB = this.getCountryArray()[COUNT];
-							startFight(this.countryA, this.countryB);
+							startFight();
 						}
-						
-						this.countryA = null;
-						this.countryB = null;
+
 					}
 							
 					
@@ -201,68 +232,41 @@ public class Round {
 				this.match.updateTerritoryInfo(this.getCountryArray()[COUNT]);
 		    });
 		}
+		
 
 	}
 	
-	void startFight(Country cA, Country cB) {
-		this.countryA.setStrokeWidth(0);
-		this.countryA = null;
-		this.countryB = null;
-		
+	public void startFight() {
 		this.match.getBattleInputA().setText("0");
 		this.match.getBattleInputB().setText("0");
 		
 		this.match.getBattleInputA().setDisable(false);
 		this.match.getBattleInputB().setDisable(true);
 		
-		this.match.getBattleBackgroundA().setFill(cA.getFill());
-		this.match.getCountryNameA().setText(cA.getCountryName());
-		this.match.getCountryUnitsA().setText("/ " + String.valueOf(cA.getUnits()));
+		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
+		this.match.getCountryNameA().setText(this.countryA.getCountryName());
+		this.match.getCountryUnitsA().setText("/ " + String.valueOf(this.countryA.getUnits()));
 		
-		this.match.getBattleBackgroundB().setFill(cB.getFill());
-		this.match.getCountryNameB().setText(cB.getCountryName());
-		this.match.getCountryUnitsB().setText("/ " + String.valueOf(cB.getUnits()));
+		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
+		this.match.getCountryNameB().setText(this.countryB.getCountryName());
+		this.match.getCountryUnitsB().setText("/ " + String.valueOf(this.countryB.getUnits()));
 		
 		this.match.activateWorldMap(false);
 		this.match.getPhaseBtnGroup().setVisible(false);
 		this.match.getBattleInterface().setVisible(true);
-		
-	    this.match.getBattleReadyBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	if(this.match.getBattleInputB().isDisabled()) {
-	    		this.battleUnitsA  = Integer.parseInt(this.match.getBattleInputA().getText());
-		    	if(this.battleUnitsA > 0 && this.battleUnitsA < cA.getUnits()) {
-		    		this.match.getBattleInputA().setDisable(true);
-		    		this.match.getBattleInputB().setDisable(false);
-		    	}
-	    	}
-	    	
-	    	else if(this.match.getBattleInputA().isDisabled()) {
-	    		this.battleUnitsB = Integer.parseInt(this.match.getBattleInputB().getText());
-		    	if(this.battleUnitsB > 0 && this.battleUnitsB < 3 && this.battleUnitsB <= cB.getUnits()) {
-		    		System.out.println("*** Kampf beginnt ***");
-		    		System.out.println("A: " + cA.getCountryName() + " | B: " + cB.getCountryName());
-		    		System.out.println("A Einheiten vorher: " + cA.getUnits());
-		    		System.out.println("B Einheiten vorher: " + cB.getUnits());
-		    		System.out.println("A schickt in den Tod: " + this.battleUnitsA);
-		    		System.out.println("B schickt in den Tod: " + this.battleUnitsB);
-		    		
-		    		this.match.getBattleReadyBtn().setActive(false);
-		    		Integer[][] rolledDices = rollTheDice(this.battleUnitsA, this.battleUnitsB);
-		    		updateFightResults(rolledDices, cA, cB);
-		    		endFight();
-		    	}
-	    	}
-	    });
 	}
 
-	private void endFight() {
+	public void endFight() {
+		this.countryA.setStrokeWidth(0);
+		this.countryA = null;
+		this.countryB = null;
 		this.match.getBattleReadyBtn().setActive(true);
 		this.match.activateWorldMap(true);
 		this.match.getPhaseBtnGroup().setVisible(true);
 		this.match.getBattleInterface().setVisible(false);
 	}
 
-	private void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
+	public void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
 
 		List<Integer> diceListA = new ArrayList<Integer>();
 		for (int i = 0; i < rolledDices[0].length; i++) {
@@ -300,7 +304,7 @@ public class Round {
 		countryAftermath(fightA, fightB, countryAttack, countryDefense);
 	}
 
-	private void countryAftermath(int[] fightA, int[] fightB, Country countryAttack, Country countryDefense) {
+	public void countryAftermath(int[] fightA, int[] fightB, Country countryAttack, Country countryDefense) {
 		if(countryDefense.getUnits() - fightB[1] == 0) {
 			countryDefense.setUnits(fightA[0] - fightA[1] + this.additionalAttacker);
 			countryDefense.setOwner(countryAttack.getOwner());
@@ -321,7 +325,7 @@ public class Round {
 		System.out.println();
 	}
 
-	private Integer[][] rollTheDice(int battleUnitsA, int battleUnitsB) {
+	public Integer[][] rollTheDice(int battleUnitsA, int battleUnitsB) {
 		int limitA = battleUnitsA;
 		int limitB = battleUnitsB;
 		this.additionalAttacker = 0;

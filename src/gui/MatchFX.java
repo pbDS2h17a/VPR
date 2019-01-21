@@ -632,5 +632,8 @@ public class MatchFX {
 		phaseBtn4.setButtonMode(end);
 	}
 	
+	public Round getRound() {
+		return round;
+	}
 	
 }
