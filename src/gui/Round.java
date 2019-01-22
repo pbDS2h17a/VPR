@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -51,11 +52,11 @@ public class Round {
 	public void setMatch(MatchFX match) {
 		this.match = match;
 	}
-
+	
 	void setActivePlayerIndex(int i) {
 		this.activePlayerIndex = i;
 	}
-	
+
 	int getActivePlayerIndex() {
 		return this.activePlayerIndex;
 	}
@@ -75,8 +76,47 @@ public class Round {
 	public void setCountryArray(Country[] countryArray) {
 		this.countryArray = countryArray;
 	}
-
 	
+	public boolean isAssign() {
+		return assign;
+	}
+
+	public void setAssign(boolean assign) {
+		this.assign = assign;
+	}
+
+	public boolean isAdd() {
+		return add;
+	}
+
+	public void setAdd(boolean add) {
+		this.add = add;
+	}
+
+	public boolean isFight() {
+		return fight;
+	}
+
+	public void setFight(boolean fight) {
+		this.fight = fight;
+	}
+
+	public boolean isMove() {
+		return move;
+	}
+
+	public void setMove(boolean move) {
+		this.move = move;
+	}
+
+	public int getAdditionalAttacker() {
+		return additionalAttacker;
+	}
+
+	public void setAdditionalAttacker(int additionalAttacker) {
+		this.additionalAttacker = additionalAttacker;
+	}
+
 	public Country getCountryA() {
 		return countryA;
 	}
@@ -147,91 +187,7 @@ public class Round {
 		
 		updatePlayerInterface(this.getActivePlayer());
 		
-		for (int i = 0; i < this.getCountryArray().length; i++) {
-			final int COUNT = i;
 
-			this.getCountryArray()[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-
-				if(this.assign) {
-					if(isOwnLand(this.getCountryArray()[COUNT])) {
-						this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() - 1);
-						this.getCountryArray()[COUNT].setUnits(this.getCountryArray()[COUNT].getUnits() + 1);
-						
-						if(this.getActivePlayerIndex() == this.getPlayerArray().length-1) {
-							this.setActivePlayerIndex(0);
-						} else {
-							this.setActivePlayerIndex(this.getActivePlayerIndex() + 1);
-						}
-					}
-				}
-				
-				else if(this.add) {
-					if(isOwnLand(this.getCountryArray()[COUNT])) {
-						if(this.getActivePlayer().getUnassignedUnits() > 0) {
-							this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() - 1);
-							this.getCountryArray()[COUNT].setUnits(this.getCountryArray()[COUNT].getUnits() + 1);
-							this.match.updateTerritoryInfo(this.getCountryArray()[COUNT]);
-						}
-					}
-				}
-				
-				else if(this.fight) {
-					
-					if(this.countryA == null) {
-						if(isOwnLand(this.getCountryArray()[COUNT]) && this.getCountryArray()[COUNT].getUnits() > 1) {
-							this.countryA = this.getCountryArray()[COUNT];
-							this.countryA.setStrokeWidth(10);
-						}
-					}
-					
-					else {
-						if(!isOwnLand(this.getCountryArray()[COUNT]) && isNeighbour(this.countryA, this.getCountryArray()[COUNT])) {
-							this.countryB = this.getCountryArray()[COUNT];
-							startFight();
-						}
-
-					}
-							
-					
-				}
-				
-				else if(this.move) {
-					if(isOwnLand(this.getCountryArray()[COUNT])) {
-						if(this.countryA == null) {
-							this.countryA = this.getCountryArray()[COUNT];
-							this.countryA.setStrokeWidth(10);
-						}
-						
-						else {
-							this.countryB = this.getCountryArray()[COUNT];
-							
-							if(isNeighbour(countryA, countryB) && countryA.getUnits() > 1) {
-								this.countryA.setUnits(this.countryA.getUnits() - 1);
-								this.countryB.setUnits(this.countryB.getUnits() + 1);
-							}
-							
-							this.countryA.setStrokeWidth(0);
-							this.countryA = null;
-							this.countryB = null;
-						}
-							
-					}
-				}
-				
-				// if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
-				
-				if(this.assign && isFinishedAssigning()) {
-					this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getEinheitenProRunde());
-					this.assign = false;
-					this.add = true;
-					this.setActivePlayerIndex(0);
-					phaseAdd();
-				}
-				
-				updatePlayerInterface(this.getActivePlayer());
-				this.match.updateTerritoryInfo(this.getCountryArray()[COUNT]);
-		    });
-		}
 		
 
 	}
