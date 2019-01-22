@@ -21,6 +21,22 @@ public class SqlQuery {
 
 	public static Statement stmt = SqlHelper.getStatement();
 	
+	public static void fillTestData() {
+		try {
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 ,1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 ,2)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 ,3)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 ,4)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 ,5)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 ,6)");
+			stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
+		} catch (SQLException e) {
+			System.out.println("fillTestData");
+			e.printStackTrace();
+		}
+		System.out.println("Testdaten einfügen");
+	}
+	
 	//#################################################################################################################
 	// FILL STATEMENTS
 	//#################################################################################################################
@@ -207,7 +223,6 @@ public class SqlQuery {
 	public static void disableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 0");
-
 		} catch (SQLException e) {
 			System.out.println("disableForeignKeyRestraints");
 			e.printStackTrace();
@@ -227,104 +242,13 @@ public class SqlQuery {
 	//#################################################################################################################
 	// DROP STATEMENTS
 	//#################################################################################################################
-	static void dropCountry() { 
+	public static void dropTable(String tableName) {
 		try {
-			stmt.executeUpdate("SET foreign_key_checks = 0");
-			stmt.executeUpdate("DROP TABLE IF EXISTS country");
+			stmt.executeUpdate("DROP TABLE IF EXISTS "+tableName);
 		} catch (SQLException e) {
-			System.out.println("dropCountry");
+			System.out.println("Fehler beim Löschen der Tabelle: "+tableName);
 			e.printStackTrace();
 		}	
-	}
-	
-	static void dropNeighbor(){
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS neighbor");
-		} catch (SQLException e) {
-			System.out.println("dropNeighbor");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropContinent() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS continent");
-		} catch (Exception e) {
-			System.out.println("dropContinent");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS player");
-		} catch (Exception e) {
-			System.out.println("dropPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropCountryPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS country_player");
-		} catch (Exception e) {
-			System.out.println("droprCountryPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropLobby() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS lobby");
-		} catch (Exception e) {
-			System.out.println("dropLobby");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropCard() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS card");
-		} catch (Exception e) {
-			System.out.println("dropCard");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropMission() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS mission");
-		} catch (Exception e) {
-			System.out.println("dropMission");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropMissionPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS mission_player");
-		} catch (Exception e) {
-			System.out.println("dropMissionPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropCardsPlayer() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS cards_player");
-		} catch (Exception e) {
-			System.out.println("dropCardPlayer");
-			e.printStackTrace();
-		}
-	}
-	
-	static void dropColor() {
-		try {
-			stmt.executeUpdate("DROP TABLE IF EXISTS color");
-		} catch (Exception e) {
-			System.out.println("dropColor");
-			e.printStackTrace();
-		}
 	}
 	
 	//#################################################################################################################
@@ -494,7 +418,7 @@ public class SqlQuery {
 				" player_id INT, "+
 				" country_id INT, "+
 				" lobby_id INT, "+
-				" army_count INT, " +
+				" unit_count INT, " +
 				" FOREIGN KEY(player_id) REFERENCES player(player_id), " +
 				" FOREIGN KEY(country_id) REFERENCES country(country_id), " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id), " +
@@ -519,6 +443,22 @@ public class SqlQuery {
 			stmt.executeUpdate(sqlPlayerCountry);
 		} catch (SQLException e) {
 			System.out.println("createColor");
+			e.printStackTrace();
+		}
+	}
+	
+	static void createChat() {
+		String sqlChat = "CREATE TABLE IF NOT EXISTS chat (" +
+				" message_id INT PRIMARY KEY AUTO_INCREMENT, " +
+				" pid INT REFERENCES player(pid), " +
+				" lid INT REFERENCES lobby(lid), " +
+				" timestamp LONG NOT NULL, " +
+				" message VARCHAR(255)"
+				+");";
+		try {
+			stmt.executeUpdate(sqlChat);
+		} catch (SQLException e) {
+			System.out.println("createChat");
 			e.printStackTrace();
 		}
 	}

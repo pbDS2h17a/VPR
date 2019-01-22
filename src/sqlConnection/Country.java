@@ -26,6 +26,7 @@ public class Country extends SVGPath {
 		super.setContent(SqlHelper.getCountrySVG(id));
 		// -1 = noch kein Besitzer
 		this.ownerId = -1;
+		this.units = 1;
 	}
 	
 	public int[] getNeighborIdArray() {
@@ -40,8 +41,6 @@ public class Country extends SVGPath {
 		return this.countryName;
 	}
 	
-	
-	
 	public int getCountryContinentID() {
 		return this.countryContinentID;
 	}
@@ -50,8 +49,8 @@ public class Country extends SVGPath {
 		return units;
 	}
 
-	public void setUnits(int armys) {
-		this.units = armys;
+	public void setUnits(int units) {
+		this.units = units;
 	}
 	
 	public Paint getColor() {

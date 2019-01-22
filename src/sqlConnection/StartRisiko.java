@@ -17,18 +17,8 @@ public class StartRisiko
 //		Connection con = DriverManager.getConnection(  
 //				"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp");  
 		//String [] connection = {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17awb","pbs2h17awb","2vfTcNDp"};
-	/*	for (int i = 1; i < 6; i++) {
-			try{
-				continente.add(new Continent(i));
-			}catch(SQLException sql){
-				System.out.println(i+"Id nicht vergeben!");
-			}			
-		}
-		
-		for (Continent continent : continente) {
-			System.out.println(continent);
-		}
-		*/
+
+
 		CardStack cs = new CardStack();
 		ArrayList <Card> arr = cs.fillCardList();
 		for (Card card : arr) {
@@ -39,7 +29,8 @@ public class StartRisiko
 		System.out.println(Cards.size());
 		for (Card card : Cards) {
 			System.out.println(card);
-			
+		
+
 		}
 		//System.out.println(cs);			
 		            

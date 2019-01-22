@@ -1,14 +1,13 @@
 package gui;
 
-/**
- * @author Dang, Hoang-Ha
- */
-
-
 import javafx.scene.Cursor;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+/**
+ * @author Dang, Hoang-Ha
+ */
 
 /**
  * Sprite Klasse
@@ -34,7 +33,11 @@ public class Sprite extends ImageView
 	private double vscale;
 	
 	ColorAdjust colorAdjust = new ColorAdjust();
-	
+/**
+ * Sprite Constructor
+ * @param path : String
+ * Sprite wird durch einen Pfad erstellt und Listener werden hinzugefügt
+ */
 	public Sprite(String path) {
 		image = new Image(path);
 		this.setImage(image);
@@ -55,7 +58,11 @@ public class Sprite extends ImageView
 	public void setButtonMode(boolean mode) {
 		this.isButton = mode;
 	}
-	
+/**
+ * setActive(boolean mode)
+ * @param mode
+ * Sollte der mode false sein wird das Bild zusätzlich ausgegraut
+ */
 	public void setActive(boolean mode) {
 		if (mode) {
 			colorAdjust.setSaturation(0);
@@ -110,9 +117,14 @@ public class Sprite extends ImageView
 	public void click() {
 		
 	}
+/**
+ * initializeListeners()
+ * fügt beim Erstellen einer Sprite Events ein
+ * beim hovern wird ein Soundeffekt abgespielt
+ */
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
-			MediaPlayer.menuHover.play();
+			MediaPlayerFX.menuHover.play();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0.1);
 				colorAdjust.setContrast(0.3);
@@ -124,7 +136,7 @@ public class Sprite extends ImageView
 				getScene().setCursor(Cursor.HAND);
 		});
 		setOnMouseExited(eventExited->{
-			MediaPlayer.menuHover.stop();
+			MediaPlayerFX.menuHover.stop();
 			if(isButtonMode() && isActive()) {
 				colorAdjust.setBrightness(0);
 				colorAdjust.setContrast(0);

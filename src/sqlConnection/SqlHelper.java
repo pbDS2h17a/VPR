@@ -6,8 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import network.ResultSetManager;
 
 public class SqlHelper {
 	
@@ -23,8 +24,11 @@ public class SqlHelper {
 	 */
 	
 	// Private TestDb für home server
+	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
-	private static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
+	private static String[] loginStringArray =  {
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+	};
 
 	/**
 	 * Versucht ein neues Statement zu erstellen
@@ -85,6 +89,22 @@ public class SqlHelper {
 		}
 		
 		return playerArray;
+	}
+	
+	public static String[] getAllColors() {
+		String[] data = new String[6];
+		int i = 0;
+		try {
+			ResultSet rs = getStatement().executeQuery("SELECT value FROM color");
+			while(rs.next()) {
+				data[i] = rs.getString(1);
+				i++;
+			}
+		} catch (SQLException e) {
+			//do nothing
+		}
+
+		return data;
 	}
 	
 	public static int[] getAllLobbyId() {
@@ -229,16 +249,16 @@ public class SqlHelper {
 		return rs.getInt("bonus");
 	}
 	
-	public static List <String> ContinentCountries(int continentID) throws SQLException{
-		List <String> countries = new ArrayList<>();
-		ResultSet rs = getStatement().executeQuery("SELECT name FROM country where continent_id = "+continentID+";");
+	public static int[] ContinentCountries(int continentID) throws SQLException{
+		List <Integer> countryIdList = new ArrayList<>();
+		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM country where continent_id = "+continentID+";");
 		while(rs.next()){	   		
-	   		countries.add(rs.getString("name"));	   				   			
+	   		countryIdList.add(rs.getInt("country_id"));	   				   			
 	   		}
 		rs.next();
-		return countries;
+		
+		return countryIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
-	
 
 	public static int getPlayerID(String name) throws SQLException{
 		ResultSet rs = getStatement().executeQuery("SELECT player_id FROM player WHERE name = "+name+";");
@@ -260,5 +280,72 @@ public class SqlHelper {
 		rs.next();
 		return rs.getString("description");
 	}
+	
+	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
+		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
+		// System.out.println("Call läuft");
+		return ResultSetManager.toList(r);
+	}
+	
+	public static void sendMessage(String message, int pid, int lid) throws SQLException
+	{
+		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
+		System.out.println(sql);
+		stmt.executeUpdate(sql);
+	}
+	
+	public static List<List<String>> getLobbies() throws SQLException
+	{
+		//TODO: WHERE player_6 IS NULL
+		ResultSet r = stmt.executeQuery("SELECT * FROM lobby;");
+		return ResultSetManager.toList(r);
+	}
+	
+	
+	/**
+	 * Methode zum einfügen von Daten in die Tabelle country_player
+	 * @param lobbyId
+	 * @param playerId
+	 * @param countryId
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void insertCountryOwner(int lobbyId, int playerId, int countryId) throws SQLException{
+		stmt.executeUpdate("INSERT INTO country_player VALUES("+playerId+","+countryId+","+lobbyId+", 1)");
+	};
+	/**
+	 * Methode zum ändern des Besatzers eines Landes 
+	 * @param lobbyId
+	 * @param playerId
+	 * @param countryId
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void changeCountryOwner(int lobbyId, int playerId, int countryId)throws SQLException{
+		stmt.executeUpdate("UPDATE country_player SET player_id = "+playerId+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+	};
+	/**
+	 * Methode zum anpassen der Armeen anzahl
+	 * @param lobbyId
+	 * @param playerId
+	 * @param countryId
+	 * @param amountUnits
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void changeArmy(int lobbyId, int playerId, int countryId, int amountUnits) throws SQLException{
+		stmt.executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+	};
+	/**
+	 * Methode zum hinzufügen von Player
+	 * @param name
+	 * @param lobbyId
+	 * @param colorId
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 */
+	public static void insertPlayer(String name, int lobbyId, int colorId) throws SQLException{
+		stmt.executeUpdate("INSERT INTO player VALUES(NULL,'"+name+"','127.0.0.1', "+lobbyId+" ,"+colorId+")");
 
+	};
 }

@@ -7,14 +7,32 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.SqlHelper;
 
-public class Join {
+/**
+ * @author Daniels, Kevin
+ * @author pbs2h17ale
+ */
+
+public class JoinFX {
 	
-	private Pane ctn;
-	private Sprite btnBack;
+	/**
+	 * @param ctn	   		 : Pane
+	 * @param btnBack  		 : Sprite
+	 * @param btnCheck 		 : Sprite
+	 * @param inputNameBG 	 : Sprite
+	 * @param inputName 	 : TextField
+	 * @param inputNameLabel : Label
+	 */
+	private Pane ctn = new Pane();
+	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
+	private Rectangle listBG = new Rectangle(900, 650);
+	private Label listLabel = new Label("Partie aussuchen");	
 	private int[] lobbyIdArray = SqlHelper.getAllLobbyId();
 	private Label[] listUsers = new Label[lobbyIdArray.length];
 	
-	public Join() {
+	/**
+	 * Constructor.
+	 */
+	public JoinFX() {
 		
 		// Beitreten-Container (Child von Anwendungs_CTN)
 	    ctn = new Pane();
@@ -24,13 +42,13 @@ public class Join {
 	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    ctn.setVisible(false);
 	    
-	    // Zur??Button
+	    // Zurueck-Button
 	    btnBack = new Sprite("resources/btn_zurueck.png");
 	    btnBack.relocate(50, 50);
 	    btnBack.setButtonMode(true);
+	    ctn.getChildren().add(btnBack);
 	    
 	    // Listen-Hintergrund
-	    Rectangle listBG = new Rectangle(900, 650);
 	    listBG.setFill(Color.web("rgba(113, 188, 120, .85)"));
 	    listBG.relocate(ctn.getPrefWidth()/2 - listBG.getWidth()/2, ctn.getPrefHeight()/2 - listBG.getHeight()/2);
 	    listBG.setStroke(Color.WHITE);
@@ -51,26 +69,37 @@ public class Join {
 	    	
 	    	if(i != 0)
 	    		listUsers[i].relocate(listBG.getLayoutX() + 25, listUsers[i-1].getLayoutY() + 62);
-	    	
+  	
 	    	ctn.getChildren().add(listUsers[i]);
 	    }
+	    
 	    // Namens-Input Label
-	    Label listLabel = new Label("Partie aussuchen");
 	    listLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    listLabel.relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() - 50);
-	  
-		ctn.getChildren().addAll(btnBack, listLabel);
+		ctn.getChildren().add(listLabel);
 	}
-
+	
+	/**
+	 * @return ctn : Pane
+	 * Returns the pane for the MainApp.
+	 */
 	public Pane getContainer() {
 		return ctn;
 	}
-
+	
+	/**
+	 * @return btnBack : Sprite
+	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 */
 	public Sprite getBtnBack() {
 		return btnBack;
 	}
 	
-	public Label[] getBtnLobby() {
+	/**
+	 * @return listUsers : Label[]
+	 * Returns the Label-Array for the initializeClickEventHandlers() in the MainApp.
+	 */
+	public Label[] getUserList() {
 		return listUsers;
 	}
 	
