@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 import network.ResultSetManager;
@@ -327,7 +329,7 @@ public class SqlHelper {
 	 * @throws SQLException
 	 * @author pbs2h17ath
 	 */
-	public static void changeCountryOwner(int lobbyId, int playerId, int countryId)throws SQLException{
+	public static void updateCountryOwner(int lobbyId, int playerId, int countryId)throws SQLException{
 		stmt.executeUpdate("UPDATE country_player SET player_id = "+playerId+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
 	};
 	/**
@@ -339,7 +341,7 @@ public class SqlHelper {
 	 * @throws SQLException
 	 * @author pbs2h17ath
 	 */
-	public static void changeArmy(int lobbyId, int playerId, int countryId, int amountUnits) throws SQLException{
+	public static void updateUnits(int lobbyId, int playerId, int countryId, int amountUnits) throws SQLException{
 		stmt.executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
 	};
 	/**
@@ -354,4 +356,49 @@ public class SqlHelper {
 		stmt.executeUpdate("INSERT INTO player VALUES(NULL,'"+name+"','127.0.0.1', "+lobbyId+" ,"+colorId+")");
 
 	};
+	
+	/**
+	 * Methode zum initiellen hinzufügen der Lobby in die Datenbank
+	 * einige felder bleiben hier vorerst Null, da die zugehörigen werte nicht vorhanden sein können.
+	 * @param localDateTime
+	 * @throws SQLException
+	 * @author pbs2h17ath
+	 * @return lobbyIdS
+	 */
+	public static int insertLobby(LocalDateTime localDateTime, long lastChange) throws SQLException{
+		stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,'"+localDateTime.toString()+"',"+lastChange+",NULL, NULL, NULL");
+		ResultSet rs = stmt.getGeneratedKeys();
+		rs.next();
+		return rs.getInt(1);
+
+	}
+	/**
+	 * Methode zum setzen des Leaders der Lobby
+	 * @param lobbyId
+	 * @param leaderId
+	 * @throws SQLException
+	 */
+	public static void updateLobbyLeader(int lobbyId, int leaderId) throws SQLException{
+		stmt.executeUpdate("UPDATE lobby SET leader_id = "+leaderId+") WHERE lobby_id="+lobbyId);
+	};
+	/**
+	 * Methode zum setzen des Spielers, der aktuell dran ist
+	 * @param lobbyId
+	 * @param playerTurnId
+	 * @throws SQLException
+	 */
+	public static void updatePlayerTurn(int lobbyId, int PlayerTurnId) throws SQLException{
+		stmt.executeUpdate("UPDATE lobby SET leader_id = "+PlayerTurnId+") WHERE lobby_id="+lobbyId);
+	};
+	/**
+	 * Methode zum setzen der reihenfolge der Spieler
+	 * @param lobbyId
+	 * @param PlayerOrder
+	 * @throws SQLException
+	 */
+	public static void updatePlayerOrder(int lobbyId, String PlayerOrder) throws SQLException{
+		stmt.executeUpdate("UPDATE lobby SET leader_id = "+PlayerOrder+") WHERE lobby_id="+lobbyId);
+	};
+	
+	
 }

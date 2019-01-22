@@ -333,7 +333,7 @@ public class SqlQuery {
 				" date DATETIME DEFAULT CURRENT_TIMESTAMP, " +
 				" last_change DATETIME, " +
 				" player_order VARCHAR(255), " +
-				" leader_id INT NOT NULL, " +
+				" leader_id INT, " +
 				" player_turn_id INT, " +
 				" FOREIGN KEY(leader_id) REFERENCES player(player_id)," +
 				" FOREIGN KEY(player_turn_id) REFERENCES player(player_id)," +

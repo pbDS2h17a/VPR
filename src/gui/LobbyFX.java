@@ -1,9 +1,5 @@
 package gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -18,8 +14,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-import sqlConnection.Country;
-import sqlConnection.Player;
+import sqlConnection.Lobby;
 import sqlConnection.SqlHelper;
 
 /**
@@ -65,11 +60,8 @@ public class LobbyFX {
     private Group groupRoles = new Group();
     
 	// Daten
-	private int playerCount = 0;
-	private final int MAX_PLAYER_COUNT = 6;
-	private Player[] players = new Player[MAX_PLAYER_COUNT];
-	private int lobbyId;
-	private ImageView[] slotArray = new ImageView[MAX_PLAYER_COUNT];
+    private Lobby lobby = new Lobby();
+	private ImageView[] slotArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
 	private Label[] labelArray = new Label[slotArray.length];
     private Polygon[] triangleArray = new Polygon[slotArray.length];
     private Sprite[] slotRolesArray = new Sprite[slotArray.length];
@@ -243,6 +235,10 @@ public class LobbyFX {
 	    lobbyAddPlayer(1);
 	}
 	
+	public Lobby getLobby() {
+		return lobby;
+	}
+
 	/**
 	 * @param id   : Integer
 	 * @param name : String
@@ -331,26 +327,7 @@ public class LobbyFX {
 	public Sprite getBtnCheck() {
 		return btnCheck;
 	}
-	
-	public int getLobbyId() {
-		return lobbyId;
-	}
-
-	public void setLobbyId(int lobbyId) {
-		this.lobbyId = lobbyId;
-	}
-	
-	public void addPlayer(Player player) {
-		if (playerCount < MAX_PLAYER_COUNT) {
-			players[playerCount] = player;
-			playerCount++;
-		}
-	}
-	
-	public Player[] getPlayers() {
-		return this.players;
-	}
-	
+		
 	public static void addTextLimiter(final TextField tf, final int maxLength) {
 	    tf.textProperty().addListener(new ChangeListener<String>() {
 	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {

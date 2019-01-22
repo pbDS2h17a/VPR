@@ -16,6 +16,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Country;
+import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
@@ -428,11 +429,11 @@ public class MatchFX {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void startMatch(LobbyFX lobby) {	
+	private void startMatch(LobbyFX lobbyFX) {	
 		// Verteilung der Länder auf die Spieler		
 		// Länderarray wird in eine Liste konvertiert
+		Lobby lobby = lobbyFX.getLobby();
 		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
-		lobby.setLobbyId(1);
 		Player[] players = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
 		
 		int userCount = players.length-1;
@@ -456,7 +457,7 @@ public class MatchFX {
 		
 		gameChangePlayer(players[0].getName(), Color.web(players[0].getColor()));
 		
-	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	round = new Round(this, players, countryArray);
 	    });
 	    
