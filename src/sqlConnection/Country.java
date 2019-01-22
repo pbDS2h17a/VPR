@@ -2,6 +2,7 @@ package sqlConnection;
 
 import java.sql.SQLException;
 
+
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
@@ -16,6 +17,11 @@ public class Country extends SVGPath {
 //	private int units;
 	private int[] neighborIdArray;
 	private SVGPath svgPath;
+
+	private int countryContinentId;
+	private String name;
+	private int armys;
+
 	
 	public Country(int id) throws SQLException {
 		this.countryId = id;
@@ -41,8 +47,9 @@ public class Country extends SVGPath {
 		return this.countryName;
 	}
 	
-	public int getCountryContinentID() {
-		return this.countryContinentID;
+
+	public int getCountryContinentId(){
+		return this.countryContinentId;
 	}
 
 	public int getUnits() {
