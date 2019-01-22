@@ -20,6 +20,7 @@ public class test extends Application {
 		ChatInterface chat = new ChatInterface(1, 1);
 		Scene sc = new Scene(chat.getPane());
 		primaryStage.setScene(sc);
+		sc.getStylesheets().add("resources/style.css");
 		primaryStage.show();
 	}
 }
