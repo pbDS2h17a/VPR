@@ -24,8 +24,11 @@ public class SqlHelper {
 	 */
 	
 	// Private TestDb für home server
+	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
-	private static String[] loginStringArray =  {"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"};
+	private static String[] loginStringArray =  {
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+	};
 
 	/**
 	 * Versucht ein neues Statement zu erstellen
@@ -86,6 +89,22 @@ public class SqlHelper {
 		}
 		
 		return playerArray;
+	}
+	
+	public static String[] getAllColors() {
+		String[] data = new String[6];
+		int i = 0;
+		try {
+			ResultSet rs = getStatement().executeQuery("SELECT value FROM color");
+			while(rs.next()) {
+				data[i] = rs.getString(1);
+				i++;
+			}
+		} catch (SQLException e) {
+			//do nothing
+		}
+
+		return data;
 	}
 	
 	public static int[] getAllLobbyId() {
@@ -270,7 +289,7 @@ public class SqlHelper {
 	
 	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
 		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
-		System.out.println("Call läuft");
+		// System.out.println("Call läuft");
 		return ResultSetManager.toList(r);
 	}
 	

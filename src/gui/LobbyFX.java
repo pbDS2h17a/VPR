@@ -1,9 +1,16 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -11,7 +18,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import sqlConnection.Country;
 import sqlConnection.Player;
+import sqlConnection.SqlHelper;
 
 /**
  * @author Daniels, Kevin
@@ -42,49 +51,47 @@ public class LobbyFX {
 	 * @param colorArray	 : String[]
 	 * @param colorRectArray : Rectangle[]
 	 */
-	private Pane ctn;
-	private Sprite btnReady;
-	private Sprite btnBack;
+	//FX
+	private Pane ctn = new Pane();
+	private Sprite btnReady = new Sprite("resources/btn_bereit.png");
+	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
 	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");;
 	private Sprite inputNameBG = new Sprite("resources/input_bg.png");
     private TextField inputName = new TextField();
+    private Label inputNameLabel = new Label("Name eingeben");
+    private Group groupColors = new Group();
+    private Label colorLabel = new Label("Farbe auswählen");
+    private Group groupSlots = new Group();
+    private Group groupRoles = new Group();
     
 	// Daten
 	private int playerCount = 0;
 	private final int MAX_PLAYER_COUNT = 6;
-	
 	private Player[] players = new Player[MAX_PLAYER_COUNT];
 	private int lobbyId;
-
-	//FX
 	private ImageView[] slotArray = new ImageView[MAX_PLAYER_COUNT];
 	private Label[] labelArray = new Label[slotArray.length];
     private Polygon[] triangleArray = new Polygon[slotArray.length];
     private Sprite[] slotRolesArray = new Sprite[slotArray.length];
-    private String[] colorArray = {"#FFD800", "#C42B2B", "#26BF00", "#0066ED", "#000000", "#EF4CE7"};
-    private Rectangle[] colorRectArray = new Rectangle[colorArray.length];
-   
+    private Rectangle[] colorRectArray = new Rectangle[slotArray.length];
     
 	/**
 	 * Constructor.
 	 */
 	public LobbyFX() {	
 	    // Lobby-Container (Child von Anwendungs_CTN)
-	    ctn = new Pane();
 	    ctn.setId("Lobby");
 	    ctn.setCache(true);
 	    ctn.setPrefSize(1920, 1080);
 	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    ctn.setVisible(false);
 	    
-	    // Zur??Button
-	    btnBack = new Sprite("resources/btn_zurueck.png");
+	    // Zurueck-Button
 	    btnBack.setButtonMode(true);
 	    btnBack.relocate(50, 50);
 	    ctn.getChildren().add(btnBack);
 	    
 	    // Bereit-Button
-	    btnReady = new Sprite("resources/btn_bereit.png");
 	    btnReady.relocate(ctn.getPrefWidth() - 400, ctn.getPrefHeight() - 200);
 	    btnReady.setActive(false);
 	    ctn.getChildren().add(btnReady);
@@ -105,21 +112,21 @@ public class LobbyFX {
 	    ctn.getChildren().add(btnCheck);
 	    
 	    // Namens-Input Label
-	    Label inputNameLabel = new Label("Name eingeben");
 	    inputNameLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    inputNameLabel.relocate(inputNameBG.getLayoutX() + 20, inputNameBG.getLayoutY() - 50);
 	    ctn.getChildren().add(inputNameLabel);
 	    
 	    // Farben-Gruppe
-	    Group groupColors = new Group();
 	    groupColors.relocate(ctn.getPrefWidth() - 300, 100);
+
+	    String[] colors = SqlHelper.getAllColors();
 	    
-	    for(int i = 0; i < colorArray.length; i++)  {
+	    for(int i = 0; i < colors.length; i++)  {
 	    	colorRectArray[i] = new Rectangle(90, 90);
 	    	colorRectArray[i].setStroke(Color.WHITE);
 	    	colorRectArray[i].setStrokeWidth(5);
 	    	colorRectArray[i].setStrokeType(StrokeType.INSIDE);
-	    	colorRectArray[i].setFill(Color.web(colorArray[i]));
+	    	colorRectArray[i].setFill(Color.web(colors[i]));
 	    	
 	    	if(i > 0) {
 	    		if(i % 2 != 0) {
@@ -141,14 +148,12 @@ public class LobbyFX {
 	    ctn.getChildren().add(groupColors);
 	    
 	    // Farben Label
-	    Label colorLabel = new Label("Farbe auswählen");
 	    colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    colorLabel.setRotate(90);
 	    colorLabel.relocate(groupColors.getLayoutX() + 70, groupColors.getLayoutY() + 110);
 	    ctn.getChildren().add(colorLabel);
 	    
 	    // Slot-Gruppe
-	    Group groupSlots = new Group();
 	    groupSlots.relocate(360, 50);
 	    
 	    for(int i = 0; i < slotArray.length; i++) {
@@ -194,8 +199,6 @@ public class LobbyFX {
 	    ctn.getChildren().add(groupSlots);
 	    
 	    // Rollen festlegen
-	    Group groupRoles = new Group();
-	    
 	    for(int i = 0; i < slotRolesArray.length; i++) {
 	    	
 	    	final int tmp = i;
@@ -228,6 +231,13 @@ public class LobbyFX {
 	    btnCheck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			lobbyChangeName(1, inputName.getText());
 	    });
+	    
+	    inputName.setOnKeyReleased(event -> {
+	    	  if (event.getCode() == KeyCode.ENTER){
+	    		  lobbyChangeName(1, inputName.getText());
+	    	  }
+	    });
+	    addTextLimiter(inputName, 15);
 	    	    
 	    lobbyAddPlayer(0);
 	    lobbyAddPlayer(1);
@@ -279,7 +289,7 @@ public class LobbyFX {
 	/**
 	 * @param id : Integer
 	 * Remove player from slotArray[id].
-	 * Gray out triangleArray[id].
+	 * Gray out triangleArray[id].-
 	 * Clear labelArray[id] text.
 	 */
 	private void lobbyRemovePlayer(int id) {
@@ -339,6 +349,17 @@ public class LobbyFX {
 	
 	public Player[] getPlayers() {
 		return this.players;
+	}
+	
+	public static void addTextLimiter(final TextField tf, final int maxLength) {
+	    tf.textProperty().addListener(new ChangeListener<String>() {
+	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+	            if (tf.getText().length() > maxLength) {
+	                String s = tf.getText().substring(0, maxLength);
+	                tf.setText(s);
+	            }
+	        }
+	    });
 	}
 	
 }

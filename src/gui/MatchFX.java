@@ -4,6 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -46,6 +48,7 @@ public class MatchFX {
 	 * @param territorySVG		 : SVGPath[]
 	 * @param territory_group	 : Group[]
 	 */
+	private Round round;
 	private Pane ctn = new Pane();
 	private Pane groupTerritoryInfo = new Pane();
 	private Label territoryInfoLabel = new Label();
@@ -56,15 +59,15 @@ public class MatchFX {
 	private Rectangle territoryInfo = new Rectangle(80, 80);
 	private Group playerInfoGroup = new Group();
 	private Sprite playerInfoUnits = new Sprite("resources/game_icon_units.png");
-	private Label playerInfoUnitsLabel = new Label("999");
+	private Label playerInfoUnitsLabel = new Label();
 	private Sprite playerInfoLand = new Sprite("resources/game_icon_lands.png");
-	private Label playerInfoLandLabel = new Label("999");
+	private Label playerInfoLandLabel = new Label();
 	private Sprite playerInfoCard1 = new Sprite("resources/game_icon_card1.png");
-	private Label playerInfoCard1Label = new Label("999");
+	private Label playerInfoCard1Label = new Label("0");
 	private Sprite playerInfoCard2 = new Sprite("resources/game_icon_card2.png");
-	private Label playerInfoCard2Label = new Label("999");
+	private Label playerInfoCard2Label = new Label("0");
 	private Sprite playerInfoCard3 = new Sprite("resources/game_icon_card3.png");
-	private Label playerInfoCard3Label = new Label("999");
+	private Label playerInfoCard3Label = new Label("0");
 	private Group playerInfoAuftragGroup = new Group();
 	private Sprite playerInfoAuftrag = new Sprite("resources/btn_phase_goal.png");
 	private Label playerInfoAuftragLabel = new Label("Vernichte Einheit Rot");
@@ -77,11 +80,30 @@ public class MatchFX {
 	private Country[] countryArray = new Country[42];
 	private Group[] territory_group = new Group[countryArray.length];
 	private ColorAdjust colorAdjust = new ColorAdjust();
+	private Group battleGroup = new Group();
+	private Rectangle battleA_BG = new Rectangle(960, 1080);
+	private Label battleA_CountryName = new Label();
+	private Rectangle battleB_BG = new Rectangle(960, 1080);
+	private Label battleB_CountryName = new Label();
+	private Polygon battleArrow = new Polygon();
+	private Sprite battleBtnReady = new Sprite("resources/btn_bereit.png");
+	private TextField battleA_Input = new TextField();
+	private Label battleA_LabelUnits = new Label();
+	private TextField battleB_Input = new TextField();
+	private Label battleB_LabelUnits = new Label();
+	private Group battleA_GroupDices = new Group();
+	private Label battleA_Dice1 = new Label();
+	private Label battleA_Dice2 = new Label();
+	private Label battleA_Dice3 = new Label();
+	private Group battleB_GroupDices = new Group();
+	private Label battleB_Dice1 = new Label();
+	private Label battleB_Dice2 = new Label();
 	
 	/**
 	 * Constructor.
 	 */
 	public MatchFX(LobbyFX lobby) {
+		
 		// Partie-Container (Child von Anwendungs_CTN)
 	    ctn.setCache(true);
 	    ctn.setId("Partie");
@@ -122,10 +144,10 @@ public class MatchFX {
 //		    	System.out.println();
 
 		    	
-		    	final int tmp = i;
+		    	final int COUNTRY_INDEX = i;
 		    	countryArray[i].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-		    			updateTerritoryInfo(tmp);
-		    			gameMarkNeighbourCountrys(countryArray[tmp]);
+		    			updateTerritoryInfo(countryArray[COUNTRY_INDEX]);
+		    			gameMarkNeighbourCountrys(countryArray[COUNTRY_INDEX]);
 		    		}
 			    );
 		    	
@@ -142,6 +164,9 @@ public class MatchFX {
             340.0, 80.0,
             0.0, 80.0});
     	playerName.setFill(Color.GREY);
+    	playerName.setStroke(Color.WHITE);
+    	playerName.setStrokeWidth(5);
+    	playerName.setStrokeType(StrokeType.INSIDE);
     	playerName.relocate(-5, 50);
     	ctn.getChildren().add(playerName);
     	
@@ -181,8 +206,9 @@ public class MatchFX {
     	territoryInfo.setArcWidth(200);
     	groupTerritoryInfo.getChildren().add(territoryInfo);
     	
-    	territoryInfoLabel.setStyle("-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
-    	territoryInfoLabel.relocate(25, 10);
+    	territoryInfoLabel.setPrefSize(80, 80);
+    	territoryInfoLabel.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;");
+    	territoryInfoLabel.relocate(0, 0);
     	groupTerritoryInfo.getChildren().add(territoryInfoLabel);
     	
     	ctn.getChildren().add(groupTerritoryInfo);
@@ -232,7 +258,7 @@ public class MatchFX {
     	ctn.getChildren().add(playerInfoGroup);
     	
     	// Auftrag-Gruppe
-    	playerInfoAuftragGroup.relocate(-180, 320);
+    	playerInfoAuftragGroup.relocate(-180, 360);
     	playerInfoGroup.getChildren().add(playerInfoAuftragGroup);
     	
     	playerInfoAuftragGroup.addEventHandler(MouseEvent.MOUSE_MOVED, event ->
@@ -257,22 +283,137 @@ public class MatchFX {
     	phaseBtnGroup.relocate(1150, 50);
     	
     	phaseBtn1.setActive(false);
+    	phaseBtn1.setButtonMode(false);
     	phaseBtnGroup.getChildren().add(phaseBtn1);
     	
-    	phaseBtn2.setButtonMode(true);
+    	phaseBtn2.setActive(false);
+    	phaseBtn2.setButtonMode(false);
     	phaseBtn2.relocate(phaseBtn1.getLayoutX() + 115, phaseBtn1.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn2);
     	
-    	phaseBtn3.setButtonMode(true);
+    	phaseBtn3.setActive(false);
+    	phaseBtn3.setButtonMode(false);
     	phaseBtn3.relocate(phaseBtn2.getLayoutX() + 115, phaseBtn2.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn3);
     	
-    	phaseBtn4.setButtonMode(true);
+    	phaseBtn4.setActive(false);
+    	phaseBtn4.setButtonMode(false);
     	phaseBtn4.relocate(phaseBtn3.getLayoutX() + 180, phaseBtn3.getLayoutY());
     	phaseBtnGroup.getChildren().add(phaseBtn4);
     	
+	    phaseBtn1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.phaseAdd();
+	    });
+    	
+	    phaseBtn2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.phaseFight();
+	    });
+	    
+	    phaseBtn3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.phaseMove();
+	    });
+	    
+	    phaseBtn4.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round.nextTurn();
+	    });
+    	
 		ctn.getChildren().add(phaseBtnGroup);
-	
+
+		battleGroup.setVisible(false);
+		
+		battleA_BG.relocate(0, 0);
+		battleA_BG.setFill(Color.BLUE);
+		battleA_BG.setStroke(Color.WHITE);
+		battleA_BG.setStrokeWidth(10);
+		battleGroup.getChildren().add(battleA_BG);
+		
+		battleA_CountryName.setPrefWidth(960);
+		battleA_CountryName.relocate(0, 50);
+		battleA_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleGroup.getChildren().add(battleA_CountryName);
+		
+		battleB_BG.relocate(960, 0);
+		battleB_BG.setFill(Color.RED);
+		battleB_BG.setStroke(Color.WHITE);
+		battleB_BG.setStrokeWidth(10);
+		battleGroup.getChildren().add(battleB_BG);
+		
+		battleB_CountryName.setPrefWidth(960);
+		battleB_CountryName.relocate(960, 50);
+		battleB_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleGroup.getChildren().add(battleB_CountryName);
+		
+		battleArrow.getPoints().addAll(new Double[]{
+				0.0, 0.0,
+				0.0, 30.0,
+				-230.0, 30.0,
+				-230.0, 90.0,
+				0.0, 90.0,
+				0.0, 120.0,
+				70.0, 60.0});
+		battleArrow.setFill(Color.WHITE);
+		battleArrow.relocate(810, 480);
+		battleGroup.getChildren().add(battleArrow);
+		
+		battleBtnReady.setButtonMode(true);
+		battleBtnReady.relocate(960 - 167, 850);
+		battleGroup.getChildren().add(battleBtnReady);
+		
+		battleA_Input.setPrefSize(120, 100);
+		battleA_Input.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleA_Input.relocate(600, 430);
+		battleGroup.getChildren().add(battleA_Input);
+		
+		battleA_LabelUnits.setPrefSize(120, 40);
+		battleA_LabelUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+		battleA_LabelUnits.relocate(600, 550);
+		battleGroup.getChildren().add(battleA_LabelUnits);
+		
+		battleB_Input.setPrefSize(120, 100);
+		battleB_Input.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
+		battleB_Input.relocate(1200, 430);
+		battleB_Input.setDisable(true);
+		battleGroup.getChildren().add(battleB_Input);
+		
+		battleB_LabelUnits.setPrefSize(120, 40);
+		battleB_LabelUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
+		battleB_LabelUnits.relocate(1200, 550);
+		battleGroup.getChildren().add(battleB_LabelUnits);
+		
+		battleA_GroupDices.relocate(0, 0);
+		
+		battleA_Dice1.setPrefSize(150, 150);
+		battleA_Dice1.relocate(100, 265);
+		battleA_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(battleA_Dice1);
+		
+		battleA_Dice2.setPrefSize(150, 150);
+		battleA_Dice2.relocate(100, 465);
+		battleA_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(battleA_Dice2);
+		
+		battleA_Dice3.setPrefSize(150, 150);
+		battleA_Dice3.relocate(100, 665);
+		battleA_Dice3.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(battleA_Dice3);
+		
+		battleGroup.getChildren().add(battleA_GroupDices);
+
+		battleB_GroupDices.relocate(0, 0);
+		
+		battleB_Dice1.setPrefSize(150, 150);
+		battleB_Dice1.relocate(1670, 365);
+		battleB_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleB_GroupDices.getChildren().add(battleB_Dice1);
+		
+		battleB_Dice2.setPrefSize(150, 150);
+		battleB_Dice2.relocate(1670, 565);
+		battleB_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleB_GroupDices.getChildren().add(battleB_Dice2);
+		
+		battleGroup.getChildren().add(battleB_GroupDices);
+		
+		ctn.getChildren().add(battleGroup);
 		
 		startMatch(lobby);
 	}
@@ -302,6 +443,7 @@ public class MatchFX {
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwnerId(players[userCount].getId());	
+			randomCountry.setOwner(players[userCount].getName());
 			randomCountry.setFill(Color.web(players[userCount].getColor()));	
 			countryList.remove(randomCountry);
 
@@ -310,10 +452,14 @@ public class MatchFX {
 			} else {
 				userCount--;
 			}
-	
 		}
 		
-		gameChangePlayer(players[0].toString(), Color.web(players[1].getColor()));
+		gameChangePlayer(players[0].getName(), Color.web(players[0].getColor()));
+		
+	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round = new Round(this, players, countryArray);
+	    });
+	    
 	}
 	
 	/**
@@ -325,17 +471,23 @@ public class MatchFX {
 	 * If so: Sets the territoryInfo fill.
 	 * Calls gameChangeCountry and gameChangePlayer.
 	 */
-	void updateTerritoryInfo(int id) {
+	void updateTerritoryInfo(Country country) {
 		
-		if(territoryInfo.getFill() != countryArray[id].getFill()) {
-			territoryInfo.setFill(countryArray[id].getFill());
+		if(territoryInfo.getFill() != country.getFill()) {
+			territoryInfo.setFill(country.getFill());
 		}
 		
-		if(!territoryInfoLabel.getText().equals(String.valueOf(countryArray[id].getUnits()))) {
-			territoryInfoLabel.setText(String.valueOf(countryArray[id].getUnits()));
+		if(!territoryInfoLabel.getText().equals(String.valueOf(country.getUnits()))) {
+			territoryInfoLabel.setText(String.valueOf(country.getUnits()));
 		}
 		
-		gameChangeCountry(id);
+		if(territoryName.getFill() != country.getFill()) {
+			territoryName.setFill(country.getFill());
+		}
+		
+		if(!territoryNameLabel.getText().equals(country.getCountryName())) {
+			territoryNameLabel.setText(country.getCountryName());
+		}
 
 	}
 	
@@ -347,15 +499,15 @@ public class MatchFX {
 		}
 		currentCountry = country;
 		// Reset all previous changes
-		colorAdjust.setBrightness(0.1);
-		colorAdjust.setContrast(0.3);
-		colorAdjust.setHue(0.025);
+		colorAdjust.setBrightness(0.2);
+		colorAdjust.setContrast(0.5);
+		colorAdjust.setHue(0.05);
 		for (int i = 0; i < countryArray.length; i++) {
 			countryArray[i].setStrokeWidth(0);
 			countryArray[i].setEffect(null);
 		}
 		
-		System.out.println(country.getCountryName());
+		//System.out.println(country.getCountryName());
 
 		// Add the new changes
 		int[] cArr = country.getNeighborIdArray();
@@ -369,6 +521,25 @@ public class MatchFX {
 		}
 	}
 	
+	void gameChangePlayerUnits(int i) {
+		playerInfoUnitsLabel.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerTerritories(int i) {
+		playerInfoLandLabel.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerCard1(int i) {
+		playerInfoCard1Label.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerCard2(int i) {
+		playerInfoCard2Label.setText(Integer.toString(i));
+	}
+	
+	void gameChangePlayerCard3(int i) {
+		playerInfoCard3Label.setText(Integer.toString(i));
+	}
 	
 	/**
 	 * @param s : String
@@ -378,7 +549,7 @@ public class MatchFX {
 	 * Checks if the input paint p equals the current paint of the playerName fill.
 	 * If so: Sets the playerName fill.
 	 */
-	private void gameChangePlayer(String s, Color p) {
+	void gameChangePlayer(String s, Color p) {
 		if(!playerNameLabel.getText().equals(s)) {
 			playerNameLabel.setText(s);
 		}
@@ -388,27 +559,81 @@ public class MatchFX {
 		}
 	}
 	
-	/**
-	 * @param s : String
-	 * @param p : Paint
-	 * Checks if the input string s equals the current name of the territory.
-	 * If so: Sets the territoryName.
-	 * Checks if the input paint p equals the current paint of the territoryName fill.
-	 * If so: Sets the territoryName fill.
-	 */
-	private void gameChangeCountry(int id) {
-		if(!territoryNameLabel.getText().equals(countryArray[id].getCountryName())) {
-			territoryNameLabel.setText(countryArray[id].getCountryName());
-		}
-					
-		if(territoryName.getFill() != countryArray[id].getFill()) {
-			territoryName.setFill(countryArray[id].getFill());
-		}
-			
-	}
-	
 	public Pane getContainer() {
 		return ctn;
+	}
+	
+	public Group getBattleInterface() {
+		return battleGroup;
+	}
+	
+	public Rectangle getBattleBackgroundA() {
+		return battleA_BG;
+	}
+	
+	public Rectangle getBattleBackgroundB() {
+		return battleB_BG;
+	}
+	
+	public Group getDicesA() {
+		return battleA_GroupDices;
+	}
+	
+	public Group getDicesB() {
+		return battleB_GroupDices;
+	}
+	
+	public Label getCountryNameA() {
+		return battleA_CountryName;
+	}
+	
+	public Label getCountryNameB() {
+		return battleB_CountryName;
+	}
+	
+	public Label getCountryUnitsA() {
+		return battleA_LabelUnits;
+	}
+	
+	public Label getCountryUnitsB() {
+		return battleB_LabelUnits;
+	}
+	
+	public Sprite getBattleReadyBtn() {
+		return battleBtnReady;
+	}
+	
+	public TextField getBattleInputA() {
+		return battleA_Input;
+	}
+	
+	public TextField getBattleInputB() {
+		return battleB_Input;
+	}
+	
+	public void activateWorldMap(boolean isActive) {
+		for (int i = 0; i < countryArray.length; i++) {
+			countryArray[i].setVisible(isActive);
+		}
+	}
+	
+	public Group getPhaseBtnGroup() {
+		return phaseBtnGroup;
+	}
+	
+	public void editPhaseButtons(boolean add, boolean fight, boolean move, boolean end) {
+		phaseBtn1.setActive(add);
+		phaseBtn1.setButtonMode(add);
+		phaseBtn2.setActive(fight);
+		phaseBtn2.setButtonMode(fight);
+		phaseBtn3.setActive(move);
+		phaseBtn3.setButtonMode(move);
+		phaseBtn4.setActive(end);
+		phaseBtn4.setButtonMode(end);
+	}
+	
+	public Round getRound() {
+		return round;
 	}
 	
 }
