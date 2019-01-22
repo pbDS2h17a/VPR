@@ -247,15 +247,9 @@ public class SqlHelper {
 		 return rs.getInt(1);	
 	}
 	
-	public static int getCardCountryId(int cardId) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM card WHERE card_id = "+cardId+";");
-		
-		rs.next();
-			return rs.getInt("country_id");
-	}
-
-	public static int getCardValue(int value) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("SELECT value FROM card WHERE value = "+value+";");
+	
+	public static int getCardValue(int cardId) throws SQLException{
+		ResultSet rs = getStatement().executeQuery("SELECT value FROM card WHERE card_id = "+cardId+";");
 		
 		rs.next();
 		return rs.getInt("value");
