@@ -23,12 +23,12 @@ public class SqlQuery {
 	
 	public static void fillTestData() {
 		try {
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 ,1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 ,2)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 ,3)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 ,4)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 ,5)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 ,6)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 )");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 )");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 )");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 )");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 )");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 )");
 			stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
 		} catch (SQLException e) {
 			System.out.println("fillTestData");
@@ -64,8 +64,8 @@ public class SqlQuery {
 	
 	public static void fillPlayer(Player player) {
 		String sql =
-				"INSERT INTO player (name, color, lobby_id, address)" +
-				"VALUES ('"+player.getName()+"', '"+player.getColor()+"', NULL, NULL);";
+				"INSERT INTO player (name, lobby_id, address)" +
+				"VALUES ('"+player.getName()+"', NULL, NULL);";
 		try {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -297,9 +297,7 @@ public class SqlQuery {
 	            " name VARCHAR(255) NOT NULL, " + 
 				" address CHAR(15)," +
 				" lobby_id INT, " +
-				" color_id INT, " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id)," +
-				" FOREIGN KEY(color_id) REFERENCES color(color_id)," +
 	            " PRIMARY KEY(player_id)" +
 	            ");";
 		
@@ -450,8 +448,8 @@ public class SqlQuery {
 	static void createChat() {
 		String sqlChat = "CREATE TABLE IF NOT EXISTS chat (" +
 				" message_id INT PRIMARY KEY AUTO_INCREMENT, " +
-				" pid INT REFERENCES player(pid), " +
-				" lid INT REFERENCES lobby(lid), " +
+				" pid INT REFERENCES player(player_id), " +
+				" lid INT REFERENCES lobby(lobby_id), " +
 				" timestamp LONG NOT NULL, " +
 				" message VARCHAR(255)"
 				+");";
@@ -459,6 +457,24 @@ public class SqlQuery {
 			stmt.executeUpdate(sqlChat);
 		} catch (SQLException e) {
 			System.out.println("createChat");
+			e.printStackTrace();
+		}
+	}
+	
+	static void createColorPlayer(){
+		String sqlColorPlayer = "CREATE TABLE IF NOT EXISTS color_player (" +
+				" player_id INT, "+
+				" color_id INT, "+
+				" lobby_id INT, "+
+				" FOREIGN KEY(player_id) REFERENCES player(player_id), " +
+				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id), " +
+				" FOREIGN KEY(color_id) REFERENCES color(color_id), " +
+				" PRIMARY KEY(lobby_id, player_id, color_id) " +
+				");";
+		try {
+			stmt.executeUpdate(sqlColorPlayer);
+		} catch (SQLException e) {
+			System.out.println("createColorPlayer");
 			e.printStackTrace();
 		}
 	}

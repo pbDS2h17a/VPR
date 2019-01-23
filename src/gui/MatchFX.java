@@ -797,10 +797,13 @@ public class MatchFX {
 					}
 				}
 				
-				// if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
+				/*
+				 * Falls wir etwas mit Rechtsklick brauchen ->
+				 * if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
+				 */
 				
 				if(round.isAssign() && round.isFinishedAssigning()) {
-					round.getActivePlayer().setUnassignedUnits(round.getActivePlayer().getUnassignedUnits() + round.getActivePlayer().getEinheitenProRunde());
+					round.getActivePlayer().setUnassignedUnits(round.getActivePlayer().getUnassignedUnits() + round.getActivePlayer().getUnitsPerRound());
 					round.setAssign(false);
 					round.setAdd(true);
 					round.setActivePlayerIndex(0);

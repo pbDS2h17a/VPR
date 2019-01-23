@@ -6,6 +6,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
+
+
 public class test extends Application {
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		launch(args);
@@ -17,6 +20,7 @@ public class test extends Application {
 		ChatInterface chat = new ChatInterface(1, 1);
 		Scene sc = new Scene(chat.getPane());
 		primaryStage.setScene(sc);
+		sc.getStylesheets().add("resources/style.css");
 		primaryStage.show();
 	}
 }
