@@ -34,7 +34,6 @@ public class Player {
 		this.card1 = 0;
 		this.card2 = 0;
 		this.card3 = 0;
-		this.setUnitsPerRound(0);
 	}
 	
 
@@ -152,9 +151,7 @@ public class Player {
 	public void setCard3(int card3) {
 		this.card3 = card3;
 	}
-	
 
-	
 
 }
 

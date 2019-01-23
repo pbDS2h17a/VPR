@@ -19,8 +19,6 @@ public class SqlPerformanceTest {
         
         Statement stmt = SqlHelper.getStatement();
         
-        stmt.executeUpdate("INSERT INTO player (name) VALUES('Test21')");
-
         // Timed performance tests
         
         if(useTimer) {
