@@ -267,6 +267,7 @@ public class SqlHelper {
 		 return rs.getInt(1);	
 	}
 	
+
 	public static int getCardCountryId(int cardId) throws SQLException{
 		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM card WHERE card_id = "+cardId+";");
 		
@@ -280,6 +281,7 @@ public class SqlHelper {
 		rs.next();
 		return rs.getInt("value");
 	}
+
 
 	public static String getMissionDescription(int missionID) throws SQLException {
 		ResultSet rs = getStatement().executeQuery("SELECT description FROM mission WHERE mission_id = "+missionID+";");

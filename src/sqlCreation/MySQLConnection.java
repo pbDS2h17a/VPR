@@ -34,6 +34,7 @@ public class MySQLConnection {
 		SqlQuery.dropTable("neighbor");
 		SqlQuery.dropTable("player");
 		SqlQuery.dropTable("player_country");
+		SqlQuery.dropTable("color_player");
 			
 		// Tabllen werden erstellt
 		SqlQuery.createContinent();
@@ -47,6 +48,7 @@ public class MySQLConnection {
 		SqlQuery.createMission();
 		SqlQuery.createMissionPlayer();
 		SqlQuery.createCardsPlayer();
+		SqlQuery.createColorPlayer();
 	
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);
