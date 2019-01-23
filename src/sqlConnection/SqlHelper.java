@@ -23,7 +23,7 @@ public class SqlHelper {
 	 * Erstellt ein Statement mit den Werten
 	 */
 	
-	// Private TestDb für home server
+	// Private TestDb fÃ¼r home server
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
@@ -58,7 +58,7 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Gibt ein Statement zurück
+	 * Gibt ein Statement zurÃ¼ck
 	 * Checkt ob das Statement vorhande ist (nicht NULL)
 	 * Sonst erstellt es ein neues Statement
 	 * @return aktuelles Statement der Verbindung
@@ -259,20 +259,27 @@ public class SqlHelper {
 		
 		return countryIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
-
-	public static int getPlayerID(String name) throws SQLException{
+  	
+  // TODO Rework
+	public static int getPlayerId(String name) throws SQLException{
 		ResultSet rs = getStatement().executeQuery("SELECT player_id FROM player WHERE name = "+name+";");
 		
 		 rs.next(); 
 		 return rs.getInt(1);	
 	}
 	
-	
 	public static int getCardValue(int cardId) throws SQLException{
 		ResultSet rs = getStatement().executeQuery("SELECT value FROM card WHERE card_id = "+cardId+";");
+    
+    rs.next();
+		return rs.getInt("card_id");
+  }
+  
+	public static int getCardCountryId(int cardId) throws SQLException{
+		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM card WHERE card_id = "+cardId+";");
 		
 		rs.next();
-		return rs.getInt("value");
+		return rs.getInt("country_id");
 	}
 
 	public static String getMissionDescription(int missionID) throws SQLException {
@@ -283,7 +290,7 @@ public class SqlHelper {
 	
 	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
 		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
-		// System.out.println("Call läuft");
+		// System.out.println("Call lÃ¤uft");
 		return ResultSetManager.toList(r);
 	}
 	
@@ -303,7 +310,7 @@ public class SqlHelper {
 	
 	
 	/**
-	 * Methode zum einfügen von Daten in die Tabelle country_player
+	 * Methode zum einfÃ¼gen von Daten in die Tabelle country_player
 	 * @param lobbyId
 	 * @param playerId
 	 * @param countryId
@@ -314,7 +321,7 @@ public class SqlHelper {
 		stmt.executeUpdate("INSERT INTO country_player VALUES("+playerId+","+countryId+","+lobbyId+", 1)");
 	};
 	/**
-	 * Methode zum ändern des Besatzers eines Landes 
+	 * Methode zum Ã¤ndern des Besatzers eines Landes 
 	 * @param lobbyId
 	 * @param playerId
 	 * @param countryId
@@ -337,7 +344,7 @@ public class SqlHelper {
 		stmt.executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
 	};
 	/**
-	 * Methode zum hinzufügen von Player
+	 * Methode zum hinzufÃ¼gen von Player
 	 * @param name
 	 * @param lobbyId
 	 * @param colorId
