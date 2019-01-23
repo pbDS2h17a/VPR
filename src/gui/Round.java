@@ -133,16 +133,15 @@ public class Round {
 			case 6:
 				firstUnits = 20;
 				break;
+			
+			default:
+				firstUnits = 20;
 		}
 		
 		firstUnits = 1;
 		
 		for (int i = 0; i < this.getPlayerArray().length; i++) {
 			this.getPlayerArray()[i].setUnassignedUnits(firstUnits);
-		}
-		
-		for (int i = 0; i < this.getPlayerArray().length; i++) {
-			this.getPlayerArray()[i].setUnassignedUnits(1);
 		}
 		
 		updatePlayerInterface(this.getActivePlayer());
