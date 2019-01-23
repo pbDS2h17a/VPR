@@ -75,18 +75,47 @@ public class SqlHelper {
 		ResultSet rs = null;
 		Player[] playerArray = new Player[6];
 		int index = 0;
+		int[] playerIdArray = new int[6];
+		String[] playerNameArray = new String[6];
+		String colorValue = null;
 		
+		// 
 		try {
-			rs = stmt.executeQuery("SELECT player_id, player.name, value FROM player, color WHERE lobby_id="+lobbyId+" AND player.color_id = color.color_id;");
+			// Alle Spieler einer Lobby auswählen
+			rs = stmt.executeQuery("SELECT player_id, name FROM player WHERE lobby_id="+lobbyId+";");
+			
+			// Werte in Array speichern
 			while(rs.next()) {
-				Player p = new Player(rs.getInt("player_id"), rs.getString("player.name"), rs.getString("value"));
-				playerArray[index] = p;
+				// Name und ID auslesen
+				playerIdArray[index] = rs.getInt("player_id");
+				playerNameArray[index] = rs.getString("name");
 				index++;
 			}
+				
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		for (int i = 0; i < 6; i++) {
+			ResultSet rs2;
+			try {
+				rs2 = stmt.executeQuery("SELECT c.value FROM color c, color_player cp "
+						+ "WHERE cp.player_id = "+playerIdArray[i]+" "
+						+ "AND cp.color_id = c.color_id;");
+				rs2.next();
+				colorValue = rs2.getString("value");
+				
+				Player p = new Player(playerIdArray[i], playerNameArray[i], colorValue);
+				playerArray[i] = p;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			
+		}
+		
+		
 		
 		return playerArray;
 	}
