@@ -221,24 +221,20 @@ public class SqlHelper {
 	 * @param player = Der Spieler als Objekt Player.
 	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
 	 * @throws ClassNotFoundException = Falls eine benötigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
-	 * @author Petrikowski Römmich
+	 * @see joinLobby (Player player, int lobbyId)
+	 * @author Jona Petrikowski
+	 * @author Jörg Römmich
 	 */
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
 		stmt = getStatement();
-
-		// ein createLobby() ist für den Leader ein joinLobby()
 		String queryCreateLobbyEntry = String.format("INSERT INTO lobby (leader_id) VALUES (%d);", player.getId());
-
 		stmt.executeUpdate(queryCreateLobbyEntry);
-
 		// zweites Resultset für die autoincremente LobbyId, um diese beim Leader einzutragen
 		String queryGetLobbyId = String.format("SELECT lobby_id FROM lobby WHERE leader_id = %d;", player.getId());
-
 		List<List<String>> listWithLobbyId = ResultSetManager.toList(stmt.executeQuery(queryGetLobbyId));
-
 		if (listWithLobbyId.get(0).size() == 1) {
-
 			int lobbyId = Integer.parseInt(listWithLobbyId.get(0).get(0));
+			// ein createLobby() ist für den Leader ein joinLobby()
 			joinLobby(player, lobbyId);
 			System.out.println("createLobby() successfull.");
 		}
@@ -253,10 +249,10 @@ public class SqlHelper {
 	 * @param player = Der Spieler als Objekt Player.
 	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
 	 * @throws ClassNotFoundException = Falls eine benötigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
-	 * @author Petrikowski Römmich
+	 * @author Jona Petrikowski 
+	 * @author Jörg Römmich
 	 */
 	public static void joinLobby (Player player, int lobbyId) throws SQLException, ClassNotFoundException {
-		
 		String queryJoinLobby = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getId());
 		getStatement().executeUpdate(queryJoinLobby);
 	}
