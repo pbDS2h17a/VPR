@@ -161,6 +161,7 @@ public class SqlHelper {
 		
 	}
 	
+	
 	public static String getPlayerName(int playerId) throws SQLException {
 		ResultSet rs = getStatement().executeQuery("SELECT name FROM player WHERE player_id = "+playerId+";");
 		
@@ -231,10 +232,47 @@ public class SqlHelper {
 		return data;
 	}
 	
-	//TODO outdated
+	/**
+	 * Diese Methode, welche ein Player-Objekt ben�tigt, der als zuk�nftiger Host einer Lobby fungiert,
+	 * erstellt einen Lobby-Datensatz, an dessen LeaderId-Spalte die Id des Spielers a.k.a. Host eingetragen wird. 
+	 * Des Weiteren wird die Methode joinLobby() mit demselben Player-Objekt aufgerufen.
+	 * @param player = Der Spieler als Objekt Player.
+	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
+	 * @throws ClassNotFoundException = Falls eine ben�tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
+	 * @see joinLobby (Player player, int lobbyId)
+	 * @author Jona Petrikowski
+	 * @author J�rg R�mmich
+	 */
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
-		String dbStatement = "INSERT INTO lobby (host_id) values (" + player.getId() + ");";
-		getStatement().executeQuery(dbStatement);
+		stmt = getStatement();
+		String queryCreateLobbyEntry = String.format("INSERT INTO lobby (leader_id) VALUES (%d);", player.getId());
+		stmt.executeUpdate(queryCreateLobbyEntry);
+		// zweites Resultset f�r die autoincremente LobbyId, um diese beim Leader einzutragen
+		String queryGetLobbyId = String.format("SELECT lobby_id FROM lobby WHERE leader_id = %d;", player.getId());
+		List<List<String>> listWithLobbyId = ResultSetManager.toList(stmt.executeQuery(queryGetLobbyId));
+		if (listWithLobbyId.get(0).size() == 1) {
+			int lobbyId = Integer.parseInt(listWithLobbyId.get(0).get(0));
+			// ein createLobby() ist f�r den Leader ein joinLobby()
+			joinLobby(player, lobbyId);
+			System.out.println("createLobby() successfull.");
+		}
+		else {
+			System.out.println("createLobby(). Problem with getting lobby_id from returned ResultSet.");
+		}
+	}
+			
+	/**
+	 * Diese Methode, welche ein Player-Objekt und die LobbyId der zu joinenden Lobby ben�tigt,
+	 * schreibt bei dem dazugeh�rigen Player-Datensatz in die Spalte LobbyId die Id der zu joinenden Lobby.
+	 * @param player = Der Spieler als Objekt Player.
+	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
+	 * @throws ClassNotFoundException = Falls eine ben�tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
+	 * @author Jona Petrikowski 
+	 * @author J�rg R�mmich
+	 */
+	public static void joinLobby (Player player, int lobbyId) throws SQLException, ClassNotFoundException {
+		String queryJoinLobby = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getId());
+		getStatement().executeUpdate(queryJoinLobby);
 	}
 	
 	public static String getContintentName(int continentID) throws SQLException{		
@@ -297,7 +335,6 @@ public class SqlHelper {
 	public static void sendMessage(String message, int pid, int lid) throws SQLException
 	{
 		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
-		System.out.println(sql);
 		stmt.executeUpdate(sql);
 	}
 	
