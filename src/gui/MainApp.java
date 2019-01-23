@@ -1,7 +1,6 @@
 package gui;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -12,12 +11,15 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import network.ChatInterface;
 import sqlConnection.SqlHelper;
-import sqlCreation.SqlQuery;
 
 /**
- * @author Daniels, Kevin
- * @author pbs2h17ale
+ * Startet das gesamte Gesamte Spiel, indem die anderen Oberflächen-Klassen eingebunden werden
+ * und die gesamte Scene administriert.
+ * 
+ * @author Adrian Ledwinka
+ * @author Kevin Daniels
  */
 
 public class MainApp extends Application {
@@ -27,179 +29,237 @@ public class MainApp extends Application {
 	 * @param APP_HEIGHT : Integer
 	 * @param von		 : Pane
 	 * @param zu		 : Pane
+	 * @param app		 : Pane
+	 * @param ctnApp 	 : Pane
 	 * @param toPane	 : boolean
 	 * 
-	 * Anwendungs-Container
-	 * @param app		 : Pane
-	 * 
-	 * Spiel-Container
-	 * @param ctn_app 	 : Pane
-	 * 
 	 * Spiel-Oberflaechen
-	 * @param title		 : Title
-	 * @param lobby		 : Lobby
-	 * @param join		 : Join
-	 * @param match		 : Match
-	 * 
-	 * Scene
-	 * @param scene 		 : Scene
+	 * @param titleFX	 : TitleFX
+	 * @param lobbyFX	 : LobbyFX
+	 * @param joinFX	 : JoinFx
+	 * @param matchFX	 : MatchFX
+	 * @param mpFX		 : MediaPlayerFX
+	 * @param chatFX	 : ChatInterface
+	 * @param scene		 : Scene
 	 */
+	
+	// Globale Variablen
 	private final int APP_WIDTH = 1600;
 	private final int APP_HEIGHT = 900;
-	private Pane von = null;
-	private Pane zu  = null;
+	private Pane von;
+	private Pane zu;
+	private static Pane app = new Pane();
+    private Pane ctnApp = new Pane();
 	private boolean toPane = false;
-	
-	private Pane app = new Pane();
-    private Pane ctn_app = new Pane();
+	private static Scene scene = new Scene(app);
     
     // Spiel-Oberflächen
-	private Title title = new Title();
-    private Lobby lobby = new Lobby();
-    private Join join = new Join();
-    private Match match = new Match(lobby);
-    private MediaPlayer mp = new MediaPlayer();
-    
-    // Scene
-	private Scene scene = new Scene(app);
-	
+	private TitleFX titleFX = new TitleFX();
+    private LobbyFX lobbyFX = new LobbyFX();
+    private JoinFX joinFX = new JoinFX();
+    private MatchFX matchFX = new MatchFX(lobbyFX);
+    private MediaPlayerFX mpFX = new MediaPlayerFX();
+    private ChatInterface chatFX;
+
+	/**
+	 * @param stage : Stage
+	 * 
+	 * Stellt alle Spiel-Einstellungen ein damit sie in der main gestartet werden kann.
+	 * 
+	 */
 	@Override
 	public void start(Stage stage) {
 
-		// Anwendungs-Container;
+		// Anwendungs-Container der das Spiel darstellt mit der eingestellten Auflösung (1600x900px)
 	    app.setPrefSize(APP_WIDTH, APP_HEIGHT);
 	    app.setStyle("-fx-background-image:url('resources/bg.png'); -fx-background-size: cover; -fx-background-position: 50% 50%;");
 	    
-	    // Favicon
+	    // Favicon für die Taskleiste
 	    stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("../resources/btn_lobby_host.png")));
 	    
-	    // Spiel-Container
-	    ctn_app.setPrefSize(1920, 1080);
-	    resizeThat(stage, ctn_app);
+	    // Spiel-Container der alle Oberflächen sammelt und ausgibt
+	    ctnApp.setPrefSize(1920, 1080);
+	    resizeThat(stage, ctnApp);
 
-	    // Alles in die richtigen Container schieben
-		ctn_app.getChildren().addAll(
-				title.getContainer(),
-				lobby.getContainer(),
-				join.getContainer(),
-				match.getContainer(),
-				mp.getContainer()
+	    // Alle Oberflächen werden in den Spiel-Container geladen
+		ctnApp.getChildren().addAll(
+				titleFX.getContainer(),
+				lobbyFX.getContainer(),
+				joinFX.getContainer(),
+				matchFX.getContainer(),
+				mpFX.getContainer()
 		);
-
-		// Click Events
+		
+		app.getChildren().add(ctnApp);
+		
+		// Spielt die Hintergrund-Musik für das Hauptmenü ab
+		mpFX.playBgmStart();
+		
+		// Methode um die ClickEvents zu initialisieren
 	    initializeClickEventHandlers();
 	    
-	    // Game-Loop Method
+	    // Methode um die ClickEvents zu initialisieren
 		gameLoop();
 	    
-	    // Resize-Methode
+	    // Resize-Methode die das Spiel immer passend zur Fenstergröße skaliert
 	    ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
-	    	resizeThat(stage, ctn_app);
+	    	resizeThat(stage, ctnApp);
 
 		stage.widthProperty().addListener(stageSizeListener);
 		stage.heightProperty().addListener(stageSizeListener); 
 		
-	    app.getChildren().add(ctn_app);
-	    
-		mp.playBgmStart();
-
-		for (int i = 0; i < join.getUserList().length; i++) {
-			final int tmp = i;
-			join.getUserList()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-				paneTransition(join.getUserList()[tmp], join.getContainer(), lobby.getContainer())
-			);
-		}
-
+		// Setzt den Titel für die Anwendung in die Scene und startet sie in der Main
 		stage.setTitle("CONQUER | All risk all fun");
 		stage.setScene(scene);
 		stage.show();
 	    
 	}
 	
+	/**
+	 * Prozedur, die die Datenbankverbindung beendet wenn das Spiel beendet wird
+	 * 
+	 */
 	@Override
 	public void stop(){
-		SqlQuery.disableForeignKeyConstraints();
-		
-		System.out.println("Lobby table clearen");
-		SqlHelper.clearTable("lobby");
-		
-		System.out.println("Player table clearen");
-		SqlHelper.clearTable("player");
-		
-		SqlQuery.enableForeignKeyConstraints();
 	    System.out.println("Sql verbindung beenden");
 	    SqlHelper.closeStatement();
-	    // Save file
 	}
 	
+	/**
+	 * @param args	:	String[]
+	 * 
+	 * Prozedur, die die ganze Anwendung startet sobald die Scene übergeben wurde
+	 * 
+	 */
 	public static void main(String[] args) throws SQLException {
-		Statement stmt = SqlHelper.getStatement();
-		  
-		// Testspieler in Lobby eintragen
-		SqlQuery.disableForeignKeyConstraints();
-		
-		stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 ,1)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 ,2)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 ,3)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 ,4)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 ,5)");
-	    stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 ,6)");
-	    stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
-
-		SqlQuery.enableForeignKeyConstraints();
 		launch(args);
 	}
 	
 	/**
-	 * Initializes all clickEventHandlers.
-	 * Initializes transitionStart.
+	 * Prozedur, die alle EventListener startet die für den 
 	 */
     public void initializeClickEventHandlers(){
-	    title.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	paneTransition(title.getBtnCreate(), title.getContainer(), lobby.getContainer());
-			mp.playBtnSFX();
+    	
+    	// Wennn der Button zum Spiel erstellen gedrückt wird
+	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Startet die Animation für den Übergang zwischen zwei Panes
+	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
+	    	
+	    	// Sound für den gedrückten Button wird abgespielt
+			mpFX.playBtnSFX();
+			
+			// Erstellt das ChatInterface und positioniert es in der Lobby
+			chatFX = new ChatInterface(1,1);
+			chatFX.getPane().relocate(63, 550);
+			ctnApp.getChildren().add(chatFX.getPane());
 	    });
-	    	    
-	    title.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	paneTransition(title.getBtnJoin(), title.getContainer(), join.getContainer());
-	    	mp.playBtnSFX();
+	   
+	    // Wenn der Button zum Spiel beitreten gedrückt wird
+	    titleFX.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Startet die Animation für den Übergang zwischen zwei Panes
+	    	paneTransition(titleFX.getBtnJoin(), titleFX.getContainer(), joinFX.getContainer());
+	    	
+	    	// Sound für den gedrückten Button wird abgespielt
+	    	mpFX.playBtnSFX();
 	    });
 	    
-	    lobby.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			paneTransition(lobby.getBtnBack(), lobby.getContainer(), title.getContainer());
-			mp.playBtnSFX();
-			mp.playBgmStart();
-			mp.stopBgmGame();
+	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
+	    lobbyFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Startet die Animation für den Übergang zwischen zwei Panes
+			paneTransition(lobbyFX.getBtnBack(), lobbyFX.getContainer(), titleFX.getContainer());
+			
+			/**
+			 * Sound für den gedrückten Button wird abgespielt
+			 * und die Hintergrund-Musik wird gewechselt
+			 */
+			mpFX.playBtnSFX();
+			mpFX.playBgmStart();
+			mpFX.stopBgmGame();
 	    });
 	    
-	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			paneTransition(lobby.getBtnReady(), lobby.getContainer(), match.getContainer());
-			mp.playBtnSFX();
-			mp.stopBgmStart();
-			mp.playBgmGame();
+	    // Wenn der Button zum Spieler bestätigen gedrückt wird
+	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Startet die Animation für den Übergang zwischen zwei Panes
+			paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
+			
+			// Wird zur Weltkarte gewechselt positioniert sich der Chat um
+			if(lobbyFX.getBtnReady().isActive()) {
+				chatFX.getPane().relocate(1650, 600);
+			}
+			
+			/**
+			 * Sound für den gedrückten Button wird abgespielt
+			 * und die Hintergrund-Musik wird gewechselt
+			 */
+			mpFX.playBtnSFX();
+			mpFX.stopBgmStart();
+			mpFX.playBgmGame();
 	    });
    
-	    join.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			paneTransition(join.getBtnBack(), join.getContainer(), title.getContainer());
-			mp.playBtnSFX();
-			mp.playBgmStart();
-			mp.stopBgmGame();
+	    // Wenn der Button zum Verlassen von "Spiel beitereten" gedrückt wird
+	    joinFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Startet die Animation für den Übergang zwischen zwei Panes
+			paneTransition(joinFX.getBtnBack(), joinFX.getContainer(), titleFX.getContainer());
+			
+			/**
+			 * Sound für den gedrückten Button wird abgespielt
+			 * und die Hintergrund-Musik wird gewechselt
+			 */
+			mpFX.playBtnSFX();
+			mpFX.playBgmStart();
+			mpFX.stopBgmGame();
 	    });
 	    
-		mp.getPlayBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			mp.playBgmStart();		
+	    // Wenn der Play-Button des MediaPlayers gedrückt wird
+		mpFX.getPlayBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			// Startet die Hintergrundmusik
+			mpFX.playBgmStart();		
 		});
 		
-		mp.title_btn_stop_mediaPlayer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			mp.stopBgmStart();			
-		});
-
-		mp.playBgmStart();
 		
-	    /*
-	    join.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> 
-			paneTransitionStart(join.getBtnCheck(), join.getContainer(), lobby.getContainer())
-        );*/
+		// Wenn der Stop-Button des MediaPlayers gedrückt wird
+		mpFX.title_btn_stop_mediaPlayer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			// Stoppt die Hintergrundmusik
+			mpFX.stopBgmStart();			
+		});
+		
+		// Schleife um mit allen potentiellen neun Lobbys zu kommunizieren
+		for (int i = 0; i < joinFX.getUserList().length; i++) {
+			final int tmp = i;
+			
+			// Wenn auf eine Lobby-Verbindung gedrückt wird
+			joinFX.getUserList()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+				// Startet die Animation für den Übergang zwischen zwei Panes
+				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
+			});
+		}
+		
+	    matchFX.getBattleReadyBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	if(matchFX.getBattleInputB().isDisabled()) {
+	    		matchFX.getRound().setBattleUnitsA(Integer.parseInt(matchFX.getBattleInputA().getText()));
+		    	if(matchFX.getRound().getBattleUnitsA() > 0 && matchFX.getRound().getBattleUnitsA() < matchFX.getRound().getCountryA().getUnits()) {
+		    		matchFX.getBattleInputA().setDisable(true);
+		    		matchFX.getBattleInputB().setDisable(false);
+		    	}
+	    	}
+	    	
+	    	else if(matchFX.getBattleInputA().isDisabled()) {
+	    		matchFX.getRound().setBattleUnitsB(Integer.parseInt(matchFX.getBattleInputB().getText()));
+		    	if(matchFX.getRound().getBattleUnitsB() > 0 && matchFX.getRound().getBattleUnitsB() < 3 && matchFX.getRound().getBattleUnitsB() <= matchFX.getRound().getCountryB().getUnits()) {
+		    		System.out.println("*** Kampf beginnt ***");
+		    		System.out.println("A: " + matchFX.getRound().getCountryA().getCountryName() + " | B: " + matchFX.getRound().getCountryB().getCountryName());
+		    		System.out.println("A Einheiten vorher: " + matchFX.getRound().getCountryA().getUnits());
+		    		System.out.println("B Einheiten vorher: " + matchFX.getRound().getCountryB().getUnits());
+		    		System.out.println("A schickt in den Tod: " + matchFX.getRound().getBattleUnitsA());
+		    		System.out.println("B schickt in den Tod: " + matchFX.getRound().getBattleUnitsB());
+		    		
+		    		matchFX.getBattleReadyBtn().setActive(false);
+		    		Integer[][] rolledDices = matchFX.getRound().rollTheDice(matchFX.getRound().getBattleUnitsA(), matchFX.getRound().getBattleUnitsB());
+		    		matchFX.getRound().updateFightResults(rolledDices, matchFX.getRound().getCountryA(), matchFX.getRound().getCountryB());
+		    		matchFX.getRound().endFight();
+		    	}
+	    	}
+	    });
     }
 	    
 	
@@ -309,9 +369,14 @@ public class MainApp extends Application {
 	        		}
 	        	}
 	        	
-	        	mp.setVolumeGame();
-	        	mp.setVolumeStart();
+	        	mpFX.setVolumeGame();
+	        	mpFX.setVolumeStart();
 	        }
 	    }.start();
 	}
+
+	public static Scene getScene() {
+		return scene;
+	}
+
 }

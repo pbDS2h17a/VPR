@@ -12,7 +12,7 @@ import sqlConnection.SqlHelper;
  * @author pbs2h17ale
  */
 
-public class Join {
+public class JoinFX {
 	
 	/**
 	 * @param ctn	   		 : Pane
@@ -32,7 +32,7 @@ public class Join {
 	/**
 	 * Constructor.
 	 */
-	public Join() {
+	public JoinFX() {
 		
 		// Beitreten-Container (Child von Anwendungs_CTN)
 	    ctn = new Pane();
