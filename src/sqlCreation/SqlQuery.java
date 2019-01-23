@@ -23,13 +23,20 @@ public class SqlQuery {
 	
 	public static void fillTestData() {
 		try {
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1 )");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1 )");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1 )");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1 )");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1 )");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1 )");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1)");
 			stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
+			// playerid, colorid, lobbyid, 
+			stmt.executeUpdate("INSERT INTO color_player VALUES(1,1,1)");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(2,2,1)");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(3,3,1)");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(4,4,1)");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(5,5,1)");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(6,6,1)");
 		} catch (SQLException e) {
 			System.out.println("fillTestData");
 			e.printStackTrace();
@@ -469,7 +476,7 @@ public class SqlQuery {
 				" FOREIGN KEY(player_id) REFERENCES player(player_id), " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id), " +
 				" FOREIGN KEY(color_id) REFERENCES color(color_id), " +
-				" PRIMARY KEY(lobby_id, player_id, color_id) " +
+				" PRIMARY KEY(lobby_id, color_id) " +
 				");";
 		try {
 			stmt.executeUpdate(sqlColorPlayer);
