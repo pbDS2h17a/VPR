@@ -59,7 +59,7 @@ public class MySQLConnection {
 		SqlQuery.fillColor(colorData);
 		
 		// Testdaten einfügen
-		SqlQuery.fillTestData();
+		// SqlQuery.fillTestData(1);
 		
 		// Constraint werden wieder aktiviert
 		SqlQuery.enableForeignKeyConstraints();

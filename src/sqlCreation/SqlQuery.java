@@ -21,22 +21,22 @@ public class SqlQuery {
 
 	public static Statement stmt = SqlHelper.getStatement();
 	
-	public static void fillTestData() {
+	public static void fillTestData(int lobbyId) {
 		try {
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', "+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', "+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', "+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', "+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', "+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', "+lobbyId+")");
 			stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
 			// playerid, colorid, lobbyid, 
-			stmt.executeUpdate("INSERT INTO color_player VALUES(1,1,1)");
-			stmt.executeUpdate("INSERT INTO color_player VALUES(2,2,1)");
-			stmt.executeUpdate("INSERT INTO color_player VALUES(3,3,1)");
-			stmt.executeUpdate("INSERT INTO color_player VALUES(4,4,1)");
-			stmt.executeUpdate("INSERT INTO color_player VALUES(5,5,1)");
-			stmt.executeUpdate("INSERT INTO color_player VALUES(6,6,1)");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(1,1,"+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(2,2,"+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(3,3,"+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(4,4,"+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(5,5,"+lobbyId+")");
+			stmt.executeUpdate("INSERT INTO color_player VALUES(6,6,"+lobbyId+")");
 		} catch (SQLException e) {
 			System.out.println("fillTestData");
 			e.printStackTrace();
@@ -142,7 +142,7 @@ public class SqlQuery {
 //		for (Country country : countryList) {
 //			String sql =
 //					"INSERT INTO player_country (player_id, country_id)" +
-//					"VALUES ('"+p.getId()+"', '"+country.getId()+"');";
+//					"VALUES ('"+p.getPlayerId()+"', '"+country.getPlayerId()+"');";
 //			try {
 //				stmt.executeUpdate(sql);
 //			} catch (SQLException e) {

@@ -437,7 +437,7 @@ public class MatchFX {
 			// zufälliges Land aus Liste
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwnerId(players[userCount].getId());	
+			randomCountry.setOwnerId(players[userCount].getPlayerId());
 			randomCountry.setOwner(players[userCount].getName());
 			randomCountry.setFill(Color.web(players[userCount].getColor()));	
 			countryList.remove(randomCountry);
