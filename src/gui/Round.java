@@ -244,11 +244,11 @@ public class Round {
 		
 		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
 		this.match.getCountryNameA().setText(this.countryA.getCountryName());
-		this.match.getCountryUnitsA().setText("/ " + String.valueOf(this.countryA.getUnits()));
+		this.match.getCountryUnitsA().setText("/ " + this.countryA.getUnits());
 		
 		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
 		this.match.getCountryNameB().setText(this.countryB.getCountryName());
-		this.match.getCountryUnitsB().setText("/ " + String.valueOf(this.countryB.getUnits()));
+		this.match.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
 		
 		this.match.activateWorldMap(false);
 		this.match.getPhaseBtnGroup().setVisible(false);
@@ -381,12 +381,9 @@ public class Round {
 	}
 		
 	boolean isOwnLand(Country country) {
-		if(this.getActivePlayer().getName().equals(country.getOwner())) {
-			return true;
-		}
-		
-		return false;
-	}
+        return this.getActivePlayer().getName().equals(country.getOwner());
+
+    }
 	
 	void phaseAdd() {
 		this.add = true;

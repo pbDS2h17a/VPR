@@ -1,16 +1,11 @@
 package sqlConnection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import network.ResultSetManager;
+
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
-
-import network.ResultSetManager;
 
 public class SqlHelper {
 	
@@ -29,7 +24,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	};
 
 	/**
@@ -262,7 +257,7 @@ public class SqlHelper {
 
 		return data;
 	}
-	
+
 	/**
 	 * Diese Methode, welche ein Player-Objekt benï¿½tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
 	 * erstellt einen Lobby-Datensatz, an dessen LeaderId-Spalte die Id des Spielers a.k.a. Host eingetragen wird. 
@@ -270,7 +265,7 @@ public class SqlHelper {
 	 * @param player = Der Spieler als Objekt Player.
 	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
 	 * @throws ClassNotFoundException = Falls eine benï¿½tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
-	 * @see joinLobby (Player player, int lobbyId)
+	 * @see SqlHelper#joinLobby (Player player, int lobbyId)
 	 * @author Jona Petrikowski
 	 * @author Jï¿½rg Rï¿½mmich
 	 */
@@ -387,7 +382,8 @@ public class SqlHelper {
 	 */
 	public static void insertCountryOwner(int lobbyId, int playerId, int countryId) throws SQLException{
 		stmt.executeUpdate("INSERT INTO country_player VALUES("+playerId+","+countryId+","+lobbyId+", 1)");
-	};
+	}
+
 	/**
 	 * Methode zum Ã¤ndern des Besatzers eines Landes 
 	 * @param lobbyId
@@ -398,7 +394,8 @@ public class SqlHelper {
 	 */
 	public static void updateCountryOwner(int lobbyId, int playerId, int countryId)throws SQLException{
 		stmt.executeUpdate("UPDATE country_player SET player_id = "+playerId+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
-	};
+	}
+
 	/**
 	 * Methode zum anpassen der Armeen anzahl
 	 * @param lobbyId
@@ -410,20 +407,23 @@ public class SqlHelper {
 	 */
 	public static void updateUnits(int lobbyId, int playerId, int countryId, int amountUnits) throws SQLException{
 		stmt.executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
-	};
+	}
+
 	/**
 	 * Methode zum hinzufÃ¼gen von Player
 	 * @param name
 	 * @param lobbyId
-	 * @param colorId
 	 * @throws SQLException
 	 * @author pbs2h17ath
 	 */
-	public static void insertPlayer(String name, int lobbyId, int colorId) throws SQLException{
-		stmt.executeUpdate("INSERT INTO player VALUES(NULL,'"+name+"','127.0.0.1', "+lobbyId+" ,"+colorId+")");
+	public static void insertPlayer(String name, int lobbyId) {
+		try {
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'" + name + "','127.0.0.1', " + lobbyId + ")");
+		} catch (SQLException e) {
+			System.out.println("error insertPlayer");
+		}
+	}
 
-	};
-	
 	/**
 	 * Methode zum initiellen hinzufügen der Lobby in die Datenbank
 	 * einige felder bleiben hier vorerst Null, da die zugehörigen werte nicht vorhanden sein können.
@@ -432,12 +432,18 @@ public class SqlHelper {
 	 * @author pbs2h17ath
 	 * @return lobbyIdS
 	 */
-	public static int insertLobby(LocalDateTime localDateTime, long lastChange) throws SQLException{
-		stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,'"+localDateTime.toString()+"',"+lastChange+",NULL, NULL, NULL");
-		ResultSet rs = stmt.getGeneratedKeys();
-		rs.next();
-		return rs.getInt(1);
-
+	public static int insertLobby(LocalDateTime localDateTime, long lastChange) {
+		int id = -1;
+		ResultSet rs = null;
+		try {
+			stmt.executeUpdate("INSERT INTO lobby (last_change) VALUES (1)", Statement.RETURN_GENERATED_KEYS);
+			rs = stmt.getGeneratedKeys();
+			rs.next();
+			id = rs.getInt(1);
+		} catch (SQLException e) {
+			System.out.println("insertLobby Error");
+		}
+		return id;
 	}
 	/**
 	 * Methode zum setzen des Leaders der Lobby
@@ -447,16 +453,18 @@ public class SqlHelper {
 	 */
 	public static void updateLobbyLeader(int lobbyId, int leaderId) throws SQLException{
 		stmt.executeUpdate("UPDATE lobby SET leader_id = "+leaderId+") WHERE lobby_id="+lobbyId);
-	};
+	}
+
 	/**
 	 * Methode zum setzen des Spielers, der aktuell dran ist
 	 * @param lobbyId
 	 * @param playerTurnId
 	 * @throws SQLException
 	 */
-	public static void updatePlayerTurn(int lobbyId, int PlayerTurnId) throws SQLException{
-		stmt.executeUpdate("UPDATE lobby SET leader_id = "+PlayerTurnId+") WHERE lobby_id="+lobbyId);
-	};
+	public static void updatePlayerTurn(int lobbyId, int playerTurnId) throws SQLException{
+		stmt.executeUpdate("UPDATE lobby SET leader_id = "+playerTurnId+") WHERE lobby_id="+lobbyId);
+	}
+
 	/**
 	 * Methode zum setzen der reihenfolge der Spieler
 	 * @param lobbyId
@@ -465,7 +473,7 @@ public class SqlHelper {
 	 */
 	public static void updatePlayerOrder(int lobbyId, String PlayerOrder) throws SQLException{
 		stmt.executeUpdate("UPDATE lobby SET leader_id = "+PlayerOrder+") WHERE lobby_id="+lobbyId);
-	};
-	
-	
+	}
+
+
 }

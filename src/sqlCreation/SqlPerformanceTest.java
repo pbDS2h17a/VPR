@@ -1,10 +1,10 @@
 package sqlCreation;
 
+import sqlConnection.SqlHelper;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import sqlConnection.SqlHelper;
 
 public class SqlPerformanceTest {
 
@@ -18,9 +18,9 @@ public class SqlPerformanceTest {
         }
         
         Statement stmt = SqlHelper.getStatement();
+
         
         // Timed performance tests
-        
         if(useTimer) {
             endTime = System.nanoTime();
             System.out.printf("Zeit: %d Millisekunden",(endTime - startTime) /  1000000);

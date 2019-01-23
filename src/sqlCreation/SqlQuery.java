@@ -336,7 +336,7 @@ public class SqlQuery {
 		String sqlLobby = "CREATE TABLE IF NOT EXISTS lobby (" +
 				" lobby_id INT NOT NULL AUTO_INCREMENT, " +
 				" date DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-				" last_change DATETIME, " +
+				" last_change INT, " +
 				" player_order VARCHAR(255), " +
 				" leader_id INT, " +
 				" player_turn_id INT, " +

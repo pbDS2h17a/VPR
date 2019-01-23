@@ -1,17 +1,14 @@
 package gui;
 
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -158,12 +155,11 @@ public class MatchFX {
 	    ctn.getChildren().add(groupLands);
 
 	    // Spieler-Name
-    	playerName.getPoints().addAll(new Double[]{
-            0.0, 0.0,
-            380.0, 0.0,
-            380.0, 50.0,
-            340.0, 80.0,
-            0.0, 80.0});
+    	playerName.getPoints().addAll(0.0, 0.0,
+				380.0, 0.0,
+				380.0, 50.0,
+				340.0, 80.0,
+				0.0, 80.0);
     	playerName.setFill(Color.GREY);
     	playerName.setStroke(Color.WHITE);
     	playerName.setStrokeWidth(5);
@@ -175,13 +171,12 @@ public class MatchFX {
     	playerNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 40px;");
     	ctn.getChildren().add(playerNameLabel);
     	
-    	territoryName.getPoints().addAll(new Double[]{
-    		0.0,   0.0,
-    		0.0,   30.0,
-    		30.0,  60.0,
-    		530.0, 60.0,
-    		530.0, 30.0,
-    		500.0, 0.0});
+    	territoryName.getPoints().addAll(0.0, 0.0,
+				0.0, 30.0,
+				30.0, 60.0,
+				530.0, 60.0,
+				530.0, 30.0,
+				500.0, 0.0);
     	territoryName.setFill(Color.GREY);
     	territoryName.setStroke(Color.WHITE);
     	territoryName.setStrokeWidth(5);
@@ -344,14 +339,13 @@ public class MatchFX {
 		battleB_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		battleGroup.getChildren().add(battleB_CountryName);
 		
-		battleArrow.getPoints().addAll(new Double[]{
-				0.0, 0.0,
+		battleArrow.getPoints().addAll(0.0, 0.0,
 				0.0, 30.0,
 				-230.0, 30.0,
 				-230.0, 90.0,
 				0.0, 90.0,
 				0.0, 120.0,
-				70.0, 60.0});
+				70.0, 60.0);
 		battleArrow.setFill(Color.WHITE);
 		battleArrow.relocate(810, 480);
 		battleGroup.getChildren().add(battleArrow);
@@ -464,10 +458,6 @@ public class MatchFX {
 	}
 	
 	/**
-	 * @param color : Paint
-	 * @param x 	: Double
-	 * @param y 	: Double
-	 * @param s 	: String
 	 * Checks if the input paint color equals the current territoryInfo fill.
 	 * If so: Sets the territoryInfo fill.
 	 * Calls gameChangeCountry and gameChangePlayer.

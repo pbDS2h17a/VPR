@@ -50,7 +50,7 @@ public class LobbyFX {
 	private Pane ctn = new Pane();
 	private Sprite btnReady = new Sprite("resources/btn_bereit.png");
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
-	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");;
+	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");
 	private Sprite inputNameBG = new Sprite("resources/input_bg.png");
     private TextField inputName = new TextField();
     private Label inputNameLabel = new Label("Name eingeben");
@@ -165,10 +165,9 @@ public class LobbyFX {
 	    // Slot-Gruppe Farben
 	    for(int i = 0; i < triangleArray.length; i++) {
 	    	triangleArray[i] = new Polygon();
-	    	triangleArray[i].getPoints().addAll(new Double[]{
-	            0.0, 0.0,
-	            0.0, 78.0,
-	            78.0, 0.0 });
+	    	triangleArray[i].getPoints().addAll(0.0, 0.0,
+					0.0, 78.0,
+					78.0, 0.0);
 	    	triangleArray[i].setFill(Color.GREY);
 	    	triangleArray[i].setStroke(Color.WHITE);
 	    	triangleArray[i].setStrokeWidth(5);
@@ -236,7 +235,7 @@ public class LobbyFX {
 	}
 	
 	public Lobby getLobby() {
-		return lobby;
+		return this.lobby;
 	}
 
 	/**

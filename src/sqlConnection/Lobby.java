@@ -1,6 +1,5 @@
 package sqlConnection;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 /**
@@ -17,13 +16,7 @@ public class Lobby {
 		this.playerCount = 0;
 		this.MAX_PLAYER_COUNT = 6;
 		this.players = new Player[MAX_PLAYER_COUNT];
-		try {
-			this.lobbyId = SqlHelper.insertLobby(LocalDateTime.now(), System.currentTimeMillis());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		this.lobbyId = SqlHelper.insertLobby(LocalDateTime.now(), System.currentTimeMillis());
 	}
 
 	public int getPlayerCount() {
