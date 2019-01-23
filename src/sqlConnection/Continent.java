@@ -10,6 +10,7 @@ public class Continent {
 	private Country[] countryArray;
 	private int additionalUnits;
 	
+
 	//Konstruktor
 	public Continent(int continentId) {
 		this.continentId = continentId;
@@ -26,6 +27,11 @@ public class Continent {
 			e.printStackTrace();
 		}
 		
+	}
+	//Getters/Setters
+	public int getId()
+	{
+		return continentId;
 	}
 	
 	// Getters und Setters

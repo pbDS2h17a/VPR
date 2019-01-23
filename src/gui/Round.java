@@ -221,7 +221,7 @@ public class Round {
 				// if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
 				
 				if(this.assign && isFinishedAssigning()) {
-					this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getEinheitenProRunde());
+					this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getUnitsPerRound());
 					this.assign = false;
 					this.add = true;
 					this.setActivePlayerIndex(0);
@@ -421,7 +421,7 @@ public class Round {
 			this.setActivePlayerIndex(this.getActivePlayerIndex() + 1);
 		}
 		
-		this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getEinheitenProRunde());
+		this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getUnitsPerRound());
 		phaseAdd();
 	}
 	

@@ -25,7 +25,7 @@ public class SqlHelper {
 	 * Erstellt ein Statement mit den Werten
 	 */
 	
-	// Private TestDb für home server
+	// Private TestDb fÃ¼r home server
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
@@ -60,7 +60,7 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Gibt ein Statement zurück
+	 * Gibt ein Statement zurÃ¼ck
 	 * Checkt ob das Statement vorhande ist (nicht NULL)
 	 * Sonst erstellt es ein neues Statement
 	 * @return aktuelles Statement der Verbindung
@@ -77,18 +77,47 @@ public class SqlHelper {
 		ResultSet rs = null;
 		Player[] playerArray = new Player[6];
 		int index = 0;
+		int[] playerIdArray = new int[6];
+		String[] playerNameArray = new String[6];
+		String colorValue = null;
 		
+		// 
 		try {
-			rs = stmt.executeQuery("SELECT player_id, player.name, value FROM player, color WHERE lobby_id="+lobbyId+" AND player.color_id = color.color_id;");
+			// Alle Spieler einer Lobby auswählen
+			rs = stmt.executeQuery("SELECT player_id, name FROM player WHERE lobby_id="+lobbyId+";");
+			
+			// Werte in Array speichern
 			while(rs.next()) {
-				Player p = new Player(rs.getInt("player_id"), rs.getString("player.name"), rs.getString("value"));
-				playerArray[index] = p;
+				// Name und ID auslesen
+				playerIdArray[index] = rs.getInt("player_id");
+				playerNameArray[index] = rs.getString("name");
 				index++;
 			}
+				
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		for (int i = 0; i < 6; i++) {
+			ResultSet rs2;
+			try {
+				rs2 = stmt.executeQuery("SELECT c.value FROM color c, color_player cp "
+						+ "WHERE cp.player_id = "+playerIdArray[i]+" "
+						+ "AND cp.color_id = c.color_id;");
+				rs2.next();
+				colorValue = rs2.getString("value");
+				
+				Player p = new Player(playerIdArray[i], playerNameArray[i], colorValue);
+				playerArray[i] = p;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			
+		}
+		
+		
 		
 		return playerArray;
 	}
@@ -163,6 +192,7 @@ public class SqlHelper {
 		
 	}
 	
+	
 	public static String getPlayerName(int playerId) throws SQLException {
 		ResultSet rs = getStatement().executeQuery("SELECT name FROM player WHERE player_id = "+playerId+";");
 		
@@ -233,10 +263,47 @@ public class SqlHelper {
 		return data;
 	}
 	
-	//TODO outdated
+	/**
+	 * Diese Methode, welche ein Player-Objekt benï¿½tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
+	 * erstellt einen Lobby-Datensatz, an dessen LeaderId-Spalte die Id des Spielers a.k.a. Host eingetragen wird. 
+	 * Des Weiteren wird die Methode joinLobby() mit demselben Player-Objekt aufgerufen.
+	 * @param player = Der Spieler als Objekt Player.
+	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
+	 * @throws ClassNotFoundException = Falls eine benï¿½tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
+	 * @see joinLobby (Player player, int lobbyId)
+	 * @author Jona Petrikowski
+	 * @author Jï¿½rg Rï¿½mmich
+	 */
 	public static void createLobby (Player player) throws SQLException, ClassNotFoundException {
-		String dbStatement = "INSERT INTO lobby (host_id) values (" + player.getId() + ");";
-		getStatement().executeQuery(dbStatement);
+		stmt = getStatement();
+		String queryCreateLobbyEntry = String.format("INSERT INTO lobby (leader_id) VALUES (%d);", player.getId());
+		stmt.executeUpdate(queryCreateLobbyEntry);
+		// zweites Resultset fï¿½r die autoincremente LobbyId, um diese beim Leader einzutragen
+		String queryGetLobbyId = String.format("SELECT lobby_id FROM lobby WHERE leader_id = %d;", player.getId());
+		List<List<String>> listWithLobbyId = ResultSetManager.toList(stmt.executeQuery(queryGetLobbyId));
+		if (listWithLobbyId.get(0).size() == 1) {
+			int lobbyId = Integer.parseInt(listWithLobbyId.get(0).get(0));
+			// ein createLobby() ist fï¿½r den Leader ein joinLobby()
+			joinLobby(player, lobbyId);
+			System.out.println("createLobby() successfull.");
+		}
+		else {
+			System.out.println("createLobby(). Problem with getting lobby_id from returned ResultSet.");
+		}
+	}
+			
+	/**
+	 * Diese Methode, welche ein Player-Objekt und die LobbyId der zu joinenden Lobby benï¿½tigt,
+	 * schreibt bei dem dazugehï¿½rigen Player-Datensatz in die Spalte LobbyId die Id der zu joinenden Lobby.
+	 * @param player = Der Spieler als Objekt Player.
+	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
+	 * @throws ClassNotFoundException = Falls eine benï¿½tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
+	 * @author Jona Petrikowski 
+	 * @author Jï¿½rg Rï¿½mmich
+	 */
+	public static void joinLobby (Player player, int lobbyId) throws SQLException, ClassNotFoundException {
+		String queryJoinLobby = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getId());
+		getStatement().executeUpdate(queryJoinLobby);
 	}
 	
 	public static String getContintentName(int continentID) throws SQLException{		
@@ -261,26 +328,27 @@ public class SqlHelper {
 		
 		return countryIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
-
-	public static int getPlayerID(String name) throws SQLException{
+  	
+  // TODO Rework
+	public static int getPlayerId(String name) throws SQLException{
 		ResultSet rs = getStatement().executeQuery("SELECT player_id FROM player WHERE name = "+name+";");
 		
 		 rs.next(); 
 		 return rs.getInt(1);	
 	}
 	
+	public static int getCardValue(int cardId) throws SQLException{
+		ResultSet rs = getStatement().executeQuery("SELECT value FROM card WHERE card_id = "+cardId+";");
+    
+    rs.next();
+		return rs.getInt("card_id");
+  }
+  
 	public static int getCardCountryId(int cardId) throws SQLException{
 		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM card WHERE card_id = "+cardId+";");
 		
 		rs.next();
-			return rs.getInt("country_id");
-	}
-
-	public static int getCardValue(int value) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("SELECT value FROM card WHERE value = "+value+";");
-		
-		rs.next();
-		return rs.getInt("value");
+		return rs.getInt("country_id");
 	}
 
 	public static String getMissionDescription(int missionID) throws SQLException {
@@ -291,14 +359,13 @@ public class SqlHelper {
 	
 	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
 		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
-		// System.out.println("Call läuft");
+		// System.out.println("Call lÃ¤uft");
 		return ResultSetManager.toList(r);
 	}
 	
 	public static void sendMessage(String message, int pid, int lid) throws SQLException
 	{
 		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
-		System.out.println(sql);
 		stmt.executeUpdate(sql);
 	}
 	
@@ -311,7 +378,7 @@ public class SqlHelper {
 	
 	
 	/**
-	 * Methode zum einfügen von Daten in die Tabelle country_player
+	 * Methode zum einfÃ¼gen von Daten in die Tabelle country_player
 	 * @param lobbyId
 	 * @param playerId
 	 * @param countryId
@@ -322,7 +389,7 @@ public class SqlHelper {
 		stmt.executeUpdate("INSERT INTO country_player VALUES("+playerId+","+countryId+","+lobbyId+", 1)");
 	};
 	/**
-	 * Methode zum ändern des Besatzers eines Landes 
+	 * Methode zum Ã¤ndern des Besatzers eines Landes 
 	 * @param lobbyId
 	 * @param playerId
 	 * @param countryId
@@ -345,7 +412,7 @@ public class SqlHelper {
 		stmt.executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
 	};
 	/**
-	 * Methode zum hinzufügen von Player
+	 * Methode zum hinzufÃ¼gen von Player
 	 * @param name
 	 * @param lobbyId
 	 * @param colorId

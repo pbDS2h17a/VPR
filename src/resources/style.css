@@ -1,0 +1,51 @@
+.chat-controls, .chat, .scroll-window, .chat-history {
+    -fx-background-color: rgba(0,146,69,.25);
+}
+
+.chat-button {
+	-fx-background-color: rgba(0,129,55,.8);
+}
+
+.chat, .chat-button {
+	-fx-border-color: white;
+	-fx-border-style: solid;
+}
+
+.chat {
+	-fx-border-width: 5px;
+}
+
+.chat-button {
+	-fx-border-width: 2px;
+}
+
+.chat-textfield {
+	-fx-padding: 5px;
+	-fx-background-color: rgba(0,146,69,.05);
+}
+
+.scroll-window .scroll-bar:horizontal, .scroll-window .scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+.scroll-window .increment-button, .scroll-window .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-window .scroll-bar:horizontal .track,
+.scroll-window .scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-window .scroll-bar:horizontal .thumb,
+.scroll-window .scroll-bar:vertical .thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 5em;
+}
+
+.scroll-window .corner {
+    -fx-background-color: transparent;
+}
