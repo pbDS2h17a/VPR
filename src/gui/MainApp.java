@@ -21,38 +21,18 @@ import sqlConnection.SqlHelper;
  * @author Adrian Ledwinka
  * @author Kevin Daniels
  */
-
 public class MainApp extends Application {
-	/**
-	 * @param APP_WIDTH	 : Integer
-	 * @param APP_HEIGHT : Integer
-	 * @param von		 : Pane
-	 * @param zu		 : Pane
-	 * @param app		 : Pane
-	 * @param ctnApp 	 : Pane
-	 * @param toPane	 : boolean
-	 * 
-	 * Spiel-Oberflaechen
-	 * @param titleFX	 : TitleFX
-	 * @param lobbyFX	 : LobbyFX
-	 * @param joinFX	 : JoinFx
-	 * @param matchFX	 : MatchFX
-	 * @param mpFX		 : MediaPlayerFX
-	 * @param chatFX	 : ChatInterface
-	 * @param scene		 : Scene
-	 */
-	
-	// Globale Variablen
+	// Globale Variablen, die für das Spiel benötigt werden
 	private final int APP_WIDTH = 1600;
 	private final int APP_HEIGHT = 900;
-	private Pane von;
-	private Pane zu;
+	private Pane paneFrom;
+	private Pane paneTo;
 	private static Pane app = new Pane();
     private Pane ctnApp = new Pane();
 	private boolean toPane = false;
 	private static Scene scene = new Scene(app);
     
-    // Spiel-Oberflächen
+    // Spiel-Oberflächen, die alle JavaFX Objekte enthalten
 	private TitleFX titleFX = new TitleFX();
     private LobbyFX lobbyFX = new LobbyFX();
     private JoinFX joinFX = new JoinFX();
@@ -61,10 +41,10 @@ public class MainApp extends Application {
     private ChatInterface chatFX;
 
 	/**
-	 * @param stage : Stage
-	 * 
 	 * Stellt alle Spiel-Einstellungen ein damit sie in der main gestartet werden kann.
 	 * 
+	 * @param stage Stage
+	 * @see javafx.application.Application#start(javafx.stage.Stage)
 	 */
 	@Override
 	public void start(Stage stage) {
@@ -97,7 +77,7 @@ public class MainApp extends Application {
 		// Methode um die ClickEvents zu initialisieren
 	    initializeClickEventHandlers();
 	    
-	    // Methode um die ClickEvents zu initialisieren
+	    // Methode um die Spiel-Schleife für die Animationen zu initialisieren
 		gameLoop();
 	    
 	    // Resize-Methode die das Spiel immer passend zur Fenstergröße skaliert
@@ -111,24 +91,24 @@ public class MainApp extends Application {
 		stage.setTitle("CONQUER | All risk all fun");
 		stage.setScene(scene);
 		stage.show();
-	    
 	}
 	
 	/**
 	 * Prozedur, die die Datenbankverbindung beendet wenn das Spiel beendet wird
 	 * 
+	 * @see javafx.application.Application#stop()
 	 */
 	@Override
 	public void stop(){
 	    System.out.println("Sql verbindung beenden");
 	    SqlHelper.closeStatement();
 	}
-	
+
 	/**
-	 * @param args	:	String[]
-	 * 
 	 * Prozedur, die die ganze Anwendung startet sobald die Scene übergeben wurde
 	 * 
+	 * @param args String[]
+	 * @throws SQLException
 	 */
 	public static void main(String[] args) throws SQLException {
 		launch(args);
@@ -166,7 +146,7 @@ public class MainApp extends Application {
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 			paneTransition(lobbyFX.getBtnBack(), lobbyFX.getContainer(), titleFX.getContainer());
 			
-			/**
+			/*
 			 * Sound für den gedrückten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
@@ -185,7 +165,7 @@ public class MainApp extends Application {
 				chatFX.getPane().relocate(1650, 600);
 			}
 			
-			/**
+			/*
 			 * Sound für den gedrückten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
@@ -199,7 +179,7 @@ public class MainApp extends Application {
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 			paneTransition(joinFX.getBtnBack(), joinFX.getContainer(), titleFX.getContainer());
 			
-			/**
+			/*
 			 * Sound für den gedrückten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
@@ -213,7 +193,6 @@ public class MainApp extends Application {
 			// Startet die Hintergrundmusik
 			mpFX.playBgmStart();		
 		});
-		
 		
 		// Wenn der Stop-Button des MediaPlayers gedrückt wird
 		mpFX.title_btn_stop_mediaPlayer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -231,150 +210,156 @@ public class MainApp extends Application {
 				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
 			});
 		}
-		
-	    matchFX.getBattleReadyBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	if(matchFX.getBattleInputB().isDisabled()) {
-	    		matchFX.getRound().setBattleUnitsA(Integer.parseInt(matchFX.getBattleInputA().getText()));
-		    	if(matchFX.getRound().getBattleUnitsA() > 0 && matchFX.getRound().getBattleUnitsA() < matchFX.getRound().getCountryA().getUnits()) {
-		    		matchFX.getBattleInputA().setDisable(true);
-		    		matchFX.getBattleInputB().setDisable(false);
-		    	}
-	    	}
-	    	
-	    	else if(matchFX.getBattleInputA().isDisabled()) {
-	    		matchFX.getRound().setBattleUnitsB(Integer.parseInt(matchFX.getBattleInputB().getText()));
-		    	if(matchFX.getRound().getBattleUnitsB() > 0 && matchFX.getRound().getBattleUnitsB() < 3 && matchFX.getRound().getBattleUnitsB() <= matchFX.getRound().getCountryB().getUnits()) {
-		    		System.out.println("*** Kampf beginnt ***");
-		    		System.out.println("A: " + matchFX.getRound().getCountryA().getCountryName() + " | B: " + matchFX.getRound().getCountryB().getCountryName());
-		    		System.out.println("A Einheiten vorher: " + matchFX.getRound().getCountryA().getUnits());
-		    		System.out.println("B Einheiten vorher: " + matchFX.getRound().getCountryB().getUnits());
-		    		System.out.println("A schickt in den Tod: " + matchFX.getRound().getBattleUnitsA());
-		    		System.out.println("B schickt in den Tod: " + matchFX.getRound().getBattleUnitsB());
-		    		
-		    		matchFX.getBattleReadyBtn().setActive(false);
-		    		Integer[][] rolledDices = matchFX.getRound().rollTheDice(matchFX.getRound().getBattleUnitsA(), matchFX.getRound().getBattleUnitsB());
-		    		matchFX.getRound().updateFightResults(rolledDices, matchFX.getRound().getCountryA(), matchFX.getRound().getCountryB());
-		    		matchFX.getRound().endFight();
-		    	}
-	    	}
-	    });
     }
-	    
-	
+
 	/**
-	 * @param trigger : Sprite
-	 * @param v		  : Pane
-	 * @param z		  : Pane
-	 * Checks if the trigger sprite is set to active.
-	 * Set toPane to true for the game loop.
+	 * Steuert den Übergang zwischen zwei Panes für die Animation
+	 * 
+	 * @param trigger Sprite
+	 * @param from Pane
+	 * @param to Pane
 	 */
-	public void paneTransition(Sprite trigger, Pane v, Pane z) {
+	public void paneTransition(Sprite trigger, Pane from, Pane to) {
+		// Wenn der gedrückte Button aktiv ist, kann die Animation gestartet werden
 		if(trigger.isActive()) {
-			von = v;
-			von.setCache(true);
-			von.setOpacity(1);
-			von.setScaleX(1);
-			von.setScaleY(1);
 			
-			zu = z;
-			zu.setCache(true);
-			zu.setVisible(true);
-			zu.setOpacity(0);
-			zu.setScaleX(1.5);
-			zu.setScaleY(1.5);
+			/*
+			 * Die noch aktive Pane wird mit Daten bestückt,
+			 * die sich während der Animation verändern schrittweise werden
+			 */
+			paneFrom = from;
+			paneFrom.setCache(true);
+			paneFrom.setOpacity(1);
+			paneFrom.setScaleX(1);
+			paneFrom.setScaleY(1);
 			
+			/*
+			 * Die noch deaktivierte Pane wird mit Daten bestückt,
+			 * die sich während der Animation verändern schrittweise werden
+			 */
+			paneTo = to;
+			paneTo.setCache(true);
+			paneTo.setVisible(true);
+			paneTo.setOpacity(0);
+			paneTo.setScaleX(1.5);
+			paneTo.setScaleY(1.5);
+			
+			// Startet die Animation zwischen den beiden Panes
 			toPane = true;
 		}
 	}
-	
+
 	/**
-	 * @param trigger : Label
-	 * @param v		  : Pane
-	 * @param z		  : Pane
-	 * Checks if the trigger label is set to active.
-	 * Set toPane to true for the game loop.
+	 * Prozedur, die die ganze Anwendung startet sobald die Scene übergeben wurde
+	 * 
+	 * @param trigger Label
+	 * @param from Pane
+	 * @param to Pane
+	 * @see paneTransition(Sprite trigger, Pane from, Pane to)
 	 */
-	public void paneTransition(Label trigger, Pane v, Pane z) {
-		von = v;
-		von.setCache(true);
-		von.setOpacity(1);
-		von.setScaleX(1);
-		von.setScaleY(1);
+	public void paneTransition(Label trigger, Pane from, Pane to) {
+		/*
+		 * Die noch aktive Pane wird mit Daten bestückt,
+		 * die sich während der Animation verändern schrittweise werden
+		 */
+		paneFrom = from;
+		paneFrom.setCache(true);
+		paneFrom.setOpacity(1);
+		paneFrom.setScaleX(1);
+		paneFrom.setScaleY(1);
 		
-		zu = z;
-		zu.setCache(true);
-		zu.setVisible(true);
-		zu.setOpacity(0);
-		zu.setScaleX(1.5);
-		zu.setScaleY(1.5);
+		/*
+		 * Die noch deaktivierte Pane wird mit Daten bestückt,
+		 * die sich während der Animation verändern schrittweise werden
+		 */
+		paneTo = to;
+		paneTo.setCache(true);
+		paneTo.setVisible(true);
+		paneTo.setOpacity(0);
+		paneTo.setScaleX(1.5);
+		paneTo.setScaleY(1.5);
 		
+		// Startet die Animation zwischen den beiden Panes
 		toPane = true;
 	}
 	
 	/**
-	 * @param stage	  : Stage
-	 * @param ctn_app : Pane
-	 * Checks if the ratio is greater than the preferred ratio.
-	 * If so : Scales the height.
-	 * else : Scales width.
+	 * Wird aufgerufen wenn die Fenstergröße geändert wird und
+	 * skaliert den Spiel-Container immer passend
+	 * 
+	 * @param stage Stage
+	 * @param ctn_app Pane
 	 */
 	public void resizeThat(Stage stage, Pane ctn_app) {
+		 // speichert das gewünschte Seitenverhältnis
 		 double ratio = stage.getWidth() / stage.getHeight();
 		 double scale;
 		 
+		 // Vergleicht beide Verhältnisse und ändert dementsprechend den Skalierungs-Faktor
 		 if(ratio > ctn_app.getPrefWidth() / ctn_app.getPrefHeight())
 			 scale = stage.getHeight() / ctn_app.getPrefHeight();
 		 else
 			 scale = stage.getWidth() / ctn_app.getPrefWidth();
 		 
+		 /*
+		  * Sollte es größer als 1080p sein wird die Skalierung auf 1 gesetzt
+		  * um verpixelung der Bilder zu verhindern
+		  */ 
 		 if(scale >= 1)
 			 scale = 1;
 		 
+		 // Setzt die Skalierung und Position im Spiel-Container
 		 ctn_app.setScaleX(scale);
 		 ctn_app.setScaleY(scale);
 		 ctn_app.relocate(stage.getWidth()/2 - ctn_app.getPrefWidth()/2, stage.getHeight()/2 - ctn_app.getPrefHeight()/2);
 	}
 	
 	/**
-	 * Game loop.
+	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
 	 */
 	public void gameLoop() {
 		new AnimationTimer() {
 	        public void handle(long currentNanoTime) {
+	        	// Wenn der Übergang zwischen zwei Panes aktiviert wird
 	        	if(toPane) {
-	        		if(von.getScaleY() < 1.5) {
-		        		von.setScaleX(von.getScaleX() + .02);
-		        		von.setScaleY(von.getScaleY() + .02);
+	        		
+	        		// Die vorherige Pane wird schrittweise verkleinert und ausgeblendet
+	        		if(paneFrom.getScaleY() < 1.5) {
+		        		paneFrom.setScaleX(paneFrom.getScaleX() + .02);
+		        		paneFrom.setScaleY(paneFrom.getScaleY() + .02);
 	        		}
 
-	        		if(von.getOpacity() > 0)
-	        			von.setOpacity(von.getOpacity() - .05);
+	        		if(paneFrom.getOpacity() > 0)
+	        			paneFrom.setOpacity(paneFrom.getOpacity() - .05);
 	        		
-	        		if(zu.getScaleY() > 1) {
-	        			zu.setScaleX(zu.getScaleX() - .02);
-	        			zu.setScaleY(zu.getScaleY() - .02);
+	        		// Die nächste Pane wird schrittweise vergrößert und eingeblendet
+	        		if(paneTo.getScaleY() > 1) {
+	        			paneTo.setScaleX(paneTo.getScaleX() - .02);
+	        			paneTo.setScaleY(paneTo.getScaleY() - .02);
 	        		}
 	        		
-	        		if(zu.getOpacity() < 1)
-	        			zu.setOpacity(zu.getOpacity() + .05);
+	        		if(paneTo.getOpacity() < 1)
+	        			paneTo.setOpacity(paneTo.getOpacity() + .05);
 
-	        		if(von.getScaleY() >= 1.5 && zu.getScaleY() <= 1) {
-	        			von.setCache(true);
-	        			von.setVisible(false);
-	        			zu.setCache(false);
+	        		
+	        		/*
+	        		 * Sind beide Übergänge fertig wird die aktuelle Pane endgültig deaktiviert,
+	        		 * die nächste aktiviert und die Animation durch den boolean toPane beendet
+	        		 */
+	        		if(paneFrom.getScaleY() >= 1.5 && paneTo.getScaleY() <= 1) {
+	        			paneFrom.setCache(true);
+	        			paneFrom.setVisible(false);
+	        			paneTo.setCache(false);
 	        			
 	        			toPane = false;
 	        		}
 	        	}
 	        	
+	        	// Aktualisiert die Lautstärke der Hintergrund-Musik
 	        	mpFX.setVolumeGame();
 	        	mpFX.setVolumeStart();
 	        }
 	    }.start();
-	}
-
-	public static Scene getScene() {
-		return scene;
 	}
 
 }

@@ -5,11 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
-import javafx.event.EventHandler;
-import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import sqlConnection.Country;
@@ -37,11 +32,11 @@ public class Round {
 		this.countryArray = countryArray;
 		this.match = match;
 		
-		this.startInitialRound();
+		this.startInitialRound(playerArray);
 	}
 	
-	Player getActivePlayer() {
-		return this.getPlayerArray()[this.activePlayerIndex];
+	public Player getActivePlayer() {
+		return playerArray[activePlayerIndex];
 	}
 	
 	public MatchFX getMatch() {
@@ -51,17 +46,17 @@ public class Round {
 	public void setMatch(MatchFX match) {
 		this.match = match;
 	}
-
+	
 	void setActivePlayerIndex(int i) {
 		this.activePlayerIndex = i;
 	}
-	
+
 	int getActivePlayerIndex() {
 		return this.activePlayerIndex;
 	}
 	
 	public Player[] getPlayerArray() {
-		return playerArray;
+		return this.playerArray;
 	}
 
 	public void setPlayerArray(Player[] playerArray) {
@@ -75,8 +70,47 @@ public class Round {
 	public void setCountryArray(Country[] countryArray) {
 		this.countryArray = countryArray;
 	}
-
 	
+	public boolean isAssign() {
+		return assign;
+	}
+
+	public void setAssign(boolean assign) {
+		this.assign = assign;
+	}
+
+	public boolean isAdd() {
+		return add;
+	}
+
+	public void setAdd(boolean add) {
+		this.add = add;
+	}
+
+	public boolean isFight() {
+		return fight;
+	}
+
+	public void setFight(boolean fight) {
+		this.fight = fight;
+	}
+
+	public boolean isMove() {
+		return move;
+	}
+
+	public void setMove(boolean move) {
+		this.move = move;
+	}
+
+	public int getAdditionalAttacker() {
+		return additionalAttacker;
+	}
+
+	public void setAdditionalAttacker(int additionalAttacker) {
+		this.additionalAttacker = additionalAttacker;
+	}
+
 	public Country getCountryA() {
 		return countryA;
 	}
@@ -109,11 +143,16 @@ public class Round {
 		this.battleUnitsB = battleUnitsB;
 	}
 
-	void startInitialRound() {
+	void startInitialRound(Player[] playerArray) {
 			
 		int firstUnits;
-		
-		switch (this.getPlayerArray().length) {
+
+		for (Player p : playerArray) {
+			System.out.println(p.toString());
+		}
+
+
+		switch (playerArray.length) {
 			case 2:
 				firstUnits = 40;
 				break;
@@ -145,7 +184,7 @@ public class Round {
 		}
 		
 		updatePlayerInterface(this.getActivePlayer());
-		
+
 		for (int i = 0; i < this.getCountryArray().length; i++) {
 			final int COUNT = i;
 
@@ -220,7 +259,9 @@ public class Round {
 				// if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
 				
 				if(this.assign && isFinishedAssigning()) {
-					this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getUnitsPerRound());
+					Player activePlayer = getActivePlayer();
+					System.out.println(activePlayer);
+					activePlayer.setUnassignedUnits(activePlayer.getUnassignedUnits() + activePlayer.getUnitsPerRound());
 					this.assign = false;
 					this.add = true;
 					this.setActivePlayerIndex(0);
@@ -230,9 +271,7 @@ public class Round {
 				updatePlayerInterface(this.getActivePlayer());
 				this.match.updateTerritoryInfo(this.getCountryArray()[COUNT]);
 		    });
-		}
-		
-
+		}	
 	}
 	
 	public void startFight() {
