@@ -9,16 +9,13 @@ import java.sql.Statement;
 
 /**
  * @author basti
- * SQL Queries zum erstellen der Stammdatenbank
+ * SQL Queries zum Erstellen der Stammdatenbank
  */
 public class SqlQuery {
 	//TODO prepared statements https://docs.oraclecom/javase/tutorial/jdbc/basics/prepared.html
 	//TODO Tabellen Namen als Variablen auslagern
 	//TODO Validieren der Fill Statements mit aktueller modelierung!  Andere Teams Fragen!!!!
-	//TODO createChat hier implemntierung
-	//TODO statt alle Drop statments einzeln auszuführen komplette Datenbank droppen (performance effizentier)
 	public static String splitter = ";";
-
 	public static Statement stmt = SqlHelper.getStatement();
 	
 	public static void fillTestData(int lobbyId) {
@@ -67,9 +64,6 @@ public class SqlQuery {
 			}
 		}
 	}	
-
-	//TODO implement lobby und address
-	
 	public static void fillPlayer(Player player) {
 		String sql =
 				"INSERT INTO player (name, lobby_id, address)" +
@@ -81,7 +75,7 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 *
 	 * @param data StringArray mit ID,Name,KontinentID und SVG
@@ -227,7 +221,9 @@ public class SqlQuery {
 		}
 		
 	}
-
+	/**
+	 * Hilfsmethode um die Constraints zu deaktivieren
+	 */
 	public static void disableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 0");
@@ -236,7 +232,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Hilfsmethode um die Constraints zu aktivieren
+	 */
 	public static void enableForeignKeyConstraints() {
 		try {
 			stmt.executeUpdate("SET foreign_key_checks = 1");
@@ -260,17 +258,18 @@ public class SqlQuery {
 	}
 	
 	//#################################################################################################################
-	// CREATE STATEMENTS
+	// CREATE STATEMENTS 
 	//#################################################################################################################
+	/**
+	 * Methode erstellt die Tabellen für Kontinente
+	 */
 	static void createContinent() {
-		//Kontinente
 		String sqlContinent = "CREATE TABLE IF NOT EXISTS continent (" +
 				" continent_id INT, " +
                 " name VARCHAR(255), " +
 				" bonus INT," +
 				" PRIMARY KEY(continent_id)" +
-				");";
-		
+				");";	
 		try {
 			stmt.executeUpdate(sqlContinent);
 		} catch (Exception e) {
@@ -278,9 +277,10 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
+	/**
+	 * Methode erstellt die Tabellen für Länder
+	 */
 	static void createCountry() {
-		//Länder
 		String sqlCountry = "CREATE TABLE IF NOT EXISTS country (" +
 				" country_id INT, " +
 	            " name VARCHAR(255) NOT NULL, " +
@@ -288,8 +288,7 @@ public class SqlQuery {
 				" svg VARCHAR(15000), " +
 				" FOREIGN KEY(continent_id) REFERENCES continent(continent_id), " +
 				" PRIMARY KEY(country_id)" +
-	            ");";
-		
+	            ");";	
 		try {
 			stmt.executeUpdate(sqlCountry);
 		} catch (SQLException e) {
@@ -297,9 +296,10 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
+	/**
+	 * Methode erstellt die Tabellen für Spieler
+	 */
 	static void createPlayer() {
-		//Länder
 		String sqlPlayer = "CREATE TABLE IF NOT EXISTS player (" +
 				" player_id INT NOT NULL AUTO_INCREMENT, " +/**/
 	            " name VARCHAR(255) NOT NULL, " + 
@@ -308,7 +308,6 @@ public class SqlQuery {
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id)," +
 	            " PRIMARY KEY(player_id)" +
 	            ");";
-		
 		try {
 			stmt.executeUpdate(sqlPlayer);
 		} catch (SQLException e) {
@@ -316,7 +315,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Methode erstellt die Tabellen für die Nachbarn
+	 */
 	static void createNeighbor() {
 		String sqlNeighbor = "CREATE TABLE IF NOT EXISTS neighbor (" +
 				" country_id INT NOT NULL, " +
@@ -332,7 +333,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
+	/**
+	 * Methode erstellt die Tabellen für die Lobby
+	 */
 	static void createLobby() {
 		String sqlLobby = "CREATE TABLE IF NOT EXISTS lobby (" +
 				" lobby_id INT NOT NULL AUTO_INCREMENT, " +
@@ -352,7 +355,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-
+	/**
+	 * Methode erstellt die Tabellen für Handkarten
+	 */
 	static void createCard() {
 		String sqlCard = "CREATE TABLE IF NOT EXISTS card (" +
 				" card_id INT NOT NULL, " +
@@ -368,7 +373,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
+	/**
+	 * Methode erstellt die Tabellen für alle Missionen
+	 */
 	static void createMission() {
 		String sqlMission = "CREATE TABLE IF NOT EXISTS mission (" +
 				" mission_id INT NOT NULL, " +
@@ -382,7 +389,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
+	/**
+	 * Methode erstellt die Tabelle für Spieler und ihre Karten
+	 */
 	static void createCardsPlayer() {
 		String sqlCardsPlayer = "CREATE TABLE IF NOT EXISTS cards_player (" +
 				" lobby_id INT, " +
@@ -400,7 +409,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
+	/**
+	 * Methode erstellt Tabelle für Missionen und Spieler
+	 */
 	static void createMissionPlayer() {
 		String sqlMissionPlayer = "CREATE TABLE IF NOT EXISTS mission_player (" +
 				" mission_id INT NOT NULL, " +
@@ -418,7 +429,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}	
 	}
-	
+	/**
+	 * Methode erstellt Tabelle für Spieler und Länder
+	 */
 	static void createCountryPlayer() {
 		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS country_player (" +
 				" player_id INT, "+
@@ -437,7 +450,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Methode erstellt die Tabellen für alle auswählbaren Farben
+	 */
 	static void createColor() {
 		String sqlPlayerCountry = "CREATE TABLE IF NOT EXISTS color (" +
 				" color_id INT, " +
@@ -452,7 +467,9 @@ public class SqlQuery {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Methode erstellt die Tabellen für den Chat
+	 */
 	static void createChat() {
 		String sqlChat = "CREATE TABLE IF NOT EXISTS chat (" +
 				" message_id INT PRIMARY KEY AUTO_INCREMENT, " +
