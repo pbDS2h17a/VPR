@@ -305,7 +305,6 @@ public class SqlQuery {
 	            " name VARCHAR(255) NOT NULL, " + 
 				" address CHAR(15)," +
 				" lobby_id INT, " +
-				" color_id INT, " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id)," +
 	            " PRIMARY KEY(player_id)" +
 	            ");";

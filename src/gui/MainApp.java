@@ -138,7 +138,6 @@ public class MainApp extends Application {
 	 * Prozedur, die alle EventListener startet die für den 
 	 */
     public void initializeClickEventHandlers(){
-    	
     	// Wennn der Button zum Spiel erstellen gedrückt wird
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Startet die Animation für den Übergang zwischen zwei Panes

@@ -13,18 +13,13 @@ public class Lobby {
 	private int lobbyId;
 	
 	public Lobby() {
-		this.playerCount = 0;
 		this.MAX_PLAYER_COUNT = 6;
 		this.players = new Player[MAX_PLAYER_COUNT];
 		this.lobbyId = SqlHelper.insertLobby(LocalDateTime.now(), System.currentTimeMillis());
 	}
-
-	public int getPlayerCount() {
-		return playerCount;
-	}
-
-	public void setPlayerCount(int playerCount) {
-		this.playerCount = playerCount;
+	
+	public void setLobbyLeader(int playerId) {
+		SqlHelper.updateLobbyLeader(lobbyId, playerId);
 	}
 
 	public Player[] getPlayers() {

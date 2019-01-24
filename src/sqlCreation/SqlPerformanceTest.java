@@ -18,10 +18,10 @@ public class SqlPerformanceTest {
         if(useTimer) {
             startTime = System.nanoTime();
         }
-        
-        Statement stmt = SqlHelper.getStatement();
+
         Lobby lobby = new Lobby();
         int lobbyId = lobby.getLobbyId();
+        System.out.println("LobbyID:"+lobbyId);
         Player p1 = new Player("Bob1", lobbyId);
         Player p2 = new Player("Bob2", lobbyId);
         Player p3 = new Player("Bob3", lobbyId);
@@ -35,13 +35,14 @@ public class SqlPerformanceTest {
         lobby.addPlayer(p4);
         lobby.addPlayer(p5);
         lobby.addPlayer(p6);
-
-        System.out.println(lobby.getPlayerCount());
-
         Player[] players = lobby.getPlayers();
-
+        
+        System.out.println(players.length);
+        
         for (Player p : players) {
-            System.out.println(p.toString());
+        	if (p == null) {
+        		System.out.println("null");
+        	}
         }
 
         // Timed performance tests

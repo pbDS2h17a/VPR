@@ -392,6 +392,10 @@ public class SqlHelper {
 		rs.next();
 		return rs.getInt("country_id");
 	}
+	
+	public static void fillCardsPlayer() {
+		
+	}
 
 	public static String getMissionDescription(int missionID) throws SQLException {
 		ResultSet rs = getStatement().executeQuery("SELECT description FROM mission WHERE mission_id = "+missionID+";");
@@ -491,12 +495,14 @@ public class SqlHelper {
 		int id = -1;
 		ResultSet rs = null;
 		try {
-			stmt.executeUpdate("INSERT INTO lobby (last_change) VALUES (1)", Statement.RETURN_GENERATED_KEYS);
+			// RETURN_GENERATED_KEYS gibt die Id des Autoincrement zurück
+			getStatement().executeUpdate("INSERT INTO lobby (last_change) VALUES (1)", Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
 		} catch (SQLException e) {
 			System.out.println("insertLobby Error");
+			e.printStackTrace();
 		}
 		return id;
 	}
@@ -506,8 +512,15 @@ public class SqlHelper {
 	 * @param leaderId
 	 * @throws SQLException
 	 */
-	public static void updateLobbyLeader(int lobbyId, int leaderId) throws SQLException{
-		stmt.executeUpdate("UPDATE lobby SET leader_id = "+leaderId+") WHERE lobby_id="+lobbyId);
+	public static void updateLobbyLeader(int lobbyId, int leaderId){
+		String query = String.format("UPDATE lobby SET leader_id = %d WHERE lobby_id = %d",leaderId, lobbyId);
+		try {
+			stmt.executeUpdate(query);
+		} catch (SQLException e) {
+			System.out.println("updateLobbyLeader");
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**

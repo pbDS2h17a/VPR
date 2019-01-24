@@ -427,32 +427,71 @@ public class MatchFX {
 		// Verteilung der Länder auf die Spieler		
 		// Länderarray wird in eine Liste konvertiert
 		Lobby lobby = lobbyFX.getLobby();
-		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
-		Player[] players = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
+		final Player[] playersInLobby;
+		int lobbyId = lobby.getLobbyId();
+		int userCount;
 		
-		int userCount = players.length-1;
+		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
+		
+		// Erstellen der Testspieler
+		Player p1 = new Player("Bob1", lobbyId);
+        Player p2 = new Player("Bob2", lobbyId);
+        Player p3 = new Player("Bob3", lobbyId);
+        Player p4 = new Player("Bob4", lobbyId);
+        Player p5 = new Player("Bob5", lobbyId);
+        Player p6 = new Player("Bob6", lobbyId);
+        
+        p1.setColor("FFD800");
+        p2.setColor("C42B2B");
+        p3.setColor("26BF00");
+        p4.setColor("0066ED");
+        p5.setColor("000000");
+        p6.setColor("EF4CE7");
+        
+        // hinzufügen von Testspielern
+        lobby.addPlayer(p1);
+        lobby.addPlayer(p2);
+        lobby.addPlayer(p3);
+        lobby.addPlayer(p4);
+        lobby.addPlayer(p5);
+        lobby.addPlayer(p6);
+        
+        //lobbyleader setzen
+        lobby.setLobbyLeader(p1.getPlayerId());
+		playersInLobby = lobby.getPlayers();
+		
+		userCount = lobby.getPlayers().length;
+		
+		System.out.println(userCount);
+		
 		Random rand = new Random();
+		
+		for (Player p : playersInLobby) {
+            //System.out.println(p.toString());
+        }
 		
 		for (int i = 0; i < countryArray.length; i++) {	
 			// zufälliges Land aus Liste
+			System.out.println(userCount);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwnerId(players[userCount].getPlayerId());
-			randomCountry.setOwner(players[userCount].getName());
-			randomCountry.setFill(Color.web(players[userCount].getColor()));	
+			randomCountry.setOwnerId(playersInLobby[userCount-1].getPlayerId());
+			randomCountry.setOwner(playersInLobby[userCount-1].getName());
+			randomCountry.setFill(Color.web(playersInLobby[userCount-1].getColor()));
+			// Land aus der Liste entfernen
 			countryList.remove(randomCountry);
 
-			if(userCount == 0) {
-				userCount = players.length-1;
+			if(userCount == 1) {
+				userCount = playersInLobby.length;
 			} else {
 				userCount--;
 			}
 		}
 		
-		gameChangePlayer(players[0].getName(), Color.web(players[0].getColor()));
+		gameChangePlayer(playersInLobby[0].getName(), Color.web(playersInLobby[0].getColor()));
 		
 	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round = new Round(this, players, countryArray);
+	    	round = new Round(this, playersInLobby, countryArray);
 	    });
 	    
 	}
