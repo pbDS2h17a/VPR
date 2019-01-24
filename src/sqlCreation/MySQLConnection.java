@@ -23,7 +23,7 @@ public class MySQLConnection {
 		// um Fehler vorzubeugen
 		SqlQuery.dropTable("card");
 		SqlQuery.dropTable("card_player");
-//		SqlQuery.dropTable("chat");
+		SqlQuery.dropTable("chat");
 		SqlQuery.dropTable("color");
 		SqlQuery.dropTable("continent");
 		SqlQuery.dropTable("country");
@@ -34,6 +34,7 @@ public class MySQLConnection {
 		SqlQuery.dropTable("neighbor");
 		SqlQuery.dropTable("player");
 		SqlQuery.dropTable("player_country");
+		SqlQuery.dropTable("color_player");
 			
 		// Tabllen werden erstellt
 		SqlQuery.createContinent();
@@ -47,6 +48,8 @@ public class MySQLConnection {
 		SqlQuery.createMission();
 		SqlQuery.createMissionPlayer();
 		SqlQuery.createCardsPlayer();
+		SqlQuery.createColorPlayer();
+		SqlQuery.createChat();
 	
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);
@@ -57,7 +60,7 @@ public class MySQLConnection {
 		SqlQuery.fillColor(colorData);
 		
 		// Testdaten einfügen
-		SqlQuery.fillTestData();
+		// SqlQuery.fillTestData(1);
 		
 		// Constraint werden wieder aktiviert
 		SqlQuery.enableForeignKeyConstraints();
