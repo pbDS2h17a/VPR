@@ -23,12 +23,12 @@ public class SqlQuery {
 	
 	public static void fillTestData() {
 		try {
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1)");
-			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser1','127.0.0.1', 1, 1)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser2','127.0.0.1', 1, 2)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser3','127.0.0.1', 1, 3)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser4','127.0.0.1', 1, 4)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser5','127.0.0.1', 1, 5)");
+			stmt.executeUpdate("INSERT INTO player VALUES(NULL,'Testuser6','127.0.0.1', 1, 6)");
 			stmt.executeUpdate("INSERT INTO lobby VALUES(NULL,DEFAULT,NULL,1,1,1)");
 			// playerid, colorid, lobbyid, 
 			stmt.executeUpdate("INSERT INTO color_player VALUES(1,1,1)");
@@ -304,6 +304,7 @@ public class SqlQuery {
 	            " name VARCHAR(255) NOT NULL, " + 
 				" address CHAR(15)," +
 				" lobby_id INT, " +
+				" color_id INT, " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id)," +
 	            " PRIMARY KEY(player_id)" +
 	            ");";
