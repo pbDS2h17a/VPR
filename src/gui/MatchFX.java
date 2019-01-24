@@ -476,6 +476,7 @@ public class MatchFX {
 		gameChangePlayer(playersInLobby[0].getName(), Color.web(playersInLobby[0].getColor()));
 		
 	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	System.out.println("Test");
 	    	round = new Round(this, playersInLobby, countryArray);
 	    });
 	    
