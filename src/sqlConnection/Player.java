@@ -15,7 +15,7 @@ public class Player {
 	private String color;
 	private List<Country> countryList;
 	private int unitsPerRound;
-	private int id;
+	private int playerId;
 	private String adress;
 	private int lobbyId;
 	private int unassignedUnits;
@@ -23,22 +23,22 @@ public class Player {
 	private int card2;
 	private int card3;
 	
-	public Player(int id, String name, String color) {
-		this.id = id; //SqlHelper.getPlayerID(name);
+	public Player(String name, int lobbyId) {
+		// this.playerId = playerId; //SqlHelper.getPlayerID(name);
 		this.name = name;
-		this.color = color;
 		this.countryList = new ArrayList<>();
-
+		this.lobbyId = lobbyId;
 		this.unitsPerRound = 9;
 		this.unassignedUnits = 0;
 		this.card1 = 0;
 		this.card2 = 0;
 		this.card3 = 0;
+		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
 	}
-	
 
-	public Player(int id, String name, String color, List<Country> countryList, int units) {
-		this.id = id;
+	// Konstruktor fürs späteres laden eines Spielstands
+	public Player(int playerId, String name, String color, List<Country> countryList, int units) {
+		this.playerId = playerId;
 		this.name = name;
 		this.color = color;
 		this.countryList = countryList;
@@ -61,7 +61,6 @@ public class Player {
 	{
 		return unitsPerRound;
 	}
-
 
 
 	public void setUnitsPerRound(int unitsPerRound)
@@ -88,12 +87,12 @@ public class Player {
 		this.countryList = countryList;
 	}
 	
-	public int getId() {
-		return id;
+	public int getPlayerId() {
+		return playerId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
 	}
 
 	public String getAdress() {
@@ -116,7 +115,7 @@ public class Player {
 	@Override
 	public String toString() {
 		return "Player [name=" + name + ", color=" + color + ", countryList=" + countryList + ", unitsPerRound="
-				+ unitsPerRound + ", id=" + id + ", adress=" + adress + ", lobbyId=" + lobbyId + ", unassignedUnits="
+				+ unitsPerRound + ", playerId=" + playerId + ", adress=" + adress + ", lobbyId=" + lobbyId + ", unassignedUnits="
 				+ unassignedUnits + ", card1=" + card1 + ", card2=" + card2 + ", card3=" + card3 + "]";
 	}
 

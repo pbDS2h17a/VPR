@@ -1,21 +1,19 @@
 package gui;
 
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Country;
+import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
@@ -52,7 +50,6 @@ public class MatchFX {
 	private LobbyFX lobbyFX;
 	private Country currentCountry = null;
 	private Player[] playerArray;
-	private ArrayList<Country> countryList;
 	private Pane ctn = new Pane();
 	private Pane groupTerritoryInfo = new Pane();
 	private Label territoryInfoLabel = new Label();
@@ -156,12 +153,11 @@ public class MatchFX {
 	    ctn.getChildren().add(groupLands);
 
 	    // Spieler-Name
-    	playerName.getPoints().addAll(new Double[]{
-            0.0, 0.0,
-            380.0, 0.0,
-            380.0, 50.0,
-            340.0, 80.0,
-            0.0, 80.0});
+    	playerName.getPoints().addAll(0.0, 0.0,
+				380.0, 0.0,
+				380.0, 50.0,
+				340.0, 80.0,
+				0.0, 80.0);
     	playerName.setFill(Color.GREY);
     	playerName.setStroke(Color.WHITE);
     	playerName.setStrokeWidth(5);
@@ -173,13 +169,12 @@ public class MatchFX {
     	playerNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 40px;");
     	ctn.getChildren().add(playerNameLabel);
     	
-    	territoryName.getPoints().addAll(new Double[]{
-    		0.0,   0.0,
-    		0.0,   30.0,
-    		30.0,  60.0,
-    		530.0, 60.0,
-    		530.0, 30.0,
-    		500.0, 0.0});
+    	territoryName.getPoints().addAll(0.0, 0.0,
+				0.0, 30.0,
+				30.0, 60.0,
+				530.0, 60.0,
+				530.0, 30.0,
+				500.0, 0.0);
     	territoryName.setFill(Color.GREY);
     	territoryName.setStroke(Color.WHITE);
     	territoryName.setStrokeWidth(5);
@@ -326,14 +321,13 @@ public class MatchFX {
 		battleB_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		battleGroup.getChildren().add(battleB_CountryName);
 		
-		battleArrow.getPoints().addAll(new Double[]{
-				0.0, 0.0,
+		battleArrow.getPoints().addAll(0.0, 0.0,
 				0.0, 30.0,
 				-230.0, 30.0,
 				-230.0, 90.0,
 				0.0, 90.0,
 				0.0, 120.0,
-				70.0, 60.0});
+				70.0, 60.0);
 		battleArrow.setFill(Color.WHITE);
 		battleArrow.relocate(810, 480);
 		battleGroup.getChildren().add(battleArrow);
@@ -414,44 +408,80 @@ public class MatchFX {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void startMatch(LobbyFX lobby) {	
+	private void startMatch(LobbyFX lobbyFX) {	
 		// Verteilung der Länder auf die Spieler		
 		// Länderarray wird in eine Liste konvertiert
-		countryList = new ArrayList<Country>(Arrays.asList(countryArray));
-		lobby.setLobbyId(1);
-		playerArray = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
+		Lobby lobby = lobbyFX.getLobby();
+		final Player[] playersInLobby;
+		int lobbyId = lobby.getLobbyId();
+		int userCount;
 		
-		int userCount = playerArray.length-1;
+		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
+		
+		// Erstellen der Testspieler
+		Player p1 = new Player("Bob1", lobbyId);
+        Player p2 = new Player("Bob2", lobbyId);
+        Player p3 = new Player("Bob3", lobbyId);
+        Player p4 = new Player("Bob4", lobbyId);
+        Player p5 = new Player("Bob5", lobbyId);
+        Player p6 = new Player("Bob6", lobbyId);
+        
+        p1.setColor("FFD800");
+        p2.setColor("C42B2B");
+        p3.setColor("26BF00");
+        p4.setColor("0066ED");
+        p5.setColor("000000");
+        p6.setColor("EF4CE7");
+        
+        // hinzufügen von Testspielern
+        lobby.addPlayer(p1);
+        lobby.addPlayer(p2);
+        lobby.addPlayer(p3);
+        lobby.addPlayer(p4);
+        lobby.addPlayer(p5);
+        lobby.addPlayer(p6);
+        
+        
+        
+        //lobbyleader setzen
+        lobby.setLobbyLeader(p1.getPlayerId());
+		playersInLobby = lobby.getPlayers();
+		
+		for (Player p : playersInLobby) {
+			System.out.println(p.toString());
+		}
+		
+		userCount = lobby.getPlayers().length;
 		Random rand = new Random();
 		
 		for (int i = 0; i < countryArray.length; i++) {	
 			// zufälliges Land aus Liste
+			Player currentPlayer = playersInLobby[userCount-1];
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwnerId(playerArray[userCount].getId());	
-			randomCountry.setOwner(playerArray[userCount].getName());
-			randomCountry.setFill(Color.web(playerArray[userCount].getColor()));	
+			randomCountry.setOwnerId(currentPlayer.getPlayerId());
+			randomCountry.setOwner(currentPlayer.getName());
+			randomCountry.setFill(Color.web(currentPlayer.getColor()));
+			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
+			// Land aus der Liste entfernen
 			countryList.remove(randomCountry);
 
-			if(userCount == 0) {
-				userCount = playerArray.length-1;
+			if(userCount == 1) {
+				userCount = playersInLobby.length;
 			} else {
 				userCount--;
 			}
 		}
+
+		gameChangePlayer(playersInLobby[0].getName(), Color.web(playersInLobby[0].getColor()));
 		
-		gameChangePlayer(playerArray[0].getName(), Color.web(playerArray[0].getColor()));   
-	}
-	
-	public Player[] getPlayerArray() {
-		return playerArray;
+	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	round = new Round(this, playersInLobby, countryArray);
+	    });
+	    
 	}
 	
 	/**
-	 * @param color : Paint
-	 * @param x 	: Double
-	 * @param y 	: Double
-	 * @param s 	: String
 	 * Checks if the input paint color equals the current territoryInfo fill.
 	 * If so: Sets the territoryInfo fill.
 	 * Calls gameChangeCountry and gameChangePlayer.
@@ -496,7 +526,6 @@ public class MatchFX {
 		int[] cArr = country.getNeighborIdArray();
 
 		for (int i = 0; i < cArr.length; i++) {
-
 			countryArray[cArr[i]-1].setStrokeWidth(5);
 			countryArray[cArr[i]-1].setEffect(colorAdjust);
 			country.setStrokeWidth(5);
@@ -668,13 +697,7 @@ public class MatchFX {
 	    playerInfoAuftragGroup.addEventHandler(MouseEvent.MOUSE_EXITED, event ->
 	    	playerInfoAuftragGroup.setLayoutX(-180)
 		);
-	    
-	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round = new Round(this, playerArray, countryArray);
-	    });
-	    
 
-		
 		// Wenn im Kampfbildschirm auf den Bestätige-Button gedrückt wird
 	    battleBtnReady.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	/**

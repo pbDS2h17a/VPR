@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
 /**
  * @author pbs2h17awb
  * Lieﬂt die Daten aus der Stammdaten.csv datei aus und trennt sie an den marktieren Bereichen in
@@ -25,7 +27,7 @@ public class FileReader {
 	static void readFile(String path) throws IOException {
 		//BufferedReader br = new BufferedReader(new FileInputStream(path));
 		BufferedReader br = new BufferedReader(new InputStreamReader(
-			    new FileInputStream(path), "UTF-8"));
+			    new FileInputStream(path), StandardCharsets.UTF_8));
 		try {  
 		    String line;
 		    String currentBlock = "";

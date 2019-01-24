@@ -96,7 +96,7 @@ public class Username extends Application{
         
         //Wenn ok, Eintrag in die Datenbank
         if(isOk || playerNames.isEmpty()){
-        	Player player = new Player(playerNames.size()+1,username,"blau"); 
+        	//Player player = new Player(playerNames.size()+1,username,"blau",1);
         	
         	//SqlQuery.fillPlayer(player); 
         	

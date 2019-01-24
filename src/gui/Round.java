@@ -5,12 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
-import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import sqlConnection.Country;
@@ -38,11 +32,11 @@ public class Round {
 		this.countryArray = countryArray;
 		this.match = match;
 		
-		this.startInitialRound();
+		this.startInitialRound(playerArray);
 	}
 	
-	Player getActivePlayer() {
-		return this.getPlayerArray()[this.activePlayerIndex];
+	public Player getActivePlayer() {
+		return playerArray[activePlayerIndex];
 	}
 	
 	public MatchFX getMatch() {
@@ -62,7 +56,7 @@ public class Round {
 	}
 	
 	public Player[] getPlayerArray() {
-		return playerArray;
+		return this.playerArray;
 	}
 
 	public void setPlayerArray(Player[] playerArray) {
@@ -149,11 +143,16 @@ public class Round {
 		this.battleUnitsB = battleUnitsB;
 	}
 
-	void startInitialRound() {
+	void startInitialRound(Player[] playerArray) {
 			
 		int firstUnits;
-		
-		switch (this.getPlayerArray().length) {
+
+		for (Player p : playerArray) {
+			System.out.println(p.toString());
+		}
+
+
+		switch (playerArray.length) {
 			case 2:
 				firstUnits = 40;
 				break;
@@ -178,7 +177,7 @@ public class Round {
 				firstUnits = 20;
 		}
 		
-		firstUnits = 2;
+		firstUnits = 1;
 		
 		for (int i = 0; i < this.getPlayerArray().length; i++) {
 			this.getPlayerArray()[i].setUnassignedUnits(firstUnits);
@@ -260,7 +259,9 @@ public class Round {
 				// if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
 				
 				if(this.assign && isFinishedAssigning()) {
-					this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getUnitsPerRound());
+					Player activePlayer = getActivePlayer();
+					System.out.println(activePlayer);
+					activePlayer.setUnassignedUnits(activePlayer.getUnassignedUnits() + activePlayer.getUnitsPerRound());
 					this.assign = false;
 					this.add = true;
 					this.setActivePlayerIndex(0);
@@ -282,11 +283,11 @@ public class Round {
 		
 		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
 		this.match.getCountryNameA().setText(this.countryA.getCountryName());
-		this.match.getCountryUnitsA().setText("/ " + String.valueOf(this.countryA.getUnits()));
+		this.match.getCountryUnitsA().setText("/ " + this.countryA.getUnits());
 		
 		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
 		this.match.getCountryNameB().setText(this.countryB.getCountryName());
-		this.match.getCountryUnitsB().setText("/ " + String.valueOf(this.countryB.getUnits()));
+		this.match.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
 		
 		this.match.activateWorldMap(false);
 		this.match.getPhaseBtnGroup().setVisible(false);
@@ -419,12 +420,9 @@ public class Round {
 	}
 		
 	boolean isOwnLand(Country country) {
-		if(this.getActivePlayer().getName().equals(country.getOwner())) {
-			return true;
-		}
-		
-		return false;
-	}
+        return this.getActivePlayer().getName().equals(country.getOwner());
+
+    }
 	
 	void phaseAdd() {
 		this.add = true;

@@ -22,7 +22,6 @@ import sqlConnection.SqlHelper;
  * @author Kevin Daniels
  */
 public class MainApp extends Application {
-
 	// Globale Variablen, die für das Spiel benötigt werden
 	private final int APP_WIDTH = 1600;
 	private final int APP_HEIGHT = 900;
@@ -119,7 +118,6 @@ public class MainApp extends Application {
 	 * Prozedur, die alle EventListener startet die für den 
 	 */
     public void initializeClickEventHandlers(){
-    	
     	// Wennn der Button zum Spiel erstellen gedrückt wird
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
