@@ -5,10 +5,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 /**
- * @author Daniels, Kevin
- * @author pbs2h17ale
+ * Erstellt die gesamte Oberfläche für das Hauptmenü
+ * 
+ * @author Kevin Daniels
  */
-
 public class TitleFX {
 	
 	/**

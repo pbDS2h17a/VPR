@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -51,11 +52,11 @@ public class Round {
 	public void setMatch(MatchFX match) {
 		this.match = match;
 	}
-
+	
 	void setActivePlayerIndex(int i) {
 		this.activePlayerIndex = i;
 	}
-	
+
 	int getActivePlayerIndex() {
 		return this.activePlayerIndex;
 	}
@@ -75,8 +76,47 @@ public class Round {
 	public void setCountryArray(Country[] countryArray) {
 		this.countryArray = countryArray;
 	}
-
 	
+	public boolean isAssign() {
+		return assign;
+	}
+
+	public void setAssign(boolean assign) {
+		this.assign = assign;
+	}
+
+	public boolean isAdd() {
+		return add;
+	}
+
+	public void setAdd(boolean add) {
+		this.add = add;
+	}
+
+	public boolean isFight() {
+		return fight;
+	}
+
+	public void setFight(boolean fight) {
+		this.fight = fight;
+	}
+
+	public boolean isMove() {
+		return move;
+	}
+
+	public void setMove(boolean move) {
+		this.move = move;
+	}
+
+	public int getAdditionalAttacker() {
+		return additionalAttacker;
+	}
+
+	public void setAdditionalAttacker(int additionalAttacker) {
+		this.additionalAttacker = additionalAttacker;
+	}
+
 	public Country getCountryA() {
 		return countryA;
 	}
@@ -138,14 +178,14 @@ public class Round {
 				firstUnits = 20;
 		}
 		
-		firstUnits = 1;
+		firstUnits = 2;
 		
 		for (int i = 0; i < this.getPlayerArray().length; i++) {
 			this.getPlayerArray()[i].setUnassignedUnits(firstUnits);
 		}
 		
 		updatePlayerInterface(this.getActivePlayer());
-		
+
 		for (int i = 0; i < this.getCountryArray().length; i++) {
 			final int COUNT = i;
 
@@ -230,9 +270,7 @@ public class Round {
 				updatePlayerInterface(this.getActivePlayer());
 				this.match.updateTerritoryInfo(this.getCountryArray()[COUNT]);
 		    });
-		}
-		
-
+		}	
 	}
 	
 	public void startFight() {
