@@ -1,23 +1,45 @@
 .chat-controls, .chat, .scroll-window, .chat-history {
-    -fx-background-color: rgba(0,146,69,.25);
+	 -fx-background-color: rgba(48,48,48,.05);/*rgba(0,146,69,.1);*/
+}
+
+.scroll-window {
+	-fx-background: transparent;
 }
 
 .chat-button {
 	-fx-background-color: rgba(0,129,55,.8);
 }
 
-.chat, .chat-button {
+.chat, .chat-controls, .chat-button {
 	-fx-border-color: white;
 	-fx-border-style: solid;
 }
 
 .chat {
-	-fx-border-width: 5px;
+	-fx-border-width: 3px 3px 0 3px;
 }
 
-.chat-button {
-	-fx-border-width: 2px;
+.chat-controls {
+	-fx-border-width: 1px 0 3px 0;
+	-fx-text-weight: bold;
 }
+
+.chat-send-button {
+	-fx-border-width: 2px 3px 0 3px;
+}
+
+.chat-reset-button {
+	-fx-border-width: 2px 0 0 0;
+}
+
+.chat-message, .chat-textfield {
+	-fx-font: 18 "Console";
+	-fx-text-fill: white;
+}
+
+/*.chat-button, .chat-controls, .scroll-window {
+	-fx-border-width: 2px;
+}*/
 
 .chat-textfield {
 	-fx-padding: 5px;
@@ -25,7 +47,7 @@
 }
 
 .scroll-window .scroll-bar:horizontal, .scroll-window .scroll-bar:vertical{
-    -fx-background-color:transparent;
+    -fx-background-color: transparent;
 }
 
 .scroll-window .increment-button, .scroll-window .decrement-button {
