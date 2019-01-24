@@ -3,25 +3,23 @@ package network;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.sun.prism.paint.Color;
-
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import sqlConnection.SqlHelper;
-
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public class ChatInterface{
+	
 	private final static int PANE_WIDTH = 400;
 	private final static int PANE_HEIGHT = 400;
 	private int pid;
@@ -44,21 +42,25 @@ public class ChatInterface{
 		
 		this.bp = new BorderPane();
 		this.tf = new TextField();
-		this.send = new Button("Senden");
-		this.reset = new Button("Reset");
+		this.send = new Button("->");
+		this.reset = new Button("X");
 		this.hb = new HBox();
 		
 		this.hb.getChildren().add(this.tf);
 		this.hb.getChildren().add(this.send);
 		this.hb.getChildren().add(this.reset);
-		HBox.setHgrow(tf, Priority.ALWAYS);
+		
 		this.bp.setBottom(this.hb);
 		this.chatHistory = new VBox();
 		this.scrollWindow = new ScrollPane(this.chatHistory);
 		
+		//Größe und Verhalten der Nodes
+		HBox.setHgrow(tf, Priority.ALWAYS);
 		this.scrollWindow.setPrefSize(PANE_WIDTH,PANE_HEIGHT);
+		this.scrollWindow.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		this.chatHistory.setPrefSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
 		this.bp.setTop(this.scrollWindow);
+		this.send.setMinWidth(80);
 		
 		//CSS-Klassen
 		this.bp.getStyleClass().add("chat");
@@ -66,8 +68,17 @@ public class ChatInterface{
 		this.scrollWindow.getStyleClass().add("scroll-window");
 		this.chatHistory.getStyleClass().add("chat-history");
 		this.send.getStyleClass().add("chat-button");
+		this.send.getStyleClass().add("chat-send-button");
 		this.reset.getStyleClass().add("chat-button");
+		this.reset.getStyleClass().add("chat-reset-button");
 		this.tf.getStyleClass().add("chat-textfield");
+		
+		//Schriftart und -farbe der Button-Texte
+		Font cons20 = Font.font("Console", FontWeight.BOLD, 20);
+		this.send.setFont(cons20);
+		this.send.setTextFill(Color.WHITE);
+		this.reset.setFont(cons20);
+		this.reset.setTextFill(Color.WHITE);
 		
 		// Eventhandler
 		this.send.setOnAction(a -> send(this.tf));
@@ -140,7 +151,6 @@ public class ChatInterface{
 			}
 		};
 		return task;
-				
 	}
 	
 	private void update(List<List<String>> chat) {
@@ -148,7 +158,11 @@ public class ChatInterface{
 		this.chatHistory.getChildren().clear();
 		// Gesamtes Abfrageergebnis in GUI/Console schreiben
 		for (List<String> message : chat) {
-			this.chatHistory.getChildren().add(new Label( this.cm.formatMessage(message)));
+			Text text = new Text(this.cm.formatMessage(message));
+			text.getStyleClass().add("chat-message");
+			text.wrappingWidthProperty().set(bp.getPrefWidth());
+			text.setFill(Color.WHITE);
+			this.chatHistory.getChildren().add(text);
 		}
 	}
 }

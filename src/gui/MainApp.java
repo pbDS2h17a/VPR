@@ -90,6 +90,7 @@ public class MainApp extends Application {
 		// Setzt den Titel für die Anwendung in die Scene und startet sie in der Main
 		stage.setTitle("CONQUER | All risk all fun");
 		stage.setScene(scene);
+		scene.getStylesheets().add("resources/style.css");
 		stage.show();
 	}
 	
@@ -162,7 +163,8 @@ public class MainApp extends Application {
 			
 			// Wird zur Weltkarte gewechselt positioniert sich der Chat um
 			if(lobbyFX.getBtnReady().isActive()) {
-				chatFX.getPane().relocate(1650, 600);
+				chatFX.getPane().relocate(1550, 560);
+				chatFX.getPane().setPrefWidth(300);
 			}
 			
 			/*
