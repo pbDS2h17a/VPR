@@ -51,7 +51,7 @@ public class ChatInterface{
 		this.hb.getChildren().add(this.tf);
 		this.hb.getChildren().add(this.send);
 		this.hb.getChildren().add(this.reset);
-		hb.setHgrow(tf, Priority.ALWAYS);
+		HBox.setHgrow(tf, Priority.ALWAYS);
 		this.bp.setBottom(this.hb);
 		this.chatHistory = new VBox();
 		this.scrollWindow = new ScrollPane(this.chatHistory);

@@ -18,15 +18,9 @@ public class Continent {
 	}
 	
 	private void initalizeContinent() {
-		try {
-			this.name = SqlHelper.getContintentName(continentId);
-			this.countryIdArray = SqlHelper.ContinentCountries(continentId) ;
-			this.additionalUnits = SqlHelper.Bonus(continentId);
-		} catch (SQLException e) {
-			System.out.println("initalizeContinent");
-			e.printStackTrace();
-		}
-		
+		this.name = SqlHelper.getContintentName(continentId);
+		this.countryIdArray = SqlHelper.getContinentCountries(continentId) ;
+		this.additionalUnits = SqlHelper.getBonus(continentId);
 	}
 	//Getters/Setters
 	public int getId()
@@ -88,7 +82,7 @@ public class Continent {
 			sb.append(",");
 		}
 		sb.append("\n");
-		sb.append("Bonus: ");
+		sb.append("getBonus: ");
 		sb.append(additionalUnits);
 		return sb.toString();
 	}

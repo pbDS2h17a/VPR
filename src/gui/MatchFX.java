@@ -1,21 +1,19 @@
 package gui;
 
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Country;
+import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
@@ -157,12 +155,11 @@ public class MatchFX {
 	    ctn.getChildren().add(groupLands);
 
 	    // Spieler-Name
-    	playerName.getPoints().addAll(new Double[]{
-            0.0, 0.0,
-            380.0, 0.0,
-            380.0, 50.0,
-            340.0, 80.0,
-            0.0, 80.0});
+    	playerName.getPoints().addAll(0.0, 0.0,
+				380.0, 0.0,
+				380.0, 50.0,
+				340.0, 80.0,
+				0.0, 80.0);
     	playerName.setFill(Color.GREY);
     	playerName.setStroke(Color.WHITE);
     	playerName.setStrokeWidth(5);
@@ -174,13 +171,12 @@ public class MatchFX {
     	playerNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 40px;");
     	ctn.getChildren().add(playerNameLabel);
     	
-    	territoryName.getPoints().addAll(new Double[]{
-    		0.0,   0.0,
-    		0.0,   30.0,
-    		30.0,  60.0,
-    		530.0, 60.0,
-    		530.0, 30.0,
-    		500.0, 0.0});
+    	territoryName.getPoints().addAll(0.0, 0.0,
+				0.0, 30.0,
+				30.0, 60.0,
+				530.0, 60.0,
+				530.0, 30.0,
+				500.0, 0.0);
     	territoryName.setFill(Color.GREY);
     	territoryName.setStroke(Color.WHITE);
     	territoryName.setStrokeWidth(5);
@@ -343,14 +339,13 @@ public class MatchFX {
 		battleB_CountryName.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		battleGroup.getChildren().add(battleB_CountryName);
 		
-		battleArrow.getPoints().addAll(new Double[]{
-				0.0, 0.0,
+		battleArrow.getPoints().addAll(0.0, 0.0,
 				0.0, 30.0,
 				-230.0, 30.0,
 				-230.0, 90.0,
 				0.0, 90.0,
 				0.0, 120.0,
-				70.0, 60.0});
+				70.0, 60.0);
 		battleArrow.setFill(Color.WHITE);
 		battleArrow.relocate(810, 480);
 		battleGroup.getChildren().add(battleArrow);
@@ -428,11 +423,11 @@ public class MatchFX {
 	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 	
-	private void startMatch(LobbyFX lobby) {	
+	private void startMatch(LobbyFX lobbyFX) {	
 		// Verteilung der Länder auf die Spieler		
 		// Länderarray wird in eine Liste konvertiert
+		Lobby lobby = lobbyFX.getLobby();
 		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
-		lobby.setLobbyId(1);
 		Player[] players = SqlHelper.getAllPlayersForLobby(lobby.getLobbyId()); 
 		
 		int userCount = players.length-1;
@@ -442,7 +437,7 @@ public class MatchFX {
 			// zufälliges Land aus Liste
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwnerId(players[userCount].getId());	
+			randomCountry.setOwnerId(players[userCount].getPlayerId());
 			randomCountry.setOwner(players[userCount].getName());
 			randomCountry.setFill(Color.web(players[userCount].getColor()));	
 			countryList.remove(randomCountry);
@@ -456,17 +451,13 @@ public class MatchFX {
 		
 		gameChangePlayer(players[0].getName(), Color.web(players[0].getColor()));
 		
-	    lobby.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	round = new Round(this, players, countryArray);
 	    });
 	    
 	}
 	
 	/**
-	 * @param color : Paint
-	 * @param x 	: Double
-	 * @param y 	: Double
-	 * @param s 	: String
 	 * Checks if the input paint color equals the current territoryInfo fill.
 	 * If so: Sets the territoryInfo fill.
 	 * Calls gameChangeCountry and gameChangePlayer.
