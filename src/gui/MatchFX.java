@@ -441,7 +441,7 @@ public class MatchFX {
 			randomCountry.setOwner(players[userCount].getName());
 			randomCountry.setFill(Color.web(players[userCount].getColor()));	
 			countryList.remove(randomCountry);
-
+			SqlHelper.insertCountryOwner(lobby.getLobbyId(), players[userCount].getPlayerId(), randomCountry.getCountryId());
 			if(userCount == 0) {
 				userCount = players.length-1;
 			} else {

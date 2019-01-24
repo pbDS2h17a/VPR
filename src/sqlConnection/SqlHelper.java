@@ -46,7 +46,7 @@ public class SqlHelper {
 	
 	public static void closeStatement() {
 		try {
-			stmt.close();
+			getStatement().close();
 		} catch (SQLException e) {
 			System.out.println("closeStatement");
 			e.printStackTrace();
@@ -79,7 +79,7 @@ public class SqlHelper {
 		// 
 		try {
 			// Alle Spieler einer Lobby auswählen
-			ResultSet rs = stmt.executeQuery("SELECT player_id, name FROM player WHERE lobby_id="+lobbyId+";");
+			ResultSet rs = getStatement().executeQuery("SELECT player_id, name FROM player WHERE lobby_id="+lobbyId+";");
 			
 			// Werte in Array speichern
 			while(rs.next()) {
@@ -97,7 +97,7 @@ public class SqlHelper {
 		for (int i = 0; i < 6; i++) {
 			ResultSet rs2;
 			try {
-				rs2 = stmt.executeQuery("SELECT c.value FROM color c, color_player cp "
+				rs2 = getStatement().executeQuery("SELECT c.value FROM color c, color_player cp "
 						+ "WHERE cp.player_id = "+playerIdArray[i]+" "
 						+ "AND cp.color_id = c.color_id;");
 				rs2.next();
@@ -159,7 +159,7 @@ public class SqlHelper {
 	public static void clearTable(String tableName) {
 		String query = String.format("TRUNCATE TABLE %s;",tableName);
 		try { 
-			stmt.executeUpdate(query);
+			getStatement().executeUpdate(query);
 		} catch(SQLException s) {
 			System.out.println("clearTable");
 			s.printStackTrace();
@@ -200,18 +200,29 @@ public class SqlHelper {
 		return null;
 	}
 	
-	public static String getCountryName (int countryId) throws SQLException {
-		ResultSet rs = getStatement().executeQuery("SELECT name FROM country WHERE country_id ="+countryId);
-	
-		 rs.next(); 
-			 return rs.getString(1);	
+	public static String getCountryName (int countryId) {
+		try{
+			ResultSet rs = getStatement().executeQuery("SELECT name FROM country WHERE country_id ="+countryId);
+			rs.next(); 
+			return rs.getString(1);	
+		}catch(Exception e){
+			System.out.println("Fehler beim holen des L�ndernamens");
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public static int getCountryContinentId(int countryId) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("SELECT continent_id FROM country WHERE country_id ="+countryId);
-		
-		rs.next();
-		return rs.getInt(1);
+	public static int getCountryContinentId(int countryId){
+		try {
+			ResultSet rs;
+			rs = getStatement().executeQuery("SELECT continent_id FROM country WHERE country_id ="+countryId);
+			rs.next();
+			return rs.getInt(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	public static int[] getCountryNeighbor(int countryId) {
@@ -241,10 +252,17 @@ public class SqlHelper {
 		return neighborIdArray;	 	
 	}
 
-	public static String getCountrySVG(int countryId) throws SQLException {
-		ResultSet rs = getStatement().executeQuery("SELECT svg FROM country WHERE country_id = "+countryId);
-		rs.next();
+	public static String getCountrySVG(int countryId) {
+		ResultSet rs;
+		try {
+			rs = getStatement().executeQuery("SELECT svg FROM country WHERE country_id = "+countryId);
+			rs.next();
 			return  rs.getString(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static String[] getAllCountrySVG() {
@@ -274,21 +292,26 @@ public class SqlHelper {
 	 * @author Jona Petrikowski
 	 * @author Jï¿½rg Rï¿½mmich
 	 */
-	public static void createLobby (Player player) throws SQLException {
-		stmt = getStatement();
-		String queryCreateLobbyEntry = String.format("INSERT INTO lobby (leader_id) VALUES (%d);", player.getPlayerId());
-		stmt.executeUpdate(queryCreateLobbyEntry);
-		// zweites Resultset fï¿½r die autoincremente LobbyId, um diese beim Leader einzutragen
-		String queryGetLobbyId = String.format("SELECT lobby_id FROM lobby WHERE leader_id = %d;", player.getPlayerId());
-		List<List<String>> listWithLobbyId = ResultSetManager.toList(stmt.executeQuery(queryGetLobbyId));
-		if (listWithLobbyId.get(0).size() == 1) {
-			int lobbyId = Integer.parseInt(listWithLobbyId.get(0).get(0));
-			// ein createLobby() ist fï¿½r den Leader ein joinLobby()
-			joinLobby(player, lobbyId);
-			System.out.println("createLobby() successfull.");
-		}
-		else {
-			System.out.println("createLobby(). Problem with getting lobby_id from returned ResultSet.");
+	public static void createLobby (Player player) {
+		try{
+			Statement stmt = getStatement();
+			String queryCreateLobbyEntry = String.format("INSERT INTO lobby (leader_id) VALUES (%d);", player.getPlayerId());
+			stmt.executeUpdate(queryCreateLobbyEntry);
+			// zweites Resultset fï¿½r die autoincremente LobbyId, um diese beim Leader einzutragen
+			String queryGetLobbyId = String.format("SELECT lobby_id FROM lobby WHERE leader_id = %d;", player.getPlayerId());
+			List<List<String>> listWithLobbyId = ResultSetManager.toList(getStatement().executeQuery(queryGetLobbyId));
+			if (listWithLobbyId.get(0).size() == 1) {
+				int lobbyId = Integer.parseInt(listWithLobbyId.get(0).get(0));
+				// ein createLobby() ist fï¿½r den Leader ein joinLobby()
+				joinLobby(player, lobbyId);
+				System.out.println("createLobby() successfull.");
+			}
+			else {
+				System.out.println("createLobby(). Problem with getting lobby_id from returned ResultSet.");
+			}
+		}catch(Exception e){
+			System.out.println("fehler beim erstellen der Lobby");
+			e.printStackTrace();
 		}
 	}
 			
@@ -312,9 +335,9 @@ public class SqlHelper {
 	}
 	
 	public static String getContintentName(int continentId) {
-		String qeury = String.format("SELECT name FROM continent where continent_id = %s",continentId);
+		String query = String.format("SELECT name FROM continent where continent_id = %s",continentId);
 		try {
-			ResultSet rs = getStatement().executeQuery(qeury);
+			ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
 			return rs.getString("name");
 		} catch (SQLException e) {
@@ -327,9 +350,9 @@ public class SqlHelper {
 	}
 	
 	public static int getBonus(int continentId) {
-		String qeury = String.format("SELECT bonus FROM continent where continent_id = %d",continentId);
+		String query = String.format("SELECT bonus FROM continent where continent_id = %d",continentId);
 		try {
-			ResultSet rs = getStatement().executeQuery(qeury);
+			ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
 			return rs.getInt("bonus");
 		} catch (SQLException e) {
@@ -341,11 +364,11 @@ public class SqlHelper {
 	}
 	
 	public static int[] getContinentCountries(int continentId) {
-		String qeury = String.format("SELECT country_id FROM country where continent_id = %d",continentId);
+		String query = String.format("SELECT country_id FROM country where continent_id = %d",continentId);
 		List <Integer> countryIdList = new ArrayList<>();
 
 		try {
-			ResultSet rs = getStatement().executeQuery(qeury);
+			ResultSet rs = getStatement().executeQuery(query);
 			while(rs.next()){
 				countryIdList.add(rs.getInt("country_id"));
 			}
@@ -386,36 +409,67 @@ public class SqlHelper {
 		return -1;
   	}
   
-	public static int getCardCountryId(int cardId) throws SQLException{
-		ResultSet rs = getStatement().executeQuery("SELECT country_id FROM card WHERE card_id = "+cardId+";");
-		
-		rs.next();
-		return rs.getInt("country_id");
+	public static int getCardCountryId(int cardId){
+		ResultSet rs;
+		try {
+			rs = getStatement().executeQuery("SELECT country_id FROM card WHERE card_id = "+cardId+";");
+			rs.next();
+			return rs.getInt("country_id");
+		} catch (SQLException e) {
+			System.out.println("Fehler in getCardCountryId");
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
-	public static String getMissionDescription(int missionID) throws SQLException {
-		ResultSet rs = getStatement().executeQuery("SELECT description FROM mission WHERE mission_id = "+missionID+";");
-		rs.next();
-		return rs.getString("description");
+	public static String getMissionDescription(int missionID){
+		try {
+			ResultSet rs = getStatement().executeQuery("SELECT description FROM mission WHERE mission_id = "+missionID+";");
+			rs.next();
+			return rs.getString("description");
+		} catch (SQLException e) {
+			System.out.println("Fehler beim getMissionDescription");
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public static List<List<String>> getChatHistory(long timestamp, int lid) throws SQLException {
-		ResultSet r = stmt.executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
-		// System.out.println("Call lÃ¤uft");
-		return ResultSetManager.toList(r);
+	public static List<List<String>> getChatHistory(long timestamp, int lid){
+		try {
+			ResultSet r = getStatement().executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
+			// System.out.println("Call lÃ¤uft");
+			return ResultSetManager.toList(r);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Fehler in der Chat History");
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public static void sendMessage(String message, int pid, int lid) throws SQLException
+	public static void sendMessage(String message, int pid, int lid)
 	{
 		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
-		stmt.executeUpdate(sql);
+		try {
+			getStatement().executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim senden einer NAchricht");
+			e.printStackTrace();
+		}
 	}
 	
-	public static List<List<String>> getLobbies() throws SQLException
+	public static List<List<String>> getLobbies()
 	{
 		//TODO: WHERE player_6 IS NULL
-		ResultSet r = stmt.executeQuery("SELECT * FROM lobby;");
-		return ResultSetManager.toList(r);
+		ResultSet r;
+		try {
+			r = getStatement().executeQuery("SELECT * FROM lobby;");
+			return ResultSetManager.toList(r);
+		} catch (SQLException e) {
+			System.out.println("getLobbies Error");
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	
@@ -427,8 +481,13 @@ public class SqlHelper {
 	 * @throws SQLException
 	 * @author pbs2h17ath
 	 */
-	public static void insertCountryOwner(int lobbyId, int playerId, int countryId) throws SQLException{
-		stmt.executeUpdate("INSERT INTO country_player VALUES("+playerId+","+countryId+","+lobbyId+", 1)");
+	public static void insertCountryOwner(int lobbyId, int playerId, int countryId){
+		try {
+			getStatement().executeUpdate("INSERT INTO country_player VALUES("+playerId+","+countryId+","+lobbyId+", 1)");
+		} catch (SQLException e) {
+			System.out.println("Es ist ein Fehler beim einf�gen in country_player aufgetreten");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -439,8 +498,13 @@ public class SqlHelper {
 	 * @throws SQLException
 	 * @author pbs2h17ath
 	 */
-	public static void updateCountryOwner(int lobbyId, int playerId, int countryId)throws SQLException{
-		stmt.executeUpdate("UPDATE country_player SET player_id = "+playerId+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+	public static void updateCountryOwner(int lobbyId, int playerId, int countryId){
+		try {
+			getStatement().executeUpdate("UPDATE country_player SET player_id = "+playerId+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim updaten vom country owner");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -452,8 +516,13 @@ public class SqlHelper {
 	 * @throws SQLException
 	 * @author pbs2h17ath
 	 */
-	public static void updateUnits(int lobbyId, int playerId, int countryId, int amountUnits) throws SQLException{
-		stmt.executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+	public static void updateUnits(int lobbyId, int playerId, int countryId, int amountUnits){
+		try {
+			getStatement().executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim aktuallisieren der Units");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -491,8 +560,8 @@ public class SqlHelper {
 		int id = -1;
 		ResultSet rs = null;
 		try {
-			stmt.executeUpdate("INSERT INTO lobby (last_change) VALUES (1)", Statement.RETURN_GENERATED_KEYS);
-			rs = stmt.getGeneratedKeys();
+			getStatement().executeUpdate("INSERT INTO lobby (last_change) VALUES (1)", Statement.RETURN_GENERATED_KEYS);
+			rs = getStatement().getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
 		} catch (SQLException e) {
@@ -506,8 +575,13 @@ public class SqlHelper {
 	 * @param leaderId
 	 * @throws SQLException
 	 */
-	public static void updateLobbyLeader(int lobbyId, int leaderId) throws SQLException{
-		stmt.executeUpdate("UPDATE lobby SET leader_id = "+leaderId+") WHERE lobby_id="+lobbyId);
+	public static void updateLobbyLeader(int lobbyId, int leaderId){
+		try {
+			getStatement().executeUpdate("UPDATE lobby SET leader_id = "+leaderId+") WHERE lobby_id="+lobbyId);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim �ndern des Lobby Leaders");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -516,8 +590,13 @@ public class SqlHelper {
 	 * @param playerTurnId
 	 * @throws SQLException
 	 */
-	public static void updatePlayerTurn(int lobbyId, int playerTurnId) throws SQLException{
-		stmt.executeUpdate("UPDATE lobby SET leader_id = "+playerTurnId+") WHERE lobby_id="+lobbyId);
+	public static void updatePlayerTurn(int lobbyId, int playerTurnId){
+		try {
+			getStatement().executeUpdate("UPDATE lobby SET leader_id = "+playerTurnId+") WHERE lobby_id="+lobbyId);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim �ndern des Spielers, der 'dran' ist");
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -526,8 +605,13 @@ public class SqlHelper {
 	 * @param PlayerOrder
 	 * @throws SQLException
 	 */
-	public static void updatePlayerOrder(int lobbyId, String PlayerOrder) throws SQLException{
-		stmt.executeUpdate("UPDATE lobby SET leader_id = "+PlayerOrder+") WHERE lobby_id="+lobbyId);
+	public static void updatePlayerOrder(int lobbyId, String PlayerOrder){
+		try {
+			getStatement().executeUpdate("UPDATE lobby SET leader_id = "+PlayerOrder+") WHERE lobby_id="+lobbyId);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim �ndern der Spieler Reihenfolge");
+			e.printStackTrace();
+		}
 	}
 
 
