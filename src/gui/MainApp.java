@@ -23,7 +23,6 @@ import sqlConnection.SqlHelper;
  */
 
 public class MainApp extends Application {
-	
 	/**
 	 * @param APP_WIDTH	 : Integer
 	 * @param APP_HEIGHT : Integer
