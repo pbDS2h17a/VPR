@@ -23,7 +23,7 @@ public class MySQLConnection {
 		// um Fehler vorzubeugen
 		SqlQuery.dropTable("card");
 		SqlQuery.dropTable("card_player");
-//		SqlQuery.dropTable("chat");
+		SqlQuery.dropTable("chat");
 		SqlQuery.dropTable("color");
 		SqlQuery.dropTable("continent");
 		SqlQuery.dropTable("country");
@@ -49,6 +49,7 @@ public class MySQLConnection {
 		SqlQuery.createMissionPlayer();
 		SqlQuery.createCardsPlayer();
 		SqlQuery.createColorPlayer();
+		SqlQuery.createChat();
 	
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);

@@ -456,8 +456,8 @@ public class SqlQuery {
 	static void createChat() {
 		String sqlChat = "CREATE TABLE IF NOT EXISTS chat (" +
 				" message_id INT PRIMARY KEY AUTO_INCREMENT, " +
-				" pid INT REFERENCES player(player_id), " +
-				" lid INT REFERENCES lobby(lobby_id), " +
+				" player_id INT REFERENCES player(player_id), " +
+				" lobby_id INT REFERENCES lobby(lobby_id), " +
 				" timestamp LONG NOT NULL, " +
 				" message VARCHAR(255)"
 				+");";

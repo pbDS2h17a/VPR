@@ -438,9 +438,11 @@ public class SqlHelper {
 		return null;
 	}
 	
-	public static List<List<String>> getChatHistory(long timestamp, int lid){
+	public static List<List<String>> getChatHistory(long timestamp, int lobbyId){
+		String query = String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c "
+				+ "WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lobbyId, timestamp);
 		try {
-			ResultSet r = getStatement().executeQuery(String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lid, timestamp));
+			ResultSet r = getStatement().executeQuery(query);
 			// System.out.println("Call lÃ¤uft");
 			return ResultSetManager.toList(r);
 		} catch (SQLException e) {

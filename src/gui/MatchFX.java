@@ -456,28 +456,25 @@ public class MatchFX {
         lobby.addPlayer(p5);
         lobby.addPlayer(p6);
         
+        
+        
         //lobbyleader setzen
         lobby.setLobbyLeader(p1.getPlayerId());
 		playersInLobby = lobby.getPlayers();
 		
 		userCount = lobby.getPlayers().length;
 		
-		System.out.println(userCount);
-		
 		Random rand = new Random();
-		
-		for (Player p : playersInLobby) {
-            //System.out.println(p.toString());
-        }
 		
 		for (int i = 0; i < countryArray.length; i++) {	
 			// zufälliges Land aus Liste
-			System.out.println(userCount);
+			Player currentPlayer = playersInLobby[userCount-1];
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwnerId(playersInLobby[userCount-1].getPlayerId());
-			randomCountry.setOwner(playersInLobby[userCount-1].getName());
-			randomCountry.setFill(Color.web(playersInLobby[userCount-1].getColor()));
+			randomCountry.setOwnerId(currentPlayer.getPlayerId());
+			randomCountry.setOwner(currentPlayer.getName());
+			randomCountry.setFill(Color.web(currentPlayer.getColor()));
+			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			// Land aus der Liste entfernen
 			countryList.remove(randomCountry);
 
