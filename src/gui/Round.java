@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -59,17 +60,6 @@ public class Round {
 		return this.playerArray;
 	}
 
-	public void setPlayerArray(Player[] playerArray) {
-		this.playerArray = playerArray;
-	}
-
-	public Country[] getCountryArray() {
-		return countryArray;
-	}
-
-	public void setCountryArray(Country[] countryArray) {
-		this.countryArray = countryArray;
-	}
 	
 	public boolean isAssign() {
 		return assign;
@@ -260,7 +250,6 @@ public class Round {
 			countryDefense.setUnits(fightA[0] - fightA[1] + this.additionalAttacker);
 			countryDefense.setOwner(countryAttack.getOwner());
 			countryDefense.setFill(countryAttack.getFill());
-			
 			countryAttack.setUnits(countryAttack.getUnits() - fightA[0] - this.additionalAttacker);
 		}
 		
@@ -323,17 +312,11 @@ public class Round {
 	}
 
 	boolean isNeighbour(Country a, Country b) {
-		for (int i = 0; i < a.getNeighborIdArray().length; i++) {
-			if(a.getNeighborIdArray()[i] == b.getCountryId()) {
-				return true;
-			}
-		}
-		
-		return false;
+		return IntStream.of(a.getNeighborIdArray()).anyMatch(x -> x == b.getCountryId());
 	}
 		
 	boolean isOwnLand(Country country) {
-        return this.getActivePlayer().getName().equals(country.getOwner());
+        return this.getActivePlayer().equals(country.getOwner());
 
     }
 	

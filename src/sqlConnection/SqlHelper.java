@@ -20,11 +20,11 @@ public class SqlHelper {
 	 * Erstellt ein Statement mit den Werten
 	 */
 	
-	// Private TestDb fÃ¼r home server
+	// Private TestDb f�r home server
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
-			 "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	};
 
 	/**
@@ -55,7 +55,7 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Gibt ein Statement zurÃ¼ck
+	 * Gibt ein Statement zur�ck
 	 * Checkt ob das Statement vorhande ist (nicht NULL)
 	 * Sonst erstellt es ein neues Statement
 	 * @return aktuelles Statement der Verbindung
@@ -68,7 +68,10 @@ public class SqlHelper {
 		return stmt;
 	}
 
-	
+	/**
+	 * Lie�t die werte (Hex String) aller Farben aus der Datenbank aus
+	 * @return StringArray mit Hexwerten
+	 */
 	public static String[] getAllColors() {
 		String[] colorArray;
 		String query = "SELECT value FROM color;";
@@ -89,7 +92,10 @@ public class SqlHelper {
 
 		return colorArray;
 	}
-	
+	/**
+	 * Lie�t die Lobby IDs aller Lobbies die zurzeit in der Datenbank sind
+	 * @return
+	 */
 	public static int[] getAllLobbyId() {
 		ArrayList<Integer> lobbyIdList = new ArrayList<Integer>();
 		String query = "SELECT lobby_id FROM lobby;";
@@ -102,6 +108,14 @@ public class SqlHelper {
 		} catch (SQLException e) {
 			System.out.println("getAllLobbyId");
 			e.printStackTrace();
+		}
+		
+		while(lobbyIdList.size() > 9) {
+			lobbyIdList.remove(0);
+		}
+		
+		for (int id : lobbyIdList) {
+			System.out.println(id);
 		}
 		
 		// Konvertiere Integer Liste in Integer Array
@@ -184,7 +198,7 @@ public class SqlHelper {
 	/**
 	 * Mathode zum Auslesen des Besatzers eines Landes
 	 * @param countryId
-	 * @param lobbyId
+	 * @param lobby
 	 * @return
 	 */
 	public static Player getCountyOwner (int countryId, Lobby lobby) {
@@ -274,15 +288,13 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Diese Methode, welche ein Player-Objekt benï¿½tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
+	 * Diese Methode, welche ein Player-Objekt ben�tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
 	 * erstellt einen Lobby-Datensatz, an dessen LeaderId-Spalte die Id des Spielers a.k.a. Host eingetragen wird. 
 	 * Des Weiteren wird die Methode joinLobby() mit demselben Player-Objekt aufgerufen.
 	 * @param player = Der Spieler als Objekt Player.
-	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
-	 * @throws ClassNotFoundException = Falls eine benï¿½tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
 	 * @see SqlHelper#joinLobby (Player player, int lobbyId)
 	 * @author Jona Petrikowski
-	 * @author Jï¿½rg Rï¿½mmich
+	 * @author J�rg R�mmich
 	 */
 	public static void createLobby (Player player) {
 		try{
@@ -372,22 +384,6 @@ public class SqlHelper {
 		return countryIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
   	
-   	// TODO Rework
-	// Spielername muss nicht unebdingt Unique sein!
-	public static int getPlayerId(String name) {
-		String query = String.format("SELECT player_id FROM player WHERE name = %s",name);
-		try {
-			ResultSet rs = getStatement().executeQuery(query);
-			rs.next();
-			return rs.getInt(1);
-		} catch (SQLException e) {
-			System.out.println("getPlayerId");
-			e.printStackTrace();
-		}
-
-		return -1;
-	}
-	
 	public static int getCardValue(int cardId) {
 		String query = String.format("SELECT value FROM card WHERE card_id = %d",cardId);
 		try {
@@ -516,7 +512,7 @@ public class SqlHelper {
 	 */
 	public static void updateUnits(int lobbyId, int playerId, int countryId, int amountUnits){
 		try {
-			getStatement().executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+			getStatement().executeUpdate("UPDATE country_player SET unit_count = "+amountUnits+" WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim aktuallisieren der Units");
 			e.printStackTrace();

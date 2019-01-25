@@ -23,9 +23,8 @@ public class Player {
 	private int card2;
 	private int card3;
 	private Lobby lobby;
-	
+
 	public Player(String name, Lobby lobby) {
-		// this.playerId = playerId; //SqlHelper.getPlayerID(name);
 		this.name = name;
 		this.countryList = new ArrayList<>();
 		this.lobby = lobby;

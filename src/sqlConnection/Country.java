@@ -99,7 +99,7 @@ public class Country extends SVGPath {
 	 * @return Menge Einheiten als Integer
 	 */
 	public int getUnits() {
-		units= SqlHelper.getCountryUnits(this.countryId, this.owner.getLobbyId());
+		units = SqlHelper.getCountryUnits(this.countryId, this.owner.getLobbyId());
 		return units;
 	}
 
@@ -136,7 +136,7 @@ public class Country extends SVGPath {
 	 */
 	public void setOwner(Player newOwner) {
 		this.owner = newOwner;
-		SqlHelper.updateCountryOwner( owner.getLobbyId(), owner.getPlayerId(),  this.countryId);
+		SqlHelper.updateCountryOwner(newOwner.getLobbyId(), newOwner.getPlayerId(),  this.countryId);
 	}
 	
 	/**
