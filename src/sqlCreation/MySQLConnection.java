@@ -37,19 +37,19 @@ public class MySQLConnection {
 		SqlQuery.dropTable("color_player");
 			
 		// Tabllen werden erstellt
-		SqlQuery.createContinent();
-		SqlQuery.createCountry();
-		SqlQuery.createNeighbor();
-		SqlQuery.createColor();
-		SqlQuery.createPlayer();
-		SqlQuery.createLobby();
-		SqlQuery.createCountryPlayer();
-		SqlQuery.createCard();
-		SqlQuery.createMission();
-		SqlQuery.createMissionPlayer();
-		SqlQuery.createCardsPlayer();
-		SqlQuery.createColorPlayer();
-		SqlQuery.createChat();
+		SqlQuery.createTableContinent();
+		SqlQuery.createTableCountry();
+		SqlQuery.createTableNeighbor();
+		SqlQuery.createTableColor();
+		SqlQuery.createTablePlayer();
+		SqlQuery.createTableLobby();
+		SqlQuery.createTableCountryPlayer();
+		SqlQuery.createTableCard();
+		SqlQuery.createTableMission();
+		SqlQuery.createTableMissionPlayer();
+		SqlQuery.createTableCardsPlayer();
+		SqlQuery.createTableColorPlayer();
+		SqlQuery.createTableChat();
 	
 		// Tabellen werden gefüllt
 		SqlQuery.fillContinent(continentData);

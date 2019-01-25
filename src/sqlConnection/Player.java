@@ -24,7 +24,6 @@ public class Player {
 	private int card3;
 	
 	public Player(String name, int lobbyId) {
-		// this.playerId = playerId; //SqlHelper.getPlayerID(name);
 		this.name = name;
 		this.countryList = new ArrayList<>();
 		this.lobbyId = lobbyId;

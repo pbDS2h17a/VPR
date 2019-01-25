@@ -247,15 +247,13 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Diese Methode, welche ein Player-Objekt benï¿½tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
+	 * Diese Methode, welche ein Player-Objekt ben�tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
 	 * erstellt einen Lobby-Datensatz, an dessen LeaderId-Spalte die Id des Spielers a.k.a. Host eingetragen wird. 
 	 * Des Weiteren wird die Methode joinLobby() mit demselben Player-Objekt aufgerufen.
 	 * @param player = Der Spieler als Objekt Player.
-	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
-	 * @throws ClassNotFoundException = Falls eine benï¿½tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
 	 * @see SqlHelper#joinLobby (Player player, int lobbyId)
 	 * @author Jona Petrikowski
-	 * @author Jï¿½rg Rï¿½mmich
+	 * @author J�rg R�mmich
 	 */
 	public static void createLobby (Player player) {
 		try{
