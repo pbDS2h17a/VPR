@@ -597,7 +597,6 @@ public class SqlHelper {
 	 * Methode zum setzen des Spielers, der aktuell dran ist
 	 * @param lobbyId
 	 * @param playerTurnId
-	 * @throws SQLException
 	 */
 	public static void updatePlayerTurn(int lobbyId, int playerTurnId){
 		String query = String.format("UPDATE lobby SET leader_id = %d WHERE lobby_id=%d",playerTurnId, lobbyId);
@@ -613,7 +612,6 @@ public class SqlHelper {
 	 * Methode zum setzen der reihenfolge der Spieler
 	 * @param lobbyId
 	 * @param PlayerOrder
-	 * @throws SQLException
 	 */
 	public static void updatePlayerOrder(int lobbyId, String PlayerOrder){
 		String query = String.format("UPDATE lobby SET player_order = %s WHERE lobby_id=%d",PlayerOrder, lobbyId);
@@ -624,6 +622,47 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 	}
+
+
+	public int[] getPlayerIdsInLobby(int lobbyId) {
+        String query = String.format("SELECT player_id FROM lobby WHERE lobby_id = %d", lobbyId);
+        int[] playerIdArray = new int[6];
+        int i = 0;
+
+        try {
+            ResultSet rs = getStatement().executeQuery(query);
+            while(rs.next()) {
+               playerIdArray[i] = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Fehler beim lesen der SpielerIDs in einer Lobby");
+            e.printStackTrace();
+        }
+
+        return playerIdArray;
+    }
+
+    /**
+     * Methode zum auslesen der lastChange in Lobby
+     * @param lobbyId
+     * @return
+     */
+    public static long getLastChange(int lobbyId){
+        String query = String.format("SELECT last_change FROM lobby WHERE lobby_id = %d", lobbyId);
+        long lastChange = -1;
+
+        try {
+            ResultSet rs = getStatement().executeQuery(query);
+            rs.next();
+            lastChange = rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Fehler beim lesen des LastChange");
+            e.printStackTrace();
+        }
+
+        return lastChange;
+    }
 
 
 }
