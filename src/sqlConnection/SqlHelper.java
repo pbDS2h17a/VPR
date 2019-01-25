@@ -10,9 +10,8 @@ import java.util.List;
 public class SqlHelper {
 	
 	private static Statement stmt = null;
-	private static Connection con;
-	
-	/*
+
+    /*
 	 * String Array der Logindaten der Datenbank
 	 * 0=Addresse
 	 * 1=Datenbankname
@@ -33,7 +32,7 @@ public class SqlHelper {
 	private static void createStatement() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection(loginStringArray[0],loginStringArray[1],loginStringArray[2]);
+            Connection con = DriverManager.getConnection(loginStringArray[0], loginStringArray[1], loginStringArray[2]);
 			stmt = con.createStatement();
 		} catch (ClassNotFoundException e) {
 			System.out.println("Driver nicht richtig eingebunden!");
@@ -113,11 +112,11 @@ public class SqlHelper {
 		while(lobbyIdList.size() > 9) {
 			lobbyIdList.remove(0);
 		}
-		
+
 		for (int id : lobbyIdList) {
 			System.out.println(id);
 		}
-		
+
 		// Konvertiere Integer Liste in Integer Array
 		return lobbyIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
@@ -190,8 +189,8 @@ public class SqlHelper {
 
 		try{
 			ResultSet rs = getStatement().executeQuery(query);
-			rs.next(); 
-			return rs.getInt(1);	
+			rs.next();
+			return rs.getInt(1);
 		}catch(Exception e){
 			System.out.println("Fehler beim holen der Einheiten im Land");
 			e.printStackTrace();
@@ -208,7 +207,7 @@ public class SqlHelper {
 		String query = String.format("SELECT player_id FROM country_player WHERE country_id = %d  AND lobby_id= %d",countryId, lobby.getLobbyId());
 		try{
 			ResultSet rs = getStatement().executeQuery(query);
-			rs.next(); 
+			rs.next();
 			int playerId = rs.getInt(1);
 			for(Player p : lobby.getPlayers()){
 				if(p.getPlayerId()==playerId){
@@ -335,9 +334,6 @@ public class SqlHelper {
 	 * Diese Methode, welche ein Player-Objekt und die LobbyId der zu joinenden Lobby benï¿½tigt,
 	 * schreibt bei dem dazugehï¿½rigen Player-Datensatz in die Spalte LobbyId die Id der zu joinenden Lobby.
 	 * @param player = Der Spieler als Objekt Player.
-	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
-	 * @throws ClassNotFoundException = Falls eine benï¿½tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
-	 * @author Jona Petrikowski 
 	 * @author Jï¿½rg Rï¿½mmich
 	 */
 	public static void joinLobby (Player player, int lobbyId) {
@@ -395,7 +391,7 @@ public class SqlHelper {
 		
 		return countryIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
-  	
+
 	public static int getCardValue(int cardId) {
 		String query = String.format("SELECT value FROM card WHERE card_id = %d",cardId);
 		try {
@@ -411,9 +407,8 @@ public class SqlHelper {
   
 	public static int getCardCountryId(int cardId){
 		String query = String.format("SELECT country_id FROM card WHERE card_id = %d",cardId);
-		ResultSet rs;
 		try {
-			rs = getStatement().executeQuery(query);
+            ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
 			return rs.getInt("country_id");
 		} catch (SQLException e) {

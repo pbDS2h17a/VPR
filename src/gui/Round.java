@@ -4,10 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.util.converter.IntegerStringConverter;
 import sqlConnection.Country;
 import sqlConnection.Player;
 
@@ -58,7 +65,6 @@ public class Round {
 		return this.playerArray;
 	}
 
-	
 	public boolean isAssign() {
 		return assign;
 	}
@@ -176,18 +182,28 @@ public class Round {
 	}
 	
 	public void startFight() {
-		this.match.getBattleInputA().setText("0");
-		this.match.getBattleInputB().setText("0");
+		UnaryOperator<Change> integerFilter = change -> {
+		    String newText = change.getControlNewText();
+		    if (newText.matches("-?([1-9][0-9]*)?")) {
+		        return change;
+		    }
+		    return null;
+		};
+		this.match.getBattleInputA().setText("10");
+		this.match.getBattleInputB().setText("1");
+		addTextLimiter(this.match.getBattleInputA(), 2);
+		this.match.getBattleInputA().setTextFormatter(
+	    new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter));
 		
 		this.match.getBattleInputA().setDisable(false);
 		this.match.getBattleInputB().setDisable(true);
 		
 		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
-		this.match.getCountryNameA().setText(this.countryA.getCountryName());
-		this.match.getCountryUnitsA().setText("/ " + this.countryA.getUnits());
+		this.match.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
+		this.match.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
 		
 		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
-		this.match.getCountryNameB().setText(this.countryB.getCountryName());
+		this.match.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
 		this.match.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
 		
 		this.match.activateWorldMap(false);
@@ -203,7 +219,7 @@ public class Round {
 		this.match.activateWorldMap(true);
 		this.match.getPhaseBtnGroup().setVisible(true);
 		this.match.getBattleInterface().setVisible(false);
-		this.updatePlayerInterface(getActivePlayer());
+		updatePlayerInterface(this.getActivePlayer());
 	}
 
 	public void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
@@ -285,11 +301,11 @@ public class Round {
 		Integer[] dicesB = new Integer[limitB];
 		
 		for (int i = 0; i < dicesA.length; i++) {
-			dicesA[i] = MatchFX.randomInt(1, 6);
+			dicesA[i] = randomInt(1, 6);
 		}
 		
 		for (int i = 0; i < dicesB.length; i++) {
-			dicesB[i] = MatchFX.randomInt(1, 6);
+			dicesB[i] = randomInt(1, 6);
 		}
 		
 		Arrays.sort(dicesA, Collections.reverseOrder());
@@ -369,7 +385,7 @@ public class Round {
 	}
 	
 	void updatePlayerInterface(Player activePlayer) {
-		this.match.gameChangePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
+		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
 		this.match.gameChangePlayerTerritories(activePlayer.getCountryList().size());
 		this.match.gameChangePlayerCard1(activePlayer.getCard1());
 		this.match.gameChangePlayerCard2(activePlayer.getCard2());
@@ -377,4 +393,18 @@ public class Round {
 		this.match.gameChangePlayerUnits(activePlayer.getUnassignedUnits());
 	}
 	
+	public static void addTextLimiter(final TextField tf, final int maxLength) {
+	    tf.textProperty().addListener(new ChangeListener<String>() {
+	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+	            if (tf.getText().length() > maxLength) {
+	                String s = tf.getText().substring(0, maxLength);
+	                tf.setText(s);
+	            }
+	        }
+	    });
+	}
+
+	private static int randomInt(int min, int max) {
+	    return (int)(Math.random() * (max - min + 1)) + min;
+	}
 }
