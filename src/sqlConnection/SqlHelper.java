@@ -20,7 +20,7 @@ public class SqlHelper {
 	 * Erstellt ein Statement mit den Werten
 	 */
 	
-	// Private TestDb fÃ¼r home server
+	// Private TestDb f�r home server
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
@@ -55,7 +55,7 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Gibt ein Statement zurÃ¼ck
+	 * Gibt ein Statement zur�ck
 	 * Checkt ob das Statement vorhande ist (nicht NULL)
 	 * Sonst erstellt es ein neues Statement
 	 * @return aktuelles Statement der Verbindung
@@ -67,56 +67,10 @@ public class SqlHelper {
 
 		return stmt;
 	}
-
-	@Deprecated
-	public static Player[] getAllPlayersForLobby(int lobbyId) {
-		Player[] playerArray = new Player[6];
-		int index = 0;
-		int[] playerIdArray = new int[6];
-		String[] playerNameArray = new String[6];
-		String colorValue = null;
-		
-		// 
-		try {
-			// Alle Spieler einer Lobby auswählen
-			ResultSet rs = getStatement().executeQuery("SELECT player_id, name FROM player WHERE lobby_id="+lobbyId+";");
-			
-			// Werte in Array speichern
-			while(rs.next()) {
-				// Name und ID auslesen
-				playerIdArray[index] = rs.getInt("player_id");
-				playerNameArray[index] = rs.getString("name");
-				index++;
-			}
-				
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for (int i = 0; i < 6; i++) {
-			ResultSet rs2;
-			try {
-				rs2 = getStatement().executeQuery("SELECT c.value FROM color c, color_player cp "
-						+ "WHERE cp.player_id = "+playerIdArray[i]+" "
-						+ "AND cp.color_id = c.color_id;");
-				rs2.next();
-				colorValue = rs2.getString("value");
-				
-				Player p = new Player(playerNameArray[i], lobbyId);
-				playerArray[i] = p;
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			
-		}
-		
-		
-		
-		return playerArray;
-	}
-	
+	/**
+	 * Lie�t die werte (Hex String) aller Farben aus der Datenbank aus
+	 * @return StringArray mit Hexwerten
+	 */
 	public static String[] getAllColors() {
 		String[] colorArray;
 		String query = "SELECT value FROM color;";
@@ -137,7 +91,10 @@ public class SqlHelper {
 
 		return colorArray;
 	}
-	
+	/**
+	 * Lie�t die Lobby IDs aller Lobbies die zurzeit in der Datenbank sind
+	 * @return
+	 */
 	public static int[] getAllLobbyId() {
 		ArrayList<Integer> lobbyIdList = new ArrayList<Integer>();
 		String query = "SELECT lobby_id FROM lobby;";
@@ -150,6 +107,14 @@ public class SqlHelper {
 		} catch (SQLException e) {
 			System.out.println("getAllLobbyId");
 			e.printStackTrace();
+		}
+		
+		while(lobbyIdList.size() > 9) {
+			lobbyIdList.remove(0);
+		}
+		
+		for (int id : lobbyIdList) {
+			System.out.println(id);
 		}
 		
 		// Konvertiere Integer Liste in Integer Array
@@ -282,15 +247,13 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Diese Methode, welche ein Player-Objekt benï¿½tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
+	 * Diese Methode, welche ein Player-Objekt ben�tigt, der als zukï¿½nftiger Host einer Lobby fungiert,
 	 * erstellt einen Lobby-Datensatz, an dessen LeaderId-Spalte die Id des Spielers a.k.a. Host eingetragen wird. 
 	 * Des Weiteren wird die Methode joinLobby() mit demselben Player-Objekt aufgerufen.
 	 * @param player = Der Spieler als Objekt Player.
-	 * @throws SQLException = Eine Datenbank-Exception, die bei einem Fehler in der Kommunikation mit der Datenbank auftritt.
-	 * @throws ClassNotFoundException = Falls eine benï¿½tigte Klasse im Zusammenhang mit dem Datenbankaustausch auftritt.
 	 * @see SqlHelper#joinLobby (Player player, int lobbyId)
 	 * @author Jona Petrikowski
-	 * @author Jï¿½rg Rï¿½mmich
+	 * @author J�rg R�mmich
 	 */
 	public static void createLobby (Player player) {
 		try{
@@ -380,22 +343,6 @@ public class SqlHelper {
 		return countryIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
   	
-   	// TODO Rework
-	// Spielername muss nicht unebdingt Unique sein!
-	public static int getPlayerId(String name) {
-		String query = String.format("SELECT player_id FROM player WHERE name = %s",name);
-		try {
-			ResultSet rs = getStatement().executeQuery(query);
-			rs.next();
-			return rs.getInt(1);
-		} catch (SQLException e) {
-			System.out.println("getPlayerId");
-			e.printStackTrace();
-		}
-
-		return -1;
-	}
-	
 	public static int getCardValue(int cardId) {
 		String query = String.format("SELECT value FROM card WHERE card_id = %d",cardId);
 		try {
