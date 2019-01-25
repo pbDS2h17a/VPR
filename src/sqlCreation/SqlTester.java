@@ -2,6 +2,8 @@ package sqlCreation;
 
 import sqlConnection.Lobby;
 import sqlConnection.Player;
+import sqlConnection.SqlHelper;
+import sqlConnection.UpdateListener;
 
 /**
  * @author pbs2h17awb
@@ -18,38 +20,28 @@ public class SqlTester {
         if(useTimer) {
             startTime = System.nanoTime();
         }
-/*
+
         Lobby lobby = new Lobby();
         int lobbyId = lobby.getLobbyId();
-        System.out.println("LobbyID:"+lobbyId);
-        Player p1 = new Player("Bob1", lobbyId);
-        Player p2 = new Player("Bob2", lobbyId);
-        Player p3 = new Player("Bob3", lobbyId);
-        Player p4 = new Player("Bob4", lobbyId);
-        Player p5 = new Player("Bob5", lobbyId);
-        Player p6 = new Player("Bob6", lobbyId);
+        long lastChange = SqlHelper.getLastChange(lobbyId);
 
-        lobby.addPlayer(p1);
-        lobby.addPlayer(p2);
-        lobby.addPlayer(p3);
-        lobby.addPlayer(p4);
-        lobby.addPlayer(p5);
-        lobby.addPlayer(p6);
-        Player[] players = lobby.getPlayers();
-        
-        System.out.println(players.length);
-        
-        for (Player p : players) {
-        	if (p == null) {
-        		System.out.println("null");
-        	}
+        System.out.println("LobbyID:"+lobbyId);
+        System.out.println("LastChange:"+lastChange);
+
+        UpdateListener updateListener = new UpdateListener(lobbyId);
+        updateListener.setRunning(true);
+        updateListener.start();
+
+        while (true) {
+            // Run forever
         }
-*/
+
+
         // Timed performance tests
-        if(useTimer) {
-            endTime = System.nanoTime();
-            System.out.printf("Zeit: %d Millisekunden",(endTime - startTime) /  1000000);
-        }
+//        if(useTimer) {
+//            endTime = System.nanoTime();
+//            System.out.printf("Zeit: %d Millisekunden",(endTime - startTime) /  1000000);
+//        }
     }
 
 }

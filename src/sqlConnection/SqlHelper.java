@@ -26,6 +26,20 @@ public class SqlHelper {
 			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	};
 
+	private static void updateLastChange(int lobbyId) {
+
+	    long currentLastChange = SqlHelper.getLastChange(lobbyId);
+
+
+        String query = String.format("UPDATE lobby SET last_change = %d;",currentLastChange++);
+        try {
+            getStatement().executeUpdate(query);
+        } catch (SQLException e) {
+            System.out.println("Fehler beim aktuallisieren des lastchange");
+            e.printStackTrace();
+        }
+    }
+
 	/**
 	 * Versucht ein neues Statement zu erstellen
 	 */
@@ -546,6 +560,7 @@ public class SqlHelper {
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("fillDatabase error");
 			e.printStackTrace();
@@ -597,7 +612,6 @@ public class SqlHelper {
 	 * Methode zum setzen des Spielers, der aktuell dran ist
 	 * @param lobbyId
 	 * @param playerTurnId
-	 * @throws SQLException
 	 */
 	public static void updatePlayerTurn(int lobbyId, int playerTurnId){
 		String query = String.format("UPDATE lobby SET leader_id = %d WHERE lobby_id=%d",playerTurnId, lobbyId);
@@ -613,7 +627,6 @@ public class SqlHelper {
 	 * Methode zum setzen der reihenfolge der Spieler
 	 * @param lobbyId
 	 * @param PlayerOrder
-	 * @throws SQLException
 	 */
 	public static void updatePlayerOrder(int lobbyId, String PlayerOrder){
 		String query = String.format("UPDATE lobby SET player_order = %s WHERE lobby_id=%d",PlayerOrder, lobbyId);
@@ -624,6 +637,47 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 	}
+
+
+	public static int[] getPlayerIdsFromLobby(int lobbyId) {
+        String query = String.format("SELECT player_id FROM player WHERE lobby_id = %d", lobbyId);
+        int[] playerIdArray = new int[6];
+        int i = 0;
+
+        try {
+            ResultSet rs = getStatement().executeQuery(query);
+            while(rs.next()) {
+               playerIdArray[i] = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Fehler beim lesen der SpielerIDs in einer Lobby");
+            e.printStackTrace();
+        }
+
+        return playerIdArray;
+    }
+
+    /**
+     * Methode zum auslesen der lastChange in Lobby
+     * @param lobbyId
+     * @return
+     */
+    public static long getLastChange(int lobbyId){
+        String query = String.format("SELECT last_change FROM lobby WHERE lobby_id = %d", lobbyId);
+        long lastChange = -1;
+
+        try {
+            ResultSet rs = getStatement().executeQuery(query);
+            rs.next();
+            lastChange = rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Fehler beim lesen des LastChange");
+            e.printStackTrace();
+        }
+
+        return lastChange;
+    }
 
 
 }
