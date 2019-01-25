@@ -24,7 +24,8 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"	};
+			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
+	};
 
 	/**
 	 * Versucht ein neues Statement zu erstellen
@@ -507,7 +508,7 @@ public class SqlHelper {
 	 * @author pbs2h17ath
 	 */
 	public static void updateCountryOwner(int lobbyId, int playerId, int countryId){
-		String query = String.format("UPDATE country_player SET player_id = %d  WHERE country_id = %d AND lobby_id= %d);", playerId, countryId, lobbyId);
+		String query = String.format("UPDATE country_player SET player_id = %d  WHERE country_id = %d AND lobby_id= %d;", playerId, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -519,14 +520,13 @@ public class SqlHelper {
 	/**
 	 * Methode zum anpassen der Armeen anzahl
 	 * @param lobbyId
-	 * @param playerId
 	 * @param countryId
 	 * @param amountUnits
 	 * @throws SQLException
 	 * @author pbs2h17ath
 	 */
-	public static void updateUnits(int lobbyId, int playerId, int countryId, int amountUnits){
-		String query = String.format("UPDATE country_player SET unit_count =  %d  WHERE country_id = %d AND lobby_id= %d);", amountUnits, countryId, lobbyId);
+	public static void updateUnits(int lobbyId, int countryId, int amountUnits){
+		String query = String.format("UPDATE country_player SET unit_count = %d WHERE country_id = %d AND lobby_id= %d;", amountUnits, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -543,7 +543,7 @@ public class SqlHelper {
 	 * @author pbs2h17ath
 	 */
 	public static int insertPlayer(String name, int lobbyId) {
-		String query = String.format("INSERT INTO player VALUES(NULL, %s ,'127.0.0.1', %d", name, lobbyId);
+		String query = String.format("INSERT INTO player VALUES(NULL, '%s' ,'127.0.0.1', %d);", name, lobbyId);
 		Statement stmt = SqlHelper.getStatement();
 		int id = -1;
 		try {

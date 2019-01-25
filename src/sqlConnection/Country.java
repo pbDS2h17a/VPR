@@ -110,7 +110,7 @@ public class Country extends SVGPath {
 	 */
 	public void setUnits(int units) {
 		this.units = units;
-		SqlHelper.updateUnits(owner.getLobbyId(),  owner.getPlayerId(), this.countryId, units);
+		SqlHelper.updateUnits(owner.getLobbyId(), this.countryId, units);
 	}
 	
 	/**

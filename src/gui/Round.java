@@ -15,7 +15,6 @@ public class Round {
 
 	private int activePlayerIndex;
 	private Player[] playerArray;
-	private Country[] countryArray;
 	private MatchFX match;
 	private boolean assign = true;
 	private boolean add = false;
@@ -27,10 +26,9 @@ public class Round {
 	private int battleUnitsB;
 	private int additionalAttacker;
 
-	public Round(MatchFX match, Player[] playerArray, Country[] countryArray) {
+	public Round(MatchFX match, Player[] playerArray) {
 		this.activePlayerIndex = 0;
 		this.playerArray = playerArray;
-		this.countryArray = countryArray;
 		this.match = match;
 		
 		this.startInitialRound(playerArray);
