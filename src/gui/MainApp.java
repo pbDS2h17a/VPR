@@ -101,6 +101,11 @@ public class MainApp extends Application {
 	@Override
 	public void stop(){
 	    System.out.println("Sql verbindung beenden");
+	    if(chatFX != null) {
+			chatFX.getUpdateTask().cancel();
+			System.out.println("Chat Updatethread beendet");
+		}
+
 	    SqlHelper.closeStatement();
 	}
 
@@ -108,9 +113,8 @@ public class MainApp extends Application {
 	 * Prozedur, die die ganze Anwendung startet sobald die Scene übergeben wurde
 	 * 
 	 * @param args String[]
-	 * @throws SQLException
 	 */
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) {
 		launch(args);
 	}
 	
@@ -255,7 +259,7 @@ public class MainApp extends Application {
 	 * @param trigger Label
 	 * @param from Pane
 	 * @param to Pane
-	 * @see paneTransition(Sprite trigger, Pane from, Pane to)
+	 * @see MainApp#paneTransition(Sprite trigger, Pane from, Pane to)
 	 */
 	public void paneTransition(Label trigger, Pane from, Pane to) {
 		/*
