@@ -98,6 +98,7 @@ public class MatchFX {
 	private Group battleB_GroupDices = new Group();
 	private Label battleB_Dice1 = new Label();
 	private Label battleB_Dice2 = new Label();
+	private Player[] playersInLobby;
 	
 	/**
 	 * Constructor.
@@ -122,7 +123,8 @@ public class MatchFX {
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 
 	    // Einzelnes Land
-	    for(int i = 0; i < countryArray.length; i++) {	
+	    for(int i = 0; i < countryArray.length; i++) {
+	    		// Länder werden initalisiert
 		    	try {
 					countryArray[i] = new Country(i+1);
 				} catch (SQLException e) {
@@ -130,22 +132,13 @@ public class MatchFX {
 					e.printStackTrace();
 				}
 		    	territory_group[i] = new Group();
-		    	// System.out.println(territoryArray[i].length());
 
 		    	countryArray[i].setFill(Color.WHITE);
 		    	countryArray[i].setStroke(Color.WHITE);
 		    	countryArray[i].setStrokeWidth(0);
 		    	countryArray[i].setScaleX(1.01);
 		    	countryArray[i].setScaleY(1.01);
-//		    	territorySVG[i].setNeighborIDArray(SqlHelper.getCountryNeighbor((i+1)));
-//		    	for (int j : SqlHelper.getCountryNeighbor((i+1))) {
-//		    		System.out.print(j + " ");
-//		    	}
-//		    	System.out.println();
 
-		    	
-
-		    	
 		    	groupLands.getChildren().add(countryArray[i]);
 	    	}
 	    
@@ -411,19 +404,18 @@ public class MatchFX {
 		// Verteilung der Länder auf die Spieler		
 		// Länderarray wird in eine Liste konvertiert
 		Lobby lobby = lobbyFX.getLobby();
-		final Player[] playersInLobby;
 		int lobbyId = lobby.getLobbyId();
 		int userCount;
 		
 		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
 		
 		// Erstellen der Testspieler
-		Player p1 = new Player("Bob1", lobbyId);
-        Player p2 = new Player("Bob2", lobbyId);
-        Player p3 = new Player("Bob3", lobbyId);
-        Player p4 = new Player("Bob4", lobbyId);
-        Player p5 = new Player("Bob5", lobbyId);
-        Player p6 = new Player("Bob6", lobbyId);
+		Player p1 = new Player("Bob1", lobby);
+        Player p2 = new Player("Bob2", lobby);
+        Player p3 = new Player("Bob3", lobby);
+        Player p4 = new Player("Bob4", lobby);
+        Player p5 = new Player("Bob5", lobby);
+        Player p6 = new Player("Bob6", lobby);
         
         p1.setColor("FFD800");
         p2.setColor("C42B2B");
@@ -452,14 +444,13 @@ public class MatchFX {
 		
 		userCount = lobby.getPlayers().length;
 		Random rand = new Random();
-		
+		// Verteilung der Länder
 		for (int i = 0; i < countryArray.length; i++) {	
 			// zufälliges Land aus Liste
 			Player currentPlayer = playersInLobby[userCount-1];
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwnerId(currentPlayer.getPlayerId());
-			randomCountry.setOwner(currentPlayer.getName());
+			randomCountry.setOwner(currentPlayer);
 			randomCountry.setFill(Color.web(currentPlayer.getColor()));
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			// Land aus der Liste entfernen
@@ -476,7 +467,7 @@ public class MatchFX {
 		
 	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	System.out.println("Test");
-	    	round = new Round(this, playersInLobby, countryArray);
+	    	round = new Round(this, playersInLobby);
 	    });
 	    
 	}
@@ -733,7 +724,7 @@ public class MatchFX {
 		    		System.out.println("B Einheiten vorher: " + round.getCountryB().getUnits());
 		    		System.out.println("A schickt in den Tod: " + round.getBattleUnitsA());
 		    		System.out.println("B schickt in den Tod: " + round.getBattleUnitsB());
-		    		
+
 		    		// Button wird deaktiviert um weitere Eingaben zu vermeiden
 		    		battleBtnReady.setActive(false);
 		    		

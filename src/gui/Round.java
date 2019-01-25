@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -14,7 +15,6 @@ public class Round {
 
 	private int activePlayerIndex;
 	private Player[] playerArray;
-	private Country[] countryArray;
 	private MatchFX match;
 	private boolean assign = true;
 	private boolean add = false;
@@ -26,10 +26,9 @@ public class Round {
 	private int battleUnitsB;
 	private int additionalAttacker;
 
-	public Round(MatchFX match, Player[] playerArray, Country[] countryArray) {
+	public Round(MatchFX match, Player[] playerArray) {
 		this.activePlayerIndex = 0;
 		this.playerArray = playerArray;
-		this.countryArray = countryArray;
 		this.match = match;
 		
 		this.startInitialRound(playerArray);
@@ -59,17 +58,6 @@ public class Round {
 		return this.playerArray;
 	}
 
-	public void setPlayerArray(Player[] playerArray) {
-		this.playerArray = playerArray;
-	}
-
-	public Country[] getCountryArray() {
-		return countryArray;
-	}
-
-	public void setCountryArray(Country[] countryArray) {
-		this.countryArray = countryArray;
-	}
 	
 	public boolean isAssign() {
 		return assign;
@@ -260,7 +248,6 @@ public class Round {
 			countryDefense.setUnits(fightA[0] - fightA[1] + this.additionalAttacker);
 			countryDefense.setOwner(countryAttack.getOwner());
 			countryDefense.setFill(countryAttack.getFill());
-			
 			countryAttack.setUnits(countryAttack.getUnits() - fightA[0] - this.additionalAttacker);
 		}
 		
@@ -274,6 +261,11 @@ public class Round {
 		System.out.println("A Einheiten nachher: " + countryAttack.getUnits());
 		System.out.println("B Einheiten nachher: " + countryDefense.getUnits());
 		System.out.println();
+
+		//Debug ausgabe
+		for (Player p : playerArray) {
+			System.out.println(p);
+		}
 	}
 
 	public Integer[][] rollTheDice(int battleUnitsA, int battleUnitsB) {
@@ -323,17 +315,11 @@ public class Round {
 	}
 
 	boolean isNeighbour(Country a, Country b) {
-		for (int i = 0; i < a.getNeighborIdArray().length; i++) {
-			if(a.getNeighborIdArray()[i] == b.getCountryId()) {
-				return true;
-			}
-		}
-		
-		return false;
+		return IntStream.of(a.getNeighborIdArray()).anyMatch(x -> x == b.getCountryId());
 	}
 		
 	boolean isOwnLand(Country country) {
-        return this.getActivePlayer().getName().equals(country.getOwner());
+        return this.getActivePlayer().equals(country.getOwner());
 
     }
 	

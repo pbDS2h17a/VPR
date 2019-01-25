@@ -19,13 +19,9 @@ public class Country extends SVGPath {
 	 */
 	private int countryId;
 	/**
-	 * Besitzer ID als Integer
+	 * Besitzer als Player Objekt
 	 */
-	private int ownerId;
-	/**
-	 * Name des Besitzers als String
-	 */
-	private String owner;
+	private Player owner;
 	/**
 	 * Anzahl Einheiten als Integer
 	 */
@@ -61,8 +57,8 @@ public class Country extends SVGPath {
 		this.countryName = SqlHelper.getCountryName(id);
 		this.neighborIdArray = SqlHelper.getCountryNeighbor(id);
 		super.setContent(SqlHelper.getCountrySVG(id));
-		// -1 = noch kein Besitzer
-		this.ownerId = -1;
+		// null = noch kein Besitzer
+		this.owner = null;
 		this.units = 1;
 	}
 	
@@ -103,15 +99,18 @@ public class Country extends SVGPath {
 	 * @return Menge Einheiten als Integer
 	 */
 	public int getUnits() {
+		units = SqlHelper.getCountryUnits(this.countryId, this.owner.getLobbyId());
 		return units;
 	}
 
 	/**
 	 * Setter Menge Einheiten
+	 * Schreibt auch direkt in die Datenbank
 	 * @param units Neue Einheitenmenge als Integer
 	 */
 	public void setUnits(int units) {
 		this.units = units;
+		SqlHelper.updateUnits(owner.getLobbyId(), this.countryId, units);
 	}
 	
 	/**
@@ -132,35 +131,33 @@ public class Country extends SVGPath {
 	
 	/**
 	 * Setter Besitzer des Landes
-	 * @param playerId ID des Besitzers
+	 * Schreibt Daten direkt in die Datenbank
+	 * @param newOwner : Player Objekt
 	 */
-	public void setOwnerId(int playerId) {
-		this.ownerId = playerId;
-	}
-	
-	/**
-	 * Setter Name von Besitzer des Landes
-	 * @param name Name des Besitzers
-	 */
-	public void setOwner(String name) {
-		this.owner = name;
-	}
-	
-	/**
-	 * Getter Besitzer ID
-	 * @return Besitzer ID
-	 */
-	public int getOwnerId() {
-		return this.ownerId;
-	}
+	public void setOwner(Player newOwner) {
+		// Land wird vom Aktuellen Besitzer entfernt
+		if(this.owner != null) {
+			this.owner.removeCountry(this);
+		}
 
+		// Beseitzer wird auf den neuen Spieler gesetzt
+		this.owner = newOwner;
+		// Dem neuen Besitzer wird das Land hinzugefügt
+		newOwner.addCountry(this);
+		// Der Besitzer des Landes ändert sich
+		SqlHelper.updateCountryOwner(newOwner.getLobbyId(), newOwner.getPlayerId(),  this.countryId);
+	}
+	
 	/**
-	 * Getter Besitzer Namen
-	 * @return Name des Besitzers
+	 * Getter Besitzer 
+	 * @return Besitzer 
 	 */
-	public String getOwner() {
+	public Player getOwner() {
+		owner = SqlHelper.getCountyOwner(this.countryId, owner.getLobby());
 		return this.owner;
 	}
+
+	
 	
 	
 }

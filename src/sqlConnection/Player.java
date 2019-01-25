@@ -22,11 +22,13 @@ public class Player {
 	private int card1;
 	private int card2;
 	private int card3;
-	
-	public Player(String name, int lobbyId) {
+	private Lobby lobby;
+
+	public Player(String name, Lobby lobby) {
 		this.name = name;
 		this.countryList = new ArrayList<>();
-		this.lobbyId = lobbyId;
+		this.lobby = lobby;
+		this.lobbyId = lobby.getLobbyId();
 		this.unitsPerRound = 9;
 		this.unassignedUnits = 0;
 		this.card1 = 0;
@@ -65,6 +67,15 @@ public class Player {
 	public void setUnitsPerRound(int unitsPerRound)
 	{
 		this.unitsPerRound = unitsPerRound;
+	}
+
+	public void removeCountry(Country country) {
+		this.countryList.remove(country);
+	}
+
+	public void addCountry(Country country) {
+		this.countryList.add(country);
+		SqlHelper.updateCountryOwner(this.lobbyId, this.playerId, country.getCountryId());
 	}
 
 	public String getColor()
@@ -113,9 +124,21 @@ public class Player {
 
 	@Override
 	public String toString() {
-		return "Player [name=" + name + ", color=" + color + ", countryList=" + countryList + ", unitsPerRound="
-				+ unitsPerRound + ", playerId=" + playerId + ", adress=" + adress + ", lobbyId=" + lobbyId + ", unassignedUnits="
-				+ unassignedUnits + ", card1=" + card1 + ", card2=" + card2 + ", card3=" + card3 + "]";
+		String output = String.format("Player\n" +
+				"Id=%d\n" +
+				"Name=%s\n" +
+				"Farbe=%s\n" +
+				"UnitsPerRound=%d\n" +
+				"Länder=[",playerId,
+				name, color, unitsPerRound);
+
+
+		for (Country c : countryList) {
+			output += c.getCountryName();
+			output += ",";
+		}
+		output += "]";
+		return output;
 	}
 
 	public int getUnassignedUnits() {
@@ -148,6 +171,10 @@ public class Player {
 
 	public void setCard3(int card3) {
 		this.card3 = card3;
+	}
+
+	public Lobby getLobby() {
+		return lobby;
 	}
 
 
