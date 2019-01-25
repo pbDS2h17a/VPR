@@ -26,6 +26,20 @@ public class SqlHelper {
 			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	};
 
+	private static void updateLastChange(int lobbyId) {
+
+	    long currentLastChange = SqlHelper.getLastChange(lobbyId);
+
+
+        String query = String.format("UPDATE lobby SET last_change = %d;",currentLastChange++);
+        try {
+            getStatement().executeUpdate(query);
+        } catch (SQLException e) {
+            System.out.println("Fehler beim aktuallisieren des lastchange");
+            e.printStackTrace();
+        }
+    }
+
 	/**
 	 * Versucht ein neues Statement zu erstellen
 	 */
@@ -546,6 +560,7 @@ public class SqlHelper {
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("fillDatabase error");
 			e.printStackTrace();
@@ -624,8 +639,8 @@ public class SqlHelper {
 	}
 
 
-	public int[] getPlayerIdsInLobby(int lobbyId) {
-        String query = String.format("SELECT player_id FROM lobby WHERE lobby_id = %d", lobbyId);
+	public static int[] getPlayerIdsFromLobby(int lobbyId) {
+        String query = String.format("SELECT player_id FROM player WHERE lobby_id = %d", lobbyId);
         int[] playerIdArray = new int[6];
         int i = 0;
 

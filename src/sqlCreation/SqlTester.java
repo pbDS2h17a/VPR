@@ -33,7 +33,7 @@ public class SqlTester {
         updateListener.start();
 
         while (true) {
-
+            // Run forever
         }
 
 

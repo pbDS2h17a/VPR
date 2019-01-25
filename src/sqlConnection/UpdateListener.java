@@ -22,8 +22,14 @@ public class UpdateListener extends Thread {
             long newLastChange = SqlHelper.getLastChange(lobbyId);
 
             if(newLastChange > currentLastChange) {
-                int[] playerIds = null;
+                int[] playerIds = SqlHelper.getPlayerIdsFromLobby(lobbyId);
+
+                for (int playerId : playerIds) {
+                    System.out.println(playerId);
+                }
+
                 System.out.println("Änderungen");
+                currentLastChange = newLastChange;
             } else {
                 System.out.println("Keine Änderungen");
             }
