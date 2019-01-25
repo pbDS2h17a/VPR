@@ -48,7 +48,6 @@ public class Player {
 		this.setAdress(adress);
 	}
 
-	
 	// Getter und Setter
 	public String getName() {
 		return name;

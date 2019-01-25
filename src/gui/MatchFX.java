@@ -452,8 +452,8 @@ public class MatchFX {
 		lobby = lobbyFX.getLobby();
 		int lobbyId = lobby.getLobbyId();
 		int userCount;
-		
-		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(getCountryArray));
+
+		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(getCountryArray));
 		
 		// Erstellen der Testspieler
 		Player p1 = new Player("Bob1", lobby);
@@ -492,8 +492,9 @@ public class MatchFX {
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer);
 			randomCountry.setFill(Color.web(currentPlayer.getColor()));
+			System.out.println(randomCountry.getCountryId());
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
-
+			countryList.remove(randomCountry);
 			// Wenn die Spieler-Liste am Ende angekommen ist...
 			if(userCount == 1) {
 				// ...wird die Liste wieder von vorne begonnen
