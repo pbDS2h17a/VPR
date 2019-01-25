@@ -203,6 +203,7 @@ public class Round {
 		this.match.activateWorldMap(true);
 		this.match.getPhaseBtnGroup().setVisible(true);
 		this.match.getBattleInterface().setVisible(false);
+		this.updatePlayerInterface(getActivePlayer());
 	}
 
 	public void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
@@ -249,9 +250,7 @@ public class Round {
 			countryDefense.setOwner(countryAttack.getOwner());
 			countryDefense.setFill(countryAttack.getFill());
 			countryAttack.setUnits(countryAttack.getUnits() - fightA[0] - this.additionalAttacker);
-		}
-		
-		else {
+		} else {
 			countryAttack.setUnits(countryAttack.getUnits() - fightA[1]);
 			countryDefense.setUnits(countryDefense.getUnits() - fightB[1]);
 		}
