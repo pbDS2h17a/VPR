@@ -49,7 +49,6 @@ public class MatchFX {
 	private Round round;
 	private LobbyFX lobbyFX;
 	private Country currentCountry = null;
-	private Player[] playerArray;
 	private Pane ctn = new Pane();
 	private Pane groupTerritoryInfo = new Pane();
 	private Label territoryInfoLabel = new Label();
@@ -71,7 +70,8 @@ public class MatchFX {
 	private Label playerInfoCard3Label = new Label("0");
 	private Group playerInfoAuftragGroup = new Group();
 	private Sprite playerInfoAuftrag = new Sprite("resources/btn_phase_goal.png");
-	private Label playerInfoAuftragLabel = new Label("Vernichte Einheit Rot");
+	private Label playerInfoAuftragLabel1 = new Label("Befreien Sie alle Länder von den grünen Armeen. - Wenn Sie selbst diese Armeen besitzen, oder bereits ein anderer Spieler das letzte Land von diesen befreit hat, heißt ihr Auftrag: Befreien Sie 24 Länder ihrer Wahl.");
+	private Label playerInfoAuftragLabel2 = new Label("Befreien Sie alle Länder von den grünen Armeen. - Wenn Sie selbst diese Armeen besitzen, oder bereits ein anderer Spieler das letzte Land von diesen befreit hat, heißt ihr Auftrag: Befreien Sie 24 Länder ihrer Wahl.");
 	private Group phaseBtnGroup = new Group();
 	private Sprite phaseBtn1 = new Sprite("resources/btn_phase_add.png");
 	private Sprite phaseBtn2 = new Sprite("resources/btn_phase_battle.png");
@@ -259,9 +259,15 @@ public class MatchFX {
     	playerInfoAuftrag.relocate(playerInfoAuftragGroup.getLayoutX(), playerInfoAuftragGroup.getLayoutY());
     	playerInfoAuftragGroup.getChildren().add(playerInfoAuftrag);
     	
-    	playerInfoAuftragLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
-    	playerInfoAuftragLabel.relocate(playerInfoAuftrag.getLayoutX() + 20, playerInfoAuftrag.getLayoutY() + 60);
-    	playerInfoAuftragGroup.getChildren().add(playerInfoAuftragLabel);
+    	playerInfoAuftragLabel1.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 11px;");
+    	playerInfoAuftragLabel1.setPrefWidth(350);
+    	playerInfoAuftragLabel1.setWrapText(true); 
+    	playerInfoAuftragLabel1.relocate(playerInfoAuftrag.getLayoutX() + 20, playerInfoAuftrag.getLayoutY() + 15);
+    	playerInfoAuftragLabel2.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 11px;");
+    	playerInfoAuftragLabel2.setPrefWidth(350);
+    	playerInfoAuftragLabel2.setWrapText(true);
+    	playerInfoAuftragLabel2.relocate(playerInfoAuftrag.getLayoutX() + 20, playerInfoAuftrag.getLayoutY() + 95);
+    	playerInfoAuftragGroup.getChildren().addAll(playerInfoAuftragLabel1, playerInfoAuftragLabel2);
     	
     	ctn.getChildren().add(playerInfoAuftragGroup);
     	
@@ -394,8 +400,6 @@ public class MatchFX {
 		
 		lobbyFX = lobby;
 		startMatch(lobbyFX);
-		
-		initializeClickEventHandlers();
 	}
 	
 	/**
@@ -672,177 +676,5 @@ public class MatchFX {
 	public Group getPlayerInfoAuftragGroup() {
 		return playerInfoAuftragGroup;
 	}
-	
-	private void initializeClickEventHandlers() {
 
-	    phaseBtn1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round.phaseAdd();
-	    });
-    	
-	    phaseBtn2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round.phaseFight();
-	    });
-	    
-	    phaseBtn3.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round.phaseMove();
-	    });
-	    
-	    phaseBtn4.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round.nextTurn();
-	    });
-	    
-	    playerInfoAuftragGroup.addEventHandler(MouseEvent.MOUSE_MOVED, event ->
-	    	playerInfoAuftragGroup.setLayoutX(160)
-	    );
-		
-	    playerInfoAuftragGroup.addEventHandler(MouseEvent.MOUSE_EXITED, event ->
-	    	playerInfoAuftragGroup.setLayoutX(-180)
-		);
-
-		// Wenn im Kampfbildschirm auf den Bestätige-Button gedrückt wird
-	    battleBtnReady.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	/**
-	    	 * Wenn der Verteidigungs-Input deaktiviert ist befinden wir
-	    	 * uns noch in der ersten Eingabe
-	    	 */
-	    	if(battleB_Input.isDisabled()) {
-	    		// Die Einheiten zum Angreifen werden gesetzt
-	    		round.setBattleUnitsA(Integer.parseInt(battleA_Input.getText()));
-	    		
-	    		// Wenn der Wert der Angreifer im erlaubten Bereich sind...
-		    	if(round.getBattleUnitsA() > 0 && round.getBattleUnitsA() < round.getCountryA().getUnits()) {
-		    		
-		    		// ...werden die Eingabefelder getauscht, damit die Else-Bedingungen erfüllt wird
-		    		battleA_Input.setDisable(true);
-		    		battleB_Input.setDisable(false);
-		    	}
-	    	}
-	    	
-	    	/*
-	    	 * Wenn der Angriffs-Input deaktiviert ist befinden wir
-	    	 * uns nun in der zweiten Eingabe
-	    	 */
-	    	else if(battleA_Input.isDisabled()) {
-	    		// Die Einheiten zum Verteidigen werden gesetzt
-	    		round.setBattleUnitsB(Integer.parseInt(battleB_Input.getText()));
-	    		
-	    		// Wenn der Wert der Verteidiger im erlaubten Bereich sind...
-		    	if(round.getBattleUnitsB() > 0 && round.getBattleUnitsB() < 3 && round.getBattleUnitsB() <= round.getCountryB().getUnits()) {
-		    		
-		    		// Ausgabe für die Konsole zur Kontrolle
-		    		System.out.println("*** Kampf beginnt ***");
-		    		System.out.println("A: " + round.getCountryA().getCountryName() + " | B: " + round.getCountryB().getCountryName());
-		    		System.out.println("A Einheiten vorher: " + round.getCountryA().getUnits());
-		    		System.out.println("B Einheiten vorher: " + round.getCountryB().getUnits());
-		    		System.out.println("A schickt in den Tod: " + round.getBattleUnitsA());
-		    		System.out.println("B schickt in den Tod: " + round.getBattleUnitsB());
-		    		
-		    		// Button wird deaktiviert um weitere Eingaben zu vermeiden
-		    		battleBtnReady.setActive(false);
-		    		
-		    		// Es werden Würfel gewürfelt anhand der eingesetzten Einheiten
-		    		Integer[][] rolledDices = round.rollTheDice(round.getBattleUnitsA(), round.getBattleUnitsB());
-		    		
-		    		// Auf Basis der Würfe wird der Kampf durchgeführt
-		    		round.updateFightResults(rolledDices, round.getCountryA(), round.getCountryB());
-		    		
-		    		// Ist der Kampf vorbei wird der Kampf beendet und die Länder aktualisiert
-		    		round.endFight();
-		    	}
-	    	}
-	    });
-	    
-
-	    
-		for (int i = 0; i < countryArray.length; i++) {
-			final int COUNT = i;
-
-			countryArray[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-
-				if(round.isAssign()) {
-					if(round.isOwnLand(countryArray[COUNT])) {
-						round.getActivePlayer().setUnassignedUnits(round.getActivePlayer().getUnassignedUnits() - 1);
-						countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
-						
-						if(round.getActivePlayerIndex() == round.getPlayerArray().length-1) {
-							round.setActivePlayerIndex(0);
-						} else {
-							round.setActivePlayerIndex(round.getActivePlayerIndex() + 1);
-						}
-					}
-				}
-				
-				else if(round.isAdd()) {
-					if(round.isOwnLand(countryArray[COUNT])) {
-						if(round.getActivePlayer().getUnassignedUnits() > 0) {
-							round.getActivePlayer().setUnassignedUnits(round.getActivePlayer().getUnassignedUnits() - 1);
-							countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
-							updateTerritoryInfo(countryArray[COUNT]);
-						}
-					}
-				}
-				
-				else if(round.isFight()) {
-					
-					if(round.getCountryA() == null) {
-						if(round.isOwnLand(countryArray[COUNT]) && countryArray[COUNT].getUnits() > 1) {
-							round.setCountryA(countryArray[COUNT]);
-							round.getCountryA().setStrokeWidth(10);
-						}
-					}
-					
-					else {
-						if(!round.isOwnLand(countryArray[COUNT]) && round.isNeighbour(round.getCountryA(), countryArray[COUNT])) {
-							round.setCountryB(countryArray[COUNT]);
-							round.startFight();
-						}
-					}
-				}
-				
-				else if(round.isMove()) {
-					if(round.isOwnLand(countryArray[COUNT])) {
-						if(round.getCountryA() == null) {
-							round.setCountryA(countryArray[COUNT]);
-							round.getCountryA().setStrokeWidth(10);
-						}
-						
-						else {
-							round.setCountryB(countryArray[COUNT]);
-							
-							if(round.isNeighbour(round.getCountryA(), round.getCountryB()) && round.getCountryA().getUnits() > 1) {
-								round.getCountryA().setUnits(round.getCountryA().getUnits() - 1);
-								round.getCountryB().setUnits(round.getCountryB().getUnits() + 1);
-							}
-							
-							round.getCountryA().setStrokeWidth(0);
-							round.setCountryA(null);
-							round.setCountryB(null);
-						}	
-					}
-				}
-				
-				/*
-				 * Falls wir etwas mit Rechtsklick brauchen ->
-				 * if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
-				 */
-				
-				if(round.isAssign() && round.isFinishedAssigning()) {
-					round.getActivePlayer().setUnassignedUnits(round.getActivePlayer().getUnassignedUnits() + round.getActivePlayer().getUnitsPerRound());
-					round.setAssign(false);
-					round.setAdd(true);
-					round.setActivePlayerIndex(0);
-					round.phaseAdd();
-				}
-				
-				round.updatePlayerInterface(round.getActivePlayer());
-				updateTerritoryInfo(countryArray[COUNT]);
-		    });
-
-	    	countryArray[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-	    		updateTerritoryInfo(countryArray[COUNT]);
-	    			gameMarkNeighbourCountrys(countryArray[COUNT]);
-	    		}
-		    );
-		}
-	}
 }

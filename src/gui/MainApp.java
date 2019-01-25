@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import network.ChatInterface;
+import sqlConnection.Country;
 import sqlConnection.SqlHelper;
 
 /**
@@ -22,17 +23,17 @@ import sqlConnection.SqlHelper;
  * @author Kevin Daniels
  */
 public class MainApp extends Application {
-	// Globale Variablen, die für das Spiel benötigt werden
+	// Globale Variablen
 	private final int APP_WIDTH = 1600;
 	private final int APP_HEIGHT = 900;
 	private Pane paneFrom;
 	private Pane paneTo;
-	private static Pane app = new Pane();
+	private Pane app = new Pane();
     private Pane ctnApp = new Pane();
 	private boolean toPane = false;
-	private static Scene scene = new Scene(app);
+	private Scene scene = new Scene(app);
     
-    // Spiel-Oberflächen, die alle JavaFX Objekte enthalten
+    // Spiel-Oberflächen
 	private TitleFX titleFX = new TitleFX();
     private LobbyFX lobbyFX = new LobbyFX();
     private JoinFX joinFX = new JoinFX();
@@ -80,7 +81,7 @@ public class MainApp extends Application {
 	    // Methode um die Spiel-Schleife für die Animationen zu initialisieren
 		gameLoop();
 	    
-	    // Resize-Methode die das Spiel immer passend zur Fenstergröße skaliert
+	    // Methode die das Spiel immer passend zur Fenstergröße skaliert
 	    ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
 	    	resizeThat(stage, ctnApp);
 
@@ -120,6 +121,9 @@ public class MainApp extends Application {
     public void initializeClickEventHandlers(){
     	// Wennn der Button zum Spiel erstellen gedrückt wird
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Beendet die Animation des Logos
+	    	titleFX.setLogoAnimated(false);
+	    	
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
 	    	
@@ -134,6 +138,9 @@ public class MainApp extends Application {
 	   
 	    // Wenn der Button zum Spiel beitreten gedrückt wird
 	    titleFX.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Beendet die Animation des Logos
+	    	titleFX.setLogoAnimated(false);
+	    	
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnJoin(), titleFX.getContainer(), joinFX.getContainer());
 	    	
@@ -143,6 +150,9 @@ public class MainApp extends Application {
 	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
 	    lobbyFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Startet die Animation des Logos
+	    	titleFX.setLogoAnimated(true);
+	    	
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 			paneTransition(lobbyFX.getBtnBack(), lobbyFX.getContainer(), titleFX.getContainer());
 			
@@ -176,6 +186,9 @@ public class MainApp extends Application {
    
 	    // Wenn der Button zum Verlassen von "Spiel beitereten" gedrückt wird
 	    joinFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Startet die Animation des Logos
+	    	titleFX.setLogoAnimated(true);
+	    	
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 			paneTransition(joinFX.getBtnBack(), joinFX.getContainer(), titleFX.getContainer());
 			
@@ -206,9 +219,196 @@ public class MainApp extends Application {
 			
 			// Wenn auf eine Lobby-Verbindung gedrückt wird
 			joinFX.getUserList()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+		    	// Beendet die Animation des Logos
+		    	titleFX.setLogoAnimated(false);
+		    	
 				// Startet die Animation für den Übergang zwischen zwei Panes
 				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
 			});
+		}
+		
+		// Wenn der Button für die 1. Phase (setzen) gedrückt wird
+	    matchFX.getPhaseBtn1().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+	    	// initiiert Phase 1
+	    	matchFX.getRound().phaseAdd()
+	    );
+    	
+	    // Wenn der Button für die 2. Phase (kämpfen) gedrückt wird
+	    matchFX.getPhaseBtn2().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+	    	// initiiert Phase 2
+	    	matchFX.getRound().phaseFight()
+	    );
+	    
+	    // Wenn der Button für die 3. Phase (bewegen) gedrückt wird
+	    matchFX.getPhaseBtn3().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+	    	// initiiert Phase 3
+	    	matchFX.getRound().phaseMove()
+	    );
+	    
+	    // Wenn der Button für die 4. Phase (Ende) gedrückt wird
+	    matchFX.getPhaseBtn4().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
+	    	// initiiert Phase 4
+	    	matchFX.getRound().nextTurn()
+	    );
+	    
+	    // Wenn der Cursor sich über den Auftrag-Button befindet
+	    matchFX.getPlayerInfoAuftragGroup().addEventHandler(MouseEvent.MOUSE_MOVED, event ->
+	    	// Bewegt den Auftrag-Container nach rechts
+	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(160)
+	    );
+		
+	    // Wenn der Cursor den Auftrag-Button verlässt
+	    matchFX.getPlayerInfoAuftragGroup().addEventHandler(MouseEvent.MOUSE_EXITED, event ->
+	    	// Bewegt den Auftrag-Container wieder nach links
+	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(-180)
+		);
+	    
+	    // Wenn im Kampfbildschirm auf den Bestätige-Button gedrückt wird
+	    matchFX.getBattleReadyBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	/*
+	    	 * Wenn der Verteidigungs-Input deaktiviert ist befinden wir
+	    	 * uns noch in der ersten Eingabe
+	    	 */
+	    	if(matchFX.getBattleInputB().isDisabled()) {
+	    		// Die Einheiten zum Angreifen werden gesetzt
+	    		matchFX.getRound().setBattleUnitsA(Integer.parseInt(matchFX.getBattleInputA().getText()));
+	    		
+	    		// Wenn der Wert der Angreifer im erlaubten Bereich sind...
+		    	if(matchFX.getRound().getBattleUnitsA() > 0 && matchFX.getRound().getBattleUnitsA() < matchFX.getRound().getCountryA().getUnits()) {
+		    		
+		    		// ...werden die Eingabefelder getauscht, damit die Else-Bedingungen erfüllt wird
+		    		matchFX.getBattleInputA().setDisable(true);
+		    		matchFX.getBattleInputB().setDisable(false);
+		    	}
+	    	}
+	    	
+	    	/*
+	    	 * Wenn der Angriffs-Input deaktiviert ist befinden wir
+	    	 * uns nun in der zweiten Eingabe
+	    	 */
+	    	else if(matchFX.getBattleInputA().isDisabled()) {
+	    		// Die Einheiten zum Verteidigen werden gesetzt
+	    		matchFX.getRound().setBattleUnitsB(Integer.parseInt(matchFX.getBattleInputB().getText()));
+	    		
+	    		// Wenn der Wert der Verteidiger im erlaubten Bereich sind...
+		    	if(matchFX.getRound().getBattleUnitsB() > 0 && matchFX.getRound().getBattleUnitsB() < 3 && matchFX.getRound().getBattleUnitsB() <= matchFX.getRound().getCountryB().getUnits()) {
+		    		
+		    		// Ausgabe für die Konsole zur Kontrolle
+		    		System.out.println("*** Kampf beginnt ***");
+		    		System.out.println("A: " + matchFX.getRound().getCountryA().getCountryName() + " | B: " + matchFX.getRound().getCountryB().getCountryName());
+		    		System.out.println("A Einheiten vorher: " + matchFX.getRound().getCountryA().getUnits());
+		    		System.out.println("B Einheiten vorher: " + matchFX.getRound().getCountryB().getUnits());
+		    		System.out.println("A schickt in den Tod: " + matchFX.getRound().getBattleUnitsA());
+		    		System.out.println("B schickt in den Tod: " + matchFX.getRound().getBattleUnitsB());
+		    		
+		    		// Button wird deaktiviert um weitere Eingaben zu vermeiden
+		    		matchFX.getBattleReadyBtn().setActive(false);
+		    		
+		    		// Es werden Würfel gewürfelt anhand der eingesetzten Einheiten
+		    		Integer[][] rolledDices = matchFX.getRound().rollTheDice(matchFX.getRound().getBattleUnitsA(), matchFX.getRound().getBattleUnitsB());
+		    		
+		    		// Auf Basis der Würfe wird der Kampf durchgeführt
+		    		matchFX.getRound().updateFightResults(rolledDices, matchFX.getRound().getCountryA(), matchFX.getRound().getCountryB());
+		    		
+		    		// Ist der Kampf vorbei wird der Kampf beendet und die Länder aktualisiert
+		    		matchFX.getRound().endFight();
+		    	}
+	    	}
+	    });
+	    
+	    
+	    // Country-Array zwischenspeichern um die Variablen-Namen der Schleife abzukürzen
+	    Country[] countryArray = matchFX.getRound().getCountryArray();
+	    // Schleife um mit allen 42 Ländern zu kommunizieren
+	    for (int i = 0; i < matchFX.getRound().getCountryArray().length; i++) {
+			final int COUNT = i;
+
+			countryArray[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				
+				if(matchFX.getRound().isAssign()) {
+					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
+						matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() - 1);
+						countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
+						
+						if(matchFX.getRound().getActivePlayerIndex() == matchFX.getRound().getPlayerArray().length-1) {
+							matchFX.getRound().setActivePlayerIndex(0);
+						} else {
+							matchFX.getRound().setActivePlayerIndex(matchFX.getRound().getActivePlayerIndex() + 1);
+						}
+					}
+				}
+				
+				else if(matchFX.getRound().isAdd()) {
+					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
+						if(matchFX.getRound().getActivePlayer().getUnassignedUnits() > 0) {
+							matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() - 1);
+							countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
+							matchFX.updateTerritoryInfo(countryArray[COUNT]);
+						}
+					}
+				}
+				
+				else if(matchFX.getRound().isFight()) {
+					
+					if(matchFX.getRound().getCountryA() == null) {
+						if(matchFX.getRound().isOwnLand(countryArray[COUNT]) && countryArray[COUNT].getUnits() > 1) {
+							matchFX.getRound().setCountryA(countryArray[COUNT]);
+							matchFX.getRound().getCountryA().setStrokeWidth(10);
+						}
+					}
+					
+					else {
+						if(!matchFX.getRound().isOwnLand(countryArray[COUNT]) && matchFX.getRound().isNeighbour(matchFX.getRound().getCountryA(), countryArray[COUNT])) {
+							matchFX.getRound().setCountryB(countryArray[COUNT]);
+							matchFX.getRound().startFight();
+						}
+					}
+				}
+				
+				else if(matchFX.getRound().isMove()) {
+					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
+						if(matchFX.getRound().getCountryA() == null) {
+							matchFX.getRound().setCountryA(countryArray[COUNT]);
+							matchFX.getRound().getCountryA().setStrokeWidth(10);
+						}
+						
+						else {
+							matchFX.getRound().setCountryB(countryArray[COUNT]);
+							
+							if(matchFX.getRound().isNeighbour(matchFX.getRound().getCountryA(), matchFX.getRound().getCountryB()) && matchFX.getRound().getCountryA().getUnits() > 1) {
+								matchFX.getRound().getCountryA().setUnits(matchFX.getRound().getCountryA().getUnits() - 1);
+								matchFX.getRound().getCountryB().setUnits(matchFX.getRound().getCountryB().getUnits() + 1);
+							}
+							
+							matchFX.getRound().getCountryA().setStrokeWidth(0);
+							matchFX.getRound().setCountryA(null);
+							matchFX.getRound().setCountryB(null);
+						}	
+					}
+				}
+				
+				/*
+				 * Falls wir etwas mit Rechtsklick brauchen ->
+				 * if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
+				 */
+				
+				if(matchFX.getRound().isAssign() && matchFX.getRound().isFinishedAssigning()) {
+					matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() + matchFX.getRound().getActivePlayer().getUnitsPerRound());
+					matchFX.getRound().setAssign(false);
+					matchFX.getRound().setAdd(true);
+					matchFX.getRound().setActivePlayerIndex(0);
+					matchFX.getRound().phaseAdd();
+				}
+				
+				matchFX.getRound().updatePlayerInterface(matchFX.getRound().getActivePlayer());
+				matchFX.updateTerritoryInfo(countryArray[COUNT]);
+		    });
+
+	    	countryArray[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+	    		matchFX.updateTerritoryInfo(countryArray[COUNT]);
+	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
+	    	});
+	    	
 		}
     }
 
@@ -320,6 +520,18 @@ public class MainApp extends Application {
 	public void gameLoop() {
 		new AnimationTimer() {
 	        public void handle(long currentNanoTime) {
+	        	
+	        	// Wenn das Logo animiert werden soll...
+	        	if(titleFX.isLogoAnimated()) {
+	        		/*
+	        		 *  ... wird es nach unten verschoben bis zu einem gewissen Punkt,
+	        		 *  wo es dann wieder hoch verschoben wird
+	        		 */
+	        		titleFX.getLogo().setTranslateY(titleFX.getLogo().getTranslateY() - titleFX.getLogo().getVy());
+		        	if(titleFX.getLogo().getTranslateY() == 0) titleFX.getLogo().setVy(.25);
+		        	if(titleFX.getLogo().getTranslateY() == -20) titleFX.getLogo().setVy(-.25);
+	        	}
+	        	
 	        	// Wenn der Übergang zwischen zwei Panes aktiviert wird
 	        	if(toPane) {
 	        		
