@@ -281,12 +281,12 @@ public class SqlHelper {
 			Statement stmt = getStatement();
 			String queryCreateLobbyEntry = String.format("INSERT INTO lobby (leader_id) VALUES (%d);", player.getPlayerId());
 			stmt.executeUpdate(queryCreateLobbyEntry);
-			// zweites Resultset fï¿½r die autoincremente LobbyId, um diese beim Leader einzutragen
+			// zweites Resultset f�r die autoincremente LobbyId, um diese beim Leader einzutragen
 			String queryGetLobbyId = String.format("SELECT lobby_id FROM lobby WHERE leader_id = %d;", player.getPlayerId());
 			List<List<String>> listWithLobbyId = ResultSetManager.toList(getStatement().executeQuery(queryGetLobbyId));
 			if (listWithLobbyId.get(0).size() == 1) {
 				int lobbyId = Integer.parseInt(listWithLobbyId.get(0).get(0));
-				// ein createLobby() ist fï¿½r den Leader ein joinLobby()
+				// ein createLobby() ist f�r den Leader ein joinLobby()
 				joinLobby(player, lobbyId);
 				System.out.println("createLobby() successfull.");
 			}
