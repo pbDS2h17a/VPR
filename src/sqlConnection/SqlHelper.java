@@ -68,54 +68,6 @@ public class SqlHelper {
 		return stmt;
 	}
 
-	@Deprecated
-	public static Player[] getAllPlayersForLobby(int lobbyId) {
-		Player[] playerArray = new Player[6];
-		int index = 0;
-		int[] playerIdArray = new int[6];
-		String[] playerNameArray = new String[6];
-		String colorValue = null;
-		
-		// 
-		try {
-			// Alle Spieler einer Lobby ausw√§hlen
-			ResultSet rs = getStatement().executeQuery("SELECT player_id, name FROM player WHERE lobby_id="+lobbyId+";");
-			
-			// Werte in Array speichern
-			while(rs.next()) {
-				// Name und ID auslesen
-				playerIdArray[index] = rs.getInt("player_id");
-				playerNameArray[index] = rs.getString("name");
-				index++;
-			}
-				
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for (int i = 0; i < 6; i++) {
-			ResultSet rs2;
-			try {
-				rs2 = getStatement().executeQuery("SELECT c.value FROM color c, color_player cp "
-						+ "WHERE cp.player_id = "+playerIdArray[i]+" "
-						+ "AND cp.color_id = c.color_id;");
-				rs2.next();
-				colorValue = rs2.getString("value");
-				
-				Player p = new Player(playerNameArray[i], lobbyId);
-				playerArray[i] = p;
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			
-		}
-		
-		
-		
-		return playerArray;
-	}
 	
 	public static String[] getAllColors() {
 		String[] colorArray;
@@ -207,6 +159,46 @@ public class SqlHelper {
 			return rs.getString(1);	
 		}catch(Exception e){
 			System.out.println("Fehler beim holen des L‰ndernamens");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Methode zum Auslesen der Einheiten, die in einem Land Stationiert sind.
+	 * @param countryId
+	 * @param lobbyId
+	 * @return
+	 */
+	public static int getCountryUnits (int countryId, int lobbyId) {
+		try{
+			ResultSet rs = getStatement().executeQuery("SELECT unit_count FROM country_player WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+			rs.next(); 
+			return rs.getInt(1);	
+		}catch(Exception e){
+			System.out.println("Fehler beim holen der Einheiten im Land");
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	/**
+	 * Mathode zum Auslesen des Besatzers eines Landes
+	 * @param countryId
+	 * @param lobbyId
+	 * @return
+	 */
+	public static Player getCountyOwner (int countryId, Lobby lobby) {
+		try{
+			ResultSet rs = getStatement().executeQuery("SELECT player_id FROM country_player WHERE country_id ="+countryId+" AND lobby_id="+lobby.getLobbyId());
+			rs.next(); 
+			int playerId = rs.getInt(1);
+			for(Player p : lobby.getPlayers()){
+				if(p.getPlayerId()==playerId){
+					return p;
+				}
+			}
+		}catch(Exception e){
+			System.out.println("Fehler beim holen des Besatzers des Landes");
 			e.printStackTrace();
 		}
 		return null;
@@ -506,7 +498,7 @@ public class SqlHelper {
 	 */
 	public static void updateCountryOwner(int lobbyId, int playerId, int countryId){
 		try {
-			getStatement().executeUpdate("UPDATE country_player SET player_id = "+playerId+") WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
+			getStatement().executeUpdate("UPDATE country_player SET player_id = "+playerId+" WHERE country_id ="+countryId+" AND lobby_id="+lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim updaten vom country owner");
 			e.printStackTrace();

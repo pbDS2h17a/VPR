@@ -22,12 +22,14 @@ public class Player {
 	private int card1;
 	private int card2;
 	private int card3;
+	private Lobby lobby;
 	
-	public Player(String name, int lobbyId) {
+	public Player(String name, Lobby lobby) {
 		// this.playerId = playerId; //SqlHelper.getPlayerID(name);
 		this.name = name;
 		this.countryList = new ArrayList<>();
-		this.lobbyId = lobbyId;
+		this.lobby = lobby;
+		this.lobbyId = lobby.getLobbyId();
 		this.unitsPerRound = 9;
 		this.unassignedUnits = 0;
 		this.card1 = 0;
@@ -149,6 +151,10 @@ public class Player {
 
 	public void setCard3(int card3) {
 		this.card3 = card3;
+	}
+
+	public Lobby getLobby() {
+		return lobby;
 	}
 
 

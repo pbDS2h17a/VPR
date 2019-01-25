@@ -419,12 +419,12 @@ public class MatchFX {
 		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
 		
 		// Erstellen der Testspieler
-		Player p1 = new Player("Bob1", lobbyId);
-        Player p2 = new Player("Bob2", lobbyId);
-        Player p3 = new Player("Bob3", lobbyId);
-        Player p4 = new Player("Bob4", lobbyId);
-        Player p5 = new Player("Bob5", lobbyId);
-        Player p6 = new Player("Bob6", lobbyId);
+		Player p1 = new Player("Bob1", lobby);
+        Player p2 = new Player("Bob2", lobby);
+        Player p3 = new Player("Bob3", lobby);
+        Player p4 = new Player("Bob4", lobby);
+        Player p5 = new Player("Bob5", lobby);
+        Player p6 = new Player("Bob6", lobby);
         
         p1.setColor("FFD800");
         p2.setColor("C42B2B");
@@ -459,8 +459,7 @@ public class MatchFX {
 			Player currentPlayer = playersInLobby[userCount-1];
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwnerId(currentPlayer.getPlayerId());
-			randomCountry.setOwner(currentPlayer.getName());
+			randomCountry.setOwner(currentPlayer);
 			randomCountry.setFill(Color.web(currentPlayer.getColor()));
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			// Land aus der Liste entfernen

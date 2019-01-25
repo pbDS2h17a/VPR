@@ -18,7 +18,7 @@ public class SqlPerformanceTest {
         if(useTimer) {
             startTime = System.nanoTime();
         }
-
+/*
         Lobby lobby = new Lobby();
         int lobbyId = lobby.getLobbyId();
         System.out.println("LobbyID:"+lobbyId);
@@ -44,7 +44,7 @@ public class SqlPerformanceTest {
         		System.out.println("null");
         	}
         }
-
+*/
         // Timed performance tests
         if(useTimer) {
             endTime = System.nanoTime();
