@@ -232,6 +232,8 @@ public class Round {
 		this.match.activateWorldMap(true);
 		this.match.getPhaseBtnGroup().setVisible(true);
 		this.match.getBattleInterface().setVisible(false);
+		
+		updatePlayerInterface(this.getActivePlayer());
 	}
 
 	public void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
@@ -274,9 +276,21 @@ public class Round {
 
 	public void countryAftermath(int[] fightA, int[] fightB, Country countryAttack, Country countryDefense) {
 		if(countryDefense.getUnits() - fightB[1] == 0) {
+			for (int i = 0; i < playerArray.length; i++) {
+				if(countryDefense.getOwner().equals(playerArray[i].getName())) {
+					playerArray[i].removeCountry(countryDefense);
+				}
+			}
+			
 			countryDefense.setUnits(fightA[0] - fightA[1] + this.additionalAttacker);
 			countryDefense.setOwner(countryAttack.getOwner());
 			countryDefense.setFill(countryAttack.getFill());
+			
+			for (int i = 0; i < playerArray.length; i++) {
+				if(countryDefense.getOwner().equals(playerArray[i].getName())) {
+					playerArray[i].addCountry(countryDefense);
+				}
+			}
 			
 			countryAttack.setUnits(countryAttack.getUnits() - fightA[0] - this.additionalAttacker);
 		}
@@ -311,11 +325,11 @@ public class Round {
 		Integer[] dicesB = new Integer[limitB];
 		
 		for (int i = 0; i < dicesA.length; i++) {
-			dicesA[i] = MatchFX.randomInt(1, 6);
+			dicesA[i] = randomInt(1, 6);
 		}
 		
 		for (int i = 0; i < dicesB.length; i++) {
-			dicesB[i] = MatchFX.randomInt(1, 6);
+			dicesB[i] = randomInt(1, 6);
 		}
 		
 		Arrays.sort(dicesA, Collections.reverseOrder());
@@ -401,13 +415,14 @@ public class Round {
 	}
 	
 	void updatePlayerInterface(Player activePlayer) {
-		this.match.gameChangePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
+		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
 		this.match.gameChangePlayerTerritories(activePlayer.getCountryList().size());
 		this.match.gameChangePlayerCard1(activePlayer.getCard1());
 		this.match.gameChangePlayerCard2(activePlayer.getCard2());
 		this.match.gameChangePlayerCard3(activePlayer.getCard3());
 		this.match.gameChangePlayerUnits(activePlayer.getUnassignedUnits());
 	}
+	
 	public static void addTextLimiter(final TextField tf, final int maxLength) {
 	    tf.textProperty().addListener(new ChangeListener<String>() {
 	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
@@ -417,5 +432,9 @@ public class Round {
 	            }
 	        }
 	    });
+	}
+	
+	private static int randomInt(int min, int max) {
+	    return (int)(Math.random() * (max - min + 1)) + min;
 	}
 }

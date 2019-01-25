@@ -23,6 +23,7 @@ import sqlConnection.SqlHelper;
  * @author Kevin Daniels
  */
 public class MainApp extends Application {
+	
 	// Globale Variablen
 	private final int APP_WIDTH = 1600;
 	private final int APP_HEIGHT = 900;
@@ -167,21 +168,25 @@ public class MainApp extends Application {
 	    
 	    // Wenn der Button zum Spieler bestätigen gedrückt wird
 	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	// Startet die Animation für den Übergang zwischen zwei Panes
-			paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
-			
-			// Wird zur Weltkarte gewechselt positioniert sich der Chat um
-			if(lobbyFX.getBtnReady().isActive()) {
+	    	// Wenn der Button aktiv ist...
+	    	if(lobbyFX.getBtnReady().isActive()) {
+		    	// ...startet die Animation für den Übergang zwischen zwei Panes
+				paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
+				
+				// ...wird zur Weltkarte gewechselt positioniert sich der Chat neu
 				chatFX.getPane().relocate(1650, 600);
-			}
-			
-			/*
-			 * Sound für den gedrückten Button wird abgespielt
-			 * und die Hintergrund-Musik wird gewechselt
-			 */
-			mpFX.playBtnSFX();
-			mpFX.stopBgmStart();
-			mpFX.playBgmGame();
+				
+				/*
+				 * Sound für den gedrückten Button wird abgespielt
+				 * und die Hintergrund-Musik wird gewechselt
+				 */
+				mpFX.playBtnSFX();
+				mpFX.stopBgmStart();
+				mpFX.playBgmGame();
+				
+				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
+				matchFX.setRound(new Round(matchFX, matchFX.getLobby().getPlayers(), matchFX.getCountryArray()));
+	    	}
 	    });
    
 	    // Wenn der Button zum Verlassen von "Spiel beitereten" gedrückt wird
@@ -254,13 +259,13 @@ public class MainApp extends Application {
 	    // Wenn der Cursor sich über den Auftrag-Button befindet
 	    matchFX.getPlayerInfoAuftragGroup().addEventHandler(MouseEvent.MOUSE_MOVED, event ->
 	    	// Bewegt den Auftrag-Container nach rechts
-	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(160)
+	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(200)
 	    );
 		
 	    // Wenn der Cursor den Auftrag-Button verlässt
 	    matchFX.getPlayerInfoAuftragGroup().addEventHandler(MouseEvent.MOUSE_EXITED, event ->
 	    	// Bewegt den Auftrag-Container wieder nach links
-	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(-180)
+	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(-200)
 		);
 	    
 	    // Wenn im Kampfbildschirm auf den Bestätige-Button gedrückt wird
@@ -316,99 +321,116 @@ public class MainApp extends Application {
 	    	}
 	    });
 	    
-	    
 	    // Country-Array zwischenspeichern um die Variablen-Namen der Schleife abzukürzen
-	    Country[] countryArray = matchFX.getRound().getCountryArray();
+	    Country[] countryArray = matchFX.getCountryArray();
 	    // Schleife um mit allen 42 Ländern zu kommunizieren
-	    for (int i = 0; i < matchFX.getRound().getCountryArray().length; i++) {
+	    for (int i = 0; i < matchFX.getCountryArray().length; i++) {
 			final int COUNT = i;
-
+			
+			// Wenn ein Land angeklickt wird
 			countryArray[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 				
+				// Wenn man in der 0. Phase (einzeln setzen) steckt...
 				if(matchFX.getRound().isAssign()) {
+					// Wenn einem das Land gehört...
 					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
+						// ...werden die ungesetzten Einheiten um eins reduziert
 						matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() - 1);
+						// ...bekommt das Land eine Einheit dazu
 						countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
 						
+						// Wenn man am Ende der Spieler-Liste angekommen ist...
 						if(matchFX.getRound().getActivePlayerIndex() == matchFX.getRound().getPlayerArray().length-1) {
+							// ...ist der 1. Spieler wieder der aktive Spieler
 							matchFX.getRound().setActivePlayerIndex(0);
 						} else {
+							// sonst wird der nächste Spieler der aktive Spieler
 							matchFX.getRound().setActivePlayerIndex(matchFX.getRound().getActivePlayerIndex() + 1);
 						}
 					}
 				}
 				
+				// Wenn man in der 1. Phase (setzen) steckt...
 				else if(matchFX.getRound().isAdd()) {
-					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
-						if(matchFX.getRound().getActivePlayer().getUnassignedUnits() > 0) {
-							matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() - 1);
-							countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
-							matchFX.updateTerritoryInfo(countryArray[COUNT]);
-						}
+					// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
+					if(matchFX.getRound().isOwnLand(countryArray[COUNT]) && matchFX.getRound().getActivePlayer().getUnassignedUnits() > 0) {
+						// ...wird ein Spieler aus dem Inventar verschoben...
+						matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() - 1);
+						// ...und dem Land hinzugefügt 
+						countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
+						// ...wird das Interface mit den Land-Informationen aktualisiert
+						matchFX.updateCountryInfo(countryArray[COUNT]);
 					}
 				}
 				
+				// Wenn man in der 2. Phase (kämpfen) steckt...
 				else if(matchFX.getRound().isFight()) {
-					
+					// Wenn noch nicht das erste Land ausgewählt wurde...
 					if(matchFX.getRound().getCountryA() == null) {
+						// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
 						if(matchFX.getRound().isOwnLand(countryArray[COUNT]) && countryArray[COUNT].getUnits() > 1) {
+							// ...wird das erste Land ausgewählt
 							matchFX.getRound().setCountryA(countryArray[COUNT]);
-							matchFX.getRound().getCountryA().setStrokeWidth(10);
 						}
 					}
 					
-					else {
-						if(!matchFX.getRound().isOwnLand(countryArray[COUNT]) && matchFX.getRound().isNeighbour(matchFX.getRound().getCountryA(), countryArray[COUNT])) {
-							matchFX.getRound().setCountryB(countryArray[COUNT]);
-							matchFX.getRound().startFight();
-						}
+					// Sonst wenn es nicht das eigene Land ist und benachbart ist...
+					else if(!matchFX.getRound().isOwnLand(countryArray[COUNT]) && matchFX.getRound().isNeighbour(matchFX.getRound().getCountryA(), countryArray[COUNT])) {
+						// ...wird das zweite Land ausgewählt und der Kampf gestartet
+						matchFX.getRound().setCountryB(countryArray[COUNT]);
+						matchFX.getRound().startFight();
 					}
 				}
 				
+				// Wenn man in der 3. Phase (bewegen) steckt...
 				else if(matchFX.getRound().isMove()) {
+					// Wenn es das eigene Land ist...
 					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
+						// Wenn noch nicht das erste Land ausgewählt wurde...
 						if(matchFX.getRound().getCountryA() == null) {
+							// ...wird das erste Land ausgewählt
 							matchFX.getRound().setCountryA(countryArray[COUNT]);
-							matchFX.getRound().getCountryA().setStrokeWidth(10);
 						}
 						
+						// Sonst...
 						else {
+							// ...wird das zweite Land ausgewählt
 							matchFX.getRound().setCountryB(countryArray[COUNT]);
-							
+							// ...Wenn das Land benachbart ist und das erste Land mehr als eine Einheit beinhaltet
 							if(matchFX.getRound().isNeighbour(matchFX.getRound().getCountryA(), matchFX.getRound().getCountryB()) && matchFX.getRound().getCountryA().getUnits() > 1) {
+								// ...wird eine Einheit vom ersten Land zum zweiten Land verschoben
 								matchFX.getRound().getCountryA().setUnits(matchFX.getRound().getCountryA().getUnits() - 1);
 								matchFX.getRound().getCountryB().setUnits(matchFX.getRound().getCountryB().getUnits() + 1);
 							}
-							
-							matchFX.getRound().getCountryA().setStrokeWidth(0);
+							// ...werden das erste und zweite Land zurückgesetzt
 							matchFX.getRound().setCountryA(null);
 							matchFX.getRound().setCountryB(null);
 						}	
 					}
 				}
 				
-				/*
-				 * Falls wir etwas mit Rechtsklick brauchen ->
-				 * if(((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)) WENN RECHTSKLICK
-				 */
-				
+				// Wenn man alle Einheiten in der 0. Phase (einzeln setzen) verteilt hat...
 				if(matchFX.getRound().isAssign() && matchFX.getRound().isFinishedAssigning()) {
+					// ...erhält der erste Spieler seine Einheiten pro Runde
 					matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() + matchFX.getRound().getActivePlayer().getUnitsPerRound());
+					// ...wird die 0. Phase beendet und die 1. Phase begonnen
 					matchFX.getRound().setAssign(false);
 					matchFX.getRound().setAdd(true);
-					matchFX.getRound().setActivePlayerIndex(0);
 					matchFX.getRound().phaseAdd();
 				}
 				
+				// Aktualisiert das Interface
 				matchFX.getRound().updatePlayerInterface(matchFX.getRound().getActivePlayer());
-				matchFX.updateTerritoryInfo(countryArray[COUNT]);
+				matchFX.updateCountryInfo(countryArray[COUNT]);
 		    });
-
+			
+			// Wenn der Cursor auf einem Land platziert wird
 	    	countryArray[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-	    		matchFX.updateTerritoryInfo(countryArray[COUNT]);
+	    		// Aktualisiert das Interface
+	    		matchFX.updateCountryInfo(countryArray[COUNT]);
 	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
 	    	});
-	    	
+
 		}
     }
 

@@ -151,6 +151,14 @@ public class Player {
 		this.card3 = card3;
 	}
 
+	public void addCountry(Country country) {
+		this.countryList.add(country);
+	}
+
+	public void removeCountry(Country country) {
+		this.countryList.remove(country);
+	}
+
 
 }
 
