@@ -2,15 +2,15 @@ package sqlCreation;
 
 import sqlConnection.Lobby;
 import sqlConnection.Player;
-import sqlConnection.SqlHelper;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.sql.Statement;
-
+/**
+ * @author pbs2h17awb
+ * Testklasse für Performance optimierung und
+ * implementierung neuer DB features
+ */
 public class SqlPerformanceTest {
 
-    public static void main(String[] args) throws SQLException, IOException {
+    public static void main(String[] args) {
         boolean useTimer = true;
         long endTime = 0;
         long startTime = 0;

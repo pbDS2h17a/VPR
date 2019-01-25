@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public class MySQLConnection {
 	
-	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
+	public static void main(String[] args) throws IOException {
 		// Datei einlesen
-		FileReader.readFile("src\\resources\\stammdaten4.csv");
-		// Daten über getter erhalten
+		FileReader.readFile();
+		// Daten für einzelne Bereiche über getter erhalten
 		String[] continentData = FileReader.getContinent();
 		String[] countryData = FileReader.getCountry();
 		String[] missionData = FileReader.getMission();
@@ -17,10 +17,11 @@ public class MySQLConnection {
 
 		// Constraint werden deaktiviert
 		// damit alle Tabellen erstellt werden können
+		// ohne die Reihenfolge einzuhalten
 		SqlQuery.disableForeignKeyConstraints();
 
 		// Alle Drop statements werden aufgeführt
-		// um Fehler vorzubeugen
+		// damit die Datenbank vollständig zurückgesetzt wird
 		SqlQuery.dropTable("card");
 		SqlQuery.dropTable("card_player");
 		SqlQuery.dropTable("chat");
@@ -59,12 +60,9 @@ public class MySQLConnection {
 		SqlQuery.fillMissions(missionData);
 		SqlQuery.fillColor(colorData);
 		
-		// Testdaten einfügen
-		// SqlQuery.fillTestData(1);
-		
 		// Constraint werden wieder aktiviert
 		SqlQuery.enableForeignKeyConstraints();
-			
+
 		System.out.println("Tabellen erfolgreich zurückgesetzt");
 
 	}

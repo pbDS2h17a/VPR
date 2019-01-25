@@ -1,13 +1,11 @@
 package sqlCreation;
 
 import sqlConnection.SqlHelper;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 /**
- * @author basti
+ * @author pbs2h17awb
  * SQL Queries zum Erstellen der Stammdatenbank
  */
 class SqlQuery {
@@ -199,7 +197,7 @@ class SqlQuery {
 	 * Löscht den Table aus der Tabelle wenn er vorhanden ist
 	 * @param tableName Name der zu löschenden Tabelle
 	 */
-	public static void dropTable(String tableName) {
+	static void dropTable(String tableName) {
 		try {
 			stmt.executeUpdate("DROP TABLE IF EXISTS "+tableName);
 		} catch (SQLException e) {

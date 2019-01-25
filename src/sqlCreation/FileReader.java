@@ -1,9 +1,6 @@
 package sqlCreation;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -12,22 +9,23 @@ import java.nio.charset.StandardCharsets;
  * Datenbklöcke auf.
  * Die Datenblöcke werden an die SqlQeury fillStatements übergeben
  */
-public class FileReader {
+class FileReader {
 	private static String[] continentData = null;
 	private static String[] countryData = null;
 	private static String[] missionData = null;
 	private static String[] cardData = null;
 	private static String[] colorData = null;
-	
 
-	/**
-	 * @param path Pfad your Stammdaten datei
-	 * @throws IOException 
-	 */
-	static void readFile(String path) throws IOException {
-		//BufferedReader br = new BufferedReader(new FileInputStream(path));
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-			    new FileInputStream(path), StandardCharsets.UTF_8));
+	static void readFile() {
+		String path = "src\\resources\\stammdaten4.csv";
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(
+					new FileInputStream(path), StandardCharsets.UTF_8));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
 		try {  
 		    String line;
 		    String currentBlock = "";
@@ -36,22 +34,24 @@ public class FileReader {
 		    while ((line = br.readLine()) != null) {
 	    		// Kommentare (//) werden ignoriert
 		    	if(!line.startsWith("//")) {
-					// START und END befehle werden nicht bearbeitet
+					// #START und #END befehle werden nicht bearbeitet
 					if(!line.startsWith("#")) {
-						//System.out.println(line);
 						currentData += line + "\n";
 					}
 					   
-					// Start befehl
+					// Startbefehl
 					if(line.startsWith("#START")) {
+						// Aktueller Name des Blockes steht hinter #START
+						// 7 = #START länge + 1 Leerzeichen
 						currentBlock = line.substring(7);
+						// Datenblock wird auf leer gesetzt
 						currentData = "";
 					}
 					
-					// End befehl
+					// Endbefehl
 					if(line.startsWith("#END")) {
 						// Zuweisung der Aktuellen Daten in den richtigen Block
-						// Name hier muss übereinstimmen mit Name in Stammdaten datei! 
+						// Name hier muss übereinstimmen mit Name in Stammdaten datei!
 						switch(currentBlock) {
 						case "KONTINENT":				
 							continentData = currentData.split("\n");						
@@ -68,6 +68,9 @@ public class FileReader {
 						case "FARBE":
 							colorData = currentData.split("\n");
 							break;
+						default:
+							System.out.println("Fehler beim einlesen der Stammdaten! Ein Blockname konnte nicht zugewiesen werden");
+							return;
 						}
 						
 						// Blöcke und Daten zurücksetzen
@@ -76,45 +79,65 @@ public class FileReader {
 					}  	   
 		     	}
 		    }
+		} catch (IOException e) {
+			// Fehler abfangen
+			System.out.println("Fehler beim Lesen der Datei:"+path);
+			e.printStackTrace();
 		} finally {
-		    br.close();
+			// Versuche den Reader zu schließen
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
 	
 	/**
-	 * @return getter für Kontinent Daten
-	 * 		   Werden in der SqlQuery fill methode weiter aufgeteilt
+	 * getter für Kontinent Daten
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 * @return continentData mit Trennzeichen geteilt
+	 * @see SqlQuery#fillContinent(String[]) 
 	 */
 	static String[] getContinent() {
 		return continentData;	
 	}
 	
 	/**
-	 *
-	 * @return getter für Länder Daten
+	 * getter für Länder Daten
 	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 * @return countryData mit Trennzeichen geteilt
+	 * @see SqlQuery#fillCountry(String[])
 	 */
 	static String[] getCountry() {
 		return countryData;
 	}
 	/**
-	 * 
-	 * @return getter für Mission Daten
+	 * getter für Mission Daten
 	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 * @return missionData mit Trennzeichen geteilt
+	 * @see SqlQuery#fillMissions(String[])
 	 */
 	static String[] getMission() {
 		return missionData;
 	}
 	/**
-	 *
-	 * @return getter für Karten Daten
+	 * getter für Karten Daten
 	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 * @return cardData mit Trennzeichen geteilt
+	 * @see SqlQuery#fillCard(String[])
 	 */
 	static String[] getCard() {
 		return cardData;
 	}
-	
+
+	/**
+	 * getter für Farbe Datem
+	 * Werden in der SqlQuery fill methode weiter aufgeteilt
+	 * @return colorData mit Trennzeichen geteilt
+	 * @see SqlQuery#fillColor(String[])
+	 */
 	static String[] getColor(){
 		return colorData;
 	}
