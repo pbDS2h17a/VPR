@@ -98,6 +98,7 @@ public class MatchFX {
 	private Group battleB_GroupDices = new Group();
 	private Label battleB_Dice1 = new Label();
 	private Label battleB_Dice2 = new Label();
+	private Player[] playersInLobby;
 	
 	/**
 	 * Constructor.
@@ -122,7 +123,8 @@ public class MatchFX {
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 
 	    // Einzelnes Land
-	    for(int i = 0; i < countryArray.length; i++) {	
+	    for(int i = 0; i < countryArray.length; i++) {
+	    		// Länder werden initalisiert
 		    	try {
 					countryArray[i] = new Country(i+1);
 				} catch (SQLException e) {
@@ -130,22 +132,13 @@ public class MatchFX {
 					e.printStackTrace();
 				}
 		    	territory_group[i] = new Group();
-		    	// System.out.println(territoryArray[i].length());
 
 		    	countryArray[i].setFill(Color.WHITE);
 		    	countryArray[i].setStroke(Color.WHITE);
 		    	countryArray[i].setStrokeWidth(0);
 		    	countryArray[i].setScaleX(1.01);
 		    	countryArray[i].setScaleY(1.01);
-//		    	territorySVG[i].setNeighborIDArray(SqlHelper.getCountryNeighbor((i+1)));
-//		    	for (int j : SqlHelper.getCountryNeighbor((i+1))) {
-//		    		System.out.print(j + " ");
-//		    	}
-//		    	System.out.println();
 
-		    	
-
-		    	
 		    	groupLands.getChildren().add(countryArray[i]);
 	    	}
 	    
@@ -411,7 +404,6 @@ public class MatchFX {
 		// Verteilung der Länder auf die Spieler		
 		// Länderarray wird in eine Liste konvertiert
 		Lobby lobby = lobbyFX.getLobby();
-		final Player[] playersInLobby;
 		int lobbyId = lobby.getLobbyId();
 		int userCount;
 		
@@ -452,7 +444,7 @@ public class MatchFX {
 		
 		userCount = lobby.getPlayers().length;
 		Random rand = new Random();
-		
+		// Verteilung der Länder
 		for (int i = 0; i < countryArray.length; i++) {	
 			// zufälliges Land aus Liste
 			Player currentPlayer = playersInLobby[userCount-1];
@@ -732,7 +724,7 @@ public class MatchFX {
 		    		System.out.println("B Einheiten vorher: " + round.getCountryB().getUnits());
 		    		System.out.println("A schickt in den Tod: " + round.getBattleUnitsA());
 		    		System.out.println("B schickt in den Tod: " + round.getBattleUnitsB());
-		    		
+
 		    		// Button wird deaktiviert um weitere Eingaben zu vermeiden
 		    		battleBtnReady.setActive(false);
 		    		

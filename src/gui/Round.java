@@ -263,6 +263,11 @@ public class Round {
 		System.out.println("A Einheiten nachher: " + countryAttack.getUnits());
 		System.out.println("B Einheiten nachher: " + countryDefense.getUnits());
 		System.out.println();
+
+		//Debug ausgabe
+		for (Player p : playerArray) {
+			System.out.println(p);
+		}
 	}
 
 	public Integer[][] rollTheDice(int battleUnitsA, int battleUnitsB) {

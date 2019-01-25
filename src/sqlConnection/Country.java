@@ -135,7 +135,16 @@ public class Country extends SVGPath {
 	 * @param newOwner : Player Objekt
 	 */
 	public void setOwner(Player newOwner) {
+		// Land wird vom Aktuellen Besitzer entfernt
+		if(this.owner != null) {
+			this.owner.removeCountry(this);
+		}
+
+		// Beseitzer wird auf den neuen Spieler gesetzt
 		this.owner = newOwner;
+		// Dem neuen Besitzer wird das Land hinzugefügt
+		newOwner.addCountry(this);
+		// Der Besitzer des Landes ändert sich
 		SqlHelper.updateCountryOwner(newOwner.getLobbyId(), newOwner.getPlayerId(),  this.countryId);
 	}
 	
