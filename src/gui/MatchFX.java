@@ -520,8 +520,6 @@ public class MatchFX {
 			countryArray[i].setStrokeWidth(0);
 			countryArray[i].setEffect(null);
 		}
-		
-		//System.out.println(country.getCountryName());
 
 		// Add the new changes
 		int[] cArr = country.getNeighborIdArray();
