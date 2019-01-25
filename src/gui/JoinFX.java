@@ -60,7 +60,7 @@ public class JoinFX {
 	    for(int i = 0; i < lobbyIdArray.length; i++) {
 	    	String s = "";
 	    	
-	    	s += "Lobby Nummer " + i + " (klicken zum beitreten)";
+	    	s += "Lobby Nummer " + lobbyIdArray[i] + " (klicken zum beitreten)";
 	    	
 	    	listUsers[i] = new Label(s);
 	    	listUsers[i].setPrefWidth(850);

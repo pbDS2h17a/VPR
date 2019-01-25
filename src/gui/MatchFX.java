@@ -49,7 +49,6 @@ public class MatchFX {
 	private Round round;
 	private LobbyFX lobbyFX;
 	private Country currentCountry = null;
-	private Player[] playerArray;
 	private Pane ctn = new Pane();
 	private Pane groupTerritoryInfo = new Pane();
 	private Label territoryInfoLabel = new Label();
