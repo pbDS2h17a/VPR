@@ -8,7 +8,7 @@ import sqlConnection.Player;
  * Testklasse für Performance optimierung und
  * implementierung neuer DB features
  */
-public class SqlPerformanceTest {
+public class SqlTester {
 
     public static void main(String[] args) {
         boolean useTimer = true;

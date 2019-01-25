@@ -1,19 +1,22 @@
 package sqlCreation;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-public class MySQLConnection {
+/**
+ * @author pbs2h17awb
+ * Setzt die Datenbank zurück
+ * Löscht alle Laufdaten
+ * Stellt Stammdaten aus der Resourcedatei wieder her
+ */
+public class SqlCreater {
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		// Datei einlesen
-		FileReader.readFile();
+		SqlReader.readFile();
 		// Daten für einzelne Bereiche über getter erhalten
-		String[] continentData = FileReader.getContinent();
-		String[] countryData = FileReader.getCountry();
-		String[] missionData = FileReader.getMission();
-		String[] cardData = FileReader.getCard();
-		String[] colorData = FileReader.getColor();
+		String[] continentData = SqlReader.getContinent();
+		String[] countryData = SqlReader.getCountry();
+		String[] missionData = SqlReader.getMission();
+		String[] cardData = SqlReader.getCard();
+		String[] colorData = SqlReader.getColor();
 
 		// Constraint werden deaktiviert
 		// damit alle Tabellen erstellt werden können
@@ -37,7 +40,7 @@ public class MySQLConnection {
 		SqlQuery.dropTable("player_country");
 		SqlQuery.dropTable("color_player");
 			
-		// Tabllen werden erstellt
+		// Tabllen werden neu erstellt
 		SqlQuery.createTableContinent();
 		SqlQuery.createTableCountry();
 		SqlQuery.createTableNeighbor();
@@ -52,7 +55,7 @@ public class MySQLConnection {
 		SqlQuery.createTableColorPlayer();
 		SqlQuery.createTableChat();
 	
-		// Tabellen werden gefüllt
+		// Tabellen werden mit Inhalt der Stammdaten Datei gefüllt
 		SqlQuery.fillContinent(continentData);
 		SqlQuery.fillCountry(countryData);
 		SqlQuery.fillNeighbor(countryData);

@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
  * Datenbklöcke auf.
  * Die Datenblöcke werden an die SqlQeury fillStatements übergeben
  */
-class FileReader {
+class SqlReader {
 	private static String[] continentData = null;
 	private static String[] countryData = null;
 	private static String[] missionData = null;
@@ -98,7 +98,7 @@ class FileReader {
 	 * getter für Kontinent Daten
 	 * Werden in der SqlQuery fill methode weiter aufgeteilt
 	 * @return continentData mit Trennzeichen geteilt
-	 * @see SqlQuery#fillContinent(String[]) 
+	 * @see SqlQuery#fillContinent(String[])
 	 */
 	static String[] getContinent() {
 		return continentData;	
