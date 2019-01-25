@@ -17,7 +17,6 @@ public class UpdateListener extends Thread {
 
     @Override
     public void run() {
-
         while(isRunning) {
             long newLastChange = SqlHelper.getLastChange(lobbyId);
 
