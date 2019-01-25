@@ -38,7 +38,7 @@ public class MatchFX {
     private Player[] playersInLobby;
 	private Pane ctn = new Pane();
 	private Pane countryUnitsGroup = new Pane();
-	private Country[] countryArray = new Country[42];
+	private Country[] getCountryArray = new Country[42];
 	private Group inventoryGroup = new Group();
 	private Group inventoryMissionGroup = new Group();
 	private Group phaseBtnGroup = new Group();
@@ -46,6 +46,7 @@ public class MatchFX {
 	private Group fightGroup = new Group();
 	private Group battleA_GroupDices = new Group();
 	private Group battleB_GroupDices = new Group();
+	private Label[] countryUnitsLabelArray = new Label[getCountryArray.length];
 	private Label countryUnitsLabel = new Label();
 	private Label playerNameLabel = new Label();
 	private Label countryNameLabel = new Label();
@@ -63,7 +64,6 @@ public class MatchFX {
 	private Label battleA_Dice3 = new Label();
 	private Label battleB_Dice1 = new Label();
 	private Label battleB_Dice2 = new Label();
-
 	private Label fightCountryOneUnits = new Label();
 	private Label fightCountryTwoUnits = new Label();
 	private TextField fightCountryOneInput = new TextField();
@@ -82,10 +82,12 @@ public class MatchFX {
 	private Polygon playerNameBG = new Polygon();
 	private Polygon countryNameBG = new Polygon();
 	private Polygon fightArrow = new Polygon();
+	private Rectangle[] countryUnitsBGArray = new Rectangle[getCountryArray.length];
 	private Rectangle countryUnitsBG = new Rectangle(80, 80);
 	private Rectangle fightCountryOneBG = new Rectangle(960, 1080);
 	private Rectangle fightCountryTwoBG = new Rectangle(960, 1080);
 	private ColorAdjust colorAdjust = new ColorAdjust();
+	private double[][] worldMapCoordinates;
 
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
@@ -110,24 +112,34 @@ public class MatchFX {
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 
 	    // Schleife um einzelne Länder zu erzeugen
-	    for(int i = 0; i < countryArray.length; i++) {	
+	    for(int i = 0; i < getCountryArray.length; i++) {	
 		    	try {
 		    		// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
-					countryArray[i] = new Country(i+1);
+					getCountryArray[i] = new Country(i+1);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 
-		    	countryArray[i].setFill(Color.WHITE);
-		    	countryArray[i].setStroke(Color.WHITE);
-		    	countryArray[i].setStrokeWidth(0);
-		    	countryArray[i].setScaleX(1.02);
-		    	countryArray[i].setScaleY(1.02);
-		    	groupLands.getChildren().add(countryArray[i]);
+		    	getCountryArray[i].setFill(Color.WHITE);
+		    	getCountryArray[i].setStroke(Color.WHITE);
+		    	getCountryArray[i].setStrokeWidth(0);
+		    	getCountryArray[i].setScaleX(1.02);
+		    	getCountryArray[i].setScaleY(1.02);
+		    	groupLands.getChildren().add(getCountryArray[i]);
 	    	}
 	    
 	    ctn.getChildren().add(groupLands);
 
+//	    for (int i = 0; i < countryArray.length; i++) {
+//			System.out.println(countryArray[i].getCountryName());
+//		}
+//	    
+//	    ctn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+//	    	int x = (int) event.getX() - 20;
+//	    	int y = (int) event.getY() - 20;
+//	    	System.out.println("{"+x+", "+y+"},");
+//	    });
+	    
 	    // Informationen des Spielers der oben Links angezeigt wird (Hintergrund)
     	playerNameBG.getPoints().addAll(0.0, 0.0,
 				380.0, 0.0,
@@ -172,7 +184,7 @@ public class MatchFX {
 	    countryUnitsGroup.relocate(1130, 960);
 	    // Informationen der Einheiten die im Land unten angezeigt wird (Hintergrund)
     	countryUnitsBG.setStroke(Color.WHITE);
-    	countryUnitsBG.setStrokeWidth(5);
+    	countryUnitsBG.setStrokeWidth(3);
     	countryUnitsBG.setStrokeType(StrokeType.INSIDE);
     	countryUnitsBG.setFill(Color.GREY);
     	countryUnitsBG.setArcHeight(200);
@@ -184,6 +196,68 @@ public class MatchFX {
     	countryUnitsLabel.relocate(0, 0);
     	countryUnitsGroup.getChildren().add(countryUnitsLabel);
     	ctn.getChildren().add(countryUnitsGroup);
+    	
+    	worldMapCoordinates = new double[][] {
+			{392, 234},
+			{503, 298},
+			{519, 503},
+			{608, 434},
+			{746, 196},
+			{529, 221},
+			{589, 321},
+			{668, 321},
+			{512, 393},
+			{620, 810},
+			{719, 657},
+			{587, 681},
+			{626, 547},
+			{820, 374},
+			{848, 277},
+			{927, 372},
+			{928, 257},
+			{928, 460},
+			{1041, 314},
+			{836, 462},
+			{976, 714},
+			{1071, 695},
+			{973, 567},
+			{1093, 827},
+			{876, 617},
+			{981, 821},
+			{1134, 410},
+			{1274, 464},
+			{1203, 531},
+			{1294, 315},
+			{1441, 403},
+			{1438, 218},
+			{1075, 538},
+			{1311, 388},
+			{1310, 575},
+			{1223, 228},
+			{1159, 293},
+			{1315, 200},
+			{1492, 843},
+			{1320, 716},
+			{1434, 674},
+			{1364, 828}
+    	};
+    	
+    	for (int i = 0; i < worldMapCoordinates.length; i++) {
+			countryUnitsBGArray[i] = new Rectangle(40, 40);
+			countryUnitsBGArray[i].setStroke(Color.WHITE);
+			countryUnitsBGArray[i].setStrokeWidth(4);
+			countryUnitsBGArray[i].setFill(Color.GREY);
+			countryUnitsBGArray[i].setArcHeight(200);
+			countryUnitsBGArray[i].setArcWidth(200);
+			countryUnitsBGArray[i].relocate(worldMapCoordinates[i][0], worldMapCoordinates[i][1]);
+			ctn.getChildren().add(countryUnitsBGArray[i]);
+			
+			countryUnitsLabelArray[i] = new Label("99");
+			countryUnitsLabelArray[i].setPrefSize(42, 42);
+			countryUnitsLabelArray[i].relocate(worldMapCoordinates[i][0], worldMapCoordinates[i][1]);
+			countryUnitsLabelArray[i].setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
+			ctn.getChildren().add(countryUnitsLabelArray[i]);
+		}
     	
     	// Das Inventar des aktuellen Spielers (Gruppe)
     	inventoryGroup.relocate(10, 80);
@@ -379,7 +453,7 @@ public class MatchFX {
 		int lobbyId = lobby.getLobbyId();
 		int userCount;
 		
-		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
+		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(getCountryArray));
 		
 		// Erstellen der Testspieler
 		Player p1 = new Player("Bob1", lobby);
@@ -411,7 +485,7 @@ public class MatchFX {
 		userCount = lobby.getPlayers().length;
 		Random rand = new Random();
 		// Verteilung der Länder
-		for (int i = 0; i < countryArray.length; i++) {	
+		for (int i = 0; i < getCountryArray.length; i++) {	
 			// Zufälliges Land aus der Länder-Liste wird ausgewählt
 			Player currentPlayer = playersInLobby[userCount-1];
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
@@ -419,8 +493,6 @@ public class MatchFX {
 			randomCountry.setOwner(currentPlayer);
 			randomCountry.setFill(Color.web(currentPlayer.getColor()));
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
-			// Land aus der Liste entfernen
-			countryList.remove(randomCountry);
 
 			// Wenn die Spieler-Liste am Ende angekommen ist...
 			if(userCount == 1) {
@@ -432,17 +504,19 @@ public class MatchFX {
 			}
 		}
 
+		// Passt die Einheiten-Anzeige der Länder an
+//		for (int i = 0; i < countryArray.length; i++) {
+//			countryUnitsBGArray[i].setFill(countryArray[i].getFill());
+//			countryUnitsLabelArray[i].setText(String.valueOf(countryArray[i].getUnits()));
+//		}
+		
 		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
 		updateActivePlayer(playersInLobby[0].getName(), Color.web(playersInLobby[0].getColor()));
-
-	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	round = new Round(this, playersInLobby);
-	    });
-
 	}
 	
 	/**
-	 * Aktualisiert Die Land-Informationen mittig unten auf der Weltkarte
+	 * Aktualisiert die Land-Informationen mittig unten auf der Weltkarte
+	 * 
 	 * @param country Country
 	 */
 	public void updateCountryInfo(Country country) {
@@ -463,6 +537,7 @@ public class MatchFX {
 
 	/**
 	 * Markiert das gewählte Land und deren Nachbarn
+	 * 
 	 * @param country Country
 	 */
 	public void gameMarkNeighbourCountrys(Country country) {
@@ -474,22 +549,30 @@ public class MatchFX {
 		colorAdjust.setBrightness(0.2);
 		colorAdjust.setContrast(0.5);
 		colorAdjust.setHue(0.05);
-		for (int i = 0; i < countryArray.length; i++) {
-			countryArray[i].setStrokeWidth(0);
-			countryArray[i].setEffect(null);
+		for (int i = 0; i < getCountryArray.length; i++) {
+			getCountryArray[i].setStrokeWidth(0);
+			getCountryArray[i].setEffect(null);
 		}
 
 		// Add the new changes
 		int[] cArr = country.getNeighborIdArray();
 
 		for (int i = 0; i < cArr.length; i++) {
-			countryArray[cArr[i]-1].setStrokeWidth(5);
-			countryArray[cArr[i]-1].setEffect(colorAdjust);
+			getCountryArray[cArr[i]-1].setStrokeWidth(5);
+			getCountryArray[cArr[i]-1].setEffect(colorAdjust);
 			country.setStrokeWidth(5);
 			country.setEffect(colorAdjust);
 		}
 	}
-	
+
+	public Label[] getCountryUnitsLabelArray() {
+		return countryUnitsLabelArray;
+	}
+
+	public Rectangle[] getCountryUnitsBGArray() {
+		return countryUnitsBGArray;
+	}
+
 	public void gameChangePlayerUnits(int i) {
 		inventoryUnitsLabel.setText(Integer.toString(i));
 	}
@@ -573,8 +656,8 @@ public class MatchFX {
 	}
 	
 	public void activateWorldMap(boolean isActive) {
-		for (int i = 0; i < countryArray.length; i++) {
-			countryArray[i].setVisible(isActive);
+		for (int i = 0; i < getCountryArray.length; i++) {
+			getCountryArray[i].setVisible(isActive);
 		}
 	}
 	
@@ -602,7 +685,7 @@ public class MatchFX {
 	}
 
 	public Country[] getCountryArray() {
-		return countryArray;
+		return getCountryArray;
 	}
 
 	public Sprite getPhaseBtn1() {

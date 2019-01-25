@@ -331,110 +331,44 @@ public class MainApp extends Application {
 	    for (int i = 0; i < matchFX.getCountryArray().length; i++) {
 			final int COUNT = i;
 			
-			// Wenn ein Land angeklickt wird
+			// Wenn ein Land oder die Einheiten im Land angeklickt werden
 			countryArray[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				
-				// Wenn man in der 0. Phase (einzeln setzen) steckt...
-				if(matchFX.getRound().isAssign()) {
-					// Wenn einem das Land gehört...
-					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
-						// ...werden die ungesetzten Einheiten um eins reduziert
-						matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() - 1);
-						// ...bekommt das Land eine Einheit dazu
-						countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
-						
-						// Wenn man am Ende der Spieler-Liste angekommen ist...
-						if(matchFX.getRound().getActivePlayerIndex() == matchFX.getRound().getPlayerArray().length-1) {
-							// ...ist der 1. Spieler wieder der aktive Spieler
-							matchFX.getRound().setActivePlayerIndex(0);
-						} else {
-							// sonst wird der nächste Spieler der aktive Spieler
-							matchFX.getRound().setActivePlayerIndex(matchFX.getRound().getActivePlayerIndex() + 1);
-						}
-					}
-				}
-				
-				// Wenn man in der 1. Phase (setzen) steckt...
-				else if(matchFX.getRound().isAdd()) {
-					// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
-					if(matchFX.getRound().isOwnLand(countryArray[COUNT]) && matchFX.getRound().getActivePlayer().getUnassignedUnits() > 0) {
-						// ...wird ein Spieler aus dem Inventar verschoben...
-						matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() - 1);
-						// ...und dem Land hinzugefügt 
-						countryArray[COUNT].setUnits(countryArray[COUNT].getUnits() + 1);
-						// ...wird das Interface mit den Land-Informationen aktualisiert
-						matchFX.updateCountryInfo(countryArray[COUNT]);
-					}
-				}
-				
-				// Wenn man in der 2. Phase (kämpfen) steckt...
-				else if(matchFX.getRound().isFight()) {
-					// Wenn noch nicht das erste Land ausgewählt wurde...
-					if(matchFX.getRound().getCountryA() == null) {
-						// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
-						if(matchFX.getRound().isOwnLand(countryArray[COUNT]) && countryArray[COUNT].getUnits() > 1) {
-							// ...wird das erste Land ausgewählt
-							matchFX.getRound().setCountryA(countryArray[COUNT]);
-						}
-					}
-					
-					// Sonst wenn es nicht das eigene Land ist und benachbart ist...
-					else if(!matchFX.getRound().isOwnLand(countryArray[COUNT]) && matchFX.getRound().isNeighbour(matchFX.getRound().getCountryA(), countryArray[COUNT])) {
-						// ...wird das zweite Land ausgewählt und der Kampf gestartet
-						matchFX.getRound().setCountryB(countryArray[COUNT]);
-						matchFX.getRound().startFight();
-					}
-				}
-				
-				// Wenn man in der 3. Phase (bewegen) steckt...
-				else if(matchFX.getRound().isMove()) {
-					// Wenn es das eigene Land ist...
-					if(matchFX.getRound().isOwnLand(countryArray[COUNT])) {
-						// Wenn noch nicht das erste Land ausgewählt wurde...
-						if(matchFX.getRound().getCountryA() == null) {
-							// ...wird das erste Land ausgewählt
-							matchFX.getRound().setCountryA(countryArray[COUNT]);
-						}
-						
-						// Sonst...
-						else {
-							// ...wird das zweite Land ausgewählt
-							matchFX.getRound().setCountryB(countryArray[COUNT]);
-							// ...Wenn das Land benachbart ist und das erste Land mehr als eine Einheit beinhaltet
-							if(matchFX.getRound().isNeighbour(matchFX.getRound().getCountryA(), matchFX.getRound().getCountryB()) && matchFX.getRound().getCountryA().getUnits() > 1) {
-								// ...wird eine Einheit vom ersten Land zum zweiten Land verschoben
-								matchFX.getRound().getCountryA().setUnits(matchFX.getRound().getCountryA().getUnits() - 1);
-								matchFX.getRound().getCountryB().setUnits(matchFX.getRound().getCountryB().getUnits() + 1);
-							}
-							// ...werden das erste und zweite Land zurückgesetzt
-							matchFX.getRound().setCountryA(null);
-							matchFX.getRound().setCountryB(null);
-						}	
-					}
-				}
-				
-				// Wenn man alle Einheiten in der 0. Phase (einzeln setzen) verteilt hat...
-				if(matchFX.getRound().isAssign() && matchFX.getRound().isFinishedAssigning()) {
-					// ...erhält der erste Spieler seine Einheiten pro Runde
-					matchFX.getRound().getActivePlayer().setUnassignedUnits(matchFX.getRound().getActivePlayer().getUnassignedUnits() + matchFX.getRound().getActivePlayer().getUnitsPerRound());
-					// ...wird die 0. Phase beendet und die 1. Phase begonnen
-					matchFX.getRound().setAssign(false);
-					matchFX.getRound().setAdd(true);
-					matchFX.getRound().phaseAdd();
-				}
-				
-				// Aktualisiert das Interface
-				matchFX.getRound().updatePlayerInterface(matchFX.getRound().getActivePlayer());
-				matchFX.updateCountryInfo(countryArray[COUNT]);
+				matchFX.getRound().manageCountryClick(COUNT);
 		    });
 			
-			// Wenn der Cursor auf einem Land platziert wird
+			// Wenn ein Land oder die Einheiten im Land angeklickt werden
+	    	matchFX.getCountryUnitsBGArray()[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				matchFX.getRound().manageCountryClick(COUNT);
+		    });
+	    	
+	    	// Wenn ein Land oder die Einheiten im Land angeklickt werden
+	    	matchFX.getCountryUnitsLabelArray()[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				matchFX.getRound().manageCountryClick(COUNT);
+		    });
+			
+			// Wenn der Cursor auf einem Land oder Einheit des Landes platziert wird
 	    	countryArray[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
 	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
 	    	});
+	    	
+	    	// Wenn der Cursor auf einem Land oder Einheit des Landes platziert wird
+	    	matchFX.getCountryUnitsBGArray()[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+	    		// Aktualisiert das Interface
+	    		matchFX.updateCountryInfo(countryArray[COUNT]);
+	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
+	    	});
+	    	
+	    	// Wenn der Cursor auf einem Land oder Einheit des Landes platziert wird
+	    	matchFX.getCountryUnitsLabelArray()[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+	    		// Aktualisiert das Interface
+	    		matchFX.updateCountryInfo(countryArray[COUNT]);
+	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
+	    	});
 
+
+	    	
 		}
     }
 

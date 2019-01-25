@@ -41,6 +41,102 @@ public class Round {
 		this.startInitialRound(playerArray);
 	}
 	
+	public void manageCountryClick(int index) {
+
+		// Wenn man in der 0. Phase (einzeln setzen) steckt...
+		if(isAssign()) {
+			// Wenn einem das Land gehört...
+			if(isOwnLand(match.getCountryArray()[index])) {
+				// ...werden die ungesetzten Einheiten um eins reduziert
+				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
+				// ...bekommt das Land eine Einheit dazu
+				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
+				
+				// Wenn man am Ende der Spieler-Liste angekommen ist...
+				if(getActivePlayerIndex() == getPlayerArray().length-1) {
+					// ...ist der 1. Spieler wieder der aktive Spieler
+					setActivePlayerIndex(0);
+				} else {
+					// sonst wird der nächste Spieler der aktive Spieler
+					setActivePlayerIndex(getActivePlayerIndex() + 1);
+				}
+			}
+		}
+		
+		// Wenn man in der 1. Phase (setzen) steckt...
+		else if(isAdd()) {
+			// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
+			if(isOwnLand(match.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
+				// ...wird ein Spieler aus dem Inventar verschoben...
+				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
+				// ...und dem Land hinzugefügt 
+				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
+				// ...wird das Interface mit den Land-Informationen aktualisiert
+				match.updateCountryInfo(match.getCountryArray()[index]);
+			}
+		}
+		
+		// Wenn man in der 2. Phase (kämpfen) steckt...
+		else if(isFight()) {
+			// Wenn noch nicht das erste Land ausgewählt wurde...
+			if(getCountryA() == null) {
+				// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
+				if(isOwnLand(match.getCountryArray()[index]) && match.getCountryArray()[index].getUnits() > 1) {
+					// ...wird das erste Land ausgewählt
+					setCountryA(match.getCountryArray()[index]);
+				}
+			}
+			
+			// Sonst wenn es nicht das eigene Land ist und benachbart ist...
+			else if(!isOwnLand(match.getCountryArray()[index]) && isNeighbour(getCountryA(), match.getCountryArray()[index])) {
+				// ...wird das zweite Land ausgewählt und der Kampf gestartet
+				setCountryB(match.getCountryArray()[index]);
+				startFight();
+			}
+		}
+		
+		// Wenn man in der 3. Phase (bewegen) steckt...
+		else if(isMove()) {
+			// Wenn es das eigene Land ist...
+			if(isOwnLand(match.getCountryArray()[index])) {
+				// Wenn noch nicht das erste Land ausgewählt wurde...
+				if(getCountryA() == null) {
+					// ...wird das erste Land ausgewählt
+					setCountryA(match.getCountryArray()[index]);
+				}
+				
+				// Sonst...
+				else {
+					// ...wird das zweite Land ausgewählt
+					setCountryB(match.getCountryArray()[index]);
+					// ...Wenn das Land benachbart ist und das erste Land mehr als eine Einheit beinhaltet
+					if(isNeighbour(getCountryA(), getCountryB()) && getCountryA().getUnits() > 1) {
+						// ...wird eine Einheit vom ersten Land zum zweiten Land verschoben
+						getCountryA().setUnits(getCountryA().getUnits() - 1);
+						getCountryB().setUnits(getCountryB().getUnits() + 1);
+					}
+					// ...werden das erste und zweite Land zurückgesetzt
+					setCountryA(null);
+					setCountryB(null);
+				}	
+			}
+		}
+		
+		// Wenn man alle Einheiten in der 0. Phase (einzeln setzen) verteilt hat...
+		if(isAssign() && isFinishedAssigning()) {
+			// ...erhält der erste Spieler seine Einheiten pro Runde
+			getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() + getActivePlayer().getUnitsPerRound());
+			// ...wird die 0. Phase beendet und die 1. Phase begonnen
+			setAssign(false);
+			setAdd(true);
+			phaseAdd();
+		}
+		
+		// Aktualisiert das Interface
+		updatePlayerInterface(getActivePlayer());
+		match.updateCountryInfo(match.getCountryArray()[index]);
+	}
+	
 	public Player getActivePlayer() {
 		return playerArray[activePlayerIndex];
 	}
