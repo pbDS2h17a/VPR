@@ -112,13 +112,9 @@ public class MatchFX {
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 
 	    // Schleife um einzelne Länder zu erzeugen
-	    for(int i = 0; i < getCountryArray.length; i++) {	
-		    	try {
-		    		// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
-					getCountryArray[i] = new Country(i+1);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+	    for(int i = 0; i < getCountryArray.length; i++) {
+				// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
+				getCountryArray[i] = new Country(i+1);
 
 		    	getCountryArray[i].setFill(Color.WHITE);
 		    	getCountryArray[i].setStroke(Color.WHITE);

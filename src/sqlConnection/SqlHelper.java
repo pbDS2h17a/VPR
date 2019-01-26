@@ -184,7 +184,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim holen der Einheiten im Land");
 			e.printStackTrace();
 		}
-		return -unitCount;
+		return unitCount;
 	}
 	/**
 	 * Methode zum Auslesen des Besatzers eines Landes

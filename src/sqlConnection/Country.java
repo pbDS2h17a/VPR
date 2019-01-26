@@ -51,7 +51,7 @@ public class Country extends SVGPath {
 	 * @param id Land ID als Integer
 	 * @throws SQLException
 	 */
-	public Country(int id) throws SQLException {
+	public Country(int id) {
 		this.countryId = id;
 		this.countryContinentId = SqlHelper.getCountryContinentId(id);
 		this.countryName = SqlHelper.getCountryName(id);
