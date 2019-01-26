@@ -1,6 +1,8 @@
 package gui;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -189,7 +191,7 @@ public class MainApp extends Application {
 				mpFX.playBgmGame();
 				
 				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-				matchFX.setRound(new Round(matchFX, matchFX.getLobby().getPlayers()));
+				matchFX.setRound(new Round(matchFX, matchFX.getLobby().getPlayers()) );
 	    	}
 	    });
    

@@ -1,41 +1,33 @@
 package sqlConnection;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * @author Thuﬂ, Frederik
  * @author pbs2h17ath
  */
 public class Lobby {
-	private int playerCount;
 	private final int MAX_PLAYER_COUNT;
-	private Player[] players;
+	private ArrayList<Player> players;
 	private int lobbyId;
 	
 	public Lobby() {
 		this.MAX_PLAYER_COUNT = 6;
-		this.players = new Player[MAX_PLAYER_COUNT];
-		this.lobbyId = SqlHelper.insertLobby(LocalDateTime.now(), System.currentTimeMillis());
+		this.players = new ArrayList<>();
+		this.lobbyId = SqlHelper.insertLobby();
 	}
 	
 	public void setLobbyLeader(int playerId) {
 		SqlHelper.updateLobbyLeader(lobbyId, playerId);
 	}
 
-	public Player[] getPlayers() {
+	public ArrayList<Player> getPlayers() {
 		return players;
-	}
-
-	public void setPlayers(Player[] players) {
-		this.players = players;
 	}
 
 	public int getLobbyId() {
 		return lobbyId;
-	}
-
-	public void setLobbyId(int lobbyId) {
-		this.lobbyId = lobbyId;
 	}
 
 	public int getMAX_PLAYER_COUNT() {
@@ -43,10 +35,14 @@ public class Lobby {
 	}
 	
 	public void addPlayer(Player player) {
-		if (playerCount < MAX_PLAYER_COUNT) {
-			players[playerCount] = player;
-			playerCount++;
+		if (players.size() < MAX_PLAYER_COUNT) {
+			players.add(player);
 		}
+	}
+
+	public void removePlayer(Player player) {
+		players.remove(player);
+		SqlHelper.deletePlayer(player.getPlayerId(), lobbyId);
 	}
 	
 }

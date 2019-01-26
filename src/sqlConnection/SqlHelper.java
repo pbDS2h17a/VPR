@@ -426,16 +426,14 @@ public class SqlHelper {
 	 * @param lobbyId lobby_id
 	 * @return 6 Stelliges int[] mit Spieler Ids
 	 */
-	public static int[] getPlayerIdsFromLobby(int lobbyId) {
+	public static ArrayList<Integer> getPlayerIdsFromLobby(int lobbyId) {
 		String query = String.format("SELECT player_id FROM player WHERE lobby_id = %d", lobbyId);
-		int[] playerIdArray = new int[6];
-		int i = 0;
+		ArrayList<Integer> playerIdList = new ArrayList<>();
 
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			while(rs.next()) {
-				playerIdArray[i] = rs.getInt("player_id");
-				i++;
+				playerIdList.add(rs.getInt("player_id"));
 			}
 
 			rs.close();
@@ -445,7 +443,7 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 
-		return playerIdArray;
+		return playerIdList;
 	}
 
 	//###################################################################################################################
@@ -480,11 +478,10 @@ public class SqlHelper {
 	/**
 	 * Methode zum initiellen hinzufügen der Lobby in die Datenbank
 	 * einige felder bleiben hier vorerst Null, da die zugehörigen werte nicht vorhanden sein können.
-	 * @param localDateTime
 	 * @author pbs2h17ath
 	 * @return lobbyId
 	 */
-	public static int insertLobby(LocalDateTime localDateTime, long lastChange) {
+	public static int insertLobby() {
 		int id = -1;
 		ResultSet rs = null;
 		try {
@@ -499,6 +496,7 @@ public class SqlHelper {
 		}
 		return id;
 	}
+
 	public static void sendMessage(String message, int pid, int lid)
 	{
 		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
@@ -568,6 +566,17 @@ public class SqlHelper {
 	//TODO Implementieren
 	public static void updateCardsPlayer() {
 
+	}
+
+	public static void deletePlayer(int playerId, int lobbyId) {
+		String queryJoinLobby = String.format("DELETE FROM player WHERE player_id = %d;",playerId);
+		try {
+			getStatement().executeUpdate(queryJoinLobby);
+			updateLastChange(lobbyId);
+		} catch (SQLException e) {
+			System.out.println("Error deletePlayer");
+			e.printStackTrace();
+		}
 	}
 
 	/**

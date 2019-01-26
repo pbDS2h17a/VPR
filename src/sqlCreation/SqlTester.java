@@ -23,56 +23,21 @@ public class SqlTester {
 
         System.out.println("LobbyID:"+lobbyId);
 
-        Player[] players = lobby.getPlayers();
+        lobby.addPlayer(new Player("Tom",lobby));
 
-        for (Player p : players) {
-            if(p != null) {
-                System.out.println(p.toString());
-            }
-        }
-
-        int[] ids = SqlHelper.getPlayerIdsFromLobby(lobbyId);
-
-        for (int id : ids) {
-            System.out.print("ID:"+id+", ");
-        }
-
-        System.out.println();
-
-        // LobbyUpdateListener updateListener = new LobbyUpdateListener(lobby);
-
+        LobbyUpdateListener updateListener = new LobbyUpdateListener(lobby);
+        Player p1 = new Player("peter",lobby);
+        Player p2 = new Player("heinz",lobby);
         // Thread starten
-        // updateListener.start();
+        updateListener.start();
         // Flag setzen
-        // updateListener.setRunning(true);
+        updateListener.setRunning(true);
 
-        lobby.addPlayer(new Player("peter",lobby));
-        players = lobby.getPlayers();
-        ids = SqlHelper.getPlayerIdsFromLobby(lobbyId);
+        lobby.addPlayer(p1);
+        lobby.addPlayer(p2);
 
-        for (int id : ids) {
-            System.out.print("ID:"+id+", ");
-        }
-        for (Player p : players) {
-            if(p != null) {
-                System.out.println(p.toString());
-            }
-        }
-        System.out.println();
+        lobby.removePlayer(p1);
 
-        lobby.addPlayer(new Player("thomas",lobby));
-        players = lobby.getPlayers();
-        ids = SqlHelper.getPlayerIdsFromLobby(lobbyId);
-
-        for (int id : ids) {
-            System.out.print("ID:"+id+", ");
-        }
-        System.out.println();
-        for (Player p : players) {
-            if(p != null) {
-                System.out.println(p.toString());
-            }
-        }
         // Timed performance tests
 //        if(useTimer) {
 //            endTime = System.nanoTime();

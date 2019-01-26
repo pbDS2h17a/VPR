@@ -35,7 +35,7 @@ public class MatchFX {
 	private LobbyFX lobbyFX;
 	private Lobby lobby;
 	private Country currentCountry = null;
-    private Player[] playersInLobby;
+    private ArrayList<Player> playersInLobby;
 	private Pane ctn = new Pane();
 	private Pane countryUnitsGroup = new Pane();
 	private Country[] getCountryArray = new Country[42];
@@ -478,12 +478,12 @@ public class MatchFX {
         lobby.setLobbyLeader(p1.getPlayerId());
 		playersInLobby = lobby.getPlayers();
 
-		userCount = lobby.getPlayers().length;
+		userCount = lobby.getPlayers().size();
 		Random rand = new Random();
 		// Verteilung der Länder
 		for (int i = 0; i < getCountryArray.length; i++) {	
 			// Zufälliges Land aus der Länder-Liste wird ausgewählt
-			Player currentPlayer = playersInLobby[userCount-1];
+			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer);
@@ -493,7 +493,7 @@ public class MatchFX {
 			// Wenn die Spieler-Liste am Ende angekommen ist...
 			if(userCount == 1) {
 				// ...wird die Liste wieder von vorne begonnen
-				userCount = playersInLobby.length;
+				userCount = playersInLobby.size();
 			} else {
 				// sonst wird die Liste einen Schritt weiter gegangen
 				userCount--;
@@ -507,7 +507,7 @@ public class MatchFX {
 //		}
 		
 		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
-		updateActivePlayer(playersInLobby[0].getName(), Color.web(playersInLobby[0].getColor()));
+		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColor()));
 	}
 	
 	/**
