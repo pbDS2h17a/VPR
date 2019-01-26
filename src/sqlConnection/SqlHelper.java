@@ -409,9 +409,7 @@ public class SqlHelper {
 		List<List<String>> history = null;
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
-			// System.out.println("Call lÃ¤uft");
 			history = ResultSetManager.toList(rs);
-			rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Fehler in der Chat History");
