@@ -24,48 +24,24 @@ import sqlConnection.SqlHelper;
 
 public class LobbyFX {
 
-	/**
-	 * @param ctn			 : Pane
-	 * @param btnReady		 : Sprite
-	 * @param btnBack		 : Sprite
-	 * @param btnCheck		 : Sprite
-	 * 
-	 * @param inputNameBG	 : Sprite
-	 * @param inputName		 : TextField
-	 * @param inputNameLabel : Label
-	 * 
-	 * @param groupColors	 : Group
-	 * @param colorLabel	 : Label
-	 * @param groupSlots	 : Group
-	 * @param groupRoles	 : Group
-	 * 
-	 * @param slotArray		 : ImageView[]
-	 * @param labelArray	 : Label[]
-	 * @param triangleArray	 : Polygon[]
-	 * @param slotRolesArray : Sprite[]
-	 * @param colorArray	 : String[]
-	 * @param colorRectArray : Rectangle[]
-	 */
-	//FX
 	private Pane ctn = new Pane();
+    private Lobby lobby = new Lobby();
+	private ImageView[] slotArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
+    private TextField inputName = new TextField();
+    private Group groupColors = new Group();
+    private Group groupSlots = new Group();
+    private Group groupRoles = new Group();
+	private Label[] labelArray = new Label[slotArray.length];
+    private Label colorLabel = new Label("Farbe auswählen");
+    private Label inputNameLabel = new Label("Name eingeben");
+    private Rectangle[] colorRectArray = new Rectangle[slotArray.length];
+    private Polygon[] triangleArray = new Polygon[slotArray.length];
+    private Sprite[] slotRolesArray = new Sprite[slotArray.length];
 	private Sprite btnReady = new Sprite("resources/btn_bereit.png");
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
 	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");
 	private Sprite inputNameBG = new Sprite("resources/input_bg.png");
-    private TextField inputName = new TextField();
-    private Label inputNameLabel = new Label("Name eingeben");
-    private Group groupColors = new Group();
-    private Label colorLabel = new Label("Farbe auswählen");
-    private Group groupSlots = new Group();
-    private Group groupRoles = new Group();
-    
-	// Daten
-    private Lobby lobby = new Lobby();
-	private ImageView[] slotArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
-	private Label[] labelArray = new Label[slotArray.length];
-    private Polygon[] triangleArray = new Polygon[slotArray.length];
-    private Sprite[] slotRolesArray = new Sprite[slotArray.length];
-    private Rectangle[] colorRectArray = new Rectangle[slotArray.length];
+
     
 	/**
 	 * Constructor.
