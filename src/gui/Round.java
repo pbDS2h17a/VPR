@@ -18,10 +18,9 @@ import sqlConnection.Country;
 import sqlConnection.Player;
 
 public class Round {
-
 	private int activePlayerIndex;
 	private ArrayList<Player> playerArray;
-	private MatchFX match;
+	private MatchFX matchFX;
 	private boolean assign = true;
 	private boolean add = false;
 	private boolean fight = false;
@@ -32,10 +31,10 @@ public class Round {
 	private int battleUnitsB;
 	private int additionalAttacker;
 
-	public Round(MatchFX match, ArrayList<Player> playerArray) {
+	public Round(MatchFX matchFX, ArrayList<Player> playerArray) {
 		this.activePlayerIndex = 0;
 		this.playerArray = playerArray;
-		this.match = match;
+		this.matchFX = matchFX;
 		
 		this.startInitialRound(playerArray);
 	}
@@ -45,11 +44,11 @@ public class Round {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...
 		if(isAssign()) {
 			// Wenn einem das Land gehört...
-			if(isOwnLand(match.getCountryArray()[index])) {
+			if(isOwnLand(matchFX.getCountryArray()[index])) {
 				// ...werden die ungesetzten Einheiten um eins reduziert
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
 				// ...bekommt das Land eine Einheit dazu
-				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
+				matchFX.getCountryArray()[index].setUnits(matchFX.getCountryArray()[index].getUnits() + 1);
 				
 				// Wenn man am Ende der Spieler-Liste angekommen ist...
 				if(getActivePlayerIndex() == getPlayerArray().size()-1) {
@@ -65,13 +64,13 @@ public class Round {
 		// Wenn man in der 1. Phase (setzen) steckt...
 		else if(isAdd()) {
 			// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
-			if(isOwnLand(match.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
+			if(isOwnLand(matchFX.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
 				// ...wird ein Spieler aus dem Inventar verschoben...
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
 				// ...und dem Land hinzugefügt 
-				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
+				matchFX.getCountryArray()[index].setUnits(matchFX.getCountryArray()[index].getUnits() + 1);
 				// ...wird das Interface mit den Land-Informationen aktualisiert
-				match.updateCountryInfo(match.getCountryArray()[index]);
+				matchFX.updateCountryInfo(matchFX.getCountryArray()[index]);
 			}
 		}
 		
@@ -80,16 +79,16 @@ public class Round {
 			// Wenn noch nicht das erste Land ausgewählt wurde...
 			if(getCountryA() == null) {
 				// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
-				if(isOwnLand(match.getCountryArray()[index]) && match.getCountryArray()[index].getUnits() > 1) {
+				if(isOwnLand(matchFX.getCountryArray()[index]) && matchFX.getCountryArray()[index].getUnits() > 1) {
 					// ...wird das erste Land ausgewählt
-					setCountryA(match.getCountryArray()[index]);
+					setCountryA(matchFX.getCountryArray()[index]);
 				}
 			}
 			
 			// Sonst wenn es nicht das eigene Land ist und benachbart ist...
-			else if(!isOwnLand(match.getCountryArray()[index]) && isNeighbour(getCountryA(), match.getCountryArray()[index])) {
+			else if(!isOwnLand(matchFX.getCountryArray()[index]) && isNeighbour(getCountryA(), matchFX.getCountryArray()[index])) {
 				// ...wird das zweite Land ausgewählt und der Kampf gestartet
-				setCountryB(match.getCountryArray()[index]);
+				setCountryB(matchFX.getCountryArray()[index]);
 				startFight();
 			}
 		}
@@ -97,17 +96,17 @@ public class Round {
 		// Wenn man in der 3. Phase (bewegen) steckt...
 		else if(isMove()) {
 			// Wenn es das eigene Land ist...
-			if(isOwnLand(match.getCountryArray()[index])) {
+			if(isOwnLand(matchFX.getCountryArray()[index])) {
 				// Wenn noch nicht das erste Land ausgewählt wurde...
 				if(getCountryA() == null) {
 					// ...wird das erste Land ausgewählt
-					setCountryA(match.getCountryArray()[index]);
+					setCountryA(matchFX.getCountryArray()[index]);
 				}
 				
 				// Sonst...
 				else {
 					// ...wird das zweite Land ausgewählt
-					setCountryB(match.getCountryArray()[index]);
+					setCountryB(matchFX.getCountryArray()[index]);
 					// ...Wenn das Land benachbart ist und das erste Land mehr als eine Einheit beinhaltet
 					if(isNeighbour(getCountryA(), getCountryB()) && getCountryA().getUnits() > 1) {
 						// ...wird eine Einheit vom ersten Land zum zweiten Land verschoben
@@ -133,19 +132,11 @@ public class Round {
 		
 		// Aktualisiert das Interface
 		updatePlayerInterface(getActivePlayer());
-		match.updateCountryInfo(match.getCountryArray()[index]);
+		matchFX.updateCountryInfo(matchFX.getCountryArray()[index]);
 	}
 	
 	public Player getActivePlayer() {
 		return playerArray.get(activePlayerIndex);
-	}
-	
-	public MatchFX getMatch() {
-		return match;
-	}
-
-	public void setMatch(MatchFX match) {
-		this.match = match;
 	}
 	
 	void setActivePlayerIndex(int i) {
@@ -284,36 +275,36 @@ public class Round {
 		    }
 		    return null;
 		};
-		this.match.getBattleInputA().setText("10");
-		this.match.getBattleInputB().setText("1");
-		addTextLimiter(this.match.getBattleInputA(), 2);
-		this.match.getBattleInputA().setTextFormatter(
+		this.matchFX.getBattleInputA().setText("10");
+		this.matchFX.getBattleInputB().setText("1");
+		addTextLimiter(this.matchFX.getBattleInputA(), 2);
+		this.matchFX.getBattleInputA().setTextFormatter(
 	    new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter));
 		
-		this.match.getBattleInputA().setDisable(false);
-		this.match.getBattleInputB().setDisable(true);
+		this.matchFX.getBattleInputA().setDisable(false);
+		this.matchFX.getBattleInputB().setDisable(true);
 		
-		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
-		this.match.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
-		this.match.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
+		this.matchFX.getBattleBackgroundA().setFill(this.countryA.getFill());
+		this.matchFX.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
+		this.matchFX.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
 		
-		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
-		this.match.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
-		this.match.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
+		this.matchFX.getBattleBackgroundB().setFill(this.countryB.getFill());
+		this.matchFX.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
+		this.matchFX.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
 		
-		this.match.activateWorldMap(false);
-		this.match.getPhaseBtnGroup().setVisible(false);
-		this.match.getBattleInterface().setVisible(true);
+		this.matchFX.activateWorldMap(false);
+		this.matchFX.getPhaseBtnGroup().setVisible(false);
+		this.matchFX.getBattleInterface().setVisible(true);
 	}
 
 	public void endFight() {
 		this.countryA.setStrokeWidth(0);
 		this.countryA = null;
 		this.countryB = null;
-		this.match.getBattleReadyBtn().setActive(true);
-		this.match.activateWorldMap(true);
-		this.match.getPhaseBtnGroup().setVisible(true);
-		this.match.getBattleInterface().setVisible(false);
+		this.matchFX.getBattleReadyBtn().setActive(true);
+		this.matchFX.activateWorldMap(true);
+		this.matchFX.getPhaseBtnGroup().setVisible(true);
+		this.matchFX.getBattleInterface().setVisible(false);
 		updatePlayerInterface(this.getActivePlayer());
 	}
 
@@ -437,7 +428,7 @@ public class Round {
 		this.add = true;
 		this.fight = false;
 		this.move = false;
-		this.match.editPhaseButtons(false, true, true, true);
+		this.matchFX.editPhaseButtons(false, true, true, true);
 		updatePlayerInterface(this.getActivePlayer());
 	}
 
@@ -445,7 +436,7 @@ public class Round {
 		this.add = false;
 		this.fight = true;
 		this.move = false;
-		this.match.editPhaseButtons(true, false, true, true);
+		this.matchFX.editPhaseButtons(true, false, true, true);
 		updatePlayerInterface(this.getActivePlayer());
 	}
 	
@@ -453,7 +444,7 @@ public class Round {
 		this.add = false;
 		this.fight = false;
 		this.move = true;
-		this.match.editPhaseButtons(true, true, false, true);
+		this.matchFX.editPhaseButtons(true, true, false, true);
 		updatePlayerInterface(this.getActivePlayer());
 	}
 	
@@ -480,12 +471,12 @@ public class Round {
 	}
 	
 	void updatePlayerInterface(Player activePlayer) {
-		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
-		this.match.gameChangePlayerTerritories(activePlayer.getCountryList().size());
-		this.match.gameChangePlayerCard1(activePlayer.getCard1());
-		this.match.gameChangePlayerCard2(activePlayer.getCard2());
-		this.match.gameChangePlayerCard3(activePlayer.getCard3());
-		this.match.gameChangePlayerUnits(activePlayer.getUnassignedUnits());
+		this.matchFX.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
+		this.matchFX.gameChangePlayerTerritories(activePlayer.getCountryList().size());
+		this.matchFX.gameChangePlayerCard1(activePlayer.getCard1());
+		this.matchFX.gameChangePlayerCard2(activePlayer.getCard2());
+		this.matchFX.gameChangePlayerCard3(activePlayer.getCard3());
+		this.matchFX.gameChangePlayerUnits(activePlayer.getUnassignedUnits());
 	}
 	
 	public static void addTextLimiter(final TextField tf, final int maxLength) {

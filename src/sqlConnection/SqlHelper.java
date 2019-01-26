@@ -568,6 +568,12 @@ public class SqlHelper {
 
 	}
 
+	/**
+	 * Wird von der Lobby aufgerufen wenn ein Spieler die Lobby verlässt
+	 * Löscht den Spielerdatensatz vollständig
+	 * @param playerId player_id
+	 * @param lobbyId lobby_id
+	 */
 	public static void deletePlayer(int playerId, int lobbyId) {
 		String queryJoinLobby = String.format("DELETE FROM player WHERE player_id = %d;",playerId);
 		try {

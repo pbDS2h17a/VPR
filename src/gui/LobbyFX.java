@@ -58,7 +58,7 @@ public class LobbyFX {
     private Label colorLabel = new Label("Farbe auswählen");
     private Group groupSlots = new Group();
     private Group groupRoles = new Group();
-    
+
 	// Daten
     private Lobby lobby = new Lobby();
 	private ImageView[] slotArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
@@ -89,7 +89,7 @@ public class LobbyFX {
 	    ctn.getChildren().add(btnReady);
 	    
 	    // Namens-Input Hintergrund
-	    inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight() - 200);		
+	    inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight() - 200);
 	    ctn.getChildren().add(inputNameBG);
 	    
 	    // Namens-Input TextField

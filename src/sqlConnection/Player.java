@@ -34,7 +34,10 @@ public class Player {
 		this.card1 = 0;
 		this.card2 = 0;
 		this.card3 = 0;
+		// Spieler in Db einfügen
 		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
+		// Spieler in Lobby einfügen
+		lobby.addPlayer(this);
 	}
 
 	// Konstruktor fürs späteres laden eines Spielstands

@@ -33,19 +33,14 @@ public class MatchFX {
 	// Globale Variablen
 	private Round round;
 	private LobbyFX lobbyFX;
-	private Lobby lobby;
 	private Country currentCountry = null;
     private ArrayList<Player> playersInLobby;
 	private Pane ctn = new Pane();
-	private Pane countryUnitsGroup = new Pane();
 	private Country[] getCountryArray = new Country[42];
-	private Group inventoryGroup = new Group();
 	private Group inventoryMissionGroup = new Group();
 	private Group phaseBtnGroup = new Group();
 	private Group groupLands = new Group();
 	private Group fightGroup = new Group();
-	private Group battleA_GroupDices = new Group();
-	private Group battleB_GroupDices = new Group();
 	private Label[] countryUnitsLabelArray = new Label[getCountryArray.length];
 	private Label countryUnitsLabel = new Label();
 	private Label playerNameLabel = new Label();
@@ -55,25 +50,12 @@ public class MatchFX {
 	private Label inventoryCountryLabel = new Label("0");
 	private Label inventoryCardTwoLabel = new Label("0");
 	private Label inventoryCardThreeLabel = new Label("0");
-	private Label inventoryMissionLabelOne = new Label();
-	private Label inventoryMissionLabelTwo = new Label();
 	private Label fightCountryOneLabel = new Label();
 	private Label fightCountryTwoLabel = new Label();
-	private Label battleA_Dice1 = new Label();
-	private Label battleA_Dice2 = new Label();
-	private Label battleA_Dice3 = new Label();
-	private Label battleB_Dice1 = new Label();
-	private Label battleB_Dice2 = new Label();
 	private Label fightCountryOneUnits = new Label();
 	private Label fightCountryTwoUnits = new Label();
 	private TextField fightCountryOneInput = new TextField();
 	private TextField fightCountryTwoInput = new TextField();
-	private Sprite inventoryUnitsBG = new Sprite("resources/game_icon_units.png");
-	private Sprite inventoryCountryBG = new Sprite("resources/game_icon_lands.png");
-	private Sprite inventoryCardOne = new Sprite("resources/game_icon_card1.png");
-	private Sprite inventoryCardTwo = new Sprite("resources/game_icon_card2.png");
-	private Sprite inventoryCardThree = new Sprite("resources/game_icon_card3.png");
-	private Sprite inventoryMissionBG = new Sprite("resources/btn_phase_goal.png");
 	private Sprite phaseBtn1 = new Sprite("resources/btn_phase_add.png");
 	private Sprite phaseBtn2 = new Sprite("resources/btn_phase_battle.png");
 	private Sprite phaseBtn3 = new Sprite("resources/btn_phase_move.png");
@@ -81,7 +63,6 @@ public class MatchFX {
 	private Sprite fightBtnReady = new Sprite("resources/btn_bereit.png");
 	private Polygon playerNameBG = new Polygon();
 	private Polygon countryNameBG = new Polygon();
-	private Polygon fightArrow = new Polygon();
 	private Rectangle[] countryUnitsBGArray = new Rectangle[getCountryArray.length];
 	private Rectangle countryUnitsBG = new Rectangle(80, 80);
 	private Rectangle fightCountryOneBG = new Rectangle(960, 1080);
@@ -92,8 +73,8 @@ public class MatchFX {
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
 	 */
-	public MatchFX(LobbyFX lobby) {
-		
+	public MatchFX(LobbyFX lobbyFX) {
+		this.lobbyFX = lobbyFX;
 		// Beitreten-Container der in der MainApp ausgegeben wird und alle Objekte fürs beitreten beinhaltet.
 	    ctn.setCache(true);
 	    ctn.setId("Partie");
@@ -101,41 +82,19 @@ public class MatchFX {
 	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was außerhalb der Form ist wird ausgeblendet.
 	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    ctn.setVisible(false);
-	    
+
 	    // Hintergrund für die Spiel-Partie
 	    ImageView bg = new ImageView("resources/game_bg.png");
 	    ctn.getChildren().add(bg);
-	    
+
 	    // Gruppe die alle Länder enthält
 	    groupLands.setScaleX(.9);
 	    groupLands.setScaleY(.9);
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 
-	    // Schleife um einzelne Länder zu erzeugen
-	    for(int i = 0; i < getCountryArray.length; i++) {
-				// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
-				getCountryArray[i] = new Country(i+1);
+		initalizeCountries();
 
-		    	getCountryArray[i].setFill(Color.WHITE);
-		    	getCountryArray[i].setStroke(Color.WHITE);
-		    	getCountryArray[i].setStrokeWidth(0);
-		    	getCountryArray[i].setScaleX(1.02);
-		    	getCountryArray[i].setScaleY(1.02);
-		    	groupLands.getChildren().add(getCountryArray[i]);
-	    	}
-	    
-	    ctn.getChildren().add(groupLands);
-
-//	    for (int i = 0; i < countryArray.length; i++) {
-//			System.out.println(countryArray[i].getCountryName());
-//		}
-//	    
-//	    ctn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-//	    	int x = (int) event.getX() - 20;
-//	    	int y = (int) event.getY() - 20;
-//	    	System.out.println("{"+x+", "+y+"},");
-//	    });
-	    
+		ctn.getChildren().add(groupLands);
 	    // Informationen des Spielers der oben Links angezeigt wird (Hintergrund)
     	playerNameBG.getPoints().addAll(0.0, 0.0,
 				380.0, 0.0,
@@ -176,7 +135,8 @@ public class MatchFX {
     	ctn.getChildren().add(countryNameLabel);
 
     	// Informationen der Einheiten die im Land unten angezeigt wird (Gruppe)
-	    countryUnitsGroup.setPrefSize(80,80);
+		Pane countryUnitsGroup = new Pane();
+		countryUnitsGroup.setPrefSize(80,80);
 	    countryUnitsGroup.relocate(1130, 960);
 	    // Informationen der Einheiten die im Land unten angezeigt wird (Hintergrund)
     	countryUnitsBG.setStroke(Color.WHITE);
@@ -192,7 +152,7 @@ public class MatchFX {
     	countryUnitsLabel.relocate(0, 0);
     	countryUnitsGroup.getChildren().add(countryUnitsLabel);
     	ctn.getChildren().add(countryUnitsGroup);
-    	
+
     	worldMapCoordinates = new double[][] {
 			{392, 234},
 			{503, 298},
@@ -237,56 +197,47 @@ public class MatchFX {
 			{1434, 674},
 			{1364, 828}
     	};
-    	
-    	for (int i = 0; i < worldMapCoordinates.length; i++) {
-			countryUnitsBGArray[i] = new Rectangle(40, 40);
-			countryUnitsBGArray[i].setStroke(Color.WHITE);
-			countryUnitsBGArray[i].setStrokeWidth(4);
-			countryUnitsBGArray[i].setFill(Color.GREY);
-			countryUnitsBGArray[i].setArcHeight(200);
-			countryUnitsBGArray[i].setArcWidth(200);
-			countryUnitsBGArray[i].relocate(worldMapCoordinates[i][0], worldMapCoordinates[i][1]);
-			ctn.getChildren().add(countryUnitsBGArray[i]);
-			
-			countryUnitsLabelArray[i] = new Label("99");
-			countryUnitsLabelArray[i].setPrefSize(42, 42);
-			countryUnitsLabelArray[i].relocate(worldMapCoordinates[i][0], worldMapCoordinates[i][1]);
-			countryUnitsLabelArray[i].setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
-			ctn.getChildren().add(countryUnitsLabelArray[i]);
-		}
-    	
-    	// Das Inventar des aktuellen Spielers (Gruppe)
-    	inventoryGroup.relocate(10, 80);
+
+		relocateLabel();
+
+		// Das Inventar des aktuellen Spielers (Gruppe)
+		Group inventoryGroup = new Group();
+		inventoryGroup.relocate(10, 80);
     	// Das Inventar des aktuellen Spielers (Einheiten, Hintergrund)
-    	inventoryUnitsBG.relocate(10, inventoryGroup.getLayoutY());
+		Sprite inventoryUnitsBG = new Sprite("resources/game_icon_units.png");
+		inventoryUnitsBG.relocate(10, inventoryGroup.getLayoutY());
     	inventoryGroup.getChildren().add(inventoryUnitsBG);
     	// Das Inventar des aktuellen Spielers (Einheiten, Label)
     	inventoryUnitsLabel.relocate(90, inventoryUnitsBG.getLayoutY() + 18);
     	inventoryUnitsLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	inventoryGroup.getChildren().add(inventoryUnitsLabel);
     	// Das Inventar des aktuellen Spielers (Länder, Hintergrund)
-    	inventoryCountryBG.relocate(10, inventoryUnitsBG.getLayoutY() + 85);
+		Sprite inventoryCountryBG = new Sprite("resources/game_icon_lands.png");
+		inventoryCountryBG.relocate(10, inventoryUnitsBG.getLayoutY() + 85);
     	inventoryGroup.getChildren().add(inventoryCountryBG);
     	// Das Inventar des aktuellen Spielers (Länder, Label)
     	inventoryCountryLabel.relocate(90, inventoryCountryBG.getLayoutY() + 18);
     	inventoryCountryLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	inventoryGroup.getChildren().add(inventoryCountryLabel);
     	// Das Inventar des aktuellen Spielers (Karten 1, Hintergrund)
-    	inventoryCardOne.relocate(10, inventoryCountryBG.getLayoutY() + 120);
+		Sprite inventoryCardOne = new Sprite("resources/game_icon_card1.png");
+		inventoryCardOne.relocate(10, inventoryCountryBG.getLayoutY() + 120);
     	inventoryGroup.getChildren().add(inventoryCardOne);
     	// Das Inventar des aktuellen Spielers (Karten 1, Label)
     	inventoryCardOneLabel.relocate(80, inventoryCardOne.getLayoutY() + 18);
     	inventoryCardOneLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	inventoryGroup.getChildren().add(inventoryCardOneLabel);
     	// Das Inventar des aktuellen Spielers (Karten 2, Hintergrund)
-    	inventoryCardTwo.relocate(10, inventoryCardOne.getLayoutY() + 100);
+		Sprite inventoryCardTwo = new Sprite("resources/game_icon_card2.png");
+		inventoryCardTwo.relocate(10, inventoryCardOne.getLayoutY() + 100);
     	inventoryGroup.getChildren().add(inventoryCardTwo);
     	// Das Inventar des aktuellen Spielers (Karten 2, Label)
     	inventoryCardTwoLabel.relocate(80, inventoryCardTwo.getLayoutY() + 18);
     	inventoryCardTwoLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	inventoryGroup.getChildren().add(inventoryCardTwoLabel);
     	// Das Inventar des aktuellen Spielers (Karten 3, Hintergrund)
-    	inventoryCardThree.relocate(10, inventoryCardTwo.getLayoutY() + 100);
+		Sprite inventoryCardThree = new Sprite("resources/game_icon_card3.png");
+		inventoryCardThree.relocate(10, inventoryCardTwo.getLayoutY() + 100);
     	inventoryGroup.getChildren().add(inventoryCardThree);
     	// Das Inventar des aktuellen Spielers (Karten 3, Label)
     	inventoryCardThreeLabel.relocate(80, inventoryCardThree.getLayoutY() + 18);
@@ -295,18 +246,21 @@ public class MatchFX {
     	// Das Inventar des aktuellen Spielers (Auftrag, Gruppe)
     	inventoryMissionGroup.relocate(-200, 340);
     	// Das Inventar des aktuellen Spielers (Auftrag, Hintergrund)
-    	inventoryMissionBG.relocate(inventoryMissionGroup.getLayoutX(), inventoryMissionGroup.getLayoutY());
+		Sprite inventoryMissionBG = new Sprite("resources/btn_phase_goal.png");
+		inventoryMissionBG.relocate(inventoryMissionGroup.getLayoutX(), inventoryMissionGroup.getLayoutY());
     	inventoryMissionBG.setScaleX(1.2);
     	inventoryMissionBG.setScaleY(1.2);
     	inventoryMissionGroup.getChildren().add(inventoryMissionBG);
     	// Das Inventar des aktuellen Spielers (Auftrag, Label 1)
-    	inventoryMissionLabelOne.setStyle("-fx-text-align: center; -fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-width: 0px 0px 2px 0px; -fx-border-color: white;");
+		Label inventoryMissionLabelOne = new Label();
+		inventoryMissionLabelOne.setStyle("-fx-text-align: center; -fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-width: 0px 0px 2px 0px; -fx-border-color: white;");
     	inventoryMissionLabelOne.setPrefSize(390, 100);
     	inventoryMissionLabelOne.setWrapText(true);
     	inventoryMissionLabelOne.relocate(inventoryMissionBG.getLayoutX() + 0, inventoryMissionBG.getLayoutY() - 15);
     	inventoryMissionGroup.getChildren().add(inventoryMissionLabelOne);
     	// Das Inventar des aktuellen Spielers (Auftrag, Label 2)
-    	inventoryMissionLabelTwo.setStyle("-fx-text-align: center; -fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-width: 2px 0px 0px 0px; -fx-border-color: white;");
+		Label inventoryMissionLabelTwo = new Label();
+		inventoryMissionLabelTwo.setStyle("-fx-text-align: center; -fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-width: 2px 0px 0px 0px; -fx-border-color: white;");
     	inventoryMissionLabelTwo.setPrefSize(390, 100);
     	inventoryMissionLabelTwo.setWrapText(true);
     	inventoryMissionLabelTwo.relocate(inventoryMissionLabelOne.getLayoutX(), inventoryMissionLabelOne.getLayoutY() + 100);
@@ -383,6 +337,7 @@ public class MatchFX {
 		fightGroup.getChildren().add(fightCountryTwoUnits);
 		
 		// Pfeil der die Kampfrichtung angibt
+		Polygon fightArrow = new Polygon();
 		fightArrow.getPoints().addAll(0.0, 0.0,
 				0.0, 30.0,
 				-230.0, 30.0,
@@ -400,31 +355,38 @@ public class MatchFX {
 		fightGroup.getChildren().add(fightBtnReady);
 		
 		// Die Würfel von Land eins (Gruppe)
+		Group battleA_GroupDices = new Group();
 		battleA_GroupDices.relocate(0, 0);
 		// Die Würfel von Land eins (Würfel eins)
+		Label battleA_Dice1 = new Label();
 		battleA_Dice1.setPrefSize(150, 150);
 		battleA_Dice1.relocate(100, 265);
 		battleA_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		battleA_GroupDices.getChildren().add(battleA_Dice1);
 		// Die Würfel von Land eins (Würfel zwei)
+		Label battleA_Dice2 = new Label();
 		battleA_Dice2.setPrefSize(150, 150);
 		battleA_Dice2.relocate(100, 465);
 		battleA_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		battleA_GroupDices.getChildren().add(battleA_Dice2);
 		// Die Würfel von Land eins (Würfel drei)
+		Label battleA_Dice3 = new Label();
 		battleA_Dice3.setPrefSize(150, 150);
 		battleA_Dice3.relocate(100, 665);
 		battleA_Dice3.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		battleA_GroupDices.getChildren().add(battleA_Dice3);
 		fightGroup.getChildren().add(battleA_GroupDices);
 		// Die Würfel von Land zwei (Gruppe)
+		Group battleB_GroupDices = new Group();
 		battleB_GroupDices.relocate(0, 0);
 		// Die Würfel von Land zwei (Gruppe, Würfel eins)
+		Label battleB_Dice1 = new Label();
 		battleB_Dice1.setPrefSize(150, 150);
 		battleB_Dice1.relocate(1670, 365);
 		battleB_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		battleB_GroupDices.getChildren().add(battleB_Dice1);
 		// Die Würfel von Land zwei (Gruppe, Würfel zwei)
+		Label battleB_Dice2 = new Label();
 		battleB_Dice2.setPrefSize(150, 150);
 		battleB_Dice2.relocate(1670, 565);
 		battleB_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
@@ -433,24 +395,49 @@ public class MatchFX {
 		ctn.getChildren().add(fightGroup);
 		
 		// Die Partie wird begonnen und das LobbyFX-Objekt wird übergeben
-		lobbyFX = lobby;
-		startMatch(lobbyFX);
+		startMatch();
 	}
 
-    /**
-     * Prozedur, die die Partie beginnt und die Lobby ausliest um die aktuellen Teilnehmer zu integrieren.
-     *
-     * @param lobbyFX LobbyFX
-     */
-	private void startMatch(LobbyFX lobbyFX) {	
-		// Verteilung der Länder auf die Spieler		
-		// Länder-Array wird in eine Liste konvertiert
-		lobby = lobbyFX.getLobby();
-		int lobbyId = lobby.getLobbyId();
-		int userCount;
+	private void initalizeCountries() {
+		// Schleife um einzelne Länder zu erzeugen
+		for(int i = 0; i < getCountryArray.length; i++) {
+			// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
+			getCountryArray[i] = new Country(i+1);
+			getCountryArray[i].setFill(Color.WHITE);
+			getCountryArray[i].setStroke(Color.WHITE);
+			getCountryArray[i].setStrokeWidth(0);
+			getCountryArray[i].setScaleX(1.02);
+			getCountryArray[i].setScaleY(1.02);
+			groupLands.getChildren().add(getCountryArray[i]);
+		}
+	}
 
-		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(getCountryArray));
-		
+	private void relocateLabel() {
+		for (int i = 0; i < worldMapCoordinates.length; i++) {
+			countryUnitsBGArray[i] = new Rectangle(40, 40);
+			countryUnitsBGArray[i].setStroke(Color.WHITE);
+			countryUnitsBGArray[i].setStrokeWidth(4);
+			countryUnitsBGArray[i].setFill(Color.GREY);
+			countryUnitsBGArray[i].setArcHeight(200);
+			countryUnitsBGArray[i].setArcWidth(200);
+			countryUnitsBGArray[i].relocate(worldMapCoordinates[i][0], worldMapCoordinates[i][1]);
+			ctn.getChildren().add(countryUnitsBGArray[i]);
+
+			countryUnitsLabelArray[i] = new Label("99");
+			countryUnitsLabelArray[i].setPrefSize(42, 42);
+			countryUnitsLabelArray[i].relocate(worldMapCoordinates[i][0], worldMapCoordinates[i][1]);
+			countryUnitsLabelArray[i].setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
+			ctn.getChildren().add(countryUnitsLabelArray[i]);
+		}
+	}
+
+	/**
+     * Prozedur, die die Partie beginnt und die Lobby ausliest um die aktuellen Teilnehmer zu integrieren.
+     */
+	private void startMatch() {
+		// Verteilung der Länder auf die Spieler
+		// Länder-Array wird in eine Liste konvertiert
+		Lobby lobby = lobbyFX.getLobby();
 		// Erstellen der Testspieler
 		Player p1 = new Player("Bob1", lobby);
         Player p2 = new Player("Bob2", lobby);
@@ -458,14 +445,14 @@ public class MatchFX {
         Player p4 = new Player("Bob4", lobby);
         Player p5 = new Player("Bob5", lobby);
         Player p6 = new Player("Bob6", lobby);
-        
+
         p1.setColor("FFD800");
         p2.setColor("C42B2B");
         p3.setColor("26BF00");
         p4.setColor("0066ED");
         p5.setColor("000000");
         p6.setColor("EF4CE7");
-        
+
         // Hinzufügen von Testspielern
         lobby.addPlayer(p1);
         lobby.addPlayer(p2);
@@ -473,22 +460,32 @@ public class MatchFX {
         lobby.addPlayer(p4);
         lobby.addPlayer(p5);
         lobby.addPlayer(p6);
-        
+
         // Lobbyleader setzen
         lobby.setLobbyLeader(p1.getPlayerId());
 		playersInLobby = lobby.getPlayers();
 
+		// Verteilt die Länder
+		distributeCountries(lobby);
+
+		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
+		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColor()));
+	}
+
+	private void distributeCountries(Lobby lobby) {
+		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(getCountryArray));
+		int userCount;
 		userCount = lobby.getPlayers().size();
 		Random rand = new Random();
 		// Verteilung der Länder
-		for (int i = 0; i < getCountryArray.length; i++) {	
+		for (int i = 0; i < getCountryArray.length; i++) {
 			// Zufälliges Land aus der Länder-Liste wird ausgewählt
 			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer);
 			randomCountry.setFill(Color.web(currentPlayer.getColor()));
-			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
+			SqlHelper.insertCountryOwner(lobby.getLobbyId(), currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
 			// Wenn die Spieler-Liste am Ende angekommen ist...
 			if(userCount == 1) {
@@ -499,17 +496,8 @@ public class MatchFX {
 				userCount--;
 			}
 		}
-
-		// Passt die Einheiten-Anzeige der Länder an
-//		for (int i = 0; i < countryArray.length; i++) {
-//			countryUnitsBGArray[i].setFill(countryArray[i].getFill());
-//			countryUnitsLabelArray[i].setText(String.valueOf(countryArray[i].getUnits()));
-//		}
-		
-		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
-		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColor()));
 	}
-	
+
 	/**
 	 * Aktualisiert die Land-Informationen mittig unten auf der Weltkarte
 	 * 
@@ -588,7 +576,7 @@ public class MatchFX {
 	void gameChangePlayerCard3(int i) {
 		inventoryCardThreeLabel.setText(Integer.toString(i));
 	}
-	
+
 	void updateActivePlayer(String s, Color p) {
 		if(!playerNameLabel.getText().equals(s)) {
 			playerNameLabel.setText(s);
@@ -613,14 +601,6 @@ public class MatchFX {
 	
 	public Rectangle getBattleBackgroundB() {
 		return fightCountryTwoBG;
-	}
-	
-	public Group getDicesA() {
-		return battleA_GroupDices;
-	}
-	
-	public Group getDicesB() {
-		return battleB_GroupDices;
 	}
 	
 	public Label getCountryNameA() {
@@ -705,9 +685,7 @@ public class MatchFX {
 	}
 
 	public Lobby getLobby() {
-		return lobby;
+		return lobbyFX.getLobby();
 	}
-
-
 
 }
