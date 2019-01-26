@@ -1,4 +1,8 @@
-package sqlConnection;
+package updateThread;
+
+import sqlConnection.Lobby;
+import sqlConnection.Player;
+import sqlConnection.SqlHelper;
 
 import java.util.ArrayList;
 
@@ -9,7 +13,7 @@ import java.util.ArrayList;
  * Wenn der Wert sich änmdert aktualisiert er die Anzeige und seine
  * eigene last_change flag
  */
-public class LobbyUpdateListener extends Thread {
+public class LobbyColorListener extends Thread {
 
     private Lobby lobby;
     //lastChaneg by default auf 1
@@ -22,7 +26,7 @@ public class LobbyUpdateListener extends Thread {
      * Wird von der Lobby aufgerufen
      * @param lobby Lobby die überwacht werden soll
      */
-    public LobbyUpdateListener(Lobby lobby) {
+    public LobbyColorListener(Lobby lobby) {
         this.lobby = lobby;
         this.lobbyId = lobby.getLobbyId();
         this.currentPlayerIds = SqlHelper.getPlayerIdsFromLobby(lobbyId);
@@ -49,22 +53,24 @@ public class LobbyUpdateListener extends Thread {
             // 2) Ids die nichtmehr vorhanden sind müssen entfernt werden
             // Neuer Spieler in Java schreiben bzw entfernen
 
-            // Wenn die DB lastCHange größer als der default wert ist
+            // Wenn die DB lastChange größer als der aktuelle Wert ist
             // gab es eine änderung in der DB
             if(newLastChange > currentLastChange) {
+                // Ids aller Spieler die sich laut Datenbank in der Lobby befinden sollten
                 ArrayList<Integer> newPlayerIds = SqlHelper.getPlayerIdsFromLobby(lobbyId);
                 // Änderungen bearbeiten
-                System.out.println("Änderungen!");
-                System.out.println("Aktueller Spieler:");
-
-                for(int playerId :newPlayerIds) {
-                    if(currentPlayerIds.contains(playerId)) {
-                        System.out.println("ID:"+playerId);
-                    } else {
-                        System.out.println("#NEU ID:"+playerId);
+                for(int playerId : newPlayerIds) {
+                    // Spieler die sich bereits vorher in der Lobby befanden werden ignoriert
+                    if(!currentPlayerIds.contains(playerId)) {
+                        // Es wird ein neues Spielerobjekt basierend auf den Datenbank daten erstellt
+                        // Beim erstellen eines neuen Spielers wird er automatisch der Lobby hinzugefügt
+                        // Datenbankloser Konstruktor da die Db einträge bereits vorhanden sind
+                        new Player(playerId, SqlHelper.getPlayerName(playerId), lobby);
                     }
 
                 }
+
+                System.out.println(lobby);
                 // lastChange aktualiseren
                 currentLastChange = newLastChange;
                 currentPlayerIds = newPlayerIds;
@@ -72,8 +78,9 @@ public class LobbyUpdateListener extends Thread {
                 System.out.print(".");
             }
 
+
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

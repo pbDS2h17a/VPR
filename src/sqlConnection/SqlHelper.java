@@ -22,7 +22,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
+			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	};
 
 	//###################################################################################################################
@@ -411,7 +411,6 @@ public class SqlHelper {
 			ResultSet rs = getStatement().executeQuery(query);
 			history = ResultSetManager.toList(rs);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Fehler in der Chat History");
 			e.printStackTrace();
 		}
@@ -431,7 +430,8 @@ public class SqlHelper {
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			while(rs.next()) {
-				playerIdList.add(rs.getInt("player_id"));
+
+				playerIdList.add(rs.getInt(1));
 			}
 
 			rs.close();
@@ -456,7 +456,7 @@ public class SqlHelper {
 	 * @author pbs2h17ath
 	 */
 	public static int insertPlayer(String name, int lobbyId) {
-		String query = String.format("INSERT INTO player VALUES(NULL, '%s' ,'127.0.0.1', %d);", name, lobbyId);
+		String query = String.format("INSERT INTO player (name, lobby_id) VALUES('%s', %d);", name, lobbyId);
 		Statement stmt = SqlHelper.getStatement();
 		int id = -1;
 		try {
@@ -464,6 +464,7 @@ public class SqlHelper {
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
+			rs.close();
 			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("fillDatabase error");
@@ -488,6 +489,7 @@ public class SqlHelper {
 			rs = getStatement().getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
+			rs.close();
 		} catch (SQLException e) {
 			System.out.println("insertLobby Error");
 			e.printStackTrace();
@@ -558,7 +560,7 @@ public class SqlHelper {
 
 	//###################################################################################################################
 	// Datenbank updater
-	// Aktualiseren Werte in der Datenbank
+	// Ändert Werte in der Datenbank
 	//###################################################################################################################
 
 	//TODO Implementieren
@@ -681,7 +683,7 @@ public class SqlHelper {
 	 * Updated lastChange in der Lobby
 	 * @param lobbyId lobby_id
 	 */
-	private static void updateLastChange(int lobbyId) {
+	public static void updateLastChange(int lobbyId) {
 		long currentLastChange = SqlHelper.getLastChange(lobbyId);
 		String query = String.format("UPDATE lobby SET last_change = %d;",(currentLastChange + 1));
 		try {

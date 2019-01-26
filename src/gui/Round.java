@@ -421,7 +421,6 @@ public class Round {
 		
 	boolean isOwnLand(Country country) {
         return this.getActivePlayer().equals(country.getOwner());
-
     }
 	
 	void phaseAdd() {

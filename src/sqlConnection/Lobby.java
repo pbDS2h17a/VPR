@@ -58,4 +58,26 @@ public class Lobby {
         SqlHelper.deletePlayer(player.getPlayerId(), lobbyId);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\nLobbyId=");
+        sb.append(lobbyId);
+        sb.append("\n");
+        for (Player player : players) {
+            if(player == null) {
+                sb.append("Slot: Leer");
+            } else {
+                sb.append("Slot: ID=");
+                sb.append(player.getPlayerId());
+                sb.append(" Name=");
+                sb.append(player.getName());
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
 }
