@@ -124,9 +124,9 @@ public class Player {
 	@Override
 	public String toString() {
 		String output = String.format("Player\n" +
-				"Id=%d\n" +
-				"Name=%s\n" +
-				"Farbe=%s\n" +
+				"Id=%d, " +
+				"Name=%s, " +
+				"Farbe=%s, " +
 				"UnitsPerRound=%d\n" +
 				"Länder=[",playerId,
 				name, color, unitsPerRound);
