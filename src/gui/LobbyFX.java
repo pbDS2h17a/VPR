@@ -1,13 +1,9 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -15,7 +11,11 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Lobby;
+import sqlConnection.Player;
 import sqlConnection.SqlHelper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Daniels, Kevin
@@ -26,29 +26,35 @@ public class LobbyFX {
 	// Globale Variablen
 	private Pane ctn = new Pane();
     private Lobby lobby = new Lobby();
-	private ImageView[] slotArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
+    private ArrayList<Integer> slotIdList = new ArrayList<Integer>(){{
+		add(0);
+		add(1);
+		add(2);
+		add(3);
+		add(4);
+		add(5);
+	}};
+	private ImageView[] slotViewArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
     private TextField inputName = new TextField();
     private Group groupColors = new Group();
     private Group groupSlots = new Group();
     private Group groupRoles = new Group();
-	private Label[] labelArray = new Label[slotArray.length];
+	private Label[] labelArray = new Label[lobby.getMAX_PLAYER_COUNT()];
     private Label colorLabel = new Label("Farbe auswählen");
     private Label inputNameLabel = new Label("Name eingeben");
-    private Rectangle[] colorRectArray = new Rectangle[slotArray.length];
-    private Polygon[] triangleArray = new Polygon[slotArray.length];
-    private Sprite[] slotRolesArray = new Sprite[slotArray.length];
+    private Rectangle[] colorRectArray = new Rectangle[lobby.getMAX_PLAYER_COUNT()];
+    private Polygon[] triangleArray = new Polygon[lobby.getMAX_PLAYER_COUNT()];
+    private Sprite[] slotRolesArray = new Sprite[lobby.getMAX_PLAYER_COUNT()];
 	private Sprite btnReady = new Sprite("resources/btn_bereit.png");
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
 	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");
 	private Sprite inputNameBG = new Sprite("resources/input_bg.png");
 	private String[] colors = SqlHelper.getAllColors();
 
-    
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
 	 */
-	public LobbyFX() {	
-
+	public LobbyFX() {
 		// Lobby-Container der in der MainApp ausgegeben wird und alle Objekte fürs beitreten beinhaltet.
 	    ctn.setCache(true);
 	    ctn.setPrefSize(1920, 1080);
@@ -115,19 +121,19 @@ public class LobbyFX {
 	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Gruppe)
 	    groupSlots.relocate(360, 50);
 	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Hintergrund)
-	    for(int i = 0; i < slotArray.length; i++) {
-	    	slotArray[i] = new Sprite("resources/lobby_player_name.png"); 
-	    	((Sprite) slotArray[i]).setActive(false);
-	    	((Sprite) slotArray[i]).setButtonMode(false);
+	    for(int i = 0; i < slotViewArray.length; i++) {
+	    	slotViewArray[i] = new Sprite("resources/lobby_player_name.png");
+	    	((Sprite) slotViewArray[i]).setActive(false);
+	    	((Sprite) slotViewArray[i]).setButtonMode(false);
 	    	
 	    	// Abfrage, die einen Zeilenumbruch ermöglicht, so dass die Farben in einem 3x2 Grid dargestellt werden können
 	    	if(i > 0)
 	    		if(i % 3 != 0)
-	    			slotArray[i].relocate(slotArray[i-1].getLayoutX() + 390, slotArray[i-1].getLayoutY());
+	    			slotViewArray[i].relocate(slotViewArray[i-1].getLayoutX() + 390, slotViewArray[i-1].getLayoutY());
 	    		else
-	    			slotArray[i].relocate(slotArray[i-1].getLayoutX() - 780, slotArray[i-1].getLayoutY() + 370);
+	    			slotViewArray[i].relocate(slotViewArray[i-1].getLayoutX() - 780, slotViewArray[i-1].getLayoutY() + 370);
 	    	
-	    	groupSlots.getChildren().add(slotArray[i]);
+	    	groupSlots.getChildren().add(slotViewArray[i]);
 	    }
 
 	    // Dreiecke die links oben vom Slot angezeigt werden und die Farbe des Spielers indizieren soll
@@ -140,7 +146,7 @@ public class LobbyFX {
 	    	triangleArray[i].setStroke(Color.WHITE);
 	    	triangleArray[i].setStrokeWidth(5);
 	    	triangleArray[i].setStrokeType(StrokeType.INSIDE);
-	    	triangleArray[i].relocate(slotArray[i].getLayoutX() + 30, slotArray[i].getLayoutY() + 30);
+	    	triangleArray[i].relocate(slotViewArray[i].getLayoutX() + 30, slotViewArray[i].getLayoutY() + 30);
 	    	
 	    	groupSlots.getChildren().add(triangleArray[i]);
 	    }
@@ -150,7 +156,7 @@ public class LobbyFX {
 	    	labelArray[i] = new Label();
 	    	labelArray[i].setPrefSize(260, 50);
 	    	labelArray[i].setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 35px; -fx-alignment: center");
-	    	labelArray[i].relocate(slotArray[i].getLayoutX() + 10, slotArray[i].getLayoutY() + 290);
+	    	labelArray[i].relocate(slotViewArray[i].getLayoutX() + 10, slotViewArray[i].getLayoutY() + 290);
 	    	
 	    	groupSlots.getChildren().add(labelArray[i]);
 	    }
@@ -175,46 +181,98 @@ public class LobbyFX {
 	    		slotRolesArray[i].setVisible(false);
 	    	}
 
-	    	slotRolesArray[i].relocate(groupSlots.getLayoutX() + slotArray[i].getLayoutX() + 280, slotArray[i].getLayoutY() + 100);
+	    	slotRolesArray[i].relocate(groupSlots.getLayoutX() + slotViewArray[i].getLayoutX() + 280, slotViewArray[i].getLayoutY() + 100);
 	    	groupRoles.getChildren().add(slotRolesArray[i]);
 	    }
 	    ctn.getChildren().add(groupRoles);
 
-	    // Fügt den 1. Spieler hinzu, der immer der Spielleiter ist
-	    lobbyAddPlayer(0);
+	    // manuelles Hinzufügen von spielern
+		Player p1 = new Player("Bob1",lobby,getNextSlotId());
+		p1.setColor("EF4CE7");
+		markSlotAsUsed();
+
+		Player p2 = new Player("Bob2",lobby,getNextSlotId());
+		p2.setColor("000000");
+		markSlotAsUsed();
+
+		Player p3 = new Player("Bob3",lobby,getNextSlotId());
+		p3.setColor("0066ED");
+		markSlotAsUsed();
+
+		Player p4 = new Player("Bob4",lobby,getNextSlotId());
+		p4.setColor("26BF00");
+		markSlotAsUsed();
+
+		Player p5 = new Player("Bob5",lobby,getNextSlotId());
+		p5.setColor("C42B2B");
+		markSlotAsUsed();
+
+		initalizePlayer(p1);
+
+		initalizePlayer(p2);
+
+		initalizePlayer(p3);
+
+		initalizePlayer(p4);
+
+		initalizePlayer(p5);
+
+		lobbyAddPlayer(getNextSlotId());
+
+	}
+
+	private void initalizePlayer(Player player) {
+		lobbyAddPlayer(player.getSlotId());
+		lobbyChangeName(player.getSlotId(), player.getName());
+		lobbyChangeColor(player.getSlotId(), this.getColorRectArray()[player.getSlotId()].getFill());
+	}
+
+	public int getNextSlotId() {
+		return slotIdList.get(0);
+
+	}
+
+	public void markSlotAsUsed() {
+		slotIdList.remove(0);
+	}
+
+	public void addSlot(int slotId) {
+		slotIdList.add(slotId);
 	}
 
 	/**
 	 * Ändert den Namen eines Slots, basierend auf seiner ID
 	 *
-	 * @param id int
+	 * @param slotId int
 	 * @param name String
 	 */
-	public void lobbyChangeName(int id, String name) {
+	public void lobbyChangeName(int slotId, String name) {
 		// Wenn kein leerer String übergeben wurde...
 		if(!name.isEmpty()) {
 			// ...wird der Name gesetzt
-			labelArray[id].setText(name);
+			labelArray[slotId].setText(name);
 			// Wenn der Slot auch schon eine Farbe hat...
-			if(triangleArray[id].getFill() != Color.GREY) {
+			if(triangleArray[slotId].getFill() != Color.GREY) {
 				// ...wird der Bereit-Button aktiviert
 				btnReady.setActive(true);
 				btnReady.setButtonMode(true);
+
 			}
 		}
+
 	}
 	
 	/**
 	 * Ändert die Farbe eines Slots, basierend auf seiner ID
 	 *
-	 * @param id int
+	 * @param slotId int
 	 * @param paint Paint
 	 */
-	public void lobbyChangeColor(int id, Paint paint) {
+	public void lobbyChangeColor(int slotId, Paint paint) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
-		triangleArray[id].setFill(paint);
+		triangleArray[slotId].setFill(paint);
 		// Wenn auch schon ein Name übergeben wurde...
-		if(!labelArray[id].getText().isEmpty()) {
+		if(!labelArray[slotId].getText().isEmpty()) {
 			// ...wird der Bereit-Button aktiviert
 			btnReady.setActive(true);
 			btnReady.setButtonMode(true);
@@ -224,28 +282,30 @@ public class LobbyFX {
 	/**
 	 * Fügt einen Spieler im Slot hinzu, basierend auf seiner ID
 	 *
-	 * @param id int
+	 * @param slotId int
 	 */
-	public void lobbyAddPlayer(int id) {
+	public void lobbyAddPlayer(int slotId) {
 		// Aktiviert den Slot und zeigt sein Icon zum entfernen an
-		((Sprite) slotArray[id]).setActive(true);
-		slotRolesArray[id].setVisible(true);
+		((Sprite) slotViewArray[slotId]).setActive(true);
+		slotRolesArray[slotId].setVisible(true);
 	}
 	
 
 	/**
 	 * Entfernt einen Spieler aus dem Slot, basierend auf seiner ID
 	 *
-	 * @param id int
+	 * @param slotId int
 	 */
-	public void lobbyRemovePlayer(int id) {
+	public void lobbyRemovePlayer(int slotId) {
 		// Deaktiviert den Slot und entfernt sein Icon zum entfernen
-		((Sprite) slotArray[id]).setActive(false);
-		slotRolesArray[id].setVisible(false);
-		((Sprite) slotArray[id]).setActive(false);
+		((Sprite) slotViewArray[slotId]).setActive(false);
+		slotRolesArray[slotId].setVisible(false);
+		((Sprite) slotViewArray[slotId]).setActive(false);
 		// Entfernt die Farbe und den Namen des zu löschenden Spielers
-		triangleArray[id].setFill(Color.GREY);
-		labelArray[id].setText(null);
+		triangleArray[slotId].setFill(Color.GREY);
+		labelArray[slotId].setText(null);
+		addSlot(slotId);
+
 	}
 
 	/**
@@ -328,5 +388,6 @@ public class LobbyFX {
 	public TextField getInputName() {
 		return inputName;
 	}
-	
+
+
 }

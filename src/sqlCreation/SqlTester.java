@@ -22,13 +22,13 @@ public class SqlTester {
 //        }
 
 
-        Lobby lobby = new Lobby();
-        int lobbyId = lobby.getLobbyId();
-        Player p1 = new Player("peter",lobby);
-        Player p2 = new Player("heinz",lobby);
-        Player p3 = new Player("dieter",lobby);
+//        Lobby lobby = new Lobby();
+//        int lobbyId = lobby.getLobbyId();
+//        Player p1 = new Player("peter",lobby);
+//        Player p2 = new Player("heinz",lobby);
+//        Player p3 = new Player("dieter",lobby);
 
-        System.out.println(p1.equals(p2));
+       // System.out.println(p1.equals(p2));
 //
 //        LobbyJoinListener updateListener = new LobbyJoinListener(lobby);
 //
@@ -105,7 +105,7 @@ public class SqlTester {
      * Simuliert das Beitreten eines Spielers von einem anderen System
      * @param lobbyId
      */
-    private static void simulateJoiningPlayer(String name, int lobbyId) {
+    public static void simulateJoiningPlayer(String name, int lobbyId) {
             SqlHelper.insertPlayer(name, lobbyId);
     }
 }

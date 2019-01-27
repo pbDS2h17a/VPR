@@ -19,7 +19,7 @@ import sqlConnection.Player;
 
 public class Round {
 
-	private Player[] playerArray;
+	private ArrayList<Player> playerList;
 	private MatchFX match;
 	private Country countryA = null;
 	private Country countryB = null;
@@ -32,12 +32,12 @@ public class Round {
 	private int battleUnitsB;
 	private int additionalAttacker;
 
-	public Round(MatchFX match, Player[] playerArray) {
+	public Round(MatchFX match, ArrayList<Player> playerList) {
 		this.activePlayerIndex = 0;
-		this.playerArray = playerArray;
+		this.playerList = playerList;
 		this.match = match;
 		
-		this.startInitialRound(playerArray);
+		this.startInitialRound(playerList);
 	}
 	
 	public void manageCountryClick(int index) {
@@ -53,7 +53,7 @@ public class Round {
 				match.getCountryUnitsLabelArray()[index].setText(String.valueOf(match.getCountryArray()[index].getUnits()));
 				
 				// Wenn man am Ende der Spieler-Liste angekommen ist...
-				if(getActivePlayerIndex() == getPlayerArray().length-1) {
+				if(getActivePlayerIndex() == getPlayerList().size() -1) {
 					// ...ist der 1. Spieler wieder der aktive Spieler
 					setActivePlayerIndex(0);
 				} else {
@@ -138,7 +138,7 @@ public class Round {
 		match.updateCountryInfo(match.getCountryArray()[index]);
 	}
 
-	private void startInitialRound(Player[] playerArray) {
+	private void startInitialRound(ArrayList<Player> playerArray) {
 			
 		int firstUnits;
 
@@ -147,7 +147,7 @@ public class Round {
 		}
 
 
-		switch (playerArray.length) {
+		switch (playerArray.size()) {
 			case 2:
 				firstUnits = 40;
 				break;
@@ -174,8 +174,8 @@ public class Round {
 		
 		firstUnits = 1;
 		
-		for (int i = 0; i < this.getPlayerArray().length; i++) {
-			this.getPlayerArray()[i].setUnassignedUnits(firstUnits);
+		for (int i = 0; i < this.getPlayerList().size(); i++) {
+			this.getPlayerList().get(i).setUnassignedUnits(firstUnits);
 		}
 		
 		updatePlayerInterface(this.getActivePlayer());
@@ -183,8 +183,8 @@ public class Round {
 	}
 	
 	private boolean isFinishedAssigning() {
-		for (int i = 0; i < this.getPlayerArray().length; i++) {
-			if(this.getPlayerArray()[i].getUnassignedUnits() != 0) {
+		for (int i = 0; i < this.getPlayerList().size(); i++) {
+			if(this.getPlayerList().get(i).getUnassignedUnits() != 0) {
 				return false;
 			}
 		}
@@ -217,7 +217,7 @@ public class Round {
 	}
 	
 	public void nextTurn() {
-		if(this.getActivePlayerIndex() == this.getPlayerArray().length-1) {
+		if(this.getActivePlayerIndex() == this.getPlayerList().size() -1) {
 			this.setActivePlayerIndex(0);
 		}
 		else {
@@ -323,7 +323,7 @@ public class Round {
 		System.out.println();
 
 		//Debug ausgabe
-		for (Player p : playerArray) {
+		for (Player p : playerList) {
 			System.out.println(p);
 		}
 	}
@@ -401,7 +401,7 @@ public class Round {
 	}
 	
 	public Player getActivePlayer() {
-		return playerArray[activePlayerIndex];
+		return playerList.get(activePlayerIndex);
 	}
 
 	public void setActivePlayerIndex(int i) {
@@ -412,8 +412,8 @@ public class Round {
 		return this.activePlayerIndex;
 	}
 	
-	public Player[] getPlayerArray() {
-		return this.playerArray;
+	public ArrayList<Player> getPlayerList() {
+		return this.playerList;
 	}
 
 	public boolean isAssign() {

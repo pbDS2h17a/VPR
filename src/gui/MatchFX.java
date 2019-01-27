@@ -17,6 +17,7 @@ import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +35,7 @@ public class MatchFX {
 	// Globale Variablen
 	private Round round;
 	private LobbyFX lobbyFX;
-	private Lobby lobby;
-    private Player[] playersInLobby;
+    private ArrayList<Player> playersInLobby;
 	private Pane ctn = new Pane();
 	private Country[] getCountryArray = new Country[42];
 	private Group inventoryGroup = new Group();
@@ -89,8 +89,7 @@ public class MatchFX {
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
 	 */
-	public MatchFX(LobbyFX lobby) {
-		
+	public MatchFX() {
 		// Beitreten-Container der in der MainApp ausgegeben wird und alle Objekte fürs beitreten beinhaltet.
 	    ctn.setCache(true);
 	    ctn.setId("Partie");
@@ -109,14 +108,9 @@ public class MatchFX {
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 
 	    // Schleife um einzelne Länder zu erzeugen
-	    for(int i = 0; i < getCountryArray.length; i++) {	
-		    	try {
-		    		// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
-					getCountryArray[i] = new Country(i+1);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
+	    for(int i = 0; i < getCountryArray.length; i++) {
+				// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
+				getCountryArray[i] = new Country(i+1);
 		    	getCountryArray[i].setFill(Color.WHITE);
 		    	getCountryArray[i].setStroke(Color.WHITE);
 		    	getCountryArray[i].setStrokeWidth(0);
@@ -427,71 +421,42 @@ public class MatchFX {
 		fightGroup.getChildren().add(battleB_GroupDices);
 		ctn.getChildren().add(fightGroup);
 		
-		// Die Partie wird begonnen und das LobbyFX-Objekt wird übergeben
-		lobbyFX = lobby;
-		startMatch(lobbyFX);
+		// Die Partie wird begonnen
+		//initializeMatch();
 	}
 
     /**
      * Prozedur, die die Partie beginnt und die Lobby ausliest um die aktuellen Teilnehmer zu integrieren.
      *
-     * @param lobbyFX LobbyFX
      */
-	private void startMatch(LobbyFX lobbyFX) {	
-		/*
-		 *  Verteilung der Länder auf die Spieler
-		 *  Länder-Array wird in eine Liste konvertiert
-		 */
-		lobby = lobbyFX.getLobby();
+	public void initializeMatch(LobbyFX lobbyFX) {
+		Lobby lobby = lobbyFX.getLobby();
 		int lobbyId = lobby.getLobbyId();
-		int userCount;
 
+		// Verteilung der Länder auf die Spieler
+		// Länder-Array wird in eine Liste konvertiert
 		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(getCountryArray));
-		
-		// Erstellen der Testspieler
-		Player p1 = new Player("Bob1", lobby);
-        Player p2 = new Player("Bob2", lobby);
-        Player p3 = new Player("Bob3", lobby);
-        Player p4 = new Player("Bob4", lobby);
-        Player p5 = new Player("Bob5", lobby);
-        Player p6 = new Player("Bob6", lobby);
-        
-        p1.setColor("FFD800");
-        p2.setColor("C42B2B");
-        p3.setColor("26BF00");
-        p4.setColor("0066ED");
-        p5.setColor("000000");
-        p6.setColor("EF4CE7");
-        
-        // Hinzufügen von Testspielern
-        lobby.addPlayer(p1);
-        lobby.addPlayer(p2);
-        lobby.addPlayer(p3);
-        lobby.addPlayer(p4);
-        lobby.addPlayer(p5);
-        lobby.addPlayer(p6);
-        
-        // Lobbyleader setzen
-        lobby.setLobbyLeader(p1.getPlayerId());
+
+        // Lobbyleader setzen auf ersten Spieler in der Lobby
+        lobby.setLobbyLeader(lobby.getPlayers().get(0).getPlayerId());
 		playersInLobby = lobby.getPlayers();
 
-		userCount = lobby.getPlayers().length;
+		int userCount = lobby.getPlayers().size();
 		Random rand = new Random();
 		// Verteilung der Länder
 		for (int i = 0; i < getCountryArray.length; i++) {	
 			// Zufälliges Land aus der Länder-Liste wird ausgewählt
-			Player currentPlayer = playersInLobby[userCount-1];
+			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer);
 			randomCountry.setFill(Color.web(currentPlayer.getColor()));
-			System.out.println(randomCountry.getCountryId());
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
 			// Wenn die Spieler-Liste am Ende angekommen ist...
 			if(userCount == 1) {
 				// ...wird die Liste wieder von vorne begonnen
-				userCount = playersInLobby.length;
+				userCount = playersInLobby.size();
 			} else {
 				// sonst wird die Liste einen Schritt weiter gegangen
 				userCount--;
@@ -505,7 +470,7 @@ public class MatchFX {
 		}
 		
 		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
-		updateActivePlayer(playersInLobby[0].getName(), Color.web(playersInLobby[0].getColor()));
+		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColor()));
 	}
 	
 	/**
@@ -831,15 +796,6 @@ public class MatchFX {
 	 */
 	public Group getPlayerInfoAuftragGroup() {
 		return inventoryMissionGroup;
-	}
-
-	/**
-	 * Holt sich die Lobby-Funktionen
-	 * 
-	 * @return gibt das Lobby-Objekt zurück
-	 */
-	public Lobby getLobby() {
-		return lobby;
 	}
 
 }

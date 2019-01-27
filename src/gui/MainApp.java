@@ -14,6 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import network.ChatInterface;
 import sqlConnection.Country;
+import sqlConnection.Lobby;
+import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
 /**
@@ -41,7 +43,7 @@ public class MainApp extends Application {
 	private TitleFX titleFX = new TitleFX();
     private LobbyFX lobbyFX = new LobbyFX();
     private JoinFX joinFX = new JoinFX();
-    private MatchFX matchFX = new MatchFX(lobbyFX);
+    private MatchFX matchFX = new MatchFX();
     private MediaPlayerFX mpFX = new MediaPlayerFX();
     private ChatInterface chatFX;
 
@@ -131,7 +133,9 @@ public class MainApp extends Application {
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
-	    	
+	    	// Debug ausgabe Lobby ID
+			System.out.println(lobbyFX.getLobby().getLobbyId());
+
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
 	    	
@@ -192,7 +196,9 @@ public class MainApp extends Application {
 				mpFX.playBgmGame();
 				
 				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-				matchFX.setRound(new Round(matchFX, matchFX.getLobby().getPlayers()));
+				new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId()).setColor("FFD800");
+				matchFX.initializeMatch(lobbyFX);
+				matchFX.setRound(new Round(matchFX,lobbyFX.getLobby().getPlayers()));
 	    	}
 	    });
    
@@ -202,23 +208,24 @@ public class MainApp extends Application {
 
 	    	lobbyFX.getColorRectArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    		// Farbe des Slots der Person die gedrückt hat wird aktualisiert
-	    		lobbyFX.lobbyChangeColor(0, lobbyFX.getColorRectArray()[COUNT].getFill());
+	    		lobbyFX.lobbyChangeColor(lobbyFX.getNextSlotId(), lobbyFX.getColorRectArray()[COUNT].getFill());
 	    	});
 	    }
 	    
 	    // Wenn auf den Bestätigen-Button neben dem Namens-Eingefeld gedrückt wird
 	    lobbyFX.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Ändert den Namen des Spielers in seinem Slot
-	    	lobbyFX.lobbyChangeName(0, lobbyFX.getInputName().getText());
+	    	lobbyFX.lobbyChangeName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
 	    });
 	    
 	    // Wenn im Namens-Eingabefeld eine Taste gedrückt wird
 	    lobbyFX.getInputName().setOnKeyReleased(event -> {
 	    	// Wenn diese Taste "Enter" ist...
-	    	if (event.getCode() == KeyCode.ENTER){
+	    	if (event.getCode() == KeyCode.ENTER) {
 	    		// ...wird der Name des Spielers in seinem Slot geändert
-	    		lobbyFX.lobbyChangeName(0, lobbyFX.getInputName().getText());
+	    		lobbyFX.lobbyChangeName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
 	    	}
+
 	    });
 	    // Limitiert die Zeichen im Eingabefeld auf 15 Zeichen
 	    addTextLimiter(lobbyFX.getInputName(), 15);

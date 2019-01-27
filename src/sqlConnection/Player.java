@@ -17,11 +17,13 @@ public class Player {
 	private int playerId;
 	private int lobbyId;
 	private Lobby lobby;
+	private int slotId;
 	private int unitsPerRound = 9;
 	private int unassignedUnits = 0;
 	private int card1 = 0;
 	private int card2 = 0;
 	private int card3 = 0;
+
 
 	/**
 	 * Konstruktor fürs erstmalige Erstellen eines Spielers beim beitreten bzw erstellen einer Lobby
@@ -30,11 +32,12 @@ public class Player {
 	 * @param name
 	 * @param lobby
 	 */
-	public Player(String name, Lobby lobby) {
+	public Player(String name, Lobby lobby, int slotId) {
 		this.name = name;
 		this.countryList = new ArrayList<>();
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
+		this.slotId = slotId;
 		// Spieler in Db einfügen
 		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
 		// Spieler in Lobby einfügen
@@ -64,6 +67,10 @@ public class Player {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getSlotId() {
+		return slotId;
 	}
 	
 	public int getUnitsPerRound() {
