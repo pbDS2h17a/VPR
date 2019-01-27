@@ -14,7 +14,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import network.ChatInterface;
 import sqlConnection.Country;
-import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
@@ -198,7 +197,7 @@ public class MainApp extends Application {
 				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
 				new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId()).setColor("FFD800");
 				matchFX.initializeMatch(lobbyFX);
-				matchFX.setRound(new Round(matchFX,lobbyFX.getLobby().getPlayers()));
+				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
 	    	}
 	    });
    
@@ -285,25 +284,25 @@ public class MainApp extends Application {
 		// Wenn der Button für die 1. Phase (setzen) gedrückt wird
 	    matchFX.getPhaseBtn1().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
 	    	// initiiert Phase 1
-	    	matchFX.getRound().phaseAdd()
+	    	matchFX.getGameMechanics().phaseAdd()
 	    );
     	
 	    // Wenn der Button für die 2. Phase (kämpfen) gedrückt wird
 	    matchFX.getPhaseBtn2().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
 	    	// initiiert Phase 2
-	    	matchFX.getRound().phaseFight()
+	    	matchFX.getGameMechanics().phaseFight()
 	    );
 	    
 	    // Wenn der Button für die 3. Phase (bewegen) gedrückt wird
 	    matchFX.getPhaseBtn3().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
 	    	// initiiert Phase 3
-	    	matchFX.getRound().phaseMove()
+	    	matchFX.getGameMechanics().phaseMove()
 	    );
 	    
 	    // Wenn der Button für die 4. Phase (Ende) gedrückt wird
 	    matchFX.getPhaseBtn4().addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
 	    	// initiiert Phase 4
-	    	matchFX.getRound().nextTurn()
+	    	matchFX.getGameMechanics().nextTurn()
 	    );
 	    
 	    // Wenn der Cursor sich über den Auftrag-Button befindet
@@ -326,10 +325,10 @@ public class MainApp extends Application {
 	    	 */
 	    	if(matchFX.getBattleInputB().isDisabled()) {
 	    		// Die Einheiten zum Angreifen werden gesetzt
-	    		matchFX.getRound().setBattleUnitsA(Integer.parseInt(matchFX.getBattleInputA().getText()));
+	    		matchFX.getGameMechanics().setBattleUnitsA(Integer.parseInt(matchFX.getBattleInputA().getText()));
 	    		
 	    		// Wenn der Wert der Angreifer im erlaubten Bereich sind...
-		    	if(matchFX.getRound().getBattleUnitsA() > 0 && matchFX.getRound().getBattleUnitsA() < matchFX.getRound().getCountryA().getUnits()) {
+		    	if(matchFX.getGameMechanics().getBattleUnitsA() > 0 && matchFX.getGameMechanics().getBattleUnitsA() < matchFX.getGameMechanics().getCountryA().getUnits()) {
 		    		
 		    		// ...werden die Eingabefelder getauscht, damit die Else-Bedingungen erfüllt wird
 		    		matchFX.getBattleInputA().setDisable(true);
@@ -343,30 +342,30 @@ public class MainApp extends Application {
 	    	 */
 	    	else if(matchFX.getBattleInputA().isDisabled()) {
 	    		// Die Einheiten zum Verteidigen werden gesetzt
-	    		matchFX.getRound().setBattleUnitsB(Integer.parseInt(matchFX.getBattleInputB().getText()));
+	    		matchFX.getGameMechanics().setBattleUnitsB(Integer.parseInt(matchFX.getBattleInputB().getText()));
 	    		
 	    		// Wenn der Wert der Verteidiger im erlaubten Bereich sind...
-		    	if(matchFX.getRound().getBattleUnitsB() > 0 && matchFX.getRound().getBattleUnitsB() < 3 && matchFX.getRound().getBattleUnitsB() <= matchFX.getRound().getCountryB().getUnits()) {
+		    	if(matchFX.getGameMechanics().getBattleUnitsB() > 0 && matchFX.getGameMechanics().getBattleUnitsB() < 3 && matchFX.getGameMechanics().getBattleUnitsB() <= matchFX.getGameMechanics().getCountryB().getUnits()) {
 		    		
 		    		// Ausgabe für die Konsole zur Kontrolle
 		    		System.out.println("*** Kampf beginnt ***");
-		    		System.out.println("A: " + matchFX.getRound().getCountryA().getCountryName() + " | B: " + matchFX.getRound().getCountryB().getCountryName());
-		    		System.out.println("A Einheiten vorher: " + matchFX.getRound().getCountryA().getUnits());
-		    		System.out.println("B Einheiten vorher: " + matchFX.getRound().getCountryB().getUnits());
-		    		System.out.println("A schickt in den Tod: " + matchFX.getRound().getBattleUnitsA());
-		    		System.out.println("B schickt in den Tod: " + matchFX.getRound().getBattleUnitsB());
+		    		System.out.println("A: " + matchFX.getGameMechanics().getCountryA().getCountryName() + " | B: " + matchFX.getGameMechanics().getCountryB().getCountryName());
+		    		System.out.println("A Einheiten vorher: " + matchFX.getGameMechanics().getCountryA().getUnits());
+		    		System.out.println("B Einheiten vorher: " + matchFX.getGameMechanics().getCountryB().getUnits());
+		    		System.out.println("A schickt in den Tod: " + matchFX.getGameMechanics().getBattleUnitsA());
+		    		System.out.println("B schickt in den Tod: " + matchFX.getGameMechanics().getBattleUnitsB());
 		    		
 		    		// Button wird deaktiviert um weitere Eingaben zu vermeiden
 		    		matchFX.getBattleReadyBtn().setActive(false);
 		    		
 		    		// Es werden Würfel gewürfelt anhand der eingesetzten Einheiten
-		    		Integer[][] rolledDices = matchFX.getRound().rollTheDice(matchFX.getRound().getBattleUnitsA(), matchFX.getRound().getBattleUnitsB());
+		    		Integer[][] rolledDices = matchFX.getGameMechanics().rollTheDice(matchFX.getGameMechanics().getBattleUnitsA(), matchFX.getGameMechanics().getBattleUnitsB());
 		    		
 		    		// Auf Basis der Würfe wird der Kampf durchgeführt
-		    		matchFX.getRound().updateFightResults(rolledDices, matchFX.getRound().getCountryA(), matchFX.getRound().getCountryB());
+		    		matchFX.getGameMechanics().updateFightResults(rolledDices, matchFX.getGameMechanics().getCountryA(), matchFX.getGameMechanics().getCountryB());
 		    		
 		    		// Ist der Kampf vorbei wird der Kampf beendet und die Länder aktualisiert
-		    		matchFX.getRound().endFight();
+		    		matchFX.getGameMechanics().endFight();
 		    	}
 	    	}
 	    });
@@ -379,24 +378,24 @@ public class MainApp extends Application {
 			
 			// Wenn ein Land oder die Einheiten im Land angeklickt werden
 			countryArray[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				matchFX.getRound().manageCountryClick(COUNT);
+				matchFX.getGameMechanics().manageCountryClick(COUNT);
 		    });
 			
 			// Wenn ein Land oder die Einheiten im Land angeklickt werden
 	    	matchFX.getCountryUnitsBGArray()[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				matchFX.getRound().manageCountryClick(COUNT);
+				matchFX.getGameMechanics().manageCountryClick(COUNT);
 		    });
 	    	
 	    	// Wenn ein Land oder die Einheiten im Land angeklickt werden
 	    	matchFX.getCountryUnitsLabelArray()[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				matchFX.getRound().manageCountryClick(COUNT);
+				matchFX.getGameMechanics().manageCountryClick(COUNT);
 		    });
 			
 			// Wenn der Cursor auf einem Land oder Einheit des Landes platziert wird
 	    	countryArray[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
-	    		if(matchFX.getRound().getCountryA() == null) {
+	    		if(matchFX.getGameMechanics().getCountryA() == null) {
 	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
 	    		}
 	    	});
@@ -405,7 +404,7 @@ public class MainApp extends Application {
 	    	matchFX.getCountryUnitsBGArray()[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
-	    		if(matchFX.getRound().getCountryA() == null) {
+	    		if(matchFX.getGameMechanics().getCountryA() == null) {
 	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
 	    		}
 	    	});
@@ -414,7 +413,7 @@ public class MainApp extends Application {
 	    	matchFX.getCountryUnitsLabelArray()[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
-	    		if(matchFX.getRound().getCountryA() == null) {
+	    		if(matchFX.getGameMechanics().getCountryA() == null) {
 	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
 	    		}
 	    	});

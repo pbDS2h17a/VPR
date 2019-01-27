@@ -16,9 +16,6 @@ import sqlConnection.Country;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
-
-import java.sql.Array;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -33,8 +30,7 @@ import java.util.Random;
 public class MatchFX {
 
 	// Globale Variablen
-	private Round round;
-	private LobbyFX lobbyFX;
+	private GameMechanics gameMechanics;
     private ArrayList<Player> playersInLobby;
 	private Pane ctn = new Pane();
 	private Country[] getCountryArray = new Country[42];
@@ -57,11 +53,11 @@ public class MatchFX {
 	private Label inventoryMissionLabelTwo = new Label();
 	private Label fightCountryOneLabel = new Label();
 	private Label fightCountryTwoLabel = new Label();
-	private Label battleA_Dice1 = new Label();
-	private Label battleA_Dice2 = new Label();
-	private Label battleA_Dice3 = new Label();
-	private Label battleB_Dice1 = new Label();
-	private Label battleB_Dice2 = new Label();
+	private Label fightCountryOneDiceOne = new Label();
+	private Label fightCountryOneDiceTwo = new Label();
+	private Label fightCountryOneDiceThree = new Label();
+	private Label fightCountryTwoDiceOne = new Label();
+	private Label fightCountryTwoDiceTwo = new Label();
 	private Label fightCountryOneUnits = new Label();
 	private Label fightCountryTwoUnits = new Label();
 	private Line[] countryNeighbourLineArray = new Line[10];
@@ -391,33 +387,33 @@ public class MatchFX {
 		// Die Würfel von Land eins (Gruppe)
 		battleA_GroupDices.relocate(0, 0);
 		// Die Würfel von Land eins (Würfel eins)
-		battleA_Dice1.setPrefSize(150, 150);
-		battleA_Dice1.relocate(100, 265);
-		battleA_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
-		battleA_GroupDices.getChildren().add(battleA_Dice1);
+		fightCountryOneDiceOne.setPrefSize(150, 150);
+		fightCountryOneDiceOne.relocate(100, 265);
+		fightCountryOneDiceOne.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(fightCountryOneDiceOne);
 		// Die Würfel von Land eins (Würfel zwei)
-		battleA_Dice2.setPrefSize(150, 150);
-		battleA_Dice2.relocate(100, 465);
-		battleA_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
-		battleA_GroupDices.getChildren().add(battleA_Dice2);
+		fightCountryOneDiceTwo.setPrefSize(150, 150);
+		fightCountryOneDiceTwo.relocate(100, 465);
+		fightCountryOneDiceTwo.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(fightCountryOneDiceTwo);
 		// Die Würfel von Land eins (Würfel drei)
-		battleA_Dice3.setPrefSize(150, 150);
-		battleA_Dice3.relocate(100, 665);
-		battleA_Dice3.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
-		battleA_GroupDices.getChildren().add(battleA_Dice3);
+		fightCountryOneDiceThree.setPrefSize(150, 150);
+		fightCountryOneDiceThree.relocate(100, 665);
+		fightCountryOneDiceThree.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleA_GroupDices.getChildren().add(fightCountryOneDiceThree);
 		fightGroup.getChildren().add(battleA_GroupDices);
 		// Die Würfel von Land zwei (Gruppe)
 		battleB_GroupDices.relocate(0, 0);
 		// Die Würfel von Land zwei (Gruppe, Würfel eins)
-		battleB_Dice1.setPrefSize(150, 150);
-		battleB_Dice1.relocate(1670, 365);
-		battleB_Dice1.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
-		battleB_GroupDices.getChildren().add(battleB_Dice1);
+		fightCountryTwoDiceOne.setPrefSize(150, 150);
+		fightCountryTwoDiceOne.relocate(1670, 365);
+		fightCountryTwoDiceOne.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleB_GroupDices.getChildren().add(fightCountryTwoDiceOne);
 		// Die Würfel von Land zwei (Gruppe, Würfel zwei)
-		battleB_Dice2.setPrefSize(150, 150);
-		battleB_Dice2.relocate(1670, 565);
-		battleB_Dice2.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
-		battleB_GroupDices.getChildren().add(battleB_Dice2);
+		fightCountryTwoDiceTwo.setPrefSize(150, 150);
+		fightCountryTwoDiceTwo.relocate(1670, 565);
+		fightCountryTwoDiceTwo.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
+		battleB_GroupDices.getChildren().add(fightCountryTwoDiceTwo);
 		fightGroup.getChildren().add(battleB_GroupDices);
 		ctn.getChildren().add(fightGroup);
 		
@@ -729,19 +725,19 @@ public class MatchFX {
 	/**
 	 * Holt sich die Spielrunde
 	 * 
-	 * @return gibt das Round-Objekt zurück
+	 * @return gibt das GameMechanics-Objekt zurück
 	 */
-	public Round getRound() {
-		return round;
+	public GameMechanics getGameMechanics() {
+		return gameMechanics;
 	}
 
 	/**
 	 * Setzt die aktuelle Spielrunde
 	 * 
-	 * @param r Round
+	 * @param gm GameMechanics
 	 */
-	public void setRound(Round r) {
-		round = r;
+	public void setGameMechanics(GameMechanics gm) {
+		gameMechanics = gm;
 	}
 
 	/**
