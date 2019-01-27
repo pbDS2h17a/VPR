@@ -1,15 +1,14 @@
 package gui;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -22,7 +21,9 @@ import sqlConnection.SqlHelper;
  * und die gesamte Scene administriert.
  * 
  * @author Adrian Ledwinka
+ * @author Hoang Ha Dang
  * @author Kevin Daniels
+ * @author Nam Max Liebner
  */
 public class MainApp extends Application {
 	
@@ -191,10 +192,46 @@ public class MainApp extends Application {
 				mpFX.playBgmGame();
 				
 				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-				matchFX.setRound(new Round(matchFX, matchFX.getLobby().getPlayers()) );
+				matchFX.setRound(new Round(matchFX, matchFX.getLobby().getPlayers()));
 	    	}
 	    });
    
+	    // Wenn auf ein Farben-Quadrat in der Lobby gedrückt wird
+	    for(int i = 0; i < lobbyFX.getColors().length; i++)  {
+	    	final int COUNT = i;
+
+	    	lobbyFX.getColorRectArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    		// Farbe des Slots der Person die gedrückt hat wird aktualisiert
+	    		lobbyFX.lobbyChangeColor(0, lobbyFX.getColorRectArray()[COUNT].getFill());
+	    	});
+	    }
+	    
+	    // Wenn auf den Bestätigen-Button neben dem Namens-Eingefeld gedrückt wird
+	    lobbyFX.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			// Ändert den Namen des Spielers in seinem Slot
+	    	lobbyFX.lobbyChangeName(0, lobbyFX.getInputName().getText());
+	    });
+	    
+	    // Wenn im Namens-Eingabefeld eine Taste gedrückt wird
+	    lobbyFX.getInputName().setOnKeyReleased(event -> {
+	    	// Wenn diese Taste "Enter" ist...
+	    	if (event.getCode() == KeyCode.ENTER){
+	    		// ...wird der Name des Spielers in seinem Slot geändert
+	    		lobbyFX.lobbyChangeName(0, lobbyFX.getInputName().getText());
+	    	}
+	    });
+	    // Limitiert die Zeichen im Eingabefeld auf 15 Zeichen
+	    addTextLimiter(lobbyFX.getInputName(), 15);
+	    
+	    // Wenn auf das rote Kreuz eines Spielers gedrückt wird
+	    for(int i = 1; i < lobbyFX.getSlotRolesArray().length; i++) {
+	    	final int COUNT = i;
+
+	    	lobbyFX.getSlotRolesArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    		lobbyFX.lobbyRemovePlayer(COUNT);
+	    	});
+	    }
+	    
 	    // Wenn der Button zum Verlassen von "Spiel beitereten" gedrückt wird
 	    joinFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Startet die Animation des Logos
@@ -352,25 +389,29 @@ public class MainApp extends Application {
 	    	countryArray[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
-	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
+	    		if(matchFX.getRound().getCountryA() == null) {
+	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
+	    		}
 	    	});
 	    	
 	    	// Wenn der Cursor auf einem Land oder Einheit des Landes platziert wird
 	    	matchFX.getCountryUnitsBGArray()[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
-	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
+	    		if(matchFX.getRound().getCountryA() == null) {
+	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
+	    		}
 	    	});
 	    	
 	    	// Wenn der Cursor auf einem Land oder Einheit des Landes platziert wird
 	    	matchFX.getCountryUnitsLabelArray()[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
-	    		matchFX.gameMarkNeighbourCountrys(countryArray[COUNT]);
+	    		if(matchFX.getRound().getCountryA() == null) {
+	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
+	    		}
 	    	});
-
-
-	    	
+	
 		}
     }
 
@@ -534,6 +575,18 @@ public class MainApp extends Application {
 	        	mpFX.setVolumeStart();
 	        }
 	    }.start();
+	}
+	
+	
+	public static void addTextLimiter(final TextField tf, final int maxLength) {
+	    tf.textProperty().addListener(new ChangeListener<String>() {
+	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+	            if (tf.getText().length() > maxLength) {
+	                String s = tf.getText().substring(0, maxLength);
+	                tf.setText(s);
+	            }
+	        }
+	    });
 	}
 
 }

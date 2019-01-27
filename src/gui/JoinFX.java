@@ -10,9 +10,9 @@ import sqlConnection.SqlHelper;
 /**
  * Beinhaltet die gesamte Oberfläche die beim Klick auf "Spiel beitreten" aufgerufen wird.
  * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfläche aufzurufen.
+ * 
  * @author Kevin Daniels
  */
-
 public class JoinFX {
 
 	// Globale Variablen
@@ -72,6 +72,7 @@ public class JoinFX {
 
 	/**
 	 * Der Container für die gesamte Beitreten-Oberfläche
+	 * 
 	 * @return gibt den Container zurück
 	 */
 	public Pane getContainer() {
@@ -80,6 +81,7 @@ public class JoinFX {
 	
 	/**
 	 * Der Button der zurück zu Lobby führt
+	 * 
 	 * @return gibt den Zurück-Button zurück
 	 */
 	public Sprite getBtnBack() {
@@ -88,6 +90,7 @@ public class JoinFX {
 	
 	/**
 	 * Ein mit den potentiellen Lobby gefülltes Array
+	 * 
 	 * @return gibt das Array mit den Lobbys zurück
 	 */
 	public Label[] getUserList() {

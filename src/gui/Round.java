@@ -18,23 +18,24 @@ import sqlConnection.Country;
 import sqlConnection.Player;
 
 public class Round {
-	private int activePlayerIndex;
-	private ArrayList<Player> playerArray;
-	private MatchFX matchFX;
+
+	private Player[] playerArray;
+	private MatchFX match;
+	private Country countryA = null;
+	private Country countryB = null;
 	private boolean assign = true;
 	private boolean add = false;
 	private boolean fight = false;
 	private boolean move = false;
-	private Country countryA = null;
-	private Country countryB = null;
+	private int activePlayerIndex;
 	private int battleUnitsA;
 	private int battleUnitsB;
 	private int additionalAttacker;
 
-	public Round(MatchFX matchFX, ArrayList<Player> playerArray) {
+	public Round(MatchFX match, Player[] playerArray) {
 		this.activePlayerIndex = 0;
 		this.playerArray = playerArray;
-		this.matchFX = matchFX;
+		this.match = match;
 		
 		this.startInitialRound(playerArray);
 	}
@@ -44,14 +45,15 @@ public class Round {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...
 		if(isAssign()) {
 			// Wenn einem das Land gehört...
-			if(isOwnLand(matchFX.getCountryArray()[index])) {
+			if(isOwnLand(match.getCountryArray()[index])) {
 				// ...werden die ungesetzten Einheiten um eins reduziert
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
 				// ...bekommt das Land eine Einheit dazu
-				matchFX.getCountryArray()[index].setUnits(matchFX.getCountryArray()[index].getUnits() + 1);
+				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
+				match.getCountryUnitsLabelArray()[index].setText(String.valueOf(match.getCountryArray()[index].getUnits()));
 				
 				// Wenn man am Ende der Spieler-Liste angekommen ist...
-				if(getActivePlayerIndex() == getPlayerArray().size()-1) {
+				if(getActivePlayerIndex() == getPlayerArray().length-1) {
 					// ...ist der 1. Spieler wieder der aktive Spieler
 					setActivePlayerIndex(0);
 				} else {
@@ -64,13 +66,12 @@ public class Round {
 		// Wenn man in der 1. Phase (setzen) steckt...
 		else if(isAdd()) {
 			// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
-			if(isOwnLand(matchFX.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
+			if(isOwnLand(match.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
 				// ...wird ein Spieler aus dem Inventar verschoben...
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
 				// ...und dem Land hinzugefügt 
-				matchFX.getCountryArray()[index].setUnits(matchFX.getCountryArray()[index].getUnits() + 1);
-				// ...wird das Interface mit den Land-Informationen aktualisiert
-				matchFX.updateCountryInfo(matchFX.getCountryArray()[index]);
+				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
+				match.getCountryUnitsLabelArray()[index].setText(String.valueOf(match.getCountryArray()[index].getUnits()));
 			}
 		}
 		
@@ -79,16 +80,16 @@ public class Round {
 			// Wenn noch nicht das erste Land ausgewählt wurde...
 			if(getCountryA() == null) {
 				// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
-				if(isOwnLand(matchFX.getCountryArray()[index]) && matchFX.getCountryArray()[index].getUnits() > 1) {
+				if(isOwnLand(match.getCountryArray()[index]) && match.getCountryArray()[index].getUnits() > 1) {
 					// ...wird das erste Land ausgewählt
-					setCountryA(matchFX.getCountryArray()[index]);
+					setCountryA(match.getCountryArray()[index]);
 				}
 			}
 			
 			// Sonst wenn es nicht das eigene Land ist und benachbart ist...
-			else if(!isOwnLand(matchFX.getCountryArray()[index]) && isNeighbour(getCountryA(), matchFX.getCountryArray()[index])) {
+			else if(!isOwnLand(match.getCountryArray()[index]) && isNeighbour(getCountryA(), match.getCountryArray()[index])) {
 				// ...wird das zweite Land ausgewählt und der Kampf gestartet
-				setCountryB(matchFX.getCountryArray()[index]);
+				setCountryB(match.getCountryArray()[index]);
 				startFight();
 			}
 		}
@@ -96,22 +97,24 @@ public class Round {
 		// Wenn man in der 3. Phase (bewegen) steckt...
 		else if(isMove()) {
 			// Wenn es das eigene Land ist...
-			if(isOwnLand(matchFX.getCountryArray()[index])) {
+			if(isOwnLand(match.getCountryArray()[index])) {
 				// Wenn noch nicht das erste Land ausgewählt wurde...
 				if(getCountryA() == null) {
 					// ...wird das erste Land ausgewählt
-					setCountryA(matchFX.getCountryArray()[index]);
+					setCountryA(match.getCountryArray()[index]);
 				}
 				
 				// Sonst...
 				else {
 					// ...wird das zweite Land ausgewählt
-					setCountryB(matchFX.getCountryArray()[index]);
+					setCountryB(match.getCountryArray()[index]);
 					// ...Wenn das Land benachbart ist und das erste Land mehr als eine Einheit beinhaltet
 					if(isNeighbour(getCountryA(), getCountryB()) && getCountryA().getUnits() > 1) {
 						// ...wird eine Einheit vom ersten Land zum zweiten Land verschoben
 						getCountryA().setUnits(getCountryA().getUnits() - 1);
+						match.getCountryUnitsLabelArray()[getCountryA().getCountryId()-1].setText(String.valueOf(getCountryA().getUnits()));
 						getCountryB().setUnits(getCountryB().getUnits() + 1);
+						match.getCountryUnitsLabelArray()[getCountryB().getCountryId()-1].setText(String.valueOf(getCountryB().getUnits()));
 					}
 					// ...werden das erste und zweite Land zurückgesetzt
 					setCountryA(null);
@@ -132,98 +135,10 @@ public class Round {
 		
 		// Aktualisiert das Interface
 		updatePlayerInterface(getActivePlayer());
-		matchFX.updateCountryInfo(matchFX.getCountryArray()[index]);
-	}
-	
-	public Player getActivePlayer() {
-		return playerArray.get(activePlayerIndex);
-	}
-	
-	void setActivePlayerIndex(int i) {
-		this.activePlayerIndex = i;
+		match.updateCountryInfo(match.getCountryArray()[index]);
 	}
 
-	int getActivePlayerIndex() {
-		return this.activePlayerIndex;
-	}
-	
-	public ArrayList<Player> getPlayerArray() {
-		return this.playerArray;
-	}
-
-	public boolean isAssign() {
-		return assign;
-	}
-
-	public void setAssign(boolean assign) {
-		this.assign = assign;
-	}
-
-	public boolean isAdd() {
-		return add;
-	}
-
-	public void setAdd(boolean add) {
-		this.add = add;
-	}
-
-	public boolean isFight() {
-		return fight;
-	}
-
-	public void setFight(boolean fight) {
-		this.fight = fight;
-	}
-
-	public boolean isMove() {
-		return move;
-	}
-
-	public void setMove(boolean move) {
-		this.move = move;
-	}
-
-	public int getAdditionalAttacker() {
-		return additionalAttacker;
-	}
-
-	public void setAdditionalAttacker(int additionalAttacker) {
-		this.additionalAttacker = additionalAttacker;
-	}
-
-	public Country getCountryA() {
-		return countryA;
-	}
-
-	public void setCountryA(Country countryA) {
-		this.countryA = countryA;
-	}
-
-	public Country getCountryB() {
-		return countryB;
-	}
-
-	public void setCountryB(Country countryB) {
-		this.countryB = countryB;
-	}
-
-	public int getBattleUnitsA() {
-		return battleUnitsA;
-	}
-
-	public void setBattleUnitsA(int battleUnitsA) {
-		this.battleUnitsA = battleUnitsA;
-	}
-
-	public int getBattleUnitsB() {
-		return battleUnitsB;
-	}
-
-	public void setBattleUnitsB(int battleUnitsB) {
-		this.battleUnitsB = battleUnitsB;
-	}
-
-	void startInitialRound(ArrayList<Player> playerArray) {
+	private void startInitialRound(Player[] playerArray) {
 			
 		int firstUnits;
 
@@ -232,7 +147,7 @@ public class Round {
 		}
 
 
-		switch (playerArray.size()) {
+		switch (playerArray.length) {
 			case 2:
 				firstUnits = 40;
 				break;
@@ -259,14 +174,60 @@ public class Round {
 		
 		firstUnits = 1;
 		
-		for (int i = 0; i < this.getPlayerArray().size(); i++) {
-			this.getPlayerArray().get(i).setUnassignedUnits(firstUnits);
+		for (int i = 0; i < this.getPlayerArray().length; i++) {
+			this.getPlayerArray()[i].setUnassignedUnits(firstUnits);
 		}
 		
 		updatePlayerInterface(this.getActivePlayer());
 
 	}
 	
+	private boolean isFinishedAssigning() {
+		for (int i = 0; i < this.getPlayerArray().length; i++) {
+			if(this.getPlayerArray()[i].getUnassignedUnits() != 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public void phaseAdd() {
+		this.add = true;
+		this.fight = false;
+		this.move = false;
+		this.match.editPhaseButtons(false, true, true, true);
+		updatePlayerInterface(this.getActivePlayer());
+	}
+
+	public void phaseFight() {
+		this.add = false;
+		this.fight = true;
+		this.move = false;
+		this.match.editPhaseButtons(false, false, true, true);
+		updatePlayerInterface(this.getActivePlayer());
+	}
+	
+	public void phaseMove() {
+		this.add = false;
+		this.fight = false;
+		this.move = true;
+		this.match.editPhaseButtons(false, false, false, true);
+		updatePlayerInterface(this.getActivePlayer());
+	}
+	
+	public void nextTurn() {
+		if(this.getActivePlayerIndex() == this.getPlayerArray().length-1) {
+			this.setActivePlayerIndex(0);
+		}
+		else {
+			this.setActivePlayerIndex(this.getActivePlayerIndex() + 1);
+		}
+		
+		this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getUnitsPerRound());
+		phaseAdd();
+	}
+
 	public void startFight() {
 		UnaryOperator<Change> integerFilter = change -> {
 		    String newText = change.getControlNewText();
@@ -275,37 +236,26 @@ public class Round {
 		    }
 		    return null;
 		};
-		this.matchFX.getBattleInputA().setText("10");
-		this.matchFX.getBattleInputB().setText("1");
-		addTextLimiter(this.matchFX.getBattleInputA(), 2);
-		this.matchFX.getBattleInputA().setTextFormatter(
+		this.match.getBattleInputA().setText("1");
+		this.match.getBattleInputB().setText("1");
+		addTextLimiter(this.match.getBattleInputA(), 2);
+		this.match.getBattleInputA().setTextFormatter(
 	    new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter));
 		
-		this.matchFX.getBattleInputA().setDisable(false);
-		this.matchFX.getBattleInputB().setDisable(true);
+		this.match.getBattleInputA().setDisable(false);
+		this.match.getBattleInputB().setDisable(true);
 		
-		this.matchFX.getBattleBackgroundA().setFill(this.countryA.getFill());
-		this.matchFX.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
-		this.matchFX.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
+		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
+		this.match.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
+		this.match.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
 		
-		this.matchFX.getBattleBackgroundB().setFill(this.countryB.getFill());
-		this.matchFX.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
-		this.matchFX.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
+		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
+		this.match.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
+		this.match.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
 		
-		this.matchFX.activateWorldMap(false);
-		this.matchFX.getPhaseBtnGroup().setVisible(false);
-		this.matchFX.getBattleInterface().setVisible(true);
-	}
-
-	public void endFight() {
-		this.countryA.setStrokeWidth(0);
-		this.countryA = null;
-		this.countryB = null;
-		this.matchFX.getBattleReadyBtn().setActive(true);
-		this.matchFX.activateWorldMap(true);
-		this.matchFX.getPhaseBtnGroup().setVisible(true);
-		this.matchFX.getBattleInterface().setVisible(false);
-		updatePlayerInterface(this.getActivePlayer());
+		this.match.activateWorldMap(false);
+		this.match.getPhaseBtnGroup().setVisible(false);
+		this.match.getBattleInterface().setVisible(true);
 	}
 
 	public void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
@@ -346,21 +296,30 @@ public class Round {
 		countryAftermath(fightA, fightB, countryAttack, countryDefense);
 	}
 
-	public void countryAftermath(int[] fightA, int[] fightB, Country countryAttack, Country countryDefense) {
-		if(countryDefense.getUnits() - fightB[1] == 0) {
-			countryDefense.setUnits(fightA[0] - fightA[1] + this.additionalAttacker);
-			countryDefense.setOwner(countryAttack.getOwner());
-			countryDefense.setFill(countryAttack.getFill());
-			countryAttack.setUnits(countryAttack.getUnits() - fightA[0] - this.additionalAttacker);
-		} else {
-			countryAttack.setUnits(countryAttack.getUnits() - fightA[1]);
-			countryDefense.setUnits(countryDefense.getUnits() - fightB[1]);
+	public void countryAftermath(int[] fightA, int[] fightB, Country cAtk, Country cDef) {
+		if(cDef.getUnits() - fightB[1] == 0) {
+			cDef.setUnits(fightA[0] - fightA[1] + additionalAttacker);
+			cDef.setOwner(cAtk.getOwner());
+			cDef.setFill(cAtk.getFill());
+			cAtk.setUnits(cAtk.getUnits() - fightA[0] - additionalAttacker);
+			match.getCountryUnitsBGArray()[cDef.getCountryId()-1].setFill(cDef.getFill());
+			match.getCountryUnitsLabelArray()[cDef.getCountryId()-1].setText(String.valueOf(cDef.getUnits()));
+			match.getCountryUnitsBGArray()[cAtk.getCountryId()-1].setFill(cAtk.getFill());
+			match.getCountryUnitsLabelArray()[cAtk.getCountryId()-1].setText(String.valueOf(cAtk.getUnits()));
 		}
 		
-		this.additionalAttacker = 0;
+		else {
+			cAtk.setUnits(cAtk.getUnits() - fightA[1]);
+			cDef.setUnits(cDef.getUnits() - fightB[1]);
+			match.getCountryUnitsLabelArray()[cDef.getCountryId()-1].setText(String.valueOf(cDef.getUnits()));
+			match.getCountryUnitsLabelArray()[cAtk.getCountryId()-1].setText(String.valueOf(cAtk.getUnits()));
+
+		}
 		
-		System.out.println("A Einheiten nachher: " + countryAttack.getUnits());
-		System.out.println("B Einheiten nachher: " + countryDefense.getUnits());
+		additionalAttacker = 0;
+		
+		System.out.println("A Einheiten nachher: " + cAtk.getUnits());
+		System.out.println("B Einheiten nachher: " + cDef.getUnits());
 		System.out.println();
 
 		//Debug ausgabe
@@ -369,14 +328,25 @@ public class Round {
 		}
 	}
 
+	public void endFight() {
+		this.countryA.setStrokeWidth(0);
+		this.countryA = null;
+		this.countryB = null;
+		this.match.getBattleReadyBtn().setActive(true);
+		this.match.activateWorldMap(true);
+		this.match.getPhaseBtnGroup().setVisible(true);
+		this.match.getBattleInterface().setVisible(false);
+		updatePlayerInterface(this.getActivePlayer());
+	}
+
 	public Integer[][] rollTheDice(int battleUnitsA, int battleUnitsB) {
 		int limitA = battleUnitsA;
 		int limitB = battleUnitsB;
-		this.additionalAttacker = 0;
+		additionalAttacker = 0;
 		
 		if(battleUnitsA > 3) {
 			limitA = 3;
-			this.additionalAttacker = battleUnitsA - 3;
+			additionalAttacker = battleUnitsA - 3;
 		}
 		
 		if(battleUnitsB > 2) {
@@ -415,69 +385,101 @@ public class Round {
 		return diceResults;
 	}
 
-	boolean isNeighbour(Country a, Country b) {
+	public boolean isNeighbour(Country a, Country b) {
 		return IntStream.of(a.getNeighborIdArray()).anyMatch(x -> x == b.getCountryId());
 	}
 		
-	boolean isOwnLand(Country country) {
+	public boolean isOwnLand(Country country) {
         return this.getActivePlayer().equals(country.getOwner());
+
     }
+
+	public void updatePlayerInterface(Player activePlayer) {
+		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
+		this.match.setInventoryCountryLabel(activePlayer.getCountryList().size());
+		this.match.setInventoryUnitsLabel(activePlayer.getUnassignedUnits());
+	}
 	
-	void phaseAdd() {
-		this.add = true;
-		this.fight = false;
-		this.move = false;
-		this.matchFX.editPhaseButtons(false, true, true, true);
-		updatePlayerInterface(this.getActivePlayer());
+	public Player getActivePlayer() {
+		return playerArray[activePlayerIndex];
 	}
 
-	void phaseFight() {
-		this.add = false;
-		this.fight = true;
-		this.move = false;
-		this.matchFX.editPhaseButtons(true, false, true, true);
-		updatePlayerInterface(this.getActivePlayer());
+	public void setActivePlayerIndex(int i) {
+		this.activePlayerIndex = i;
+	}
+
+	public int getActivePlayerIndex() {
+		return this.activePlayerIndex;
 	}
 	
-	void phaseMove() {
-		this.add = false;
-		this.fight = false;
-		this.move = true;
-		this.matchFX.editPhaseButtons(true, true, false, true);
-		updatePlayerInterface(this.getActivePlayer());
+	public Player[] getPlayerArray() {
+		return this.playerArray;
 	}
-	
-	void nextTurn() {
-		if(this.getActivePlayerIndex() == this.getPlayerArray().size()-1) {
-			this.setActivePlayerIndex(0);
-		}
-		else {
-			this.setActivePlayerIndex(this.getActivePlayerIndex() + 1);
-		}
-		
-		this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getUnitsPerRound());
-		phaseAdd();
+
+	public boolean isAssign() {
+		return assign;
 	}
-	
-	boolean isFinishedAssigning() {
-		for (int i = 0; i < this.getPlayerArray().size(); i++) {
-			if(this.getPlayerArray().get(i).getUnassignedUnits() != 0) {
-				return false;
-			}
-		}
-		
-		return true;
+
+	public void setAssign(boolean assign) {
+		this.assign = assign;
 	}
-	
-	void updatePlayerInterface(Player activePlayer) {
-		this.matchFX.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
-		this.matchFX.gameChangePlayerTerritories(activePlayer.getCountryList().size());
-		this.matchFX.gameChangePlayerCard1(activePlayer.getCard1());
-		this.matchFX.gameChangePlayerCard2(activePlayer.getCard2());
-		this.matchFX.gameChangePlayerCard3(activePlayer.getCard3());
-		this.matchFX.gameChangePlayerUnits(activePlayer.getUnassignedUnits());
+
+	public boolean isAdd() {
+		return add;
 	}
-	
+
+	public void setAdd(boolean add) {
+		this.add = add;
+	}
+
+	public boolean isFight() {
+		return fight;
+	}
+
+	public void setFight(boolean fight) {
+		this.fight = fight;
+	}
+
+	public boolean isMove() {
+		return move;
+	}
+
+	public void setMove(boolean move) {
+		this.move = move;
+	}
+
+	public Country getCountryA() {
+		return countryA;
+	}
+
+	public void setCountryA(Country countryA) {
+		this.countryA = countryA;
+	}
+
+	public Country getCountryB() {
+		return countryB;
+	}
+
+	public void setCountryB(Country countryB) {
+		this.countryB = countryB;
+	}
+
+	public int getBattleUnitsA() {
+		return battleUnitsA;
+	}
+
+	public void setBattleUnitsA(int battleUnitsA) {
+		this.battleUnitsA = battleUnitsA;
+	}
+
+	public int getBattleUnitsB() {
+		return battleUnitsB;
+	}
+
+	public void setBattleUnitsB(int battleUnitsB) {
+		this.battleUnitsB = battleUnitsB;
+	}
+
 	public static void addTextLimiter(final TextField tf, final int maxLength) {
 	    tf.textProperty().addListener(new ChangeListener<String>() {
 	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
