@@ -396,11 +396,8 @@ public class Round {
 
 	public void updatePlayerInterface(Player activePlayer) {
 		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
-		this.match.gameChangePlayerTerritories(activePlayer.getCountryList().size());
-		this.match.gameChangePlayerCard1(activePlayer.getCard1());
-		this.match.gameChangePlayerCard2(activePlayer.getCard2());
-		this.match.gameChangePlayerCard3(activePlayer.getCard3());
-		this.match.gameChangePlayerUnits(activePlayer.getUnassignedUnits());
+		this.match.setInventoryCountryLabel(activePlayer.getCountryList().size());
+		this.match.setInventoryUnitsLabel(activePlayer.getUnassignedUnits());
 	}
 	
 	public Player getActivePlayer() {

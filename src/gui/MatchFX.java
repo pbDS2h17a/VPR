@@ -25,6 +25,7 @@ import java.util.Random;
 /**
  * Beinhaltet die gesamte Oberfläche die beim Klick auf "Spiel beitreten" aufgerufen wird.
  * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfläche aufzurufen.
+ * 
  * @author Kevin Daniels
  */
 
@@ -34,7 +35,6 @@ public class MatchFX {
 	private Round round;
 	private LobbyFX lobbyFX;
 	private Lobby lobby;
-	private Country currentCountry = null;
     private Player[] playersInLobby;
 	private Pane ctn = new Pane();
 	private Country[] getCountryArray = new Country[42];
@@ -84,7 +84,6 @@ public class MatchFX {
 	private Rectangle[] countryUnitsBGArray = new Rectangle[getCountryArray.length];
 	private Rectangle fightCountryOneBG = new Rectangle(960, 1080);
 	private Rectangle fightCountryTwoBG = new Rectangle(960, 1080);
-	private ColorAdjust colorAdjust = new ColorAdjust();
 	private double[][] worldMapCoordinates;
 
 	/**
@@ -128,6 +127,7 @@ public class MatchFX {
 	    
 	    ctn.getChildren().add(groupLands);
 
+	    // Code um sich die Mauskoordinaten zu besorgen (NUR FÜR TEST- UND RECHERCHEZWECKE)
 //	    for (int i = 0; i < countryArray.length; i++) {
 //			System.out.println(countryArray[i].getCountryName());
 //		}
@@ -438,8 +438,10 @@ public class MatchFX {
      * @param lobbyFX LobbyFX
      */
 	private void startMatch(LobbyFX lobbyFX) {	
-		// Verteilung der Länder auf die Spieler		
-		// Länder-Array wird in eine Liste konvertiert
+		/*
+		 *  Verteilung der Länder auf die Spieler
+		 *  Länder-Array wird in eine Liste konvertiert
+		 */
 		lobby = lobbyFX.getLobby();
 		int lobbyId = lobby.getLobbyId();
 		int userCount;
@@ -530,59 +532,68 @@ public class MatchFX {
 	 * 
 	 * @param country Country
 	 */
-	public void gameMarkNeighbourCountrys(Country country) {
-
-		// Setzt die Skalierung aller Länder auf eins zurück
+	public void markNeighbourCountrys(Country country) {
+		// Erstellt einen Farbfilter, der die Länder hervorheben soll
+		ColorAdjust colorAdjust = new ColorAdjust();
+		colorAdjust.setBrightness(0.75);
+		
+		// Schleife die alle vorherigen Markierungen zurücksetzt
 		for (int i = 0; i < getCountryArray.length; i++) {
-			if(getCountryUnitsBGArray()[i].getScaleX() > 1) {
-				getCountryUnitsBGArray()[i].setScaleX(1);
-				getCountryUnitsBGArray()[i].setScaleY(1);
-				getCountryUnitsLabelArray()[i].setScaleX(1);
-				getCountryUnitsLabelArray()[i].setScaleY(1);
-			}
+			getCountryArray[i].setStrokeWidth(0);
+			getCountryArray[i].setEffect(null);
 		}
-		
-		// Vergrößert das aktuelle und die Nachbar-Länder
-		country.setScaleX(1.3);
-		country.setScaleY(1.3);
-		
+
+		// Markiert das ausgewählte Land und die benachbarten Länder
 		for (int i = 0; i < country.getNeighborIdArray().length; i++) {
-			getCountryUnitsBGArray()[country.getNeighborIdArray()[i]].setScaleX(1.3);
-			getCountryUnitsBGArray()[country.getNeighborIdArray()[i]].setScaleY(1.3);
-			getCountryUnitsLabelArray()[country.getNeighborIdArray()[i]].setScaleX(1.3);
-			getCountryUnitsLabelArray()[country.getNeighborIdArray()[i]].setScaleY(1.3);
+			getCountryArray[country.getNeighborIdArray()[i]-1].setStrokeWidth(5);
+			getCountryArray[country.getNeighborIdArray()[i]-1].setEffect(colorAdjust);
+			country.setEffect(colorAdjust);
+			country.setStrokeWidth(5);
 		}
-		
 	}
 
+	/**
+	 * Methode für die Einheiten-Informationen der Länder (Label)
+	 * 
+	 * @return gibt das Label mit den Einheiten-Information zurück (Label)
+	 */
 	public Label[] getCountryUnitsLabelArray() {
 		return countryUnitsLabelArray;
 	}
-
+	
+	/**
+	 * Methode für die Einheiten-Informationen der Länder (Hintergründe)
+	 * 
+	 * @return gibt das Label mit den Einheiten-Information zurück (Hintergründe)
+	 */
 	public Rectangle[] getCountryUnitsBGArray() {
 		return countryUnitsBGArray;
 	}
 
-	public void gameChangePlayerUnits(int i) {
+	/**
+	 * Setzt im Spieler-Interface die noch ungesetzten Einheiten
+	 * 
+	 * @param i int
+	 */
+	public void setInventoryUnitsLabel(int i) {
 		inventoryUnitsLabel.setText(Integer.toString(i));
 	}
 	
-	void gameChangePlayerTerritories(int i) {
+	/**
+	 * Setzt im Spieler-Interface die bereits eroberten Länder
+	 * 
+	 * @param i int
+	 */
+	void setInventoryCountryLabel(int i) {
 		inventoryCountryLabel.setText(Integer.toString(i));
 	}
 	
-	void gameChangePlayerCard1(int i) {
-		inventoryCardOneLabel.setText(Integer.toString(i));
-	}
-	
-	void gameChangePlayerCard2(int i) {
-		inventoryCardTwoLabel.setText(Integer.toString(i));
-	}
-	
-	void gameChangePlayerCard3(int i) {
-		inventoryCardThreeLabel.setText(Integer.toString(i));
-	}
-	
+	/**
+	 * Aktualisiert den aktiven Spielen im Interface links oben
+	 * 
+	 * @param s String
+	 * @param p Color
+	 */
 	void updateActivePlayer(String s, Color p) {
 		if(!playerNameLabel.getText().equals(s)) {
 			playerNameLabel.setText(s);
@@ -593,68 +604,152 @@ public class MatchFX {
 		}
 	}
 	
+	/**
+	 * Der Container für die gesamte Partie-Oberfläche
+	 * 
+	 * @return gibt den Container zurück
+	 */
 	public Pane getContainer() {
 		return ctn;
 	}
 	
+	/**
+	 * Holt sich das komplette Interface
+	 * 
+	 * @return gibt das Group-Objekt zurück mit allen Objekten
+	 */
 	public Group getBattleInterface() {
 		return fightGroup;
 	}
 	
+	/**
+	 * Holt sich den Hintergrund von Land A
+	 * 
+	 * @return gibt das Rectangle-Objekt zurück
+	 */
 	public Rectangle getBattleBackgroundA() {
 		return fightCountryOneBG;
 	}
 	
+	/**
+	 * Holt sich den Hintergrund von Land B
+	 * 
+	 * @return gibt das Rectangle-Objekt zurück
+	 */
 	public Rectangle getBattleBackgroundB() {
 		return fightCountryTwoBG;
 	}
 	
+	/**
+	 * Holt sich die Würfel von Land A
+	 * 
+	 * @return gibt das Group-Objekt zurück
+	 */
 	public Group getDicesA() {
 		return battleA_GroupDices;
 	}
 	
+	/**
+	 * Holt sich die Würfel von Land B
+	 * 
+	 * @return gibt das Group-Objekt zurück
+	 */
 	public Group getDicesB() {
 		return battleB_GroupDices;
 	}
 	
+	/**
+	 * Holt sich den Namen von Land A
+	 * 
+	 * @return gibt das Label-Objekt zurück
+	 */
 	public Label getCountryNameA() {
 		return fightCountryOneLabel;
 	}
-	
+
+	/**
+	 * Holt sich den Namen von Land B
+	 * 
+	 * @return gibt das Label-Objekt zurück
+	 */
 	public Label getCountryNameB() {
 		return fightCountryTwoLabel;
 	}
 	
+	/**
+	 * Holt sich die Einheiten von Land A
+	 * 
+	 * @return gibt das Label-Objekt zurück
+	 */
 	public Label getCountryUnitsA() {
 		return fightCountryOneUnits;
 	}
 	
+	/**
+	 * Holt sich die Einheiten von Land B
+	 * 
+	 * @return gibt das Label-Objekt zurück
+	 */
 	public Label getCountryUnitsB() {
 		return fightCountryTwoUnits;
 	}
 	
+	/**
+	 * Holt sich den Bereit-Button des Kampfbildschirms
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
+	 */
 	public Sprite getBattleReadyBtn() {
 		return fightBtnReady;
 	}
 	
+	/**
+	 * Holt sich das Eingabefeld von Land A
+	 * 
+	 * @return gibt das TextField-Objekt zurück
+	 */
 	public TextField getBattleInputA() {
 		return fightCountryOneInput;
 	}
 	
+	/**
+	 * Holt sich das Eingabefeld von Land B
+	 * 
+	 * @return gibt das TextField-Objekt zurück
+	 */
 	public TextField getBattleInputB() {
 		return fightCountryTwoInput;
 	}
 	
+	/**
+	 * Aktiviert bzw. deaktiviert die Weltkkarte
+	 * 
+	 * @param isActive boolean
+	 */
 	public void activateWorldMap(boolean isActive) {
+		// Schleife die alle Länder je nach Wahl aktiviert oder deaktiviert
 		for (int i = 0; i < getCountryArray.length; i++) {
 			getCountryArray[i].setVisible(isActive);
 		}
 	}
 	
+	/**
+	 * Holt sich die vier Phasen-Buttons
+	 * 
+	 * @return gibt das Group-Objekt zurück
+	 */
 	public Group getPhaseBtnGroup() {
 		return phaseBtnGroup;
 	}
 	
+	/**
+	 * Aktviert bzw. deaktiviert die Phasen-Buttons nach eigenem gusto
+	 * 
+	 * @param add boolean
+	 * @param fight boolean
+	 * @param move boolean
+	 * @param end boolean
+	 */
 	public void editPhaseButtons(boolean add, boolean fight, boolean move, boolean end) {
 		phaseBtn1.setActive(add);
 		phaseBtn1.setButtonMode(add);
@@ -666,42 +761,85 @@ public class MatchFX {
 		phaseBtn4.setButtonMode(end);
 	}
 	
+	/**
+	 * Holt sich die Spielrunde
+	 * 
+	 * @return gibt das Round-Objekt zurück
+	 */
 	public Round getRound() {
 		return round;
 	}
 
+	/**
+	 * Setzt die aktuelle Spielrunde
+	 * 
+	 * @param r Round
+	 */
 	public void setRound(Round r) {
 		round = r;
 	}
 
+	/**
+	 * Holt sich alle Länder
+	 * 
+	 * @return gibt das Land-Array zurück
+	 */
 	public Country[] getCountryArray() {
 		return getCountryArray;
 	}
 
+	/**
+	 * Holt sich den Button der ersten Phase
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
+	 */
 	public Sprite getPhaseBtn1() {
 		return phaseBtn1;
 	}
 
+	/**
+	 * Holt sich den Button der zweiten Phase
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
+	 */
 	public Sprite getPhaseBtn2() {
 		return phaseBtn2;
 	}
 
+	/**
+	 * Holt sich den Button der dritten Phase
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
+	 */
 	public Sprite getPhaseBtn3() {
 		return phaseBtn3;
 	}
 
+	/**
+	 * Holt sich den Button der letzten Phase
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
+	 */
 	public Sprite getPhaseBtn4() {
 		return phaseBtn4;
 	}
 
+	/**
+	 * Holt sich die gesamte Auftrag-Gruppe
+	 * 
+	 * @return gibt das Group-Objekt zurücl
+	 */
 	public Group getPlayerInfoAuftragGroup() {
 		return inventoryMissionGroup;
 	}
 
+	/**
+	 * Holt sich die Lobby-Funktionen
+	 * 
+	 * @return gibt das Lobby-Objekt zurück
+	 */
 	public Lobby getLobby() {
 		return lobby;
 	}
-
-
 
 }

@@ -1,13 +1,9 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -18,12 +14,14 @@ import sqlConnection.Lobby;
 import sqlConnection.SqlHelper;
 
 /**
- * @author Daniels, Kevin
- * @author pbs2h17ale
+ * Beinhaltet die gesamte Oberfläche die beim Klick auf "Spiel erstellen" aufgerufen wird.
+ * Man ist hier in der Lage sich eine Lobby zu erstellen um die Lobby-Oberfläche aufzurufen
+ * 
+ * @author Kevin Daniels
  */
-
 public class LobbyFX {
 
+	// Globale Variablen
 	private Pane ctn = new Pane();
     private Lobby lobby = new Lobby();
 	private ImageView[] slotArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
@@ -41,54 +39,51 @@ public class LobbyFX {
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
 	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");
 	private Sprite inputNameBG = new Sprite("resources/input_bg.png");
+	private String[] colors = SqlHelper.getAllColors();
 
     
 	/**
-	 * Constructor.
+	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
 	 */
 	public LobbyFX() {	
-	    // Lobby-Container (Child von Anwendungs_CTN)
-	    ctn.setId("Lobby");
+
+		// Lobby-Container der in der MainApp ausgegeben wird und alle Objekte fürs beitreten beinhaltet.
 	    ctn.setCache(true);
 	    ctn.setPrefSize(1920, 1080);
+	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was außerhalb der Form ist wird ausgeblendet.
 	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    ctn.setVisible(false);
 	    
-	    // Zurueck-Button
+	    // Zurück-Button, der zum Hauptmenü führt
 	    btnBack.setButtonMode(true);
 	    btnBack.relocate(50, 50);
 	    ctn.getChildren().add(btnBack);
 	    
-	    // Bereit-Button
+	    // Bereit-Button, der das Spiel starten soll und zur Weltkkarte führt
 	    btnReady.relocate(ctn.getPrefWidth() - 400, ctn.getPrefHeight() - 200);
 	    btnReady.setActive(false);
 	    ctn.getChildren().add(btnReady);
 	    
-	    // Namens-Input Hintergrund
+	    // Eingabefeld für den Spieler-Namen (Hintergrund)
 	    inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight() - 200);		
 	    ctn.getChildren().add(inputNameBG);
-	    
-	    // Namens-Input TextField
+	    // Eingabefeld für den Spieler-Namen (Eingabefeld)
 	    inputName.setPrefSize(653, 119);
 	    inputName.setStyle("-fx-background-color: transparent; -fx-font-size: 60px; -fx-alignment: center;  -fx-font-weight: bold; -fx-text-fill: white;");
 	    inputName.relocate(inputNameBG.getLayoutX(), inputNameBG.getLayoutY());
 	    ctn.getChildren().add(inputName);
-	    
-	    // Namens-Input Check
+	    // Eingabefeld für den Spieler-Namen (Bestätigungs-Button)
 	    btnCheck.relocate(inputNameBG.getLayoutX() + 653 - 7, ctn.getPrefHeight() - 241);
 	    btnCheck.setButtonMode(true);
 	    ctn.getChildren().add(btnCheck);
-	    
-	    // Namens-Input Label
+	    // Eingabefeld für den Spieler-Namen (Titel)
 	    inputNameLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    inputNameLabel.relocate(inputNameBG.getLayoutX() + 20, inputNameBG.getLayoutY() - 50);
 	    ctn.getChildren().add(inputNameLabel);
 	    
-	    // Farben-Gruppe
+	    // Die farbigen Rechtecke die die Farben darstellen soll, die ein Spieler auswählen kann
 	    groupColors.relocate(ctn.getPrefWidth() - 300, 100);
-
-	    String[] colors = SqlHelper.getAllColors();
-	    
+	    // Schleife die die Quadrate erstellt und sie mit den Farben aus der Datenbank füllt
 	    for(int i = 0; i < colors.length; i++)  {
 	    	colorRectArray[i] = new Rectangle(90, 90);
 	    	colorRectArray[i].setStroke(Color.WHITE);
@@ -96,6 +91,7 @@ public class LobbyFX {
 	    	colorRectArray[i].setStrokeType(StrokeType.INSIDE);
 	    	colorRectArray[i].setFill(Color.web(colors[i]));
 	    	
+	    	// Abfrage, die einen Zeilenumbruch ermöglicht, so dass die Farben in einem 2x4 Grid dargestellt werden können
 	    	if(i > 0) {
 	    		if(i % 2 != 0) {
 	    			colorRectArray[i].relocate(colorRectArray[i-1].getLayoutX() + 90, colorRectArray[i-1].getLayoutY());
@@ -104,31 +100,25 @@ public class LobbyFX {
 	    		}
 	    	}
 	    	
-	    	final int tmp = i;
-
-	    	colorRectArray[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-	    		lobbyChangeColor(1, colorRectArray[tmp].getFill())
-	    	);
-	    	
 	    	groupColors.getChildren().add(colorRectArray[i]);
 	    }
-	    
 	    ctn.getChildren().add(groupColors);
 	    
-	    // Farben Label
+	    // Label für die Farben-Gruppe
 	    colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    colorLabel.setRotate(90);
 	    colorLabel.relocate(groupColors.getLayoutX() + 70, groupColors.getLayoutY() + 110);
 	    ctn.getChildren().add(colorLabel);
 	    
-	    // Slot-Gruppe
+	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Gruppe)
 	    groupSlots.relocate(360, 50);
-	    
+	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Hintergrund)
 	    for(int i = 0; i < slotArray.length; i++) {
 	    	slotArray[i] = new Sprite("resources/lobby_player_name.png"); 
 	    	((Sprite) slotArray[i]).setActive(false);
 	    	((Sprite) slotArray[i]).setButtonMode(false);
 	    	
+	    	// Abfrage, die einen Zeilenumbruch ermöglicht, so dass die Farben in einem 3x2 Grid dargestellt werden können
 	    	if(i > 0)
 	    		if(i % 3 != 0)
 	    			slotArray[i].relocate(slotArray[i-1].getLayoutX() + 390, slotArray[i-1].getLayoutY());
@@ -138,7 +128,7 @@ public class LobbyFX {
 	    	groupSlots.getChildren().add(slotArray[i]);
 	    }
 
-	    // Slot-Gruppe Farben
+	    // Dreiecke die links oben vom Slot angezeigt werden und die Farbe des Spielers indizieren soll
 	    for(int i = 0; i < triangleArray.length; i++) {
 	    	triangleArray[i] = new Polygon();
 	    	triangleArray[i].getPoints().addAll(0.0, 0.0,
@@ -153,7 +143,7 @@ public class LobbyFX {
 	    	groupSlots.getChildren().add(triangleArray[i]);
 	    }
 
-	    // Slot Gruppe Labels
+	    // Labels, die die Namen in der Spieler in ihren Slots anzeigen soll
 	    for(int i = 0; i < labelArray.length; i++) {
 	    	labelArray[i] = new Label();
 	    	labelArray[i].setPrefSize(260, 50);
@@ -165,67 +155,46 @@ public class LobbyFX {
 	    
 	    ctn.getChildren().add(groupSlots);
 	    
-	    // Rollen festlegen
+	    /*
+	     * Icons die rechts-oben vom Slot angezeigt werden und die Rolle des Spielers angibt 
+	     * Stern -> Spielleiter
+	     * Kreuz -> Spieler
+	     */
 	    for(int i = 0; i < slotRolesArray.length; i++) {
-	    	
-	    	final int tmp = i;
-	    	
-		    	if(i == 0) {
-		    		slotRolesArray[i] = new Sprite("resources/btn_lobby_host.png");
-		    		slotRolesArray[i].setButtonMode(false);
-		    		
-			    	slotRolesArray[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-		    		lobbyAddPlayer(tmp)
-		    	);
+	    	if(i == 0) {
+	    		slotRolesArray[i] = new Sprite("resources/btn_lobby_host.png");
+	    		slotRolesArray[i].setButtonMode(false);
 	    	}
+
 	    	else {
 	    		slotRolesArray[i] = new Sprite("resources/btn_lobby_kick.png");
 	    		slotRolesArray[i].setButtonMode(true);
 	    		slotRolesArray[i].setVisible(false);
-
-		    	slotRolesArray[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event ->
-		    		lobbyRemovePlayer(tmp)
-		    	);
 	    	}
 
-	    	slotRolesArray[i].relocate(groupSlots.getLayoutX() + slotArray[i].getLayoutX() + 280, slotArray[i].getLayoutY() + 100);
-	    	
+	    	slotRolesArray[i].relocate(groupSlots.getLayoutX() + slotArray[i].getLayoutX() + 280, slotArray[i].getLayoutY() + 100);	
 	    	groupRoles.getChildren().add(slotRolesArray[i]);
 	    }
-	    
 	    ctn.getChildren().add(groupRoles);
-	    
-	    btnCheck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			lobbyChangeName(1, inputName.getText());
-	    });
-	    
-	    inputName.setOnKeyReleased(event -> {
-	    	  if (event.getCode() == KeyCode.ENTER){
-	    		  lobbyChangeName(1, inputName.getText());
-	    	  }
-	    });
-	    addTextLimiter(inputName, 15);
-	    	    
+
+	    // Fügt den 1. Spieler hinzu, der immer der Spielleiter ist
 	    lobbyAddPlayer(0);
-	    lobbyAddPlayer(1);
-	}
-	
-	public Lobby getLobby() {
-		return this.lobby;
 	}
 
 	/**
-	 * @param id   : Integer
-	 * @param name : String
-	 * Checks if the lobby name is not empty.
-	 * If so: Sets the labelArray[id] name.
-	 * Checks if the triangleArray[id] fill is not grey.
-	 * If so: Sets the btnReady to active and the ButtonMode to true.
+	 * Ändert den Namen eines Slots, basierend auf seiner ID
+	 * 
+	 * @param id int
+	 * @param name String
 	 */
 	public void lobbyChangeName(int id, String name) {
+		// Wenn kein leerer String übergeben wurde...
 		if(!name.isEmpty()) {
-			labelArray[id].setText(name);			
+			// ...wird der Name gesetzt
+			labelArray[id].setText(name);
+			// Wenn der Slot auch schon eine Farbe hat...
 			if(triangleArray[id].getFill() != Color.GREY) {
+				// ...wird der Bereit-Button aktiviert
 				btnReady.setActive(true);
 				btnReady.setButtonMode(true);
 			}
@@ -233,85 +202,128 @@ public class LobbyFX {
 	}
 	
 	/**
-	 * @param id  	: Integer
-	 * @param paint : Paint
-	 * Sets the triangleArray[id] fill to the input paint.
-	 * Checks if the labelArray[id] name is not empty. 
-	 * If so: Sets the btnReady to active and the ButtonMode to true.
+	 * Ändert die Farbe eines Slots, basierend auf seiner ID
+	 * 
+	 * @param id int
+	 * @param paint Paint
 	 */
-	private void lobbyChangeColor(int id, Paint paint) {
+	public void lobbyChangeColor(int id, Paint paint) {
+		// Füllt das Dreieck des Slots mit der gewählten Farbe
 		triangleArray[id].setFill(paint);
-		
+		// Wenn auch schon ein Name übergeben wurde...
 		if(!labelArray[id].getText().isEmpty()) {
+			// ...wird der Bereit-Button aktiviert
 			btnReady.setActive(true);
 			btnReady.setButtonMode(true);
 		}
 	}
-	
+
 	/**
-	 * @param id : Integer
-	 * If a 
+	 * Fügt einen Spieler im Slot hinzu, basierend auf seiner ID
+	 * 
+	 * @param id int
 	 */
-	private void lobbyAddPlayer(int id) {
+	public void lobbyAddPlayer(int id) {
+		// Aktiviert den Slot und zeigt sein Icon zum entfernen an
 		((Sprite) slotArray[id]).setActive(true);
 		slotRolesArray[id].setVisible(true);
 	}
 	
+
 	/**
-	 * @param id : Integer
-	 * Remove player from slotArray[id].
-	 * Gray out triangleArray[id].-
-	 * Clear labelArray[id] text.
+	 * Entfernt einen Spieler aus dem Slot, basierend auf seiner ID
+	 * 
+	 * @param id int
 	 */
-	private void lobbyRemovePlayer(int id) {
+	public void lobbyRemovePlayer(int id) {
+		// Deaktiviert den Slot und entfernt sein Icon zum entfernen
 		((Sprite) slotArray[id]).setActive(false);
 		slotRolesArray[id].setVisible(false);
 		((Sprite) slotArray[id]).setActive(false);
+		// Entfernt die Farbe und den Namen des zu löschenden Spielers
 		triangleArray[id].setFill(Color.GREY);
 		labelArray[id].setText(null);
 	}
 
 	/**
-	 * @return ctn : Pane
-	 * Returns the pane for the MainApp.
+	 * Der Container für die gesamte Lobby-Oberfläche
+	 * 
+	 * @return gibt den Container zurück
 	 */
 	public Pane getContainer() {
 		return ctn;
 	}
+
+	/**
+	 * Methode, die sich die Lobby-Funktionen besorgt
+	 * 
+	 * @return das Lobby-Objekt mit allen Methoden
+	 */
+	public Lobby getLobby() {
+		return this.lobby;
+	}
 	
 	/**
-	 * @return btnReady : Sprite
-	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 * Methode für den Bereit-Button der Lobby
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
 	 */
 	public Sprite getBtnReady() {
 		return btnReady;
 	}
 
 	/**
-	 * @return btnBack : Sprite
-	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 * Methode für den Zurück-Button vom Lobby zum Hauptmenü
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
 	 */
 	public Sprite getBtnBack() {
 		return btnBack;
 	}
 	
 	/**
-	 * @return btnCheck : Sprite
-	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 * Methode für den Bestätigen-Button für die Namens-Eingabe
+	 * 
+	 * @return gibt das Sprite-Objekt zurück
 	 */
 	public Sprite getBtnCheck() {
 		return btnCheck;
 	}
-		
-	public static void addTextLimiter(final TextField tf, final int maxLength) {
-	    tf.textProperty().addListener(new ChangeListener<String>() {
-	        public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
-	            if (tf.getText().length() > maxLength) {
-	                String s = tf.getText().substring(0, maxLength);
-	                tf.setText(s);
-	            }
-	        }
-	    });
+	
+	/**
+	 * Methode für alle Icons in den Slots für den Spielleiter und Spieler
+	 * 
+	 * @return gibt alle Icons als Sprite-Array zurück
+	 */
+	public Sprite[] getSlotRolesArray() {
+		return slotRolesArray;
+	}
+
+	/**
+	 * Methode für alle Farben die ausgewählt werden können
+	 * 
+	 * @return gibt alle Farben als Rectangle-Array zurück
+	 */
+	public Rectangle[] getColorRectArray() {
+		return colorRectArray;
+	}
+
+	/**
+	 * Methode um sich alle Farben aus der Datenbank zu besorgen
+	 * 
+	 * @return gibt alle Farben als String-Array zurück
+	 */
+	public String[] getColors() {
+		return colors;
+	}
+	
+	/**
+	 * Methode für das Namens-Eingabefeld
+	 * 
+	 * @return gibt das Eingabefeld als TextField-Objekt zurück
+	 */
+	public TextField getInputName() {
+		return inputName;
 	}
 	
 }
