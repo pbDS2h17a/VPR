@@ -25,7 +25,7 @@ public class LobbyFX {
 
 	// Globale Variablen
 	private Pane ctn = new Pane();
-    private Lobby lobby = new Lobby();
+    private Lobby lobby = new Lobby();;
     private ArrayList<Integer> slotIdList = new ArrayList<Integer>(){{
 		add(0);
 		add(1);
@@ -185,45 +185,44 @@ public class LobbyFX {
 	    	groupRoles.getChildren().add(slotRolesArray[i]);
 	    }
 	    ctn.getChildren().add(groupRoles);
-
-	    // manuelles Hinzufügen von spielern
+	    
+		 // manuelles Hinzufügen von spielern
 		Player p1 = new Player("Bob1",lobby,getNextSlotId());
 		p1.setColor("EF4CE7");
 		markSlotAsUsed();
-
+	
 		Player p2 = new Player("Bob2",lobby,getNextSlotId());
 		p2.setColor("000000");
 		markSlotAsUsed();
-
+	
 		Player p3 = new Player("Bob3",lobby,getNextSlotId());
 		p3.setColor("0066ED");
 		markSlotAsUsed();
-
+	
 		Player p4 = new Player("Bob4",lobby,getNextSlotId());
 		p4.setColor("26BF00");
 		markSlotAsUsed();
-
+	
 		Player p5 = new Player("Bob5",lobby,getNextSlotId());
 		p5.setColor("C42B2B");
 		markSlotAsUsed();
-
+	
 		initalizePlayer(p1);
-
+	
 		initalizePlayer(p2);
-
+	
 		initalizePlayer(p3);
-
+	
 		initalizePlayer(p4);
-
+	
 		initalizePlayer(p5);
-
+	
 		lobbyAddPlayer(getNextSlotId());
-
 	}
 
 	private void initalizePlayer(Player player) {
 		lobbyAddPlayer(player.getSlotId());
-		lobbyChangeName(player.getSlotId(), player.getName());
+		changePlayerName(player.getSlotId(), player.getName());
 		lobbyChangeColor(player.getSlotId(), this.getColorRectArray()[player.getSlotId()].getFill());
 	}
 
@@ -246,11 +245,12 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param name String
 	 */
-	public void lobbyChangeName(int slotId, String name) {
+	public void changePlayerName(int slotId, String name) {
 		// Wenn kein leerer String übergeben wurde...
-		if(!name.isEmpty()) {
+		if(!name.isEmpty() && name != null) {
 			// ...wird der Name gesetzt
 			labelArray[slotId].setText(name);
+			lobby.changePlayerName(slotId, name);
 			// Wenn der Slot auch schon eine Farbe hat...
 			if(triangleArray[slotId].getFill() != Color.GREY) {
 				// ...wird der Bereit-Button aktiviert

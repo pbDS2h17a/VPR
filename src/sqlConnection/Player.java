@@ -3,6 +3,8 @@ package sqlConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.paint.Color;
+
 /**
  * @author Lea, PEROSCKU
  * Player-Klasse

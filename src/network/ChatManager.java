@@ -31,8 +31,8 @@ public class ChatManager {
 		return String.format("%s [%s:%s] %s", message.get(0), message.get(1).substring(8,10), message.get(1).substring(10,12), message.get(2));
 	}
 	
-	public void sendMessage(String message, int pid, int lid) throws SQLException {
-		SqlHelper.sendMessage(message, pid, lid);
+	public void sendMessage(String message) throws SQLException {
+		SqlHelper.sendMessage(message, player_id, lobby_id);
 	}
 	
 	public long getTimestamp() {

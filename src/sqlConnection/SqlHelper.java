@@ -403,6 +403,13 @@ public class SqlHelper {
 		return description;
 	}
 
+	
+	/**
+	 * @param timestamp Zeitpunkt, nach dem Nachrichten angezeigt werden sollen
+	 * @param lobbyId ID der Lobby, aus der die Nachrichten gelesen werden
+	 * @return List<List<String>> Alle gültigen Nachrichten der Chat-History
+	 * @author Schaumloeffel
+	 */
 	public static List<List<String>> getChatHistory(long timestamp, int lobbyId){
 		String query = String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c "
 				+ "WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lobbyId, timestamp);
@@ -497,9 +504,16 @@ public class SqlHelper {
 		return id;
 	}
 
-	public static void sendMessage(String message, int pid, int lid)
+	
+	/**
+	 * @param message Inhalt der Nachricht
+	 * @param player_id Eindeutige ID des Spielers, der die Nachricht absendet
+	 * @param lobby_id Eindeutige ID der Lobby, in der sich der Spieler befindet. Nur Spieler dieser Lobby empfangen die Nachricht.
+	 * @author pbs2h17asc
+	 */
+	public static void sendMessage(String message, int player_id, int lobby_id)
 	{
-		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
+		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, player_id, lobby_id);
 		try {
 			getStatement().executeUpdate(sql);
 		} catch (SQLException e) {
@@ -690,6 +704,23 @@ public class SqlHelper {
 			getStatement().executeUpdate(query);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim aktuallisieren des lastchange");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * Gibt dem Spieler den angegebenen Namen
+	 * @param player_id ID des Spielers
+	 * @param newPlayerName Neuer Name des Spielers
+	 * @author pbs2h17asc
+	 */
+	public static void updatePlayerName(int player_id, String newPlayerName) {
+		String query = String.format("UPDATE player SET name = '%s' WHERE player_id = %d;", newPlayerName, player_id);
+		try {
+			getStatement().executeUpdate(query);
+		} catch (SQLException e) {
+			System.out.printf("Fehler beim Schreiben des Spielernamens %s, ID %d ", newPlayerName, player_id);
 			e.printStackTrace();
 		}
 	}

@@ -80,4 +80,7 @@ public class Lobby {
         return sb.toString();
     }
 
+    public void changePlayerName(int slot_id, String newPlayerName) {
+    	SqlHelper.updatePlayerName(players.get(slot_id).getPlayerId(), newPlayerName);
+    }
 }
