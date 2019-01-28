@@ -104,6 +104,7 @@ public class Country extends SVGPath {
 	public void setUnits(int units) {
 		this.units = units;
 		SqlHelper.updateUnits(owner.getLobbyId(), this.countryId, units);
+		SqlHelper.updateLastChange(owner.getLobbyId());
 	}
 	
 	/**
@@ -139,6 +140,7 @@ public class Country extends SVGPath {
 		newOwner.addCountry(this);
 		// Der Besitzer des Landes ändert sich
 		SqlHelper.updateCountryOwner(newOwner.getLobbyId(), newOwner.getPlayerId(),  this.countryId);
+		SqlHelper.updateLastChange(owner.getLobbyId());
 	}
 	
 	/**

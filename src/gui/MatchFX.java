@@ -16,6 +16,8 @@ import sqlConnection.Country;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
+import updateThread.MatchCountryListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -467,6 +469,10 @@ public class MatchFX {
 		
 		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
 		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColor()));
+	    MatchCountryListener countryChange = new MatchCountryListener(lobby, this);
+	    countryChange.setRunning(true);
+	    countryChange.start();
+
 	}
 	
 	/**
@@ -794,7 +800,7 @@ public class MatchFX {
 		return inventoryMissionGroup;
 	}
 
-	public ArrayList<Country> getCountrys(){
-		return (ArrayList<Country>) Arrays.asList(getCountryArray);
+	public Country[] getCountrys(){
+		return getCountryArray;
 	}
 }

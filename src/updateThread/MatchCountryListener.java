@@ -27,7 +27,7 @@ public class MatchCountryListener extends Thread {
     //lastChange by default auf 1
     private long currentLastChange = 1;
     private int lobbyId;
-    private ArrayList<Country> currentCountrys;
+    private Country[] currentCountrys;
     private boolean isRunning = false;
 
     /**
@@ -59,22 +59,28 @@ public class MatchCountryListener extends Thread {
                 // Änderungen bearbeiten
                 for(Country country : currentCountrys) {
                     // Spieler die sich bereits vorher in der Lobby befanden werden ignoriert
-                	int units = SqlHelper.getCountryUnits(country.getCountryId(), lobby.getLobbyId());
-                	Player owner = SqlHelper.getCountyOwner(country.getCountryId(), lobby);
+                	//int units = SqlHelper.getCountryUnits(country.getCountryId(), lobby.getLobbyId());
+                	//Player owner = SqlHelper.getCountyOwner(country.getCountryId(), lobby);
                 	
-                	if(country.getUnits() != units){
-                		// Units changed
-                		country.setUnits(units);
-                	}
+                	System.out.printf("Java units:%d | DB units %d\n",country.getUnits(), 	0);
                 	
+//                	if(country.getUnits() != units){
+//                		// Units changed
+//                		country.setUnits(units);
+//                		System.out.println("Change in Units");
+//                	}
+                	/*
                 	if(country.getOwner() != owner){
                 		// Owner changed
                 		country.setOwner(owner);
-                	}
-                    
+                		System.out.println("Owner changed");
+                	}    */    
+                	
+                	//System.out.println("Name:"+country.getOwner().getName());
+                	//System.out.println("Units:" +country.getUnits());
                 }
 
-                System.out.println(lobby);
+                System.out.println("Aktuallisiert:");
                 // lastChange aktualiseren
                 currentLastChange = newLastChange;
             } else {
