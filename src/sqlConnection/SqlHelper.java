@@ -78,6 +78,31 @@ public class SqlHelper {
 	//###################################################################################################################
 
 	/**
+	 * Mithilfe der LobbyId returnt diese Methode den Namen des Lobbyleaders
+	 * (mit Unterstützung der getPlayerName(playerId : int)-Methode).
+	 * @param lobbyId Identifikationsnummer einer Lobby
+	 * @return String Lobbyleadername
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException
+	 * @author Jona Petrikowski
+	 * @author Nick Kuhn
+	 */
+	public static String getLeaderName (int lobbyId) throws SQLException, ClassNotFoundException {
+		String queryGetLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d", lobbyId);
+		List<List<String>> listWithLeaderId = ResultSetManager.toList(getStatement().executeQuery(queryGetLeader));
+		
+		if (listWithLeaderId.get(0).size() == 1) {
+			int leaderId = Integer.parseInt(listWithLeaderId.get(0).get(0));
+			System.out.println("getLeaderName() successfull.");
+			return getPlayerName(leaderId);
+		}
+		else {
+			System.out.println("getLeaderName(). Error!.");
+		}
+		return "Dummy";	
+	}
+
+	/**
 	 * Ließt die werte (Hex String) aller Farben aus der Datenbank aus
 	 * @return StringArray mit Hexwerten
 	 */
@@ -539,6 +564,7 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 	}
+	
 
 	
 	/**
