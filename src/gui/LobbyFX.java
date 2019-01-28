@@ -13,6 +13,7 @@ import javafx.scene.shape.StrokeType;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
+import updateThread.LobbyJoinListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,9 +204,9 @@ public class LobbyFX {
 		p4.setColor("26BF00");
 		markSlotAsUsed();
 
-		Player p5 = new Player("Bob5",lobby,getNextSlotId());
-		p5.setColor("C42B2B");
-		markSlotAsUsed();
+//		Player p5 = new Player("Bob5",lobby,getNextSlotId());
+//		p5.setColor("C42B2B");
+//		markSlotAsUsed();
 
 		initalizePlayer(p1);
 
@@ -215,10 +216,13 @@ public class LobbyFX {
 
 		initalizePlayer(p4);
 
-		initalizePlayer(p5);
+//		initalizePlayer(p5);
 
 		lobbyAddPlayer(getNextSlotId());
 
+//		LobbyJoinListener listener = new LobbyJoinListener(lobby);
+//		listener.setRunning(true);
+//		listener.start();
 	}
 
 	private void initalizePlayer(Player player) {

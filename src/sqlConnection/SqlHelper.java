@@ -444,6 +444,22 @@ public class SqlHelper {
 		return playerIdList;
 	}
 
+	public static int getColorId(String colorValue) {
+		String query = String.format("SELECT color_id FROM color WHERE value = '%s'", colorValue);
+		int colorId = -1;
+		try {
+			ResultSet rs = getStatement().executeQuery(query);
+			rs.next();
+			colorId = rs.getInt(1);
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println("Fehler beim auslesen der FarbId");
+			e.printStackTrace();
+		}
+
+		return colorId;
+	}
+
 	//###################################################################################################################
 	// Datenbank inserter
 	// Schreiben Werte in die Datenbank
@@ -497,8 +513,21 @@ public class SqlHelper {
 		return id;
 	}
 
-	public static void sendMessage(String message, int pid, int lid)
-	{
+
+	public static void insertColor(int playerId, String colorValue, int lobbyId) {
+
+		int colorId = getColorId(colorValue);
+
+		String sql = String.format("INSERT INTO color_player VALUES(%d, %d, %d);", playerId, colorId, lobbyId);
+		try {
+			getStatement().executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim einfügen der Farbe");
+			e.printStackTrace();
+		}
+	}
+
+	public static void sendMessage(String message, int pid, int lid) {
 		String sql = String.format("INSERT INTO chat(timestamp, message, player_id, lobby_id) VALUES(CURDATE()*1000000+CURTIME(), '%s', %d, %d);", message, pid, lid);
 		try {
 			getStatement().executeUpdate(sql);

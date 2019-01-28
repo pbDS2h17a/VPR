@@ -96,6 +96,7 @@ public class Player {
 
 	public void setColor(String color) {
 		this.color = color;
+		SqlHelper.insertColor(this.playerId, this.color, this.lobbyId);
 	}
 
 

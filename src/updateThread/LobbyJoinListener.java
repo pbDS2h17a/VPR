@@ -22,6 +22,8 @@ public class LobbyJoinListener extends Thread {
     private long currentLastChange = 1;
     private int lobbyId;
     private ArrayList<Integer> currentPlayerIds;
+    private ArrayList<Player> currentPlayers;
+    private ArrayList<String> currentPlayerNames;
     private boolean isRunning = false;
 
     /**
@@ -32,6 +34,7 @@ public class LobbyJoinListener extends Thread {
         this.lobby = lobby;
         this.lobbyId = lobby.getLobbyId();
         this.currentPlayerIds = SqlHelper.getPlayerIdsFromLobby(lobbyId);
+        currentPlayers = lobby.getPlayers();
     }
 
     /**
@@ -60,7 +63,7 @@ public class LobbyJoinListener extends Thread {
             if(newLastChange > currentLastChange) {
                 // Ids aller Spieler die sich laut Datenbank in der Lobby befinden sollten
                 ArrayList<Integer> newPlayerIds = SqlHelper.getPlayerIdsFromLobby(lobbyId);
-                // Änderungen bearbeiten
+                // Neuer Spieler tritt bei
                 for(int playerId : newPlayerIds) {
                     // Spieler die sich bereits vorher in der Lobby befanden werden ignoriert
                     if(!currentPlayerIds.contains(playerId)) {
@@ -69,8 +72,14 @@ public class LobbyJoinListener extends Thread {
                         // Datenbankloser Konstruktor da die Db einträge bereits vorhanden sind
                         new Player(playerId, SqlHelper.getPlayerName(playerId), lobby);
                     }
-
                 }
+                // TODO Spieler verlässt lobby
+
+                // TODO Spieler ändert Farbe
+
+
+                // TODO Spieler ändert Namen
+
 
                 System.out.println(lobby);
                 // lastChange aktualiseren
