@@ -794,4 +794,7 @@ public class MatchFX {
 		return inventoryMissionGroup;
 	}
 
+	public ArrayList<Country> getCountrys(){
+		return (ArrayList<Country>) Arrays.asList(getCountryArray);
+	}
 }
