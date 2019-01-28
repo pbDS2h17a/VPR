@@ -2,6 +2,8 @@
 //country Owner
 package updateThread;
 
+import javafx.application.Platform;
+import javafx.scene.control.Label;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
 //import sqlConnection.Player;
@@ -29,15 +31,17 @@ public class MatchCountryListener extends Thread {
     private int lobbyId;
     private Country[] currentCountrys;
     private boolean isRunning = false;
+    private MatchFX matchFX;
 
     /**
      * Wird von der Lobby aufgerufen
      * @param lobby Lobby die überwacht werden soll
      */
-    public MatchCountryListener(Lobby lobby, MatchFX mfx) {
+    public MatchCountryListener(Lobby lobby, MatchFX matchFX) {
         this.lobby = lobby;
         this.lobbyId = lobby.getLobbyId();
-        this.currentCountrys = mfx.getCountrys();
+        this.matchFX = matchFX;
+        this.currentCountrys = matchFX.getCountrys();
     }
 
     /**
@@ -48,6 +52,7 @@ public class MatchCountryListener extends Thread {
         this.isRunning = isRunning;
     }
 
+
     @Override
     public void run() {
         // läuft nur wenn isRunnung auf true steht
@@ -55,33 +60,30 @@ public class MatchCountryListener extends Thread {
             // FLAG lastChange wird aus der DB gelesen
             long newLastChange = SqlHelper.getLastChange(lobbyId);
             if(newLastChange > currentLastChange) {
-                // Ids aller Spieler die sich laut Datenbank in der Lobby befinden sollte
-                // Änderungen bearbeiten
-                for(Country country : currentCountrys) {
-                    // Spieler die sich bereits vorher in der Lobby befanden werden ignoriert
-                	//int units = SqlHelper.getCountryUnits(country.getCountryId(), lobby.getLobbyId());
-                	//Player owner = SqlHelper.getCountyOwner(country.getCountryId(), lobby);
-                	
-                	System.out.printf("Java units:%d | DB units %d\n",country.getUnits(), 	0);
-                	
-//                	if(country.getUnits() != units){
-//                		// Units changed
-//                		country.setUnits(units);
-//                		System.out.println("Change in Units");
-//                	}
-                	/*
-                	if(country.getOwner() != owner){
-                		// Owner changed
-                		country.setOwner(owner);
-                		System.out.println("Owner changed");
-                	}    */    
-                	
-                	//System.out.println("Name:"+country.getOwner().getName());
-                	//System.out.println("Units:" +country.getUnits());
-                }
 
-                System.out.println("Aktuallisiert:");
-                // lastChange aktualiseren
+                for (Country c : currentCountrys) {
+                    int dbUnits = SqlHelper.getCountryUnits(c.getCountryId(),lobbyId);
+
+                    if (c.getUnits() != dbUnits) {
+                        System.out.println("Änderungen land:"+c.getCountryId());
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                // entsprechende UI Komponente updaten
+                                final Label label = matchFX.getCountryUnitsLabelArray()[c.getCountryId()-1];
+                                c.setUnits(dbUnits);
+                                SqlHelper.updateLastChange(lobbyId);
+                                label.setText(String.valueOf(dbUnits));
+                                try {
+                                    this.finalize();
+                                } catch (Throwable throwable) {
+                                    throwable.printStackTrace();
+                                }
+                            }
+                        });
+
+                    }
+                }
                 currentLastChange = newLastChange;
             } else {
                 System.out.print(".");

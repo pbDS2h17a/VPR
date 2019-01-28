@@ -92,7 +92,6 @@ public class Country extends SVGPath {
 	 * @return Menge Einheiten als Integer
 	 */
 	public int getUnits() {
-		units = SqlHelper.getCountryUnits(this.countryId, this.owner.getLobbyId());
 		return units;
 	}
 
@@ -102,9 +101,8 @@ public class Country extends SVGPath {
 	 * @param units Neue Einheitenmenge als Integer
 	 */
 	public void setUnits(int units) {
-		this.units = units;
-		SqlHelper.updateUnits(owner.getLobbyId(), this.countryId, units);
 		SqlHelper.updateLastChange(owner.getLobbyId());
+		this.units = units;
 	}
 	
 	/**

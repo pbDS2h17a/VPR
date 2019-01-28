@@ -25,7 +25,7 @@ public class GameMechanics {
 
 	// Globale Variablen
 	private ArrayList<Player> playerList;
-	private MatchFX match;
+	private MatchFX matchFX;
 	private Country countryA = null;
 	private Country countryB = null;
 	private boolean assign = true;
@@ -49,7 +49,7 @@ public class GameMechanics {
 		this.activePlayerIndex = 0;
 		// Füllt die Klasse mit Daten
 		this.playerList = playerList;
-		this.match = match;
+		this.matchFX = match;
 		// Startet die 0. Phase (einzelnes Setzen)
 		this.startInitialRound(playerList);
 	}
@@ -65,12 +65,12 @@ public class GameMechanics {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...
 		if(isAssign()) {
 			// Wenn einem das Land gehört...
-			if(isOwnLand(match.getCountryArray()[index])) {
+			if(isOwnLand(matchFX.getCountryArray()[index])) {
 				// ...werden die ungesetzten Einheiten um eins reduziert
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
 				// ...bekommt das Land eine Einheit dazu
-				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
-				match.getCountryUnitsLabelArray()[index].setText(String.valueOf(match.getCountryArray()[index].getUnits()));
+				matchFX.getCountryArray()[index].setUnits(matchFX.getCountryArray()[index].getUnits() + 1);
+				matchFX.getCountryUnitsLabelArray()[index].setText(String.valueOf(matchFX.getCountryArray()[index].getUnits()));
 				
 				// Wenn man am Ende der Spieler-Liste angekommen ist...
 				if(getActivePlayerIndex() == getPlayerList().size() -1) {
@@ -86,12 +86,12 @@ public class GameMechanics {
 		// Wenn man in der 1. Phase (setzen) steckt...
 		else if(isAdd()) {
 			// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
-			if(isOwnLand(match.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
+			if(isOwnLand(matchFX.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
 				// ...wird ein Spieler aus dem Inventar verschoben...
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
 				// ...und dem Land hinzugefügt 
-				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
-				match.getCountryUnitsLabelArray()[index].setText(String.valueOf(match.getCountryArray()[index].getUnits()));
+				matchFX.getCountryArray()[index].setUnits(matchFX.getCountryArray()[index].getUnits() + 1);
+				matchFX.getCountryUnitsLabelArray()[index].setText(String.valueOf(matchFX.getCountryArray()[index].getUnits()));
 			}
 		}
 		
@@ -100,16 +100,16 @@ public class GameMechanics {
 			// Wenn noch nicht das erste Land ausgewählt wurde...
 			if(getCountryA() == null) {
 				// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
-				if(isOwnLand(match.getCountryArray()[index]) && match.getCountryArray()[index].getUnits() > 1) {
+				if(isOwnLand(matchFX.getCountryArray()[index]) && matchFX.getCountryArray()[index].getUnits() > 1) {
 					// ...wird das erste Land ausgewählt
-					setCountryA(match.getCountryArray()[index]);
+					setCountryA(matchFX.getCountryArray()[index]);
 				}
 			}
 			
 			// Sonst wenn es nicht das eigene Land ist und benachbart ist...
-			else if(!isOwnLand(match.getCountryArray()[index]) && isNeighbour(getCountryA(), match.getCountryArray()[index])) {
+			else if(!isOwnLand(matchFX.getCountryArray()[index]) && isNeighbour(getCountryA(), matchFX.getCountryArray()[index])) {
 				// ...wird das zweite Land ausgewählt und der Kampf gestartet
-				setCountryB(match.getCountryArray()[index]);
+				setCountryB(matchFX.getCountryArray()[index]);
 				startFight();
 			}
 		}
@@ -117,24 +117,24 @@ public class GameMechanics {
 		// Wenn man in der 3. Phase (bewegen) steckt...
 		else if(isMove()) {
 			// Wenn es das eigene Land ist...
-			if(isOwnLand(match.getCountryArray()[index])) {
+			if(isOwnLand(matchFX.getCountryArray()[index])) {
 				// Wenn noch nicht das erste Land ausgewählt wurde...
 				if(getCountryA() == null) {
 					// ...wird das erste Land ausgewählt
-					setCountryA(match.getCountryArray()[index]);
+					setCountryA(matchFX.getCountryArray()[index]);
 				}
 				
 				// Sonst...
 				else {
 					// ...wird das zweite Land ausgewählt
-					setCountryB(match.getCountryArray()[index]);
+					setCountryB(matchFX.getCountryArray()[index]);
 					// ...Wenn das Land benachbart ist und das erste Land mehr als eine Einheit beinhaltet
 					if(isNeighbour(getCountryA(), getCountryB()) && getCountryA().getUnits() > 1) {
 						// ...wird eine Einheit vom ersten Land zum zweiten Land verschoben
 						getCountryA().setUnits(getCountryA().getUnits() - 1);
-						match.getCountryUnitsLabelArray()[getCountryA().getCountryId()-1].setText(String.valueOf(getCountryA().getUnits()));
+						matchFX.getCountryUnitsLabelArray()[getCountryA().getCountryId()-1].setText(String.valueOf(getCountryA().getUnits()));
 						getCountryB().setUnits(getCountryB().getUnits() + 1);
-						match.getCountryUnitsLabelArray()[getCountryB().getCountryId()-1].setText(String.valueOf(getCountryB().getUnits()));
+						matchFX.getCountryUnitsLabelArray()[getCountryB().getCountryId()-1].setText(String.valueOf(getCountryB().getUnits()));
 					}
 					// ...werden das erste und zweite Land zurückgesetzt
 					setCountryA(null);
@@ -155,7 +155,7 @@ public class GameMechanics {
 		
 		// Aktualisiert das Interface
 		updatePlayerInterface(getActivePlayer());
-		match.updateCountryInfo(match.getCountryArray()[index]);
+		matchFX.updateCountryInfo(matchFX.getCountryArray()[index]);
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class GameMechanics {
 		this.add = true;
 		this.fight = false;
 		this.move = false;
-		this.match.editPhaseButtons(false, true, true, true);
+		this.matchFX.editPhaseButtons(false, true, true, true);
 		// Aktualisiert das Spieler-Interface
 		updatePlayerInterface(this.getActivePlayer());
 	}
@@ -254,7 +254,7 @@ public class GameMechanics {
 		this.add = false;
 		this.fight = true;
 		this.move = false;
-		this.match.editPhaseButtons(false, false, true, true);
+		this.matchFX.editPhaseButtons(false, false, true, true);
 		// Aktualisiert das Spieler-Interface
 		updatePlayerInterface(this.getActivePlayer());
 	}
@@ -267,7 +267,7 @@ public class GameMechanics {
 		this.add = false;
 		this.fight = false;
 		this.move = true;
-		this.match.editPhaseButtons(false, false, false, true);
+		this.matchFX.editPhaseButtons(false, false, false, true);
 		// Aktualisiert das Spieler-Interface
 		updatePlayerInterface(this.getActivePlayer());
 	}
@@ -308,32 +308,32 @@ public class GameMechanics {
 		};
 		
 		// Gibt beiden Eingabefeldern schon den Minimal-Wert
-		this.match.getBattleInputA().setText("1");
-		this.match.getBattleInputB().setText("1");
+		this.matchFX.getBattleInputA().setText("1");
+		this.matchFX.getBattleInputB().setText("1");
 		// Beschränkt das Eingabefeld A auf zwei Zeichen (max. 99)
-		MainApp.addTextLimiter(this.match.getBattleInputA(), 2);
+		MainApp.addTextLimiter(this.matchFX.getBattleInputA(), 2);
 		// EHHHHHHHHHHHHHHHHHH
-		this.match.getBattleInputA().setTextFormatter(
+		this.matchFX.getBattleInputA().setTextFormatter(
 				new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter)
 	    );
 		// Deaktiviert Eingabefeld B und aktiviert A
-		this.match.getBattleInputA().setDisable(false);
-		this.match.getBattleInputB().setDisable(true);
+		this.matchFX.getBattleInputA().setDisable(false);
+		this.matchFX.getBattleInputB().setDisable(true);
 		// Füllt die linke Seite des Kampfbildschirms mit Informationen von Land A
-		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
-		this.match.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
-		this.match.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
+		this.matchFX.getBattleBackgroundA().setFill(this.countryA.getFill());
+		this.matchFX.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
+		this.matchFX.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
 		// Füllt die rechte Seite des Kampfbildschirms mit Informationen von Land B
-		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
-		this.match.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
-		this.match.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
+		this.matchFX.getBattleBackgroundB().setFill(this.countryB.getFill());
+		this.matchFX.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
+		this.matchFX.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
 		
 		// Deaktiviert die Weltkarte temporär
-		this.match.activateWorldMap(false);
+		this.matchFX.activateWorldMap(false);
 		// Versteckt die Phasen-Buttons
-		this.match.getPhaseBtnGroup().setVisible(false);
+		this.matchFX.getPhaseBtnGroup().setVisible(false);
 		// Zeigt den modifizierten Kampfbildschirm an
-		this.match.getBattleInterface().setVisible(true);
+		this.matchFX.getBattleInterface().setVisible(true);
 	}
 
 	/**
@@ -415,10 +415,10 @@ public class GameMechanics {
 			// ... werden alle eingesetzten Einheiten von Land A abgezogen
 			cAtk.setUnits(cAtk.getUnits() - fightA[0] - additionalAttacker);
 			// ...werden die Einheiten auf der Weltkarte angepasst
-			match.getCountryUnitsBGArray()[cDef.getCountryId()-1].setFill(cDef.getFill());
-			match.getCountryUnitsLabelArray()[cDef.getCountryId()-1].setText(String.valueOf(cDef.getUnits()));
-			match.getCountryUnitsBGArray()[cAtk.getCountryId()-1].setFill(cAtk.getFill());
-			match.getCountryUnitsLabelArray()[cAtk.getCountryId()-1].setText(String.valueOf(cAtk.getUnits()));
+			matchFX.getCountryUnitsBGArray()[cDef.getCountryId()-1].setFill(cDef.getFill());
+			matchFX.getCountryUnitsLabelArray()[cDef.getCountryId()-1].setText(String.valueOf(cDef.getUnits()));
+			matchFX.getCountryUnitsBGArray()[cAtk.getCountryId()-1].setFill(cAtk.getFill());
+			matchFX.getCountryUnitsLabelArray()[cAtk.getCountryId()-1].setText(String.valueOf(cAtk.getUnits()));
 		}
 		// Sonst...
 		else {
@@ -426,8 +426,8 @@ public class GameMechanics {
 			cAtk.setUnits(cAtk.getUnits() - fightA[1]);
 			cDef.setUnits(cDef.getUnits() - fightB[1]);
 			// ...werden die Einheiten auf der Weltkarte angepasst
-			match.getCountryUnitsLabelArray()[cDef.getCountryId()-1].setText(String.valueOf(cDef.getUnits()));
-			match.getCountryUnitsLabelArray()[cAtk.getCountryId()-1].setText(String.valueOf(cAtk.getUnits()));
+			matchFX.getCountryUnitsLabelArray()[cDef.getCountryId()-1].setText(String.valueOf(cDef.getUnits()));
+			matchFX.getCountryUnitsLabelArray()[cAtk.getCountryId()-1].setText(String.valueOf(cAtk.getUnits()));
 
 		}
 		
@@ -454,11 +454,11 @@ public class GameMechanics {
 		this.countryA = null;
 		this.countryB = null;
 		// Aktiviert die Weltkarte und zeigt alle Phasen-Buttons wieder an
-		this.match.getBattleReadyBtn().setActive(true);
-		this.match.activateWorldMap(true);
-		this.match.getPhaseBtnGroup().setVisible(true);
+		this.matchFX.getBattleReadyBtn().setActive(true);
+		this.matchFX.activateWorldMap(true);
+		this.matchFX.getPhaseBtnGroup().setVisible(true);
 		// Versteckt den Kampfbildschirm wieder
-		this.match.getBattleInterface().setVisible(false);
+		this.matchFX.getBattleInterface().setVisible(false);
 		// Aktualisiert das Interface mit dem aktiven Spieler
 		updatePlayerInterface(this.getActivePlayer());
 	}
@@ -558,9 +558,9 @@ public class GameMechanics {
 	 * @param activePlayer Player
 	 */
 	public void updatePlayerInterface(Player activePlayer) {
-		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
-		this.match.setInventoryCountryLabel(activePlayer.getCountryList().size());
-		this.match.setInventoryUnitsLabel(activePlayer.getUnassignedUnits());
+		this.matchFX.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
+		this.matchFX.setInventoryCountryLabel(activePlayer.getCountryList().size());
+		this.matchFX.setInventoryUnitsLabel(activePlayer.getUnassignedUnits());
 	}
 	
 	/**
