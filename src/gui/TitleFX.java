@@ -1,102 +1,107 @@
 package gui;
 
-import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Erstellt die gesamte Oberfläche für das Hauptmenü
+ * Beinhaltet die gesamte Oberfläche die beim Klick auf "Spiel beitreten" aufgerufen wird.
+ * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfläche aufzurufen.
  * 
  * @author Kevin Daniels
  */
 public class TitleFX {
 	
-	/**
-	 *	@param title	   : Pane
-	 *	@param logo        : Sprite
-	 *	@param btnCreate   : Sprite
-	 *	@param btnJoin	   : Sprite
-	 *	@param btnTutorial : Sprite
-	 */
-	private Pane title = new Pane();
+	// Globale Variablen
+	private Pane ctn = new Pane();
 	private Sprite logo = new Sprite("resources/logo.png");
 	private Sprite btnCreate = new Sprite("resources/btn_erstellen.png");
 	private Sprite btnJoin = new Sprite("resources/btn_beitreten.png");
 	private Sprite btnTutorial = new Sprite("resources/btn_tutorial.png");
-	
+	private boolean isLogoAnimated = true;
+
 	/**
-	 * Constructor.
+	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
 	 */
 	public TitleFX() {
-		// Start-Container (Child von Anwendungs_CTN)
-	    title = new Pane();
-	    title.setId("Start");
-	    title.setPrefSize(1920, 1080);
-	    title.setClip(new Rectangle(title.getPrefWidth(), title.getPrefHeight()));
+		// Beitreten-Container der in der MainApp ausgegeben wird und alle Objekte fürs beitreten beinhaltet.
+	    ctn = new Pane();
+	    ctn.setPrefSize(1920, 1080);
+	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was außerhalb der Form ist wird ausgeblendet.
+	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    
-	    // Spiel-Container INHALTE
-		// Logo
-	    logo.relocate(title.getPrefWidth()/2 - 1073/2, title.getPrefHeight()/2 - 416/2 - 200);
+	    // Logo des Spiels
+	    logo.relocate(ctn.getPrefWidth()/2 - 1073/2, ctn.getPrefHeight()/2 - 416/2 - 200);
 	    logo.setVy(.25);
-	    title.getChildren().add(logo);
+	    ctn.getChildren().add(logo);
 	    
-	    // Button - Erstellen
+	    // Button zum erstellen einer neuen Lobby
 	    btnCreate.setButtonMode(true);
-	    btnCreate.relocate(title.getPrefWidth()/2 - 303/2, title.getPrefHeight() - 303 - 100);		
-	    title.getChildren().add(btnTutorial);
+	    btnCreate.relocate(ctn.getPrefWidth()/2 - 303/2, ctn.getPrefHeight() - 303 - 100);		
+	    ctn.getChildren().add(btnTutorial);
 	    
-	    // Button - Anleitung
+	    // Button zum Ansehen des Tutorials
 	    btnTutorial.setButtonMode(true);
 	    btnTutorial.relocate(btnCreate.getLayoutX() - 303 - 50, btnCreate.getLayoutY());	
-	    title.getChildren().add(btnCreate);
+	    ctn.getChildren().add(btnCreate);
 	    
-	    // Button - Beitreten
+	    // Button zum beitreten einer bereits erstellten Lobby
 	    btnJoin.setButtonMode(true);
 	    btnJoin.relocate(btnCreate.getLayoutX() + 303 + 50, btnCreate.getLayoutY());
-		title.getChildren().add(btnJoin);
-		
-		// GAME LOOP Animationen
-		gameLoop();
+		ctn.getChildren().add(btnJoin);
 	}
 	
 	/**
-	 * Game loop to animate the title logo.
-	 */
-	public void gameLoop() {
-		new AnimationTimer() {
-	        public void handle(long currentNanoTime) {
-	        	
-	        	// Animation - Logo
-	        	logo.setTranslateY(logo.getTranslateY() - logo.getVy());
-	        	if(logo.getTranslateY() == 0) logo.setVy(.25);
-	        	if(logo.getTranslateY() == -20) logo.setVy(-.25);
-
-	        }
-	    }.start();
-	}
-	
-	/**
-	 * @return title : Pane
-	 * Returns the pane for the MainApp.
+	 * Der Container für die gesamte Beitreten-Oberfläche
+	 * 
+	 * @return gibt den Container zurück
 	 */
 	public Pane getContainer() {
-		return title;
+		return ctn;
 	}
 	
 	/**
-	 * @return btnCreate : Sprite
-	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 * Der Button der eine neue Lobby erstellt
+	 * 
+	 * @return gibt den Button zum Lobby erstellen zurück
 	 */
 	public Sprite getBtnCreate() {
 		return btnCreate;
 	}
 	
 	/**
-	 * @return btnJoin : Sprite
-	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 * Der Button der bestehende Lobbys auflistet
+	 * 
+	 * @return gibt den Button zum Lobby beitreten zurück
 	 */
 	public Sprite getBtnJoin() {
 		return btnJoin;
+	}
+
+	/**
+	 * Methode, die fragt ob das Logo animiert werden soll
+	 * 
+	 * @return gibt den true/false-Wert zurück
+	 */
+	public boolean isLogoAnimated() {
+		return isLogoAnimated;
+	}
+
+	/**
+	 * Prozedur, die den true/false-Wert, ob das Logo animiert werden soll verändert
+	 * 
+	 * @param isLogoAnimated boolean
+	 */
+	public void setLogoAnimated(boolean isLogoAnimated) {
+		this.isLogoAnimated = isLogoAnimated;
+	}
+	
+	/**
+	 * Das Logo des Spiels im Hauptmenü
+	 * 
+	 * @return gibt das Logo-Objekt zurück
+	 */
+	public Sprite getLogo() {
+		return logo;
 	}
 	
 }

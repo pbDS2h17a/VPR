@@ -38,20 +38,13 @@ public class Country extends SVGPath {
 	 * Nachbar-Array mit Land ID als Integer 
 	 */
 	private int[] neighborIdArray;
-	
-	/**
-	 * String der die Form des Landes für GUI beschreibt
-	 */
-	private SVGPath svgPath;
-
-
 
 	/**
 	 * Land ctor
 	 * @param id Land ID als Integer
 	 * @throws SQLException
 	 */
-	public Country(int id) throws SQLException {
+	public Country(int id) {
 		this.countryId = id;
 		this.countryContinentId = SqlHelper.getCountryContinentId(id);
 		this.countryName = SqlHelper.getCountryName(id);
@@ -118,7 +111,7 @@ public class Country extends SVGPath {
 	 * @return Farbe des Landes (SVGPath)
 	 */
 	public Paint getColor() {
-		return svgPath.getFill();
+		return this.getFill();
 	}
 	
 	/**
@@ -126,7 +119,7 @@ public class Country extends SVGPath {
 	 * @param C Neue Farbe als String
 	 */
 	public void setColor(String C) {
-		svgPath.setFill(Color.web(C));
+		this.setFill(Color.web(C));
 	}
 	
 	/**

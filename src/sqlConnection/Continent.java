@@ -1,7 +1,5 @@
 package sqlConnection;
 
-import java.sql.SQLException;
-
 public class Continent {
 	// Attribute
 	private int continentId;
@@ -19,7 +17,7 @@ public class Continent {
 	
 	private void initalizeContinent() {
 		this.name = SqlHelper.getContintentName(continentId);
-		this.countryIdArray = SqlHelper.getContinentCountries(continentId) ;
+		this.countryIdArray = SqlHelper.getContinentCountryIds(continentId) ;
 		this.additionalUnits = SqlHelper.getBonus(continentId);
 	}
 	//Getters/Setters

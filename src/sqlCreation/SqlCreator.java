@@ -6,7 +6,7 @@ package sqlCreation;
  * Löscht alle Laufdaten
  * Stellt Stammdaten aus der Resourcedatei wieder her
  */
-public class SqlCreater {
+public class SqlCreator {
 	
 	public static void main(String[] args) {
 		// Datei einlesen
@@ -17,7 +17,7 @@ public class SqlCreater {
 		String[] missionData = SqlReader.getMission();
 		String[] cardData = SqlReader.getCard();
 		String[] colorData = SqlReader.getColor();
-
+		
 		// Constraint werden deaktiviert
 		// damit alle Tabellen erstellt werden können
 		// ohne die Reihenfolge einzuhalten

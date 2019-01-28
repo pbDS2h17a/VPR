@@ -8,20 +8,14 @@ import javafx.scene.shape.StrokeType;
 import sqlConnection.SqlHelper;
 
 /**
- * @author Daniels, Kevin
- * @author pbs2h17ale
+ * Beinhaltet die gesamte Oberfläche die beim Klick auf "Spiel beitreten" aufgerufen wird.
+ * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfläche aufzurufen.
+ * 
+ * @author Kevin Daniels
  */
-
 public class JoinFX {
-	
-	/**
-	 * @param ctn	   		 : Pane
-	 * @param btnBack  		 : Sprite
-	 * @param btnCheck 		 : Sprite
-	 * @param inputNameBG 	 : Sprite
-	 * @param inputName 	 : TextField
-	 * @param inputNameLabel : Label
-	 */
+
+	// Globale Variablen
 	private Pane ctn = new Pane();
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
 	private Rectangle listBG = new Rectangle(900, 650);
@@ -30,25 +24,25 @@ public class JoinFX {
 	private Label[] listUsers = new Label[lobbyIdArray.length];
 	
 	/**
-	 * Constructor.
+	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
 	 */
 	public JoinFX() {
 		
-		// Beitreten-Container (Child von Anwendungs_CTN)
+		// Beitreten-Container der in der MainApp ausgegeben wird und alle Objekte fürs beitreten beinhaltet.
 	    ctn = new Pane();
-	    ctn.setId("Beitreten");
 	    ctn.setCache(true);
 	    ctn.setPrefSize(1920, 1080);
+	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was außerhalb der Form ist wird ausgeblendet.
 	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    ctn.setVisible(false);
 	    
-	    // Zurueck-Button
+	    // Button um zurück auf ins Hauptmenü zu kommen
 	    btnBack = new Sprite("resources/btn_zurueck.png");
 	    btnBack.relocate(50, 50);
 	    btnBack.setButtonMode(true);
 	    ctn.getChildren().add(btnBack);
 	    
-	    // Listen-Hintergrund
+	    // Liste: Hintergrund für die Lobbys
 	    listBG.setFill(Color.web("rgba(113, 188, 120, .85)"));
 	    listBG.relocate(ctn.getPrefWidth()/2 - listBG.getWidth()/2, ctn.getPrefHeight()/2 - listBG.getHeight()/2);
 	    listBG.setStroke(Color.WHITE);
@@ -56,48 +50,48 @@ public class JoinFX {
 	    listBG.setStrokeType(StrokeType.INSIDE);
 	    ctn.getChildren().add(listBG);
 	    
-	    // Listen aufrufen
+	    // Liste: Einzelne Lobby-Label erstellen (bis zu 9)
 	    for(int i = 0; i < lobbyIdArray.length; i++) {
-	    	String s = "";
-	    	
-	    	s += "Lobby Nummer " + lobbyIdArray[i] + " (klicken zum beitreten)";
-	    	
-	    	listUsers[i] = new Label(s);
+	    	listUsers[i] = new Label("Lobby Nummer " + i + " (klicken zum beitreten)");
 	    	listUsers[i].setPrefWidth(850);
 	    	listUsers[i].setStyle("-fx-font-size: 40px; -fx-font-family: Arial; -fx-font-weight: bold; -fx-text-fill: white;");
 	    	listUsers[i].relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() + 25);
 	    	
-	    	if(i != 0)
+	    	if(i != 0) {
 	    		listUsers[i].relocate(listBG.getLayoutX() + 25, listUsers[i-1].getLayoutY() + 62);
-  	
+	    	}
+
 	    	ctn.getChildren().add(listUsers[i]);
 	    }
 	    
-	    // Namens-Input Label
+	    // Liste: Überschrift für die gesamte Liste
 	    listLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    listLabel.relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() - 50);
 		ctn.getChildren().add(listLabel);
 	}
-	
+
 	/**
-	 * @return ctn : Pane
-	 * Returns the pane for the MainApp.
+	 * Der Container für die gesamte Beitreten-Oberfläche
+	 * 
+	 * @return gibt den Container zurück
 	 */
 	public Pane getContainer() {
 		return ctn;
 	}
 	
 	/**
-	 * @return btnBack : Sprite
-	 * Returns the sprite for the initializeClickEventHandlers() in the MainApp.
+	 * Der Button der zurück zu Lobby führt
+	 * 
+	 * @return gibt den Zurück-Button zurück
 	 */
 	public Sprite getBtnBack() {
 		return btnBack;
 	}
 	
 	/**
-	 * @return listUsers : Label[]
-	 * Returns the Label-Array for the initializeClickEventHandlers() in the MainApp.
+	 * Ein mit den potentiellen Lobby gefülltes Array
+	 * 
+	 * @return gibt das Array mit den Lobbys zurück
 	 */
 	public Label[] getUserList() {
 		return listUsers;
