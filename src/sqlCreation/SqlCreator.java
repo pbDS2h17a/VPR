@@ -17,7 +17,7 @@ public class SqlCreator {
 		String[] missionData = SqlReader.getMission();
 		String[] cardData = SqlReader.getCard();
 		String[] colorData = SqlReader.getColor();
-
+		
 		// Constraint werden deaktiviert
 		// damit alle Tabellen erstellt werden können
 		// ohne die Reihenfolge einzuhalten
