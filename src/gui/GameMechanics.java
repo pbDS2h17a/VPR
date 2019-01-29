@@ -110,6 +110,7 @@ public class GameMechanics {
 			else if(!isOwnLand(match.getCountryArray()[index]) && isNeighbour(getCountryA(), match.getCountryArray()[index])) {
 				// ...wird das zweite Land ausgewählt und der Kampf gestartet
 				setCountryB(match.getCountryArray()[index]);
+				match.setFightStarting(true);
 				startFight();
 			}
 		}
@@ -457,8 +458,10 @@ public class GameMechanics {
 		this.match.getBattleReadyBtn().setActive(true);
 		this.match.activateWorldMap(true);
 		this.match.getPhaseBtnGroup().setVisible(true);
-		// Versteckt den Kampfbildschirm wieder
+		// Setzt den Kampfbildschirm zurück
 		this.match.getBattleInterface().setVisible(false);
+		this.match.getBattleBackgroundA().relocate(-960, 0);
+		this.match.getBattleBackgroundB().relocate(1920, 0);
 		// Aktualisiert das Interface mit dem aktiven Spieler
 		updatePlayerInterface(this.getActivePlayer());
 	}

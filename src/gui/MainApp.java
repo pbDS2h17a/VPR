@@ -18,7 +18,7 @@ import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
 /**
- * Startet das gesamte Gesamte Spiel, indem die anderen Oberflächen-Klassen eingebunden werden
+ * Startet das gesamte Spiel, indem die anderen Oberflächen-Klassen eingebunden werden
  * und die gesamte Scene administriert.
  * 
  * @author Adrian Ledwinka
@@ -36,6 +36,7 @@ public class MainApp extends Application {
 	private Pane app = new Pane();
     private Pane ctnApp = new Pane();
 	private boolean toPane = false;
+	private boolean isMatchActive = false;
 	private Scene scene = new Scene(app);
     
     // Spiel-Oberflächen
@@ -81,7 +82,7 @@ public class MainApp extends Application {
 		mpFX.playBgmStart();
 		
 		// Methode um die ClickEvents zu initialisieren
-	    initializeClickEventHandlers();
+	    initializeEventHandlers();
 	    
 	    // Methode um die Spiel-Schleife für die Animationen zu initialisieren
 		gameLoop();
@@ -127,7 +128,7 @@ public class MainApp extends Application {
 	/**
 	 * Prozedur, die alle EventListener startet die für den 
 	 */
-    public void initializeClickEventHandlers(){
+    public void initializeEventHandlers(){
     	// Wennn der Button zum Spiel erstellen gedrückt wird
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Beendet die Animation des Logos
@@ -137,9 +138,6 @@ public class MainApp extends Application {
 
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
-	    	
-	    	// Sound für den gedrückten Button wird abgespielt
-			mpFX.playBtnSFX();
 			
 			// Erstellt das ChatInterface und positioniert es in der Lobby
 			chatFX = new ChatInterface(1,1);
@@ -156,7 +154,7 @@ public class MainApp extends Application {
 	    	paneTransition(titleFX.getBtnJoin(), titleFX.getContainer(), joinFX.getContainer());
 	    	
 	    	// Sound für den gedrückten Button wird abgespielt
-	    	mpFX.playBtnSFX();
+	    	//mpFX.playBtnSFX();
 	    });
 	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
@@ -171,7 +169,6 @@ public class MainApp extends Application {
 			 * Sound für den gedrückten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
-			mpFX.playBtnSFX();
 			mpFX.playBgmStart();
 			mpFX.stopBgmGame();
 	    });
@@ -190,11 +187,12 @@ public class MainApp extends Application {
 				 * Sound für den gedrückten Button wird abgespielt
 				 * und die Hintergrund-Musik wird gewechselt
 				 */
-				mpFX.playBtnSFX();
+				isMatchActive = true;
+				
 				mpFX.stopBgmStart();
 				mpFX.playBgmGame();
 				
-				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
+				// ...das GameMechanics-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
 				new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId()).setColor("FFD800");
 				matchFX.initializeMatch(lobbyFX);
 				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
@@ -250,7 +248,6 @@ public class MainApp extends Application {
 			 * Sound für den gedrückten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
-			mpFX.playBtnSFX();
 			mpFX.playBgmStart();
 			mpFX.stopBgmGame();
 	    });
@@ -258,13 +255,21 @@ public class MainApp extends Application {
 	    // Wenn der Play-Button des MediaPlayers gedrückt wird
 		mpFX.getPlayBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Startet die Hintergrundmusik
-			mpFX.playBgmStart();		
+			if(isMatchActive){
+				mpFX.playBgmGame();
+			}else{
+				mpFX.playBgmStart();
+			}		
 		});
 		
 		// Wenn der Stop-Button des MediaPlayers gedrückt wird
 		mpFX.title_btn_stop_mediaPlayer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Stoppt die Hintergrundmusik
-			mpFX.stopBgmStart();			
+			if(isMatchActive){
+				mpFX.stopBgmGame();
+			}else{
+				mpFX.stopBgmStart();
+			}			
 		});
 		
 		// Schleife um mit allen potentiellen neun Lobbys zu kommunizieren
@@ -537,8 +542,14 @@ public class MainApp extends Application {
 	        		 *  wo es dann wieder hoch verschoben wird
 	        		 */
 	        		titleFX.getLogo().setTranslateY(titleFX.getLogo().getTranslateY() - titleFX.getLogo().getVy());
-		        	if(titleFX.getLogo().getTranslateY() == 0) titleFX.getLogo().setVy(.25);
-		        	if(titleFX.getLogo().getTranslateY() == -20) titleFX.getLogo().setVy(-.25);
+	        		
+		        	if(titleFX.getLogo().getTranslateY() == 0) {
+		        		titleFX.getLogo().setVy(.25);
+		        	}
+		        	
+		        	if(titleFX.getLogo().getTranslateY() == -20) {
+		        		titleFX.getLogo().setVy(-.25);
+		        	}
 	        	}
 	        	
 	        	// Wenn der Übergang zwischen zwei Panes aktiviert wird
@@ -573,6 +584,24 @@ public class MainApp extends Application {
 	        			paneTo.setCache(false);
 	        			
 	        			toPane = false;
+	        		}
+	        	}
+	        	
+	        	if(matchFX.isFightStarting()) {
+	        		// Wenn die Positionen der Hintergründe noch nicht die Ziel-Position haben...
+	        		if(matchFX.getBattleBackgroundA().getLayoutX() < 0) {
+	        			// ...wird der Wert angepasst
+	        			matchFX.getBattleBackgroundA().relocate(matchFX.getBattleBackgroundA().getLayoutX() + 20, 0);
+	        		}
+	        		// Wenn die Positionen der Hintergründe noch nicht die Ziel-Position haben...
+	        		if(matchFX.getBattleBackgroundB().getLayoutX() > 960) {
+	        			// ...wird der Wert angepasst
+	        			matchFX.getBattleBackgroundB().relocate(matchFX.getBattleBackgroundB().getLayoutX() - 20, 0);
+	        		}
+	        		// Wenn beide Hintergründe am richtigen Platz sind
+	        		if(matchFX.getBattleBackgroundA().getLayoutX() > 0 && matchFX.getBattleBackgroundB().getLayoutX() < 960) {
+	        			// ...wird die Animation beendet
+	        			matchFX.setFightStarting(false);
 	        		}
 	        	}
 	        	

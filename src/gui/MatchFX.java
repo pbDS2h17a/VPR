@@ -33,6 +33,7 @@ public class MatchFX {
 	private GameMechanics gameMechanics;
     private ArrayList<Player> playersInLobby;
 	private Pane ctn = new Pane();
+	private boolean isFightStarting = false;
 	private Country[] getCountryArray = new Country[42];
 	private Group inventoryGroup = new Group();
 	private Group inventoryMissionGroup = new Group();
@@ -326,7 +327,7 @@ public class MatchFX {
 		// Die Oberfläche auf der der Kampf stattfindet (Gruppe)
 		fightGroup.setVisible(false);
 		// Die Oberfläche auf der der Kampf stattfindet (Land eins, Hintergrund)
-		fightCountryOneBG.relocate(0, 0);
+		fightCountryOneBG.relocate(-960, 0);
 		fightCountryOneBG.setStroke(Color.WHITE);
 		fightCountryOneBG.setStrokeWidth(10);
 		fightGroup.getChildren().add(fightCountryOneBG);
@@ -346,7 +347,7 @@ public class MatchFX {
 		fightCountryOneUnits.relocate(600, 550);
 		fightGroup.getChildren().add(fightCountryOneUnits);
 		// Die Oberfläche auf der der Kampf stattfindet (Land zwei, Hintergrund)
-		fightCountryTwoBG.relocate(960, 0);
+		fightCountryTwoBG.relocate(1920, 0);
 		fightCountryTwoBG.setStroke(Color.WHITE);
 		fightCountryTwoBG.setStrokeWidth(10);
 		fightGroup.getChildren().add(fightCountryTwoBG);
@@ -793,5 +794,25 @@ public class MatchFX {
 	public Group getPlayerInfoAuftragGroup() {
 		return inventoryMissionGroup;
 	}
+
+	/**
+	 * Kontrolliert ob die Kampfanimation gestartet werden soll
+	 * 
+	 * @return gibt den true/false-Wert zurück
+	 */
+	public boolean isFightStarting() {
+		return isFightStarting;
+	}
+
+	/**
+	 * Setzt den true/false-Wert ob die Kampfanimation gestartet werden soll
+	 * 
+	 * @param isFightStarting boolean
+	 */
+	public void setFightStarting(boolean isFightStarting) {
+		this.isFightStarting = isFightStarting;
+	}
+	
+	
 
 }

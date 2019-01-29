@@ -11,15 +11,6 @@ import javafx.scene.image.ImageView;
 
 /**
  * Sprite Klasse
- * @param imagePath		: String
- * @param image			: Image
- * @param isButton		: boolean
- * @param isActive		: boolean
- * @param vx			: double
- * @param vy			: double
- * @param scale			: double
- * @param vscale		: double
- * @param colorAdjust	: Coloradjust
  */
 public class Sprite extends ImageView
 {
@@ -34,9 +25,10 @@ public class Sprite extends ImageView
 	
 	ColorAdjust colorAdjust = new ColorAdjust();
 /**
- * Sprite Constructor
- * @param path : String
+ * Sprite Constructor<br>
  * Sprite wird durch einen Pfad erstellt und Listener werden hinzugefügt
+ * @param path
+ * 			Dateipfad für die Sprite
  */
 	public Sprite(String path) {
 		image = new Image(path);
@@ -44,24 +36,34 @@ public class Sprite extends ImageView
 		imagePath = path;
 		initializeListeners();
 	}
-	
-	public Sprite() {
-		initializeListeners();
-	}
+/**
+ * Methode die den Dateipfad für die Sprite zurückgibt
+ * @return imagePath
+ * 			Dateipfad für die Sprite
+ */
 	public String getImagePath() {
 		return imagePath;
 	}
-	
+/**	
+ * Methode die zurückgibt ob die Sprite ein Button ist
+ * @return isButton
+ * 			true = Sprite ist ein Button
+ */
 	public boolean isButtonMode() {
 		return this.isButton;
 	}
+/**
+ * Methode um den ButtonMode für die Sprite zuändern
+ * @param mode
+ * 			true = Sprite ist ein Button
+ */
 	public void setButtonMode(boolean mode) {
 		this.isButton = mode;
 	}
 /**
- * setActive(boolean mode)
- * @param mode
  * Sollte der mode false sein wird das Bild zusätzlich ausgegraut
+ * @param mode
+ * 			true = aktiv
  */
 	public void setActive(boolean mode) {
 		if (mode) {
@@ -73,10 +75,15 @@ public class Sprite extends ImageView
 		}
 		this.isActive = mode;
 	}
-	
+/**
+ * Mthode die zurückgibt ob die Sprite aktiv ist
+ * @return isActive
+ * 			ture = aktiv
+ */
 	public boolean isActive() {
 		return this.isActive;
 	}
+	
 	public double getVx() {
 		return vx;
 	}
@@ -91,11 +98,6 @@ public class Sprite extends ImageView
 
 	public double getVscale() {
 		return vscale;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.setImage(new Image(imagePath));
-		this.imagePath = imagePath;
 	}
 
 	public void setVx(double vx){
@@ -113,14 +115,9 @@ public class Sprite extends ImageView
 	public void setVscale(double vscale) {
 		this.vscale = vscale;
 	}
-
-	public void click() {
-		
-	}
 /**
- * initializeListeners()
- * fügt beim Erstellen einer Sprite Events ein
- * beim hovern wird ein Soundeffekt abgespielt
+ * Methode die, beim Erstellen einer Sprite, Events einfügt<br>
+ * beim Hovern wird ein Soundeffekt abgespielt
  */
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
