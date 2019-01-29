@@ -369,6 +369,8 @@ public class MainApp extends Application {
 		    		// Auf Basis der Würfe wird der Kampf durchgeführt
 		    		matchFX.getGameMechanics().updateFightResults(rolledDices, matchFX.getGameMechanics().getCountryA(), matchFX.getGameMechanics().getCountryB());
 		    		
+		    		matchFX.setStartDicing(true);
+		    		
 		    		// Ist der Kampf vorbei wird der Kampf beendet und die Länder aktualisiert
 		    		matchFX.getGameMechanics().endFight();
 		    	}
@@ -601,7 +603,15 @@ public class MainApp extends Application {
 	        		// Wenn beide Hintergründe am richtigen Platz sind
 	        		if(matchFX.getBattleBackgroundA().getLayoutX() > 0 && matchFX.getBattleBackgroundB().getLayoutX() < 960) {
 	        			// ...wird die Animation beendet
+	        			matchFX.getFightTextGroup().setVisible(true);
 	        			matchFX.setFightStarting(false);
+	        		}
+	        		
+	        		if(matchFX.isStartDicing()) {
+	        			if(matchFX.getDicesA().getLayoutX() < 0 && matchFX.getDicesA().getLayoutX() > 1670) {
+	        				matchFX.getDicesA().relocate(matchFX.getDicesA().getLayoutX() + 20, 0);
+	        				matchFX.getDicesB().relocate(matchFX.getDicesB().getLayoutX() - 20, 0);
+	        			}
 	        		}
 	        	}
 	        	

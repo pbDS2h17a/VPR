@@ -34,12 +34,14 @@ public class MatchFX {
     private ArrayList<Player> playersInLobby;
 	private Pane ctn = new Pane();
 	private boolean isFightStarting = false;
+	private boolean isStartDicing = false;
 	private Country[] getCountryArray = new Country[42];
 	private Group inventoryGroup = new Group();
 	private Group inventoryMissionGroup = new Group();
 	private Group phaseBtnGroup = new Group();
 	private Group groupLands = new Group();
 	private Group fightGroup = new Group();
+	private Group fightTextGroup = new Group();
 	private Group battleA_GroupDices = new Group();
 	private Group battleB_GroupDices = new Group();
 	private Label[] countryUnitsLabelArray = new Label[getCountryArray.length];
@@ -325,6 +327,7 @@ public class MatchFX {
 		ctn.getChildren().add(phaseBtnGroup);
 
 		// Die Oberfläche auf der der Kampf stattfindet (Gruppe)
+		fightTextGroup.setVisible(false);
 		fightGroup.setVisible(false);
 		// Die Oberfläche auf der der Kampf stattfindet (Land eins, Hintergrund)
 		fightCountryOneBG.relocate(-960, 0);
@@ -335,19 +338,19 @@ public class MatchFX {
 		fightCountryOneLabel.setPrefWidth(960);
 		fightCountryOneLabel.relocate(0, 50);
 		fightCountryOneLabel.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
-		fightGroup.getChildren().add(fightCountryOneLabel);
+		fightTextGroup.getChildren().add(fightCountryOneLabel);
 		// Die Oberfläche auf der der Kampf stattfindet (Land eins, Eingabefeld)
 		fightCountryOneInput.setPrefSize(120, 100);
 		fightCountryOneInput.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		fightCountryOneInput.relocate(600, 430);
-		fightGroup.getChildren().add(fightCountryOneInput);
+		fightTextGroup.getChildren().add(fightCountryOneInput);
 		// Die Oberfläche auf der der Kampf stattfindet (Land eins, max. Einheiten)
 		fightCountryOneUnits.setPrefSize(120, 40);
 		fightCountryOneUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
 		fightCountryOneUnits.relocate(600, 550);
-		fightGroup.getChildren().add(fightCountryOneUnits);
+		fightTextGroup.getChildren().add(fightCountryOneUnits);
 		// Die Oberfläche auf der der Kampf stattfindet (Land zwei, Hintergrund)
-		fightCountryTwoBG.relocate(1920, 0);
+		fightCountryTwoBG.relocate(1700, 0);
 		fightCountryTwoBG.setStroke(Color.WHITE);
 		fightCountryTwoBG.setStrokeWidth(10);
 		fightGroup.getChildren().add(fightCountryTwoBG);
@@ -355,7 +358,7 @@ public class MatchFX {
 		fightCountryTwoLabel.setPrefWidth(960);
 		fightCountryTwoLabel.relocate(960, 50);
 		fightCountryTwoLabel.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
-		fightGroup.getChildren().add(fightCountryTwoLabel);
+		fightTextGroup.getChildren().add(fightCountryTwoLabel);
 		// Die Oberfläche auf der der Kampf stattfindet (Land zwei, Eingabefeld)
 		fightCountryTwoInput.setPrefSize(120, 100);
 		fightCountryTwoInput.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
@@ -366,7 +369,7 @@ public class MatchFX {
 		fightCountryTwoUnits.setPrefSize(120, 40);
 		fightCountryTwoUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
 		fightCountryTwoUnits.relocate(1200, 550);
-		fightGroup.getChildren().add(fightCountryTwoUnits);
+		fightTextGroup.getChildren().add(fightCountryTwoUnits);
 		
 		// Pfeil der die Kampfrichtung angibt
 		fightArrow.getPoints().addAll(0.0, 0.0,
@@ -378,15 +381,15 @@ public class MatchFX {
 				70.0, 60.0);
 		fightArrow.setFill(Color.WHITE);
 		fightArrow.relocate(810, 480);
-		fightGroup.getChildren().add(fightArrow);
+		fightTextGroup.getChildren().add(fightArrow);
 		
 		// Button der die gesetzten Einheiten bestätigen soll
 		fightBtnReady.setButtonMode(true);
 		fightBtnReady.relocate(960 - 167, 850);
-		fightGroup.getChildren().add(fightBtnReady);
+		fightTextGroup.getChildren().add(fightBtnReady);
 		
 		// Die Würfel von Land eins (Gruppe)
-		battleA_GroupDices.relocate(0, 0);
+		battleA_GroupDices.relocate(-400, 0);
 		// Die Würfel von Land eins (Würfel eins)
 		fightCountryOneDiceOne.setPrefSize(150, 150);
 		fightCountryOneDiceOne.relocate(100, 265);
@@ -402,9 +405,9 @@ public class MatchFX {
 		fightCountryOneDiceThree.relocate(100, 665);
 		fightCountryOneDiceThree.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		battleA_GroupDices.getChildren().add(fightCountryOneDiceThree);
-		fightGroup.getChildren().add(battleA_GroupDices);
+		fightTextGroup.getChildren().add(battleA_GroupDices);
 		// Die Würfel von Land zwei (Gruppe)
-		battleB_GroupDices.relocate(0, 0);
+		battleB_GroupDices.relocate(2320, 0);
 		// Die Würfel von Land zwei (Gruppe, Würfel eins)
 		fightCountryTwoDiceOne.setPrefSize(150, 150);
 		fightCountryTwoDiceOne.relocate(1670, 365);
@@ -415,8 +418,10 @@ public class MatchFX {
 		fightCountryTwoDiceTwo.relocate(1670, 565);
 		fightCountryTwoDiceTwo.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		battleB_GroupDices.getChildren().add(fightCountryTwoDiceTwo);
-		fightGroup.getChildren().add(battleB_GroupDices);
+		fightTextGroup.getChildren().add(battleB_GroupDices);
+		fightGroup.getChildren().add(fightTextGroup);
 		ctn.getChildren().add(fightGroup);
+		
 		
 		// Die Partie wird begonnen
 		//initializeMatch();
@@ -789,10 +794,19 @@ public class MatchFX {
 	/**
 	 * Holt sich die gesamte Auftrag-Gruppe
 	 * 
-	 * @return gibt das Group-Objekt zurücl
+	 * @return gibt das Group-Objekt zurück
 	 */
 	public Group getPlayerInfoAuftragGroup() {
 		return inventoryMissionGroup;
+	}
+	
+	/**
+	 * Holt sich die Kampfbildschirm-Gruppe die die Texte enthält
+	 * 
+	 * @return gibt das Group-Objekt zurück
+	 */
+	public Group getFightTextGroup() {
+		return fightTextGroup;
 	}
 
 	/**
@@ -811,6 +825,24 @@ public class MatchFX {
 	 */
 	public void setFightStarting(boolean isFightStarting) {
 		this.isFightStarting = isFightStarting;
+	}
+	
+	/**
+	 * Kontrolliert ob das würfeln gestartet werden soll
+	 * 
+	 * @return gibt den true/false-Wert zurück
+	 */
+	public boolean isStartDicing() {
+		return isStartDicing;
+	}
+
+	/**
+	 * Setzt den true/false-Wert ob das würfeln gestartet werden soll
+	 * 
+	 * @param isStartDicing boolean
+	 */
+	public void setStartDicing(boolean isStartDicing) {
+		this.isStartDicing = isStartDicing;
 	}
 	
 	

@@ -457,6 +457,9 @@ public class GameMechanics {
 		// Aktiviert die Weltkarte und zeigt alle Phasen-Buttons wieder an
 		this.match.getBattleReadyBtn().setActive(true);
 		this.match.activateWorldMap(true);
+		this.match.getFightTextGroup().setVisible(false);
+		this.match.getBattleBackgroundA().relocate(-960, 0);
+		this.match.getBattleBackgroundB().relocate(1920, 0);
 		this.match.getPhaseBtnGroup().setVisible(true);
 		// Setzt den Kampfbildschirm zurück
 		this.match.getBattleInterface().setVisible(false);
