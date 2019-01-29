@@ -95,6 +95,7 @@ public class MainApp extends Application {
 		
 		// Setzt den Titel für die Anwendung in die Scene und startet sie in der Main
 		stage.setTitle("CONQUER | All risk all fun");
+		scene.getStylesheets().add("resources/style.css");
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -141,10 +142,8 @@ public class MainApp extends Application {
 	    	// Sound für den gedrückten Button wird abgespielt
 			mpFX.playBtnSFX();
 			
-			// Erstellt das ChatInterface und positioniert es in der Lobby
-			chatFX = new ChatInterface(1,1);
-			chatFX.getPane().relocate(63, 550);
-			ctnApp.getChildren().add(chatFX.getPane());
+			//Spieler-Objekt und Chat-Objekt werden erstellt
+	    	createPlayer();
 	    });
 	   
 	    // Wenn der Button zum Spiel beitreten gedrückt wird
@@ -157,6 +156,9 @@ public class MainApp extends Application {
 	    	
 	    	// Sound für den gedrückten Button wird abgespielt
 	    	mpFX.playBtnSFX();
+	    	
+	    	//Spieler-Objekt und Chat-Objekt werden erstellt
+	    	createPlayer();
 	    });
 	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
@@ -184,7 +186,8 @@ public class MainApp extends Application {
 				paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
 				
 				// ...wird zur Weltkarte gewechselt positioniert sich der Chat neu
-				chatFX.getPane().relocate(1650, 600);
+				chatFX.getPane().relocate(1580, 460);
+				chatFX.getPane().setPrefWidth(300);
 				
 				/*
 				 * Sound für den gedrückten Button wird abgespielt
@@ -195,7 +198,12 @@ public class MainApp extends Application {
 				mpFX.playBgmGame();
 				
 				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-				new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId()).setColor("FFD800");
+//				Player player = new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId());
+//				player.setColor("FFD800");
+//				chatFX.setLid(player.getLobbyId());
+//				chatFX.setPid(player.getPlayerId());
+//				System.out.println("Lobby: "+player.getLobbyId());
+//				System.out.println("Player: "+player.getPlayerId());
 				matchFX.initializeMatch(lobbyFX);
 				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
 	    	}
@@ -214,7 +222,7 @@ public class MainApp extends Application {
 	    // Wenn auf den Bestätigen-Button neben dem Namens-Eingefeld gedrückt wird
 	    lobbyFX.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Ändert den Namen des Spielers in seinem Slot
-	    	lobbyFX.lobbyChangeName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
+	    	lobbyFX.changePlayerName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
 	    });
 	    
 	    // Wenn im Namens-Eingabefeld eine Taste gedrückt wird
@@ -222,7 +230,7 @@ public class MainApp extends Application {
 	    	// Wenn diese Taste "Enter" ist...
 	    	if (event.getCode() == KeyCode.ENTER) {
 	    		// ...wird der Name des Spielers in seinem Slot geändert
-	    		lobbyFX.lobbyChangeName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
+	    		lobbyFX.changePlayerName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
 	    	}
 
 	    });
@@ -593,6 +601,21 @@ public class MainApp extends Application {
 	            }
 	        }
 	    });
+	}
+	
+	
+	/**
+	 * Erstellt ein Player-Objekt und ein zugehöriges Chat-Interface
+	 * @author pbs2h17asc
+	 */
+	private void createPlayer() {
+		Player player = new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId());
+		player.setColor("FFD800");
+		
+		// Erstellt das ChatInterface und positioniert es in der Lobby
+		chatFX = new ChatInterface(player);
+		ctnApp.getChildren().add(chatFX.getPane());
+		chatFX.getPane().relocate(42, 420);
 	}
 
 }

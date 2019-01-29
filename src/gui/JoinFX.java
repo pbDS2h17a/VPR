@@ -52,7 +52,20 @@ public class JoinFX {
 	    
 	    // Liste: Einzelne Lobby-Label erstellen (bis zu 9)
 	    for(int i = 0; i < lobbyIdArray.length; i++) {
-	    	listUsers[i] = new Label("Lobby Nummer " + i + " (klicken zum beitreten)");
+			String s = "";
+	    	try
+			{
+				s += "Lobby " + lobbyIdArray[i] + " - " + SqlHelper.getLeaderName(lobbyIdArray[i]);
+			} 
+			catch (ClassNotFoundException classnotfounderror)
+			{
+				System.err.println("ClassNotFoundException\n" + classnotfounderror.getMessage());
+			} 
+			catch (SQLException sqlerror)
+			{
+				System.err.println("SQLException\n" + sqlerror.getMessage());
+			}
+	    	listUsers[i] = new Label(s);
 	    	listUsers[i].setPrefWidth(850);
 	    	listUsers[i].setStyle("-fx-font-size: 40px; -fx-font-family: Arial; -fx-font-weight: bold; -fx-text-fill: white;");
 	    	listUsers[i].relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() + 25);
