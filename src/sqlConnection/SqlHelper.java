@@ -172,9 +172,10 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Gibt den Names des Lands zurück
+	 * Gibt den Namen des Landes zurück
 	 * @param countryId country_id
-	 * @return Names des Lands
+	 * @return Namen des Landes
+	 * @author pbs2h17aeb
 	 */
 	public static String getCountryName (int countryId) {
 		String query = String.format("SELECT name FROM country WHERE country_id = %d",countryId);
@@ -195,7 +196,8 @@ public class SqlHelper {
 	 * Methode zum Auslesen der Einheiten, die in einem Land Stationiert sind.
 	 * @param countryId
 	 * @param lobbyId
-	 * @return
+	 * @return Menge von Einheiten eines Landes als Integer
+	 * @author pbs2h17aeb
 	 */
 	public static int getCountryUnits (int countryId, int lobbyId) {
 		String query = String.format("SELECT unit_count FROM country_player WHERE country_id = %d  AND lobby_id= %d",countryId, lobbyId);
@@ -212,10 +214,11 @@ public class SqlHelper {
 		return unitCount;
 	}
 	/**
-	 * Methode zum Auslesen des Besatzers eines Landes
+	 * Methode zum Auslesen des Besitzers eines Landes
 	 * @param countryId
 	 * @param lobby
-	 * @return
+	 * @return Besitzer als Player
+	 * @author pbs2h17aeb
 	 */
 	public static Player getCountyOwner (int countryId, Lobby lobby) {
 		String query = String.format("SELECT player_id FROM country_player WHERE country_id = %d  AND lobby_id= %d",countryId, lobby.getLobbyId());
@@ -239,7 +242,8 @@ public class SqlHelper {
 	/**
 	 * Methode zum Auslesen der ContinentId eines Landes
 	 * @param countryId
-	 * @return
+	 * @return Kontinent ID eines Landes als Integer
+	 * @author pbs2h17aeb
 	 */
 	public static int getCountryContinentId(int countryId){
 		String query = String.format("SELECT continent_id FROM country WHERE country_id = %d ",countryId);
@@ -257,9 +261,10 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Gib ein Array mit den Ids der Nachbarländer
+	 * Getter für  Array mit den IDs der Nachbarländer eines Landes
 	 * @param countryId country_id
-	 * @return NachbarländerId array
+	 * @return Nachbarländer ID als Integer Array 
+	 * @author pbs2h17aeb
 	 */
 	public static int[] getCountryNeighbor(int countryId) {
 		String query = String.format("SELECT neighbor_id FROM neighbor WHERE country_id = %d ",countryId);
