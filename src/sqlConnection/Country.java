@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 
 /**
@@ -40,7 +41,17 @@ public class Country extends SVGPath {
 	private int[] neighborIdArray;
 
 	private Label unitLabel;
-	
+
+	public Rectangle getRectangle() {
+		return rectangle;
+	}
+
+	public void setRectangle(Rectangle rectangle) {
+		this.rectangle = rectangle;
+	}
+
+	private Rectangle rectangle;
+
 	public Label getUnitLabel() {
 		return unitLabel;
 	}
@@ -48,6 +59,7 @@ public class Country extends SVGPath {
 	public void setUnitLabel(Label unitLabel) {
 		this.unitLabel = unitLabel;
 	}
+
 
 	/**
 	 * Land ctor

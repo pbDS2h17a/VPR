@@ -464,6 +464,7 @@ public class MatchFX {
 			countryUnitsBGArray[i].setFill(getCountryArray[i].getFill());
 			countryUnitsLabelArray[i].setText(String.valueOf(getCountryArray[i].getUnits()));
 			getCountryArray[i].setUnitLabel(countryUnitsLabelArray[i]);
+			getCountryArray[i].setRectangle(countryUnitsBGArray[i]);
 		}
 		
 		// Aktualisiert den aktiven Spieler oben links in der Oberfläche

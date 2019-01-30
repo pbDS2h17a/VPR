@@ -532,10 +532,12 @@ public class MainApp extends Application {
 		int countryId = country.getCountryId();
 		int lobbyId = lobby.getLobbyId();
 		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
+
 		country.setOwner(SqlHelper.getCountyOwner(countryId, lobby));
 		country.setUnits(newUnits);
 		country.getUnitLabel().setText(String.valueOf(newUnits));
 		country.setFill(Color.web(country.getOwner().getColor()));
+		country.getRectangle().setFill(country.getFill());
 	}
 	
 	/**
@@ -551,19 +553,20 @@ public class MainApp extends Application {
 	        public void handle(long currentNanoTime) {
 	        	if(listen) {
 	        		long newLastChange = SqlHelper.getLastChange(lobbyId);
-		        	if(count != 0 && count % 60 == 0) {
+		        	if(count != 0 && count % 30 == 0) {
 		        		count = 0;
+						if(newLastChange > currentLastChange) {
+							System.out.println("Änderungen");
+							for (Country country : matchFX.getCountryArray()) {
+								updateDisplayCountry(country,lobbyFX.getLobby());
+							}
+
+							currentLastChange = newLastChange;
+						}
 		        	}
 		        	count++;
 		        	
-		        	if(newLastChange > currentLastChange) {
-		        		System.out.println("Änderungen");
-		        		for (Country country : matchFX.getCountryArray()) {
-		        			updateDisplayCountry(country,lobbyFX.getLobby());
-		        		}
-					
-		                currentLastChange = newLastChange;      
-		            }
+
 	        	}
 		    	
 
