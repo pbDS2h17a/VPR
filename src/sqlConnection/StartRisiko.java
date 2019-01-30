@@ -21,15 +21,12 @@ public class StartRisiko
 
 
 		CardStack cs = new CardStack();
-		
 		for (Card card : cs) {
 			System.out.println(card);
-		}
-		
-		Card test = cs.pop();
-		cs.push(test);
+		}	
 		System.out.println();
-	
+		Card test = cs.pop();
+		cs.pushCard(test, cs);
 		for (Card card : cs) {
 			System.out.println(card);
 		}
