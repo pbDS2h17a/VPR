@@ -133,6 +133,7 @@ class SqlReader {
 	}
 
 	/**
+	 * @author Lea Mönikes
 	 * getter für Farbe Datem
 	 * Werden in der SqlQuery fill methode weiter aufgeteilt
 	 * @return colorData mit Trennzeichen geteilt

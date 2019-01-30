@@ -1,7 +1,7 @@
 package sqlCreation;
 
 /**
- * @author pbs2h17awb
+ * @author pbs2h17awb, Lea Mönikes
  * Setzt die Datenbank zurück
  * Löscht alle Laufdaten
  * Stellt Stammdaten aus der Resourcedatei wieder her
