@@ -442,6 +442,7 @@ public class SqlHelper {
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			history = ResultSetManager.toList(rs);
+			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Fehler in der Chat History");
 			e.printStackTrace();
