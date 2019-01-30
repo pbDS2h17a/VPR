@@ -434,7 +434,7 @@ public class MatchFX {
 		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(getCountryArray));
 
         // Lobbyleader setzen auf ersten Spieler in der Lobby
-        lobby.setLobbyLeader(lobby.getPlayers().get(0).getPlayerId());
+        lobby.setLobbyLeader(lobby.getPlayers().get(0));
 		playersInLobby = lobby.getPlayers();
 
 		int userCount = lobby.getPlayers().size();

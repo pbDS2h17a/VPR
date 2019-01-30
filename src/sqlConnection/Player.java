@@ -41,8 +41,6 @@ public class Player {
 		this.slotId = slotId;
 		// Spieler in Db einfügen
 		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
-		// Spieler in Lobby einfügen
-		//lobby.addPlayer(this);
 	}
 
 	/**
@@ -58,7 +56,6 @@ public class Player {
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
 		this.setLobbyId(lobbyId);
-		//lobby.addPlayer(this);
 	}
 
 	// Getter und Setter

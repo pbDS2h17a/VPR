@@ -133,8 +133,6 @@ public class MainApp extends Application {
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
-	    	// Debug ausgabe Lobby ID
-			System.out.println(lobbyFX.getLobby().getLobbyId());
 
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
@@ -148,8 +146,10 @@ public class MainApp extends Application {
 			//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	createPlayer();
 //	    	lobbyFX.getLobby().clearPlayers();
-	    	lobbyFX.getLobby().setLobbyLeader(player.getPlayerId());
+	    	lobbyFX.getLobby().setLobbyLeader(player);
 	    	lobbyFX.lobbyAddPlayer(lobbyFX.getNextSlotId());
+	    	System.out.println("Slot: "+player.getSlotId());
+	    	System.out.println(lobbyFX.getNextSlotId());
 	    });
 	   
 	    // Wenn der Button zum Spiel beitreten gedrückt wird

@@ -23,9 +23,9 @@ public class Lobby {
 		return leaderId;
 	}
 
-	public void setLobbyLeader(int playerId) {
-        SqlHelper.updateLobbyLeader(lobbyId, playerId);
-        this.addPlayer(getPlayer(playerId), 0);
+	public void setLobbyLeader(Player player) {
+        SqlHelper.updateLobbyLeader(lobbyId, player.getPlayerId());
+        this.addPlayer(player);
     }
 
     public ArrayList<Player> getPlayers() {
@@ -54,15 +54,6 @@ public class Lobby {
         if (players.size() < MAX_PLAYER_COUNT) {
             players.add(player);
             System.out.println(player);
-        }
-    }
-    
-    public void addPlayer(Player player, int slotId) {
-        if(this.players.size() <= slotId) {
-        	this.players.add(player);
-        }
-        else {
-        	this.players.set(slotId, player);
         }
     }
 
@@ -106,12 +97,9 @@ public class Lobby {
 	 */
 	public int getNextSlotId()
 	{
-		System.out.println("In der Methode:");
-		System.out.println(players);
 		// TODO Auto-generated method stub
 		int nextSlot = players.size();
 		if(nextSlot > 6) return -1;
-		System.out.println(nextSlot);
 		return nextSlot;
 	}
 	
