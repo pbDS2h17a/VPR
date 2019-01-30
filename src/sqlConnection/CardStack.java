@@ -4,28 +4,65 @@ import java.sql.SQLException;
 import java.util.Stack;
 import java.util.ArrayList;
 
-public class CardStack{	
+/**
+ * @author pbs2h17apa, pbs2h17aeb
+ * Klasse zur Erstellung eines gemischten Kartenstapels
+ */
+
+public class CardStack extends Stack<Card>{	
 	
-	
-	public ArrayList<Card> fillCardList()throws SQLException{
+	public CardStack() {
+		this.fillCardStack();
+	}
+
+	/**
+	 * 
+	 * @return Geordnete Liste der Klasse Card
+	 */
+	public ArrayList<Card> fillCardList(){
 		ArrayList<Card>Cards = new ArrayList<Card>();
 		for (int i = 1; i <= 42; i++) {
-			Cards.add(new Card(i));
+			try{
+				Cards.add(new Card(i));
+			}catch (SQLException SE){
+				
+			}
+			
 		}		
 		return Cards;
 	}
 	
-	public Stack <Card> fillCardStack()throws SQLException{
-		Stack <Card> CardStack = new Stack<>();
+	/**
+	 * Füllt das Objekt per Zufall
+	 */
+	public void fillCardStack(){
+		
 		ArrayList<Card> orderedCardList = fillCardList();
 		
 		while (orderedCardList.size()>0){
 			int index = (int)(Math.random()*orderedCardList.size());	
 					
-			CardStack.push(orderedCardList.get(index));
+			this.push(orderedCardList.get(index));
 			orderedCardList.remove(index);
 		}
-		return CardStack;
-	}	
+	}
+	
+	
+	/**
+	 * 	Funktion die dem Stapel eine Karte hinzufügt.
+	 * @param card Karte die dem Stapel hinzugefügt
+	 * @param cs Kartenstapel der sich selbst aufrufen muss
+	 */
+	public void pushCard(Card card, CardStack cs){		
+		Stack <Card> tmp = new Stack<Card>();		
+		while(cs.size()>0){
+			tmp.push(cs.pop());
+		}	
+		cs.push(card);			
+		while(tmp.size()>0) {
+			cs.push(tmp.pop());
+		}		
+	}		
+
 	
 }
