@@ -13,9 +13,11 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import network.ChatInterface;
 import sqlConnection.Country;
+import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
@@ -39,7 +41,7 @@ public class MainApp extends Application {
     private Pane ctnApp = new Pane();
 	private boolean toPane = false;
 	private Scene scene = new Scene(app);
-	private boolean listen;
+	private boolean listen = false;
     
     // Spiel-Oberflächen
 	private TitleFX titleFX = new TitleFX();
@@ -140,7 +142,7 @@ public class MainApp extends Application {
 
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
-	    	
+	    	listen = true;
 	    	// Sound für den gedrückten Button wird abgespielt
 			mpFX.playBtnSFX();
 			
@@ -526,6 +528,14 @@ public class MainApp extends Application {
 		 ctn_app.relocate(stage.getWidth()/2 - ctn_app.getPrefWidth()/2, stage.getHeight()/2 - ctn_app.getPrefHeight()/2);
 	}
 	
+	public void updateDisplayCountry(Country country, int lobbyId) {
+		System.out.println(country.getCountryName());
+		int units = SqlHelper.getCountryUnits(country.getCountryId(),lobbyId);
+		country.setUnits(units);
+		country.getUnitLabel().setText(String.valueOf(units));
+		country.setFill(Color.web(country.getOwner().getColor()));
+	}
+	
 	/**
 	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
 	 */
@@ -533,11 +543,12 @@ public class MainApp extends Application {
 		new AnimationTimer() {
 			
 			private int count = 0;
-			private long currentLastChange = SqlHelper.getLastChange(1);	
+			private int lobbyId = lobbyFX.getLobby().getLobbyId();
+			private long currentLastChange = SqlHelper.getLastChange(lobbyId);	
 			
 	        public void handle(long currentNanoTime) {
 	        	if(listen) {
-	        		long newLastChange = SqlHelper.getLastChange(1);
+	        		long newLastChange = SqlHelper.getLastChange(lobbyId);
 		        	if(count != 0 && count % 60 == 0) {
 		        		count = 0;
 		        	}
@@ -545,14 +556,9 @@ public class MainApp extends Application {
 		        	
 		        	if(newLastChange > currentLastChange) {
 		        		System.out.print("Änderungen");
-		        		
-						Country c = matchFX.getCountryArray()[0];
-						Label countryLabel = matchFX.getCountryUnitsLabelArray()[0];
-			
-						// Daten werden aus DB Gelesen
-						int units = SqlHelper.getCountryUnits(1, 1);
-						c.setUnits(units);
-						countryLabel.setText(String.valueOf(units));
+		        		for (Country country : matchFX.getCountryArray()) {
+		        			updateDisplayCountry(country,lobbyId);
+		        		}
 					
 		                currentLastChange = newLastChange;      
 		            }

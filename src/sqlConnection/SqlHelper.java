@@ -681,7 +681,7 @@ public class SqlHelper {
 	 * @param countryId
 	 * @author pbs2h17ath
 	 */
-	public static void updateUnits(int lobbyId, int countryId, int amountUnits){
+	public static void updateCountryUnits(int lobbyId, int countryId, int amountUnits){
 		String query = String.format("UPDATE country_player SET unit_count = %d WHERE country_id = %d AND lobby_id= %d;", amountUnits, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
