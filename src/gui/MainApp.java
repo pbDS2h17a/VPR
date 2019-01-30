@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.ArrayList;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -37,6 +39,7 @@ public class MainApp extends Application {
     private Pane ctnApp = new Pane();
 	private boolean toPane = false;
 	private Scene scene = new Scene(app);
+	private boolean listen;
     
     // Spiel-Oberflächen
 	private TitleFX titleFX = new TitleFX();
@@ -528,7 +531,43 @@ public class MainApp extends Application {
 	 */
 	public void gameLoop() {
 		new AnimationTimer() {
+			
+			private int count = 0;
+			private long currentLastChange = SqlHelper.getLastChange(1);	
+			
 	        public void handle(long currentNanoTime) {
+	        	if(listen) {
+	        		long newLastChange = SqlHelper.getLastChange(1);
+		        	if(count != 0 && count % 60 == 0) {
+		        		count = 0;
+		        	}
+		        	count++;
+		        	
+		        	if(newLastChange > currentLastChange) {
+		        		System.out.print("Änderungen");
+		        		
+						Country c = matchFX.getCountryArray()[0];
+						Label countryLabel = matchFX.getCountryUnitsLabelArray()[0];
+			
+						// Daten werden aus DB Gelesen
+						int units = SqlHelper.getCountryUnits(1, 1);
+						c.setUnits(units);
+						countryLabel.setText(String.valueOf(units));
+					
+		                currentLastChange = newLastChange;      
+		            }
+	        	}
+		    	
+
+	            // Wir erhalten eine Liste welches die IDs aller Spieler enthählt,
+	            // die sich zurzeit in der lobby befinden
+	            // 1) Neue IDs müssen hinzugefügt werden
+	            // 2) Ids die nichtmehr vorhanden sind müssen entfernt werden
+	            // Neuer Spieler in Java schreiben bzw entfernen
+
+	            // Wenn die DB lastChange größer als der aktuelle Wert ist
+	            // gab es eine änderung in der DB
+	            
 	        	
 	        	// Wenn das Logo animiert werden soll...
 	        	if(titleFX.isLogoAnimated()) {

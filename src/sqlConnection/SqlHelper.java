@@ -22,7 +22,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azzTest","pbs2h17azz","Bib12345"
 			};
 
 	//###################################################################################################################
@@ -78,6 +78,34 @@ public class SqlHelper {
 	//###################################################################################################################
 
 	/**
+<<<<<<< Updated upstream
+=======
+	 * Mithilfe der LobbyId returnt diese Methode den Namen des Lobbyleaders
+	 * (mit Unterst¸tzung der getPlayerName(playerId : int)-Methode).
+	 * @param lobbyId Identifikationsnummer einer Lobby
+	 * @return String Lobbyleadername
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException
+	 * @author Jona Petrikowski
+	 * @author Nick Kuhn
+	 */
+	public static String getLeaderName (int lobbyId) throws SQLException, ClassNotFoundException {
+//		String queryGetLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d", lobbyId);
+//		List<List<String>> listWithLeaderId = ResultSetManager.toList(getStatement().executeQuery(queryGetLeader));
+//		
+//		if (listWithLeaderId.get(0).size() == 1) {
+//			int leaderId = Integer.parseInt(listWithLeaderId.get(0).get(0));
+//			System.out.println("getLeaderName() successfull.");
+//			return getPlayerName(leaderId);
+//		}
+//		else {
+//			System.out.println("getLeaderName(). Error!.");
+//		}
+		return "Dummy";	
+	}
+
+	/**
+>>>>>>> Stashed changes
 	 * Lieﬂt die werte (Hex String) aller Farben aus der Datenbank aus
 	 * @return StringArray mit Hexwerten
 	 */
