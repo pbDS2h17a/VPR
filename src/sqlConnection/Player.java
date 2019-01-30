@@ -3,6 +3,8 @@ package sqlConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.paint.Color;
+
 /**
  * @author Lea, PEROSCKU
  * Player-Klasse
@@ -14,40 +16,52 @@ public class Player {
 	private String name;
 	private String color;
 	private List<Country> countryList;
-	private int unitsPerRound;
 	private int playerId;
-	private String adress;
 	private int lobbyId;
-	private int unassignedUnits;
-	private int card1;
-	private int card2;
-	private int card3;
-	
-	public Player(String name, int lobbyId) {
-		// this.playerId = playerId; //SqlHelper.getPlayerID(name);
+	private Lobby lobby;
+	private int slotId;
+	private int unitsPerRound = 9;
+	private int unassignedUnits = 0;
+	private int card1 = 0;
+	private int card2 = 0;
+	private int card3 = 0;
+
+
+	/**
+	 * Konstruktor fürs erstmalige Erstellen eines Spielers beim beitreten bzw erstellen einer Lobby
+	 * Die Daten werden sowohl in Java und der Datenbank gespeichert
+	 * playerId wird durch Autoincrement erzeugt und aus der Datenbank gelesen
+	 * @param name
+	 * @param lobby
+	 */
+	public Player(String name, Lobby lobby, int slotId) {
 		this.name = name;
 		this.countryList = new ArrayList<>();
-		this.lobbyId = lobbyId;
-		this.unitsPerRound = 9;
-		this.unassignedUnits = 0;
-		this.card1 = 0;
-		this.card2 = 0;
-		this.card3 = 0;
+		this.lobby = lobby;
+		this.lobbyId = lobby.getLobbyId();
+		this.slotId = slotId;
+		// Spieler in Db einfügen
 		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
+		// Spieler in Lobby einfügen
+		lobby.addPlayer(this);
 	}
 
-	// Konstruktor fürs späteres laden eines Spielstands
-	public Player(int playerId, String name, String color, List<Country> countryList, int units) {
+	/**
+	 * Konstruktor fürs erstellen von Spielern die der Lobby beitreten
+	 * Die Daten werden nur Java gespeichert, da sie bereits in der DB vorhanden sind
+	 * @param playerId
+	 * @param name
+	 * @param lobby
+	 */
+	public Player(int playerId, String name, Lobby lobby) {
 		this.playerId = playerId;
 		this.name = name;
-		this.color = color;
-		this.countryList = countryList;
-		this.setUnitsPerRound(units);
+		this.lobby = lobby;
+		this.lobbyId = lobby.getLobbyId();
 		this.setLobbyId(lobbyId);
-		this.setAdress(adress);
+		lobby.addPlayer(this);
 	}
 
-	
 	// Getter und Setter
 	public String getName() {
 		return name;
@@ -56,23 +70,31 @@ public class Player {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public int getSlotId() {
+		return slotId;
+	}
 	
-	public int getUnitsPerRound()
-	{
+	public int getUnitsPerRound() {
 		return unitsPerRound;
 	}
 
-
-	public void setUnitsPerRound(int unitsPerRound)
-	{
+	public void setUnitsPerRound(int unitsPerRound) {
 		this.unitsPerRound = unitsPerRound;
 	}
 
-	public String getColor()
-	{
-		return color;
+	public void removeCountry(Country country) {
+		this.countryList.remove(country);
 	}
 
+	public void addCountry(Country country) {
+		this.countryList.add(country);
+		SqlHelper.updateCountryOwner(this.lobbyId, this.playerId, country.getCountryId());
+	}
+
+	public String getColor() {
+		return color;
+	}
 
 	public void setColor(String color) {
 		this.color = color;
@@ -91,32 +113,41 @@ public class Player {
 		return playerId;
 	}
 
-	public void setPlayerId(int playerId) {
-		this.playerId = playerId;
-	}
-
-	public String getAdress() {
-		return adress;
-	}
-
-	public void setAdress(String adress) {
-		this.adress = adress;
-	}
 
 	public int getLobbyId() {
 		return lobbyId;
 	}
 
-	public void setLobbyId(int lobbyId)
-	{
+	public void setLobbyId(int lobbyId) {
 		this.lobbyId = lobbyId;
 	}
 
 	@Override
 	public String toString() {
-		return "Player [name=" + name + ", color=" + color + ", countryList=" + countryList + ", unitsPerRound="
-				+ unitsPerRound + ", playerId=" + playerId + ", adress=" + adress + ", lobbyId=" + lobbyId + ", unassignedUnits="
-				+ unassignedUnits + ", card1=" + card1 + ", card2=" + card2 + ", card3=" + card3 + "]";
+		String output = String.format("Player\n" +
+				"Id=%d, " +
+				"Name=%s, " +
+				"Farbe=%s, " +
+				"UnitsPerRound=%d\n" +
+				"Länder=[",playerId,
+				name, color, unitsPerRound);
+
+
+		for (Country c : countryList) {
+			output += c.getCountryName();
+			output += ",";
+		}
+		output += "]";
+		return output;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(o.getClass() != this.getClass()) {
+			return false;
+		}
+		Player player = (Player) o;
+		return this.getPlayerId() == player.getPlayerId();
 	}
 
 	public int getUnassignedUnits() {
@@ -149,6 +180,10 @@ public class Player {
 
 	public void setCard3(int card3) {
 		this.card3 = card3;
+	}
+
+	public Lobby getLobby() {
+		return lobby;
 	}
 
 

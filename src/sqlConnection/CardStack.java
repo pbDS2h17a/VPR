@@ -45,7 +45,8 @@ public class CardStack extends Stack<Card>{
 			this.push(orderedCardList.get(index));
 			orderedCardList.remove(index);
 		}
-	}	
+	}
+	
 	
 	/**
 	 * 	Funktion die dem Stapel eine Karte hinzufügt.
@@ -62,4 +63,6 @@ public class CardStack extends Stack<Card>{
 			cs.push(tmp.pop());
 		}		
 	}		
+
+	
 }
