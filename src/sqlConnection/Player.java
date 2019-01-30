@@ -34,6 +34,7 @@ public class Player {
 	 * @param lobby
 	 */
 	public Player(Lobby lobby, int slotId) {
+		System.out.println("Ein Spieler wurde erstellt");
 		this.name = String.format("Spieler %d", slotId);
 		this.countryList = new ArrayList<>();
 		this.lobby = lobby;
@@ -55,7 +56,6 @@ public class Player {
 		this.name = name;
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
-		this.setLobbyId(lobbyId);
 	}
 
 	// Getter und Setter

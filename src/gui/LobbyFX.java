@@ -212,7 +212,7 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param paint Paint
 	 */
-	public void lobbyChangeColor(int slotId, Paint paint) {
+	public void guiChangeColor(int slotId, Paint paint) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
 		triangleArray[slotId].setFill(paint);
 		// Wenn auch schon ein Name übergeben wurde...
@@ -228,7 +228,7 @@ public class LobbyFX {
 	 *
 	 * @param slotId int
 	 */
-	public void lobbyAddPlayer(int slotId) {
+	public void guiAddPlayer(int slotId) {
 		// Aktiviert den Slot und zeigt sein Icon zum entfernen an
 		((Sprite) slotViewArray[slotId]).setActive(true);
 		slotRolesArray[slotId].setVisible(true);
@@ -240,7 +240,7 @@ public class LobbyFX {
 	 *
 	 * @param slotId int
 	 */
-	public void lobbyRemovePlayer(int slotId) {
+	public void guiRemovePlayer(int slotId) {
 		// Deaktiviert den Slot und entfernt sein Icon zum entfernen
 		((Sprite) slotViewArray[slotId]).setActive(false);
 		slotRolesArray[slotId].setVisible(false);

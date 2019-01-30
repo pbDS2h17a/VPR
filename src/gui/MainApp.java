@@ -145,11 +145,8 @@ public class MainApp extends Application {
 			
 			//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	createPlayer();
-//	    	lobbyFX.getLobby().clearPlayers();
-	    	lobbyFX.getLobby().setLobbyLeader(player);
-	    	lobbyFX.lobbyAddPlayer(lobbyFX.getNextSlotId());
-	    	System.out.println("Slot: "+player.getSlotId());
-	    	System.out.println(lobbyFX.getNextSlotId());
+//	    	lobbyFX.getLobby().setLobbyLeader(player);
+//	    	lobbyFX.guiAddPlayer(lobbyFX.getNextSlotId());
 	    });
 	   
 	    // Wenn der Button zum Spiel beitreten gedrückt wird
@@ -165,8 +162,8 @@ public class MainApp extends Application {
 	    	
 	    	//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	createPlayer();
-	    	lobbyFX.getLobby().addPlayer(player);
-	    	lobbyFX.lobbyAddPlayer(lobbyFX.getNextSlotId());
+
+
 	    });
 	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
@@ -217,14 +214,15 @@ public class MainApp extends Application {
 
 	    	lobbyFX.getColorRectArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    		// Farbe des Slots der Person die gedrückt hat wird aktualisiert
-	    		lobbyFX.lobbyChangeColor(lobbyFX.getNextSlotId(), lobbyFX.getColorRectArray()[COUNT].getFill());
+				player.setColor(lobbyFX.getColorRectArray()[COUNT].getFill().toString());
+	    		lobbyFX.guiChangeColor(player.getSlotId(), lobbyFX.getColorRectArray()[COUNT].getFill());
 	    	});
 	    }
 	    
 	    // Wenn auf den Bestätigen-Button neben dem Namens-Eingefeld gedrückt wird
 	    lobbyFX.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Ändert den Namen des Spielers in seinem Slot
-	    	lobbyFX.changePlayerName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
+	    	lobbyFX.changePlayerName(player.getSlotId(), lobbyFX.getInputName().getText());
 	    });
 	    
 	    // Wenn im Namens-Eingabefeld eine Taste gedrückt wird
@@ -244,7 +242,7 @@ public class MainApp extends Application {
 	    	final int COUNT = i;
 
 	    	lobbyFX.getSlotRolesArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    		lobbyFX.lobbyRemovePlayer(COUNT);
+	    		lobbyFX.guiRemovePlayer(COUNT);
 	    	});
 	    }
 	    
@@ -612,6 +610,8 @@ public class MainApp extends Application {
 	 */
 	private void createPlayer() {
 		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
+		lobbyFX.guiAddPlayer(player.getSlotId());
+		lobbyFX.getLobby().addPlayer(player);
 		player.setColor("FFD800");
 		
 		// Erstellt das ChatInterface und positioniert es in der Lobby

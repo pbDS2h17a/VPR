@@ -65,7 +65,7 @@ public class LobbyColorListener extends Thread {
                         // Es wird ein neues Spielerobjekt basierend auf den Datenbank daten erstellt
                         // Beim erstellen eines neuen Spielers wird er automatisch der Lobby hinzugefügt
                         // Datenbankloser Konstruktor da die Db einträge bereits vorhanden sind
-                        new Player(playerId, SqlHelper.getPlayerName(playerId), lobby);
+                        //new Player(playerId, SqlHelper.getPlayerName(playerId), lobby);
                     }
 
                 }

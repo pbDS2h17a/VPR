@@ -25,7 +25,6 @@ public class Lobby {
 
 	public void setLobbyLeader(Player player) {
         SqlHelper.updateLobbyLeader(lobbyId, player.getPlayerId());
-        this.addPlayer(player);
     }
 
     public ArrayList<Player> getPlayers() {
@@ -99,7 +98,9 @@ public class Lobby {
 	{
 		// TODO Auto-generated method stub
 		int nextSlot = players.size();
-		if(nextSlot > 6) return -1;
+		if(nextSlot > 6) {
+		    return -1;
+        }
 		return nextSlot;
 	}
 	
