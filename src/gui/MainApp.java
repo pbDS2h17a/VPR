@@ -528,11 +528,13 @@ public class MainApp extends Application {
 		 ctn_app.relocate(stage.getWidth()/2 - ctn_app.getPrefWidth()/2, stage.getHeight()/2 - ctn_app.getPrefHeight()/2);
 	}
 	
-	public void updateDisplayCountry(Country country, int lobbyId) {
-		System.out.println(country.getCountryName());
-		int units = SqlHelper.getCountryUnits(country.getCountryId(),lobbyId);
-		country.setUnits(units);
-		country.getUnitLabel().setText(String.valueOf(units));
+	public void updateDisplayCountry(Country country, Lobby lobby) {
+		int countryId = country.getCountryId();
+		int lobbyId = lobby.getLobbyId();
+		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
+		country.setOwner(SqlHelper.getCountyOwner(countryId, lobby));
+		country.setUnits(newUnits);
+		country.getUnitLabel().setText(String.valueOf(newUnits));
 		country.setFill(Color.web(country.getOwner().getColor()));
 	}
 	
@@ -555,9 +557,9 @@ public class MainApp extends Application {
 		        	count++;
 		        	
 		        	if(newLastChange > currentLastChange) {
-		        		System.out.print("Änderungen");
+		        		System.out.println("Änderungen");
 		        		for (Country country : matchFX.getCountryArray()) {
-		        			updateDisplayCountry(country,lobbyId);
+		        			updateDisplayCountry(country,lobbyFX.getLobby());
 		        		}
 					
 		                currentLastChange = newLastChange;      

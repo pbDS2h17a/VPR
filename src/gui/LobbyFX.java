@@ -190,19 +190,15 @@ public class LobbyFX {
 	    // manuelles Hinzufügen von spielern
 		Player p1 = new Player("Bob1",lobby,getNextSlotId());
 		p1.setColor("EF4CE7");
-		markSlotAsUsed();
 
 		Player p2 = new Player("Bob2",lobby,getNextSlotId());
 		p2.setColor("000000");
-		markSlotAsUsed();
 
 		Player p3 = new Player("Bob3",lobby,getNextSlotId());
 		p3.setColor("0066ED");
-		markSlotAsUsed();
 
 		Player p4 = new Player("Bob4",lobby,getNextSlotId());
 		p4.setColor("26BF00");
-		markSlotAsUsed();
 
 //		Player p5 = new Player("Bob5",lobby,getNextSlotId());
 //		p5.setColor("C42B2B");
@@ -234,10 +230,6 @@ public class LobbyFX {
 	public int getNextSlotId() {
 		return slotIdList.get(0);
 
-	}
-
-	public void markSlotAsUsed() {
-		slotIdList.remove(0);
 	}
 
 	public void addSlot(int slotId) {
