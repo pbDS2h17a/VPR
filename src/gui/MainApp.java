@@ -1,7 +1,5 @@
 package gui;
 
-import java.util.ArrayList;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -14,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import network.ChatInterface;
 import sqlConnection.Country;
@@ -42,7 +41,8 @@ public class MainApp extends Application {
 	private boolean toPane = false;
 	private Scene scene = new Scene(app);
 	private boolean listen = false;
-    
+	private Player player;
+
     // Spiel-Oberflächen
 	private TitleFX titleFX = new TitleFX();
     private LobbyFX lobbyFX = new LobbyFX();
@@ -138,18 +138,21 @@ public class MainApp extends Application {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
 	    	// Debug ausgabe Lobby ID
-			System.out.println("Neue Lobby erstellt, ID:"+lobbyFX.getLobby().getLobbyId());
+			System.out.println(lobbyFX.getLobby().getLobbyId());
 
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
-	    	listen = true;
+	    	
 	    	// Sound für den gedrückten Button wird abgespielt
 			mpFX.playBtnSFX();
 			
-			// Erstellt das ChatInterface und positioniert es in der Lobby
-			chatFX = new ChatInterface(1,1);
-			chatFX.getPane().relocate(63, 550);
-			ctnApp.getChildren().add(chatFX.getPane());
+			//Lobby leeren
+			lobbyFX.getLobby().clearPlayers();
+
+			//Spieler-Objekt und Chat-Objekt werden erstellt
+	    	createPlayer();
+//	    	lobbyFX.getLobby().setLobbyLeader(player);
+//	    	lobbyFX.guiAddPlayer(lobbyFX.getNextSlotId());
 	    });
 	   
 	    // Wenn der Button zum Spiel beitreten gedrückt wird
@@ -162,6 +165,11 @@ public class MainApp extends Application {
 	    	
 	    	// Sound für den gedrückten Button wird abgespielt
 	    	mpFX.playBtnSFX();
+
+	    	//Spieler-Objekt und Chat-Objekt werden erstellt
+	    	createPlayer();
+
+
 	    });
 	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
@@ -189,7 +197,8 @@ public class MainApp extends Application {
 				paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
 				
 				// ...wird zur Weltkarte gewechselt positioniert sich der Chat neu
-				chatFX.getPane().relocate(1650, 600);
+				chatFX.getPane().relocate(1580, 460);
+				chatFX.getPane().setPrefWidth(300);
 				
 				/*
 				 * Sound für den gedrückten Button wird abgespielt
@@ -200,7 +209,6 @@ public class MainApp extends Application {
 				mpFX.playBgmGame();
 				
 				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-				new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId()).setColor("FFD800");
 				matchFX.initializeMatch(lobbyFX);
 				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
 	    	}
@@ -212,14 +220,19 @@ public class MainApp extends Application {
 
 	    	lobbyFX.getColorRectArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    		// Farbe des Slots der Person die gedrückt hat wird aktualisiert
-	    		lobbyFX.lobbyChangeColor(lobbyFX.getNextSlotId(), lobbyFX.getColorRectArray()[COUNT].getFill());
+				String value = lobbyFX.getColorRectArray()[COUNT].getFill().toString();
+
+				value = value.substring(2,8);
+				System.out.println("Farbe:"+value);
+				player.setColor(value);
+	    		lobbyFX.guiChangeColor(player.getSlotId(), lobbyFX.getColorRectArray()[COUNT].getFill());
 	    	});
 	    }
 	    
 	    // Wenn auf den Bestätigen-Button neben dem Namens-Eingefeld gedrückt wird
 	    lobbyFX.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Ändert den Namen des Spielers in seinem Slot
-	    	lobbyFX.lobbyChangeName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
+	    	lobbyFX.changePlayerName(player.getSlotId(), lobbyFX.getInputName().getText());
 	    });
 	    
 	    // Wenn im Namens-Eingabefeld eine Taste gedrückt wird
@@ -227,7 +240,7 @@ public class MainApp extends Application {
 	    	// Wenn diese Taste "Enter" ist...
 	    	if (event.getCode() == KeyCode.ENTER) {
 	    		// ...wird der Name des Spielers in seinem Slot geändert
-	    		lobbyFX.lobbyChangeName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
+	    		lobbyFX.changePlayerName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
 	    	}
 
 	    });
@@ -239,7 +252,7 @@ public class MainApp extends Application {
 	    	final int COUNT = i;
 
 	    	lobbyFX.getSlotRolesArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    		lobbyFX.lobbyRemovePlayer(COUNT);
+	    		lobbyFX.guiRemovePlayer(COUNT);
 	    	});
 	    }
 	    
@@ -539,17 +552,17 @@ public class MainApp extends Application {
 		country.setFill(Color.web(country.getOwner().getColor()));
 		country.getRectangle().setFill(country.getFill());
 	}
-	
+
 	/**
 	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
 	 */
 	public void gameLoop() {
 		new AnimationTimer() {
-			
+
 			private int count = 0;
 			private int lobbyId = lobbyFX.getLobby().getLobbyId();
-			private long currentLastChange = SqlHelper.getLastChange(lobbyId);	
-			
+			private long currentLastChange = SqlHelper.getLastChange(lobbyId);
+
 	        public void handle(long currentNanoTime) {
 	        	if(listen) {
 	        		long newLastChange = SqlHelper.getLastChange(lobbyId);
@@ -565,10 +578,10 @@ public class MainApp extends Application {
 						}
 		        	}
 		        	count++;
-		        	
+
 
 	        	}
-		    	
+
 
 	            // Wir erhalten eine Liste welches die IDs aller Spieler enthählt,
 	            // die sich zurzeit in der lobby befinden
@@ -578,8 +591,8 @@ public class MainApp extends Application {
 
 	            // Wenn die DB lastChange größer als der aktuelle Wert ist
 	            // gab es eine änderung in der DB
-	            
-	        	
+
+
 	        	// Wenn das Logo animiert werden soll...
 	        	if(titleFX.isLogoAnimated()) {
 	        		/*
@@ -643,6 +656,23 @@ public class MainApp extends Application {
 	            }
 	        }
 	    });
+	}
+
+
+	/**
+	 * Erstellt ein Player-Objekt und ein zugehöriges Chat-Interface
+	 * @author pbs2h17asc
+	 */
+	private void createPlayer() {
+		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
+		lobbyFX.guiAddPlayer(player.getSlotId());
+		lobbyFX.getLobby().addPlayer(player);
+		player.setColor("FFD800");
+
+		// Erstellt das ChatInterface und positioniert es in der Lobby
+		chatFX = new ChatInterface(player);
+		ctnApp.getChildren().add(chatFX.getPane());
+		chatFX.getPane().relocate(42, 420);
 	}
 
 }

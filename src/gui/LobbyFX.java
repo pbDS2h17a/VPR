@@ -13,7 +13,6 @@ import javafx.scene.shape.StrokeType;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
-import updateThread.LobbyJoinListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,14 +26,6 @@ public class LobbyFX {
 	// Globale Variablen
 	private Pane ctn = new Pane();
     private Lobby lobby = new Lobby();
-    private ArrayList<Integer> slotIdList = new ArrayList<Integer>(){{
-		add(0);
-		add(1);
-		add(2);
-		add(3);
-		add(4);
-		add(5);
-	}};
 	private ImageView[] slotViewArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
     private TextField inputName = new TextField();
     private Group groupColors = new Group();
@@ -187,53 +178,10 @@ public class LobbyFX {
 	    }
 	    ctn.getChildren().add(groupRoles);
 
-	    // manuelles Hinzufügen von spielern
-		Player p1 = new Player("Bob1",lobby,getNextSlotId());
-		p1.setColor("EF4CE7");
-
-		Player p2 = new Player("Bob2",lobby,getNextSlotId());
-		p2.setColor("000000");
-
-		Player p3 = new Player("Bob3",lobby,getNextSlotId());
-		p3.setColor("0066ED");
-
-		Player p4 = new Player("Bob4",lobby,getNextSlotId());
-		p4.setColor("26BF00");
-
-//		Player p5 = new Player("Bob5",lobby,getNextSlotId());
-//		p5.setColor("C42B2B");
-//		markSlotAsUsed();
-
-		initalizePlayer(p1);
-
-		initalizePlayer(p2);
-
-		initalizePlayer(p3);
-
-		initalizePlayer(p4);
-
-//		initalizePlayer(p5);
-
-		lobbyAddPlayer(getNextSlotId());
-
-//		LobbyJoinListener listener = new LobbyJoinListener(lobby);
-//		listener.setRunning(true);
-//		listener.start();
-	}
-
-	private void initalizePlayer(Player player) {
-		lobbyAddPlayer(player.getSlotId());
-		lobbyChangeName(player.getSlotId(), player.getName());
-		lobbyChangeColor(player.getSlotId(), this.getColorRectArray()[player.getSlotId()].getFill());
 	}
 
 	public int getNextSlotId() {
-		return slotIdList.get(0);
-
-	}
-
-	public void addSlot(int slotId) {
-		slotIdList.add(slotId);
+		return this.lobby.getNextSlotId();
 	}
 
 	/**
@@ -242,11 +190,12 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param name String
 	 */
-	public void lobbyChangeName(int slotId, String name) {
+	public void changePlayerName(int slotId, String name) {
 		// Wenn kein leerer String übergeben wurde...
-		if(!name.isEmpty()) {
+		if(!name.isEmpty() && name != null) {
 			// ...wird der Name gesetzt
 			labelArray[slotId].setText(name);
+			lobby.changePlayerName(slotId, name);
 			// Wenn der Slot auch schon eine Farbe hat...
 			if(triangleArray[slotId].getFill() != Color.GREY) {
 				// ...wird der Bereit-Button aktiviert
@@ -255,7 +204,6 @@ public class LobbyFX {
 
 			}
 		}
-
 	}
 	
 	/**
@@ -264,7 +212,7 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param paint Paint
 	 */
-	public void lobbyChangeColor(int slotId, Paint paint) {
+	public void guiChangeColor(int slotId, Paint paint) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
 		triangleArray[slotId].setFill(paint);
 		// Wenn auch schon ein Name übergeben wurde...
@@ -280,7 +228,7 @@ public class LobbyFX {
 	 *
 	 * @param slotId int
 	 */
-	public void lobbyAddPlayer(int slotId) {
+	public void guiAddPlayer(int slotId) {
 		// Aktiviert den Slot und zeigt sein Icon zum entfernen an
 		((Sprite) slotViewArray[slotId]).setActive(true);
 		slotRolesArray[slotId].setVisible(true);
@@ -292,7 +240,7 @@ public class LobbyFX {
 	 *
 	 * @param slotId int
 	 */
-	public void lobbyRemovePlayer(int slotId) {
+	public void guiRemovePlayer(int slotId) {
 		// Deaktiviert den Slot und entfernt sein Icon zum entfernen
 		((Sprite) slotViewArray[slotId]).setActive(false);
 		slotRolesArray[slotId].setVisible(false);
@@ -300,8 +248,6 @@ public class LobbyFX {
 		// Entfernt die Farbe und den Namen des zu löschenden Spielers
 		triangleArray[slotId].setFill(Color.GREY);
 		labelArray[slotId].setText(null);
-		addSlot(slotId);
-
 	}
 
 	/**
