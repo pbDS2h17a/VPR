@@ -24,7 +24,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
-			 "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azztest","pbs2h17azz","Bib12345"
+			 "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	};
 
 	/**
@@ -401,7 +401,7 @@ public class SqlHelper {
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
-			return rs.getInt("card_id");
+			return rs.getInt("value");
 		} catch (SQLException e) {
 			System.out.println("getCardValue");
 			e.printStackTrace();

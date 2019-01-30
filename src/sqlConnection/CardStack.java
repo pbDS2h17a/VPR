@@ -4,28 +4,49 @@ import java.sql.SQLException;
 import java.util.Stack;
 import java.util.ArrayList;
 
-public class CardStack{	
-	
-	
-	public ArrayList<Card> fillCardList()throws SQLException{
+
+public class CardStack extends Stack<Card>{	
+
+	public CardStack() {
+		this.fillCardStack();
+	}
+
+	public ArrayList<Card> fillCardList(){
 		ArrayList<Card>Cards = new ArrayList<Card>();
 		for (int i = 1; i <= 42; i++) {
-			Cards.add(new Card(i));
+			try{
+				Cards.add(new Card(i));
+			}catch (SQLException SE){
+				
+			}
+			
 		}		
 		return Cards;
 	}
 	
-	public Stack <Card> fillCardStack()throws SQLException{
-		Stack <Card> CardStack = new Stack<>();
+	public void fillCardStack(){
+		
 		ArrayList<Card> orderedCardList = fillCardList();
 		
 		while (orderedCardList.size()>0){
 			int index = (int)(Math.random()*orderedCardList.size());	
 					
-			CardStack.push(orderedCardList.get(index));
+			this.push(orderedCardList.get(index));
 			orderedCardList.remove(index);
 		}
-		return CardStack;
 	}	
+	
+	public Card takeAndRemoveCard(String countryName, Stack <Card> shuffledStack){
+		Card takedCard = null;
+		for (Card card : shuffledStack) {
+			if(card.getCountryName().equals(countryName)){
+				takedCard = card;
+				shuffledStack.remove(card);
+				break;
+			}			
+		}
+		return takedCard;
+	}
+	
 	
 }

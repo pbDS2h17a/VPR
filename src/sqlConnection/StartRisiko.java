@@ -1,6 +1,7 @@
 package sqlConnection;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.sql.SQLException;
 import java.util.Stack;
 
@@ -20,17 +21,17 @@ public class StartRisiko
 
 
 		CardStack cs = new CardStack();
-		ArrayList <Card> arr = cs.fillCardList();
-		for (Card card : arr) {
+		
+		for (Card card : cs) {
 			System.out.println(card);
 		}
-				System.out.println();		
-		Stack<Card> Cards = cs.fillCardStack();
-		System.out.println(Cards.size());
-		for (Card card : Cards) {
-			System.out.println(card);
 		
-
+		Card test = cs.pop();
+		cs.push(test);
+		System.out.println();
+	
+		for (Card card : cs) {
+			System.out.println(card);
 		}
 		//System.out.println(cs);			
 		            

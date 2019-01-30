@@ -12,6 +12,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import sqlConnection.Card;
+import sqlConnection.CardStack;
 import sqlConnection.Country;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
@@ -21,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * @author Daniels, Kevin
@@ -417,6 +420,8 @@ public class MatchFX {
 		int userCount;
 		
 		ArrayList<Country> countryList = new ArrayList<Country>(Arrays.asList(countryArray));
+		CardStack cs = new CardStack();		
+		
 		
 		// Erstellen der Testspieler
 		Player p1 = new Player("Bob1", lobbyId);
