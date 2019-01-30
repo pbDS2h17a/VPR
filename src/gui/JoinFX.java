@@ -1,5 +1,7 @@
 package gui;
 
+import java.sql.SQLException;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;

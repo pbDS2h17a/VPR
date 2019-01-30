@@ -25,15 +25,7 @@ public class LobbyFX {
 
 	// Globale Variablen
 	private Pane ctn = new Pane();
-    private Lobby lobby = new Lobby();;
-    private ArrayList<Integer> slotIdList = new ArrayList<Integer>(){{
-		add(0);
-		add(1);
-		add(2);
-		add(3);
-		add(4);
-		add(5);
-	}};
+    private Lobby lobby = new Lobby();
 	private ImageView[] slotViewArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
     private TextField inputName = new TextField();
     private Group groupColors = new Group();
@@ -186,57 +178,10 @@ public class LobbyFX {
 	    }
 	    ctn.getChildren().add(groupRoles);
 	    
-		 // manuelles Hinzufügen von spielern
-		Player p1 = new Player("Bob1",lobby,getNextSlotId());
-		p1.setColor("EF4CE7");
-		markSlotAsUsed();
-	
-		Player p2 = new Player("Bob2",lobby,getNextSlotId());
-		p2.setColor("000000");
-		markSlotAsUsed();
-	
-		Player p3 = new Player("Bob3",lobby,getNextSlotId());
-		p3.setColor("0066ED");
-		markSlotAsUsed();
-	
-		Player p4 = new Player("Bob4",lobby,getNextSlotId());
-		p4.setColor("26BF00");
-		markSlotAsUsed();
-	
-		Player p5 = new Player("Bob5",lobby,getNextSlotId());
-		p5.setColor("C42B2B");
-		markSlotAsUsed();
-	
-		initalizePlayer(p1);
-	
-		initalizePlayer(p2);
-	
-		initalizePlayer(p3);
-	
-		initalizePlayer(p4);
-	
-		initalizePlayer(p5);
-	
-		lobbyAddPlayer(getNextSlotId());
-	}
-
-	private void initalizePlayer(Player player) {
-		lobbyAddPlayer(player.getSlotId());
-		changePlayerName(player.getSlotId(), player.getName());
-		lobbyChangeColor(player.getSlotId(), this.getColorRectArray()[player.getSlotId()].getFill());
 	}
 
 	public int getNextSlotId() {
-		return slotIdList.get(0);
-
-	}
-
-	public void markSlotAsUsed() {
-		slotIdList.remove(0);
-	}
-
-	public void addSlot(int slotId) {
-		slotIdList.add(slotId);
+		return this.lobby.getNextSlotId();
 	}
 
 	/**
@@ -259,7 +204,6 @@ public class LobbyFX {
 
 			}
 		}
-
 	}
 	
 	/**
@@ -304,8 +248,6 @@ public class LobbyFX {
 		// Entfernt die Farbe und den Namen des zu löschenden Spielers
 		triangleArray[slotId].setFill(Color.GREY);
 		labelArray[slotId].setText(null);
-		addSlot(slotId);
-
 	}
 
 	/**

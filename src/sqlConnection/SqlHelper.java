@@ -22,7 +22,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azzTest","pbs2h17azz","Bib12345"
 			};
 
 	//###################################################################################################################
@@ -88,17 +88,18 @@ public class SqlHelper {
 	 * @author Nick Kuhn
 	 */
 	public static String getLeaderName (int lobbyId) throws SQLException, ClassNotFoundException {
-		String queryGetLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d", lobbyId);
+		/*String queryGetLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d", lobbyId);
 		List<List<String>> listWithLeaderId = ResultSetManager.toList(getStatement().executeQuery(queryGetLeader));
-		
-		if (listWithLeaderId.get(0).size() == 1) {
-			int leaderId = Integer.parseInt(listWithLeaderId.get(0).get(0));
-			System.out.println("getLeaderName() successfull.");
-			return getPlayerName(leaderId);
-		}
-		else {
-			System.out.println("getLeaderName(). Error!.");
-		}
+		if(listWithLeaderId != null) {
+			if (listWithLeaderId.get(0).size() == 1) {
+				int leaderId = Integer.parseInt(listWithLeaderId.get(0).get(0));
+				System.out.println("getLeaderName() successfull.");
+				return getPlayerName(leaderId);
+			}
+			else {
+				System.out.println("getLeaderName(). Error!.");
+			}
+		}*/
 		return "Dummy";	
 	}
 
@@ -489,6 +490,7 @@ public class SqlHelper {
 	 */
 	public static int insertPlayer(String name, int lobbyId) {
 		String query = String.format("INSERT INTO player (name, lobby_id) VALUES('%s', %d);", name, lobbyId);
+		System.out.println(lobbyId);
 		Statement stmt = SqlHelper.getStatement();
 		int id = -1;
 		try {

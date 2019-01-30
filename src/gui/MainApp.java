@@ -37,6 +37,7 @@ public class MainApp extends Application {
     private Pane ctnApp = new Pane();
 	private boolean toPane = false;
 	private Scene scene = new Scene(app);
+	private Player player;
     
     // Spiel-Oberflächen
 	private TitleFX titleFX = new TitleFX();
@@ -91,8 +92,7 @@ public class MainApp extends Application {
 	    	resizeThat(stage, ctnApp);
 
 		stage.widthProperty().addListener(stageSizeListener);
-		stage.heightProperty().addListener(stageSizeListener); 
-		
+		stage.heightProperty().addListener(stageSizeListener);
 		// Setzt den Titel für die Anwendung in die Scene und startet sie in der Main
 		stage.setTitle("CONQUER | All risk all fun");
 		scene.getStylesheets().add("resources/style.css");
@@ -142,8 +142,14 @@ public class MainApp extends Application {
 	    	// Sound für den gedrückten Button wird abgespielt
 			mpFX.playBtnSFX();
 			
+			//Lobby leeren
+			lobbyFX.getLobby().clearPlayers();
+			
 			//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	createPlayer();
+//	    	lobbyFX.getLobby().clearPlayers();
+	    	lobbyFX.getLobby().setLobbyLeader(player.getPlayerId());
+	    	lobbyFX.lobbyAddPlayer(lobbyFX.getNextSlotId());
 	    });
 	   
 	    // Wenn der Button zum Spiel beitreten gedrückt wird
@@ -159,6 +165,8 @@ public class MainApp extends Application {
 	    	
 	    	//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	createPlayer();
+	    	lobbyFX.getLobby().addPlayer(player);
+	    	lobbyFX.lobbyAddPlayer(lobbyFX.getNextSlotId());
 	    });
 	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
@@ -198,12 +206,6 @@ public class MainApp extends Application {
 				mpFX.playBgmGame();
 				
 				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-//				Player player = new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId());
-//				player.setColor("FFD800");
-//				chatFX.setLid(player.getLobbyId());
-//				chatFX.setPid(player.getPlayerId());
-//				System.out.println("Lobby: "+player.getLobbyId());
-//				System.out.println("Player: "+player.getPlayerId());
 				matchFX.initializeMatch(lobbyFX);
 				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
 	    	}
@@ -609,7 +611,7 @@ public class MainApp extends Application {
 	 * @author pbs2h17asc
 	 */
 	private void createPlayer() {
-		Player player = new Player(lobbyFX.getInputName().getText(),lobbyFX.getLobby(),lobbyFX.getNextSlotId());
+		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
 		player.setColor("FFD800");
 		
 		// Erstellt das ChatInterface und positioniert es in der Lobby

@@ -31,11 +31,10 @@ public class Player {
 	 * Konstruktor fürs erstmalige Erstellen eines Spielers beim beitreten bzw erstellen einer Lobby
 	 * Die Daten werden sowohl in Java und der Datenbank gespeichert
 	 * playerId wird durch Autoincrement erzeugt und aus der Datenbank gelesen
-	 * @param name
 	 * @param lobby
 	 */
-	public Player(String name, Lobby lobby, int slotId) {
-		this.name = name;
+	public Player(Lobby lobby, int slotId) {
+		this.name = String.format("Spieler %d", slotId);
 		this.countryList = new ArrayList<>();
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
@@ -43,7 +42,7 @@ public class Player {
 		// Spieler in Db einfügen
 		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
 		// Spieler in Lobby einfügen
-		lobby.addPlayer(this);
+		//lobby.addPlayer(this);
 	}
 
 	/**
@@ -59,7 +58,7 @@ public class Player {
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
 		this.setLobbyId(lobbyId);
-		lobby.addPlayer(this);
+		//lobby.addPlayer(this);
 	}
 
 	// Getter und Setter

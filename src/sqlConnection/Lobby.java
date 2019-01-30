@@ -10,6 +10,7 @@ public class Lobby {
     private final int MAX_PLAYER_COUNT;
     private ArrayList<Player> players;
     private int lobbyId;
+    private int leaderId;
 
     public Lobby() {
         this.MAX_PLAYER_COUNT = 6;
@@ -17,8 +18,14 @@ public class Lobby {
         this.lobbyId = SqlHelper.insertLobby();
     }
 
-    public void setLobbyLeader(int playerId) {
+    public int getLeaderId()
+	{
+		return leaderId;
+	}
+
+	public void setLobbyLeader(int playerId) {
         SqlHelper.updateLobbyLeader(lobbyId, playerId);
+        this.addPlayer(getPlayer(playerId), 0);
     }
 
     public ArrayList<Player> getPlayers() {
@@ -46,6 +53,16 @@ public class Lobby {
     public void addPlayer(Player player) {
         if (players.size() < MAX_PLAYER_COUNT) {
             players.add(player);
+            System.out.println(player);
+        }
+    }
+    
+    public void addPlayer(Player player, int slotId) {
+        if(this.players.size() <= slotId) {
+        	this.players.add(player);
+        }
+        else {
+        	this.players.set(slotId, player);
         }
     }
 
@@ -83,4 +100,25 @@ public class Lobby {
     public void changePlayerName(int slot_id, String newPlayerName) {
     	SqlHelper.updatePlayerName(players.get(slot_id).getPlayerId(), newPlayerName);
     }
+
+	/**
+	 * @return nächster freier Slot in der Spielerliste. Wenn kein Slot frei ist, -1.
+	 */
+	public int getNextSlotId()
+	{
+		System.out.println("In der Methode:");
+		System.out.println(players);
+		// TODO Auto-generated method stub
+		int nextSlot = players.size();
+		if(nextSlot > 6) return -1;
+		System.out.println(nextSlot);
+		return nextSlot;
+	}
+	
+	/**
+	 * Löscht alle Spieler aus der Lobby
+	 */
+	public void clearPlayers() {
+		this.players.clear();
+	}
 }

@@ -11,7 +11,7 @@ public class ResultSetManager
 	{
 		List<List<String>> set;
 		
-		try { r.next(); } 
+		try { if(!r.next()) throw new SQLException(); } 
 		catch (SQLException s) { return null; }
 		
 		set = new ArrayList<>();
@@ -20,8 +20,9 @@ public class ResultSetManager
 		List<String> zeile = new ArrayList<>();
 		int length = 1;
 		while(true) {
-			try { zeile.add(r.getString(length).trim()); length++; }
+			try { zeile.add(r.getString(length)); length++; }
 			catch (SQLException s) { break; }
+			catch (NullPointerException n) { System.out.println("???"); break;}
 		}
 		
 		if(length == 1 && zeile.size() == 0) {return null;}
