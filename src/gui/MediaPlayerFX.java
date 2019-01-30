@@ -4,64 +4,55 @@ import javafx.scene.Group;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 
+
+/**
+ * Beinhaltet alle visuellen Komponenten für den MediaPlayer
+ * 
+ * @author Nam-Max Liebner
+ */
 public class MediaPlayerFX {
 	
-
-	/**
-	 * Hintergrundmusik
-	 * @param menuBackgroundMusic	 		: Sounds
-	 * @param gameBackgroundMusic		 	: Sounds
-	 * 
-	 * Button-Sounds
-	 * @param menuClick	 					: Sounds
-	 * @param menuHover 					: Sounds
-	 * 
-	 * Volume-Slider
-	 * @param volumeSlider		 			: Slider
-	 * 
-	 * Buttons Deklaration
-	 * @param title_btn_play_mediaPlayer	: Sprite
-	 * @param title_btn_stop_mediaPlayer 	: Sprite
-	 * 
-	 * MediaPlayer-Gruppe
-	 * @param mediaPlayerGroup		 		: Group
-	 */
-	
+	// Globale Variablen
 	// Hintergrundmusik
-	static Sounds menuBackgroundMusic = new Sounds("resources/Mechanolith.mp3");
+	Sounds menuBackgroundMusic = new Sounds("resources/Mechanolith.mp3");
 	Sounds gameBackgroundMusic = new Sounds("resources/FinalBattleoftheDarkWizards.mp3");
 	
-	//Button-Sounds
+	// Button-Sounds
 	Sounds menuClick = new Sounds("resources/menuClick.wav");
 	static Sounds menuHover = new Sounds("resources/menuHover.wav");
 	
-	// Volume-Slider.
-	static Slider volumeSlider;
+	// Volume-Slider
+	Slider volumeSlider;
 	
-	// Buttons Deklaration.
+	// Panethumb für den Sliderthumb
+	Pane paneThumb;
+	
+	// Sprite als Sliderthumb (liegt in der Panethumb)
+	Sprite thumb = new Sprite("resources/btn_lobby_host.png");
+	
+	// Button-Play
 	Sprite title_btn_play_mediaPlayer;
+	// Button-Stop
 	Sprite title_btn_stop_mediaPlayer;
 	
-	// MediaPlayer-Gruppe.
+	// MediaPlayer-Komponentengruppe
 	Group mediaPlayerGroup;
 	
 	public MediaPlayerFX() {
-		// Erstellt Mediaplayer Gruppe (inkludiert Buttons und Slider für Mediaplayer).
+		// Erstellt Mediaplayer Gruppe (inkludiert alle Komponenten für den Mediaplayer).
 		mediaPlayerGroup = new Group();
 		// Position der Mediaplayer Gruppe.
 		mediaPlayerGroup.relocate(0, 940);
 		
-		/**
-		 * MediaPlayer - Play Button.
-		 */
-		// Button-Image Source für Sprite.
+		// PlayButton-View
+		//  Button-Image Source für Sprite.
 		title_btn_play_mediaPlayer = new Sprite("resources/play_button.png");
-		// Sprite deklariert als Button.
+		//  Aktiviert die Spriteeigenschaft für Button
 		title_btn_play_mediaPlayer.setButtonMode(true);
-		// Skaliert Buttongröße.
+		//  Skaliert Buttongröße.
 		title_btn_play_mediaPlayer.setScaleX(.25);
 		title_btn_play_mediaPlayer.setScaleY(.25);
-		// Button Position.
+		//  Button Position.
 		title_btn_play_mediaPlayer.relocate(0, 0);
 		mediaPlayerGroup.getChildren().add(title_btn_play_mediaPlayer);
 		
@@ -70,7 +61,7 @@ public class MediaPlayerFX {
 		 */
 		// Button-Image Source für Sprite
 		title_btn_stop_mediaPlayer = new Sprite("resources/stop_button.png");
-		// Sprite deklariert als Button
+		// Aktiviert die Spriteeigenschaft für Button
 		title_btn_stop_mediaPlayer.setButtonMode(true);
 		// Skaliert Buttongröße
 		title_btn_stop_mediaPlayer.setScaleX(.25);
@@ -78,50 +69,76 @@ public class MediaPlayerFX {
 		// Button Position
 		title_btn_stop_mediaPlayer.relocate(40, 0);
 		mediaPlayerGroup.getChildren().addAll(title_btn_stop_mediaPlayer);
-		// Volume Slider (min Wert, max Wert, aktueller Standard-Wert beim Start)
+		/**
+		 * MediaPlayer - Volume Slider
+		 */
+		// Aktiviert die Spriteeigenschaft für Button
+		thumb.setButtonMode(true);
+		// Erzeugt Lautstärke-Slider
 		volumeSlider = new Slider(0, 10, 1);
+		// Position für den Slider in der MediaPlayerGruppe.
+		volumeSlider.relocate(150, 50);
 		mediaPlayerGroup.getChildren().add(volumeSlider);
 		
 	}
 	
-	public static void addVolumeSliderThumb(){
-		
-		Sprite thumb = new Sprite("resources/game_icon_units.png");
-		Pane thumbPane = (Pane) MediaPlayerFX.getSlider().lookup(".thumb");
-		thumbPane.setStyle("-fx-background-image:url('resources/game_icon_units.png');-fx-background-color:red");
-		//thumbPane.getChildren().add(thumb);
-	}
-	
 	/**
-	 * @return mediaPlayerGroup : Group
 	 * gibt den Container für Mediaplayer Elemente zurück
+	 * 
+	 * @return mediaPlayerGroup : Group
 	 */
 	public Group getContainer() {
 		return mediaPlayerGroup;
 	}
 	
+	
 	/**
-	 * @return title_btn_play_mediaPlayer : Sprite
+	 * übergibt den Sliderthumb
+	 */
+	public void sliderThumbChange() {
+		// Sprite wird der Pane übergeben.
+  		paneThumb.getChildren().addAll(thumb);
+  		// Pane wird skaliert (kleiner, damit die Klickfläche innerhalb der Sprite ist).
+  		paneThumb.setScaleX(.15);
+  		paneThumb.setScaleY(.15);
+  		// Sprite wird skaliert (größer, damit die Visualisierung außerhalb der Pane ist).
+  		thumb.setScaleX(5);
+  		thumb.setScaleY(5);
+	}
+	
+	/**
 	 * gibt die Play-Button Sprite zurück
+	 * 
+	 * @return title_btn_play_mediaPlayer : Sprite
 	 */
 	public Sprite getPlayBtn() {
 		return title_btn_play_mediaPlayer;
 	}
 	
 	/**
-	 * @return title_btn_stop_mediaPlayer : Sprite
 	 * gibt die Stop-Button Sprite zurück
+	 * 
+	 * @return title_btn_stop_mediaPlayer : Sprite
 	 */
 	public Sprite getStopBtn() {
 		return title_btn_stop_mediaPlayer;
 	}
 	
+
 	/**
-	 * @return volumeSlider : Slider
 	 * gibt den Volume Slider zurück
+	 * 
+	 * @return volumeSlider : Slider
 	 */
-	public static Slider getSlider() {
+	public Slider getSlider() {
 		return volumeSlider;
+	}
+	
+	/**
+	 * Spielt Sound für den Play-Button ab
+	 */
+	public void playBtnSFX() {
+		menuClick.play();
 	}
 	
 	/**

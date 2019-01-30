@@ -28,10 +28,10 @@ public class GameMechanics {
 	private MatchFX match;
 	private Country countryA = null;
 	private Country countryB = null;
-	private boolean assign = true;
-	private boolean add = false;
-	private boolean fight = false;
-	private boolean move = false;
+	private boolean isAssigning = true;
+	private boolean isAdding = false;
+	private boolean isFighting = false;
+	private boolean isMoving = false;
 	private int activePlayerIndex;
 	private int battleUnitsA;
 	private int battleUnitsB;
@@ -63,7 +63,7 @@ public class GameMechanics {
 	 */
 	public void manageCountryClick(int index) {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...
-		if(isAssign()) {
+		if(isAssigning()) {
 			// Wenn einem das Land gehört...
 			if(isOwnLand(match.getCountryArray()[index])) {
 				// ...werden die ungesetzten Einheiten um eins reduziert
@@ -84,7 +84,7 @@ public class GameMechanics {
 		}
 		
 		// Wenn man in der 1. Phase (setzen) steckt...
-		else if(isAdd()) {
+		else if(isAdding()) {
 			// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
 			if(isOwnLand(match.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
 				// ...wird ein Spieler aus dem Inventar verschoben...
@@ -96,7 +96,7 @@ public class GameMechanics {
 		}
 		
 		// Wenn man in der 2. Phase (kämpfen) steckt...
-		else if(isFight()) {
+		else if(isFighting()) {
 			// Wenn noch nicht das erste Land ausgewählt wurde...
 			if(getCountryA() == null) {
 				// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
@@ -116,7 +116,7 @@ public class GameMechanics {
 		}
 		
 		// Wenn man in der 3. Phase (bewegen) steckt...
-		else if(isMove()) {
+		else if(isMoving()) {
 			// Wenn es das eigene Land ist...
 			if(isOwnLand(match.getCountryArray()[index])) {
 				// Wenn noch nicht das erste Land ausgewählt wurde...
@@ -145,12 +145,12 @@ public class GameMechanics {
 		}
 		
 		// Wenn man alle Einheiten in der 0. Phase (einzeln setzen) verteilt hat...
-		if(isAssign() && isFinishedAssigning()) {
+		if(isAssigning() && isFinishedAssigning()) {
 			// ...erhält der erste Spieler seine Einheiten pro Runde
 			getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() + getActivePlayer().getUnitsPerRound());
 			// ...wird die 0. Phase beendet und die 1. Phase begonnen
-			this.assign = false;
-			this.add = true;
+			this.isAssigning = false;
+			this.isAdding = true;
 			phaseAdd();
 		}
 		
@@ -239,9 +239,9 @@ public class GameMechanics {
 	 */
 	public void phaseAdd() {
 		// Startet die 1. Phase und deaktiviert alle anderen
-		this.add = true;
-		this.fight = false;
-		this.move = false;
+		this.isAdding = true;
+		this.isFighting = false;
+		this.isMoving = false;
 		this.match.editPhaseButtons(false, true, true, true);
 		// Aktualisiert das Spieler-Interface
 		updatePlayerInterface(this.getActivePlayer());
@@ -252,9 +252,9 @@ public class GameMechanics {
 	 */
 	public void phaseFight() {
 		// Startet die 2. Phase und deaktiviert alle anderen
-		this.add = false;
-		this.fight = true;
-		this.move = false;
+		this.isAdding = false;
+		this.isFighting = true;
+		this.isMoving = false;
 		this.match.editPhaseButtons(false, false, true, true);
 		// Aktualisiert das Spieler-Interface
 		updatePlayerInterface(this.getActivePlayer());
@@ -265,9 +265,9 @@ public class GameMechanics {
 	 */
 	public void phaseMove() {
 		// Startet die 3. Phase und deaktiviert alle anderen
-		this.add = false;
-		this.fight = false;
-		this.move = true;
+		this.isAdding = false;
+		this.isFighting = false;
+		this.isMoving = true;
 		this.match.editPhaseButtons(false, false, false, true);
 		// Aktualisiert das Spieler-Interface
 		updatePlayerInterface(this.getActivePlayer());
@@ -610,8 +610,8 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isAssign() {
-		return assign;
+	public boolean isAssigning() {
+		return isAssigning;
 	}
 	
 	/**
@@ -619,8 +619,8 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isAdd() {
-		return add;
+	public boolean isAdding() {
+		return isAdding;
 	}
 
 	/**
@@ -628,8 +628,8 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isFight() {
-		return fight;
+	public boolean isFighting() {
+		return isFighting;
 	}
 
 	/**
@@ -637,8 +637,8 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isMove() {
-		return move;
+	public boolean isMoving() {
+		return isMoving;
 	}
 
 	/**

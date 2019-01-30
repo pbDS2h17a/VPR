@@ -18,10 +18,10 @@ public class JoinFX {
 	// Globale Variablen
 	private Pane ctn = new Pane();
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
-	private Rectangle listBG = new Rectangle(900, 650);
-	private Label listLabel = new Label("Partie aussuchen");	
+	private Rectangle listBG = new Rectangle(900, 650);	
 	private int[] lobbyIdArray = SqlHelper.getAllLobbyId();
 	private Label[] listUsers = new Label[lobbyIdArray.length];
+	private Label listLabel = new Label("Partie aussuchen");
 	
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
