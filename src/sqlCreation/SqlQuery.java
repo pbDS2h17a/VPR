@@ -140,9 +140,9 @@ class SqlQuery {
 	}
 
 	/**
-	 *
-	 * @param data stringArray mit FarbID, Namen und wert
-	 *             Wert ist ein 6-Stelliger HEX code
+	 * @author Lea Mönikes
+	 * @param data stringArray mit FarbID, Namen und Wert
+	 *             Der Wert ist ein 6-Stelliger HEX code
 	 */
 	static void fillColor(String[] data){
 		for (String string : data) {
@@ -388,7 +388,8 @@ class SqlQuery {
 		}	
 	}
 	/**
-	 * Methode erstellt Tabelle für Spieler und Länder
+	 * @author Lea Mönikes
+	 * Methode erstellt Tabelle für Spieler, Länder und Farben
 	 */
 	static void createTableCountryPlayer() {
 		String sqlPlayerCountry =
@@ -410,6 +411,7 @@ class SqlQuery {
 		}
 	}
 	/**
+	 * @author Lea Mönikes
 	 * Methode erstellt die Tabellen für alle auswählbaren Farben
 	 */
 	static void createTableColor() {
@@ -446,8 +448,10 @@ class SqlQuery {
 			e.printStackTrace();
 		}
 	}
+	
 
 	/**
+	 * @author Lea Mönikes
 	 * Methode erstellt die Tabellen für die Farbe eines Spielers in einer Lobby
 	 */
 	static void createTableColorPlayer(){

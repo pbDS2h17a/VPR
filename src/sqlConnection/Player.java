@@ -62,11 +62,19 @@ public class Player {
 		lobby.addPlayer(this);
 	}
 
-	// Getter und Setter
+	
+	/**
+	 * getter für den Spieler-Namen
+	 * @return den Namen als String
+	 */
 	public String getName() {
 		return name;
 	}
-
+	
+	/**
+	 * setter für den Spieler-Namen
+	 * @param den Namen als String
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -92,32 +100,58 @@ public class Player {
 		SqlHelper.updateCountryOwner(this.lobbyId, this.playerId, country.getCountryId());
 	}
 
+	/**
+	 * getter für die Spieler-Farbe
+	 * @return die Farbe als String
+	 */
 	public String getColor() {
 		return color;
 	}
-
+	
+	/**
+	 * setter für die Spieler-Farbe
+	 * @param die Farbe als String
+	 */
 	public void setColor(String color) {
 		this.color = color;
 	}
 
-
+	/**
+	 * getter für die Country-Liste
+	 * @return die coutryList als Liste vom Typ Country
+	 */
 	public List<Country> getCountryList() {
 		return countryList;
 	}
 
+	/**
+	 * setter für den Country-Liste
+	 * @param die countryList als Liste vom Typ Country
+	 */
 	public void setCountryList(List<Country> countryList) {
 		this.countryList = countryList;
 	}
 	
+	/**
+	 * getter für den Spieler-Id
+	 * @return die Id als Integer
+	 */
 	public int getPlayerId() {
 		return playerId;
 	}
 
-
+	/**
+	 * getter für den Lobby-Id des Spielers
+	 * @return die Lobby-Id als Integer
+	 */
 	public int getLobbyId() {
 		return lobbyId;
 	}
 
+	/**
+	 * setter für die Lobby-Id des Spielers
+	 * @param die Lobby-Id als Integer
+	 */
 	public void setLobbyId(int lobbyId) {
 		this.lobbyId = lobbyId;
 	}
