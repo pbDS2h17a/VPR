@@ -3,29 +3,35 @@ package network;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.sun.prism.paint.Color;
-
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import sqlConnection.SqlHelper;
-
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import sqlConnection.Player;
 
 public class ChatInterface{
-	private final static int PANE_WIDTH = 400;
-	private final static int PANE_HEIGHT = 400;
-	private int pid;
-	private int lid;
+	
+	private final static int PANE_WIDTH = 300;
+	private final static int PANE_HEIGHT = 500;
+	private Player player;
 	private ChatManager cm;
 	private long timestamp; 
 	private BorderPane bp;
@@ -34,31 +40,38 @@ public class ChatInterface{
 	private Button reset;
 	private HBox hb;
 	private VBox chatHistory;
+	private AnchorPane anchor;
 	private ScrollPane scrollWindow;
 	
-	public ChatInterface(int player_id, int lobby_id) {
-		this.pid = player_id;
-		this.lid = lobby_id;
-		this.cm = new ChatManager(this.lid, this.pid);
-		this.timestamp = 0;//cm.getTimestamp();
+	public ChatInterface(Player player) {
+		this.player = player;
+		this.cm = new ChatManager(this.player.getLobbyId(), this.player.getPlayerId());
+		this.timestamp = cm.getTimestamp();
 		
 		this.bp = new BorderPane();
 		this.tf = new TextField();
-		this.send = new Button("Senden");
-		this.reset = new Button("Reset");
+		this.send = new Button(">");
+		this.reset = new Button("X");
 		this.hb = new HBox();
 		
 		this.hb.getChildren().add(this.tf);
 		this.hb.getChildren().add(this.send);
 		this.hb.getChildren().add(this.reset);
-		HBox.setHgrow(tf, Priority.ALWAYS);
+		
 		this.bp.setBottom(this.hb);
 		this.chatHistory = new VBox();
-		this.scrollWindow = new ScrollPane(this.chatHistory);
+		this.anchor = new AnchorPane();
+		this.scrollWindow = new ScrollPane(this.anchor);
 		
+		//Größe und Verhalten der Nodes
+		HBox.setHgrow(tf, Priority.ALWAYS);
 		this.scrollWindow.setPrefSize(PANE_WIDTH,PANE_HEIGHT);
-		this.chatHistory.setPrefSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
+		this.scrollWindow.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		this.anchor.getChildren().add(chatHistory);
+		this.anchor.setMinSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
+		AnchorPane.setBottomAnchor(chatHistory, 5.0);
 		this.bp.setTop(this.scrollWindow);
+		this.send.setMinWidth(80);
 		
 		//CSS-Klassen
 		this.bp.getStyleClass().add("chat");
@@ -66,8 +79,18 @@ public class ChatInterface{
 		this.scrollWindow.getStyleClass().add("scroll-window");
 		this.chatHistory.getStyleClass().add("chat-history");
 		this.send.getStyleClass().add("chat-button");
+		this.send.getStyleClass().add("chat-send-button");
 		this.reset.getStyleClass().add("chat-button");
+		this.reset.getStyleClass().add("chat-reset-button");
 		this.tf.getStyleClass().add("chat-textfield");
+		this.anchor.getStyleClass().add("chat-anchor");
+		
+		//Schriftart und -farbe der Button-Texte
+		Font cons20 = Font.font("Console", FontWeight.BOLD, 20);
+		this.send.setFont(cons20);
+		this.send.setTextFill(Color.WHITE);
+		this.reset.setFont(cons20);
+		this.reset.setTextFill(Color.WHITE);
 		
 		// Eventhandler
 		this.send.setOnAction(a -> send(this.tf));
@@ -93,7 +116,7 @@ public class ChatInterface{
 	private void send(TextField tf) {
 		if(tf.getText() == "") return;
 		try { 
-			cm.sendMessage(tf.getText(), pid, lid);
+			cm.sendMessage(tf.getText());
 		} catch(SQLException s) {
 				s.printStackTrace();
 			}
@@ -135,12 +158,11 @@ public class ChatInterface{
 						Platform.runLater(() -> update(set));
 					}
 					// Zwei Sekunden warten -> Abfrage der Datenbank erfolgt alle zwei Sekunden
-					Thread.sleep(2000);
+					Thread.sleep(500);
 				}
 			}
 		};
 		return task;
-				
 	}
 	
 	private void update(List<List<String>> chat) {
@@ -148,7 +170,18 @@ public class ChatInterface{
 		this.chatHistory.getChildren().clear();
 		// Gesamtes Abfrageergebnis in GUI/Console schreiben
 		for (List<String> message : chat) {
-			this.chatHistory.getChildren().add(new Label( this.cm.formatMessage(message)));
+			HBox textHb = new HBox();
+			Text text = new Text(this.cm.formatMessage(message));
+			textHb.getStyleClass().add("chat-message-container");
+			textHb.setBorder(new Border(new BorderStroke(Color.web(this.player.getColor()), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 5.0), Insets.EMPTY)));
+			text.getStyleClass().add("chat-message");
+			
+			text.wrappingWidthProperty().set(bp.getPrefWidth());
+			text.setFill(Color.WHITE);
+			textHb.setMinWidth(this.scrollWindow.getPrefWidth());
+			textHb.getChildren().add(text);
+			this.chatHistory.getChildren().add(textHb);
+			textHb.setAlignment(Pos.BOTTOM_LEFT);
 		}
 	}
 }

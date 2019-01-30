@@ -34,19 +34,6 @@ public class CardStack extends Stack<Card>{
 			this.push(orderedCardList.get(index));
 			orderedCardList.remove(index);
 		}
-	}	
-	
-	public Card takeAndRemoveCard(String countryName, Stack <Card> shuffledStack){
-		Card takedCard = null;
-		for (Card card : shuffledStack) {
-			if(card.getCountryName().equals(countryName)){
-				takedCard = card;
-				shuffledStack.remove(card);
-				break;
-			}			
-		}
-		return takedCard;
 	}
-	
 	
 }

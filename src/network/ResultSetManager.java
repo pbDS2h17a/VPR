@@ -44,7 +44,7 @@ public class ResultSetManager
 			}
 			set.add(zeile);
 		}
-		
+		r.close();
 		return set;
 	}
 
