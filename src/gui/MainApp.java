@@ -159,6 +159,7 @@ public class MainApp extends Application {
 
 			//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	createPlayer();
+	    	createPlayer2();
 //	    	lobbyFX.getLobby().setLobbyLeader(player);
 //	    	lobbyFX.guiAddPlayer(lobbyFX.getNextSlotId());
 	    });
@@ -232,8 +233,7 @@ public class MainApp extends Application {
 				String value = lobbyFX.getColorRectArray()[COUNT].getFill().toString();
 
 				value = value.substring(2,8);
-				
-				System.out.println("Farbe:"+value);
+
 				player.setColor(value);
 	    		lobbyFX.guiChangeColor(player.getSlotId(), lobbyFX.getColorRectArray()[COUNT].getFill());
 	    	});
@@ -610,6 +610,7 @@ public class MainApp extends Application {
 		        		count = 0;
 						if(newLastChange > currentLastChange) {
 							System.out.println("Änderungen");
+							
 							for (Country country : matchFX.getCountryArray()) {
 								updateDisplayCountry(country,lobbyFX.getLobby());
 							}
@@ -618,7 +619,6 @@ public class MainApp extends Application {
 						}
 		        	}
 		        	count++;
-
 
 	        	}
 
@@ -764,6 +764,18 @@ public class MainApp extends Application {
 		lobbyFX.guiAddPlayer(player.getSlotId());
 		lobbyFX.getLobby().addPlayer(player);
 		player.setColor("FFD800");
+
+		// Erstellt das ChatInterface und positioniert es in der Lobby
+		chatFX = new ChatInterface(player);
+		ctnApp.getChildren().add(chatFX.getPane());
+		chatFX.getPane().relocate(42, 420);
+	}
+
+	private void createPlayer2() {
+		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
+		lobbyFX.guiAddPlayer(player.getSlotId());
+		lobbyFX.getLobby().addPlayer(player);
+		player.setColor("000000");
 
 		// Erstellt das ChatInterface und positioniert es in der Lobby
 		chatFX = new ChatInterface(player);
