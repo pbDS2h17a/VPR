@@ -10,6 +10,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.paint.Color;
 import javafx.util.converter.IntegerStringConverter;
+import network.ChatInterface;
 import sqlConnection.Country;
 import sqlConnection.Player;
 

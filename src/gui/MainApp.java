@@ -779,6 +779,7 @@ public class MainApp extends Application {
 
 		// Erstellt das ChatInterface und positioniert es in der Lobby
 		chatFX = new ChatInterface(player);
+		chatFX.getPane().setVisible(false);
 		ctnApp.getChildren().add(chatFX.getPane());
 		chatFX.getPane().relocate(42, 420);
 	}

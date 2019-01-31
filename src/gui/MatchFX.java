@@ -12,6 +12,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import network.ChatInterface;
 import sqlConnection.Country;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
@@ -84,6 +85,7 @@ public class MatchFX {
 	private Rectangle fightCountryOneBG = new Rectangle(960, 1080);
 	private Rectangle fightCountryTwoBG = new Rectangle(960, 1080);
 	private double[][] worldMapCoordinates;
+	private Line[] lineArray;
 
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
@@ -102,51 +104,39 @@ public class MatchFX {
 	    ctn.getChildren().add(bg);
 	    
     	int[][] seaRoutesCoordinates = new int[][] {
-    		{1460, 702},
-    		{1470, 763},
-    		{1408, 677},
-    		{1404, 752},
-    		{1394, 658},
-    		{1367, 670},
-    		{1345, 758},
-    		{1355, 787},
-    		{1331, 644},
-    		{1337, 678},
-    		{1116, 792},
-    		{1077, 728},
-    		{1072, 856},
-    		{1038, 856},
-    		{822, 620},
-    		{780, 628},
-    		{967, 525},
-    		{994, 555},
-    		{816, 261},
-    		{779, 238},
-    		{846, 300},
-    		{834, 323},
-    		{870, 290},
-    		{896, 295},
-    		{898, 310},
-    		{848, 363},
-    		{799, 399},
-    		{811, 471},
-    		{701, 228},
-    		{671, 263},
-    		{1404, 331},
-    		{1436, 350},
-    		{1387, 399},
-    		{1421, 426}
+    		{1460, 702, 1470, 763},
+    		{1408, 677, 1404, 752},
+    		{1394, 658, 1367, 670},
+    		{1345, 758, 1355, 787},
+    		{1331, 644, 1337, 678},
+    		{1116, 792, 1077, 728},
+    		{1072, 856, 1038, 856},
+    		{822, 620, 780, 628},
+    		{967, 525, 994, 555},
+    		{816, 261, 779, 238},
+    		{846, 300, 834, 323},
+    		{870, 290, 896, 295},
+    		{898, 310, 848, 363},
+    		{799, 399, 811, 471},
+    		{701, 228, 671, 263},
+    		{1404, 331, 1436, 350},
+    		{1387, 399, 1421, 426}
     	};
 
-    	Line[] lineArray = new Line[seaRoutesCoordinates.length];
-    	for (int i = 0; i < lineArray.length - 1; i += 2) {
-    		lineArray[i] = new Line();
+    	lineArray = new Line[seaRoutesCoordinates.length];
+    	for (int i = 0; i < seaRoutesCoordinates.length; i++) {
+    		lineArray[i] = new Line(
+    				seaRoutesCoordinates[i][0] + 20,
+    				seaRoutesCoordinates[i][1] + 20,
+    				seaRoutesCoordinates[i][2] + 20,
+    				seaRoutesCoordinates[i][3] + 20);
+    		
     		lineArray[i].setStroke(Color.WHITE);
     		lineArray[i].setStrokeWidth(5);
-    		lineArray[i].setStartX(seaRoutesCoordinates[i][0] + 20);
-    		lineArray[i].setStartY(seaRoutesCoordinates[i][1] + 20);
-    		lineArray[i].setEndX(seaRoutesCoordinates[i+1][0] + 20);
-    		lineArray[i].setEndY(seaRoutesCoordinates[i+1][1] + 20);
+//    		lineArray[i].setStartX(seaRoutesCoordinates[i][0] + 20);
+//    		lineArray[i].setStartY(seaRoutesCoordinates[i][1] + 20);
+//    		lineArray[i].setEndX(seaRoutesCoordinates[i+1][0] + 20);
+//    		lineArray[i].setEndY(seaRoutesCoordinates[i+1][1] + 20);
     		ctn.getChildren().add(lineArray[i]);
 		}
 
@@ -754,6 +744,10 @@ public class MatchFX {
 			countryUnitsBGArray[i].setVisible(isActive);
 			countryUnitsLabelArray[i].setVisible(isActive);
 		}
+
+		for (int i = 0; i < lineArray.length; i++) {
+			lineArray[i].setVisible(isActive);
+		}
 	}
 	
 	/**
@@ -900,7 +894,5 @@ public class MatchFX {
 	public void setStartDicing(boolean isStartDicing) {
 		this.isStartDicing = isStartDicing;
 	}
-
-
 
 }
