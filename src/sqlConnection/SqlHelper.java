@@ -22,7 +22,8 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345" };
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azzTest","pbs2h17azz","Bib12345"
+	};
 
 	//###################################################################################################################
 	// Verbindung aufbauen
@@ -148,7 +149,7 @@ public class SqlHelper {
 
 		// Entfernt überzählige Lobbies damit nur die letzen 9 angezeigt werden
 		while(lobbyIdList.size() > 9) {
-			lobbyIdList.remove(0);
+			lobbyIdList.remove(lobbyIdList.size()-1);
 		}
 
 		// Konvertiere Integer Liste in Integer Array
@@ -236,6 +237,32 @@ public class SqlHelper {
 		return null;
 	}
 
+	public static Lobby getLobby (int lobbyId) {
+		Lobby lobby = null;
+		String queryLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d",lobbyId);
+		
+		try{
+			ResultSet rs = getStatement().executeQuery(queryLeader);
+			rs.next();
+			int leaderId = rs.getInt(1);
+			rs.close();
+			
+			lobby = new Lobby(lobbyId, leaderId);
+			
+			for (int playerId : SqlHelper.getPlayerIdsFromLobby(lobbyId)) {
+				System.out.println("PlayerIDs: "+playerId);
+				lobby.addPlayer(new Player(playerId, SqlHelper.getPlayerName(playerId), lobby));			
+			}
+
+		} catch(Exception e){
+			System.out.println("Fehler beim holen des Besitzers des Landes");
+			e.printStackTrace();
+		}
+		return lobby;
+	}
+	
+	
+	
 	/**
 	 * Methode zum Auslesen der ContinentId eines Landes
 	 * @param countryId
