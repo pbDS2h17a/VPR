@@ -149,7 +149,7 @@ public class SqlHelper {
 
 		// Entfernt überzählige Lobbies damit nur die letzen 9 angezeigt werden
 		while(lobbyIdList.size() > 9) {
-			lobbyIdList.remove(lobbyIdList.size()-1);
+			lobbyIdList.remove(0);
 		}
 
 		// Konvertiere Integer Liste in Integer Array
@@ -250,8 +250,8 @@ public class SqlHelper {
 			lobby = new Lobby(lobbyId, leaderId);
 			
 			for (int playerId : SqlHelper.getPlayerIdsFromLobby(lobbyId)) {
-				System.out.println("PlayerIDs: "+playerId);
-				lobby.addPlayer(new Player(playerId, SqlHelper.getPlayerName(playerId), lobby));			
+				System.out.println(SqlHelper.getSelectedColorValue(playerId, lobbyId));
+				lobby.addPlayer(new Player(playerId, SqlHelper.getPlayerName(playerId), lobby, SqlHelper.getSelectedColorValue(playerId, lobbyId)));
 			}
 
 		} catch(Exception e){
@@ -260,9 +260,23 @@ public class SqlHelper {
 		}
 		return lobby;
 	}
-	
-	
-	
+
+	public static String getSelectedColorValue (int playerId, int lobbyId) {
+		String query = String.format("SELECT c.value FROM color_player cp, color c WHERE cp.color_id = c.color_id AND cp.player_id = %d AND cp.lobby_id = %d",playerId, lobbyId);
+		String colorValue = null;
+		try{
+			ResultSet rs = getStatement().executeQuery(query);
+			rs.next();
+			colorValue = rs.getString(1);
+			rs.close();
+
+		}catch(Exception e){
+			System.out.println("Fehler beim holen der Farbe des Spielers");
+			e.printStackTrace();
+		}
+		return colorValue;
+	}
+
 	/**
 	 * Methode zum Auslesen der ContinentId eines Landes
 	 * @param countryId

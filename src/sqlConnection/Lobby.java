@@ -59,6 +59,7 @@ public class Lobby {
     public void addPlayer(Player player) {
         if (players.size() < MAX_PLAYER_COUNT) {
             players.add(player);
+            System.out.println(player.toString());
         }
     }
 

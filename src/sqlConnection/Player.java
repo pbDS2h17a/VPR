@@ -3,8 +3,6 @@ package sqlConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.paint.Color;
-
 /**
  * @author Lea, PEROSCKU
  * Player-Klasse
@@ -14,7 +12,7 @@ import javafx.scene.paint.Color;
 public class Player {
 	
 	private String name;
-	private String color;
+	private String colorValue;
 	private List<Country> countryList;
 	private int playerId;
 	private int lobbyId;
@@ -51,13 +49,14 @@ public class Player {
 	 * @param name
 	 * @param lobby
 	 */
-	public Player(int playerId, String name, Lobby lobby) {
+	public Player(int playerId, String name, Lobby lobby, String colorValue) {
 		this.playerId = playerId;
 		this.name = name;
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
 		this.slotId = lobby.getNextSlotId();
 		this.countryList = new ArrayList<>();
+		this.colorValue = colorValue;
 	}
 
 	
@@ -102,17 +101,17 @@ public class Player {
 	 * getter für die Spieler-Farbe
 	 * @return die Farbe als String
 	 */
-	public String getColor() {
-		return color;
+	public String getColorValue() {
+		return colorValue;
 	}
 	
 	/**
 	 * setter für die Spieler-Farbe
 	 * @param die Farbe als String
 	 */
-	public void setColor(String color) {
-		this.color = color;
-		SqlHelper.insertColor(this.playerId, this.color, this.lobbyId);
+	public void setColorValue(String colorValue) {
+		this.colorValue = colorValue;
+		SqlHelper.insertColor(this.playerId, this.colorValue, this.lobbyId);
 	}
 
 	/**
@@ -163,7 +162,7 @@ public class Player {
 				"Farbe=%s, " +
 				"UnitsPerRound=%d\n" +
 				"Länder=[",playerId,
-				name, color, unitsPerRound);
+				name, colorValue, unitsPerRound);
 
 
 		for (Country c : countryList) {

@@ -191,7 +191,7 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param name String
 	 */
-	public void changePlayerName(int slotId, String name) {
+	public void guiChangePlayerName(int slotId, String name) {
 		// Wenn kein leerer String übergeben wurde...
 		if(!name.isEmpty() && name != null) {
 			// ...wird der Name gesetzt
@@ -213,9 +213,9 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param paint Paint
 	 */
-	public void guiChangeColor(int slotId, Paint paint) {
+	public void guiChangeColor(int slotId, String colorValue) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
-		triangleArray[slotId].setFill(paint);
+		triangleArray[slotId].setFill(Color.web(colorValue));
 		// Wenn auch schon ein Name übergeben wurde...
 		if(!labelArray[slotId].getText().isEmpty()) {
 			// ...wird der Bereit-Button aktiviert

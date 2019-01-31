@@ -564,7 +564,7 @@ public class GameMechanics {
 	 * @param activePlayer Player
 	 */
 	public void updatePlayerInterface(Player activePlayer) {
-		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
+		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColorValue()));
 		this.match.setInventoryCountryLabel(activePlayer.getCountryList().size());
 		this.match.setInventoryUnitsLabel(activePlayer.getUnassignedUnits());
 	}

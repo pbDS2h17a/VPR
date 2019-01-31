@@ -502,7 +502,7 @@ public class MatchFX {
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer);
-			randomCountry.setFill(Color.web(currentPlayer.getColor()));
+			randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
 			// Wenn die Spieler-Liste am Ende angekommen ist...
@@ -524,7 +524,7 @@ public class MatchFX {
 		}
 		
 		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
-		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColor()));
+		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColorValue()));
 	}
 	
 	/**
