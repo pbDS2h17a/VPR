@@ -20,10 +20,9 @@ public class SqlHelper {
 	 */
 	// Private TestDb für home server
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
-	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","123456"
+	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
-			};
+			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345" };
 
 	//###################################################################################################################
 	// Verbindung aufbauen
@@ -82,24 +81,25 @@ public class SqlHelper {
 	 * (mit Unterstützung der getPlayerName(playerId : int)-Methode).
 	 * @param lobbyId Identifikationsnummer einer Lobby
 	 * @return String Lobbyleadername
-	 * @throws SQLException 
+	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 * @author Jona Petrikowski
 	 * @author Nick Kuhn
 	 */
 	public static String getLeaderName (int lobbyId) throws SQLException, ClassNotFoundException {
-		String queryGetLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d", lobbyId);
+		/*String queryGetLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d", lobbyId);
 		List<List<String>> listWithLeaderId = ResultSetManager.toList(getStatement().executeQuery(queryGetLeader));
-		
-		if (listWithLeaderId.get(0).size() == 1) {
-			int leaderId = Integer.parseInt(listWithLeaderId.get(0).get(0));
-			System.out.println("getLeaderName() successfull.");
-			return getPlayerName(leaderId);
-		}
-		else {
-			System.out.println("getLeaderName(). Error!.");
-		}
-		return "Dummy";	
+		if(listWithLeaderId != null) {
+			if (listWithLeaderId.get(0).size() == 1) {
+				int leaderId = Integer.parseInt(listWithLeaderId.get(0).get(0));
+				System.out.println("getLeaderName() successfull.");
+				return getPlayerName(leaderId);
+			}
+			else {
+				System.out.println("getLeaderName(). Error!.");
+			}
+		}*/
+		return "Dummy";
 	}
 
 	/**
@@ -428,7 +428,7 @@ public class SqlHelper {
 		return description;
 	}
 
-	
+
 	/**
 	 * @param timestamp Zeitpunkt, nach dem Nachrichten angezeigt werden sollen
 	 * @param lobbyId ID der Lobby, aus der die Nachrichten gelesen werden
@@ -442,6 +442,7 @@ public class SqlHelper {
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			history = ResultSetManager.toList(rs);
+			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Fehler in der Chat History");
 			e.printStackTrace();
@@ -474,6 +475,22 @@ public class SqlHelper {
 		}
 
 		return playerIdList;
+	}
+
+	public static int getColorId(String colorValue) {
+		String query = String.format("SELECT color_id FROM color WHERE value = '%s'", colorValue);
+		int colorId = -1;
+		try {
+			ResultSet rs = getStatement().executeQuery(query);
+			rs.next();
+			colorId = rs.getInt(1);
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println("Fehler beim auslesen der FarbId");
+			e.printStackTrace();
+		}
+
+		return colorId;
 	}
 
 	//###################################################################################################################
@@ -529,7 +546,19 @@ public class SqlHelper {
 		return id;
 	}
 
-	
+    public static void insertColor(int playerId, String colorValue, int lobbyId) {
+
+        int colorId = getColorId(colorValue);
+
+        String sql = String.format("INSERT INTO color_player VALUES(%d, %d, %d);", playerId, colorId, lobbyId);
+        try {
+            getStatement().executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("Fehler beim einfügen der Farbe");
+            e.printStackTrace();
+        }
+    }
+
 	/**
 	 * @param message Inhalt der Nachricht
 	 * @param player_id Eindeutige ID des Spielers, der die Nachricht absendet
@@ -578,9 +607,9 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 	}
-	
 
-	
+
+
 	/**
 	 * Methode zum einfügen von Daten in die Tabelle country_player
 	 * @param lobbyId
@@ -664,7 +693,7 @@ public class SqlHelper {
 	 * @param countryId
 	 * @author pbs2h17ath
 	 */
-	public static void updateUnits(int lobbyId, int countryId, int amountUnits){
+	public static void updateCountryUnits(int lobbyId, int countryId, int amountUnits){
 		String query = String.format("UPDATE country_player SET unit_count = %d WHERE country_id = %d AND lobby_id= %d;", amountUnits, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
@@ -733,8 +762,8 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Gibt dem Spieler den angegebenen Namen
 	 * @param player_id ID des Spielers

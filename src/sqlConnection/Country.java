@@ -2,9 +2,10 @@ package sqlConnection;
 
 import java.sql.SQLException;
 
-
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 
 /**
@@ -38,6 +39,27 @@ public class Country extends SVGPath {
 	 * Nachbar-Array mit Land ID als Integer 
 	 */
 	private int[] neighborIdArray;
+
+	private Label unitLabel;
+
+	public Rectangle getRectangle() {
+		return rectangle;
+	}
+
+	public void setRectangle(Rectangle rectangle) {
+		this.rectangle = rectangle;
+	}
+
+	private Rectangle rectangle;
+
+	public Label getUnitLabel() {
+		return unitLabel;
+	}
+
+	public void setUnitLabel(Label unitLabel) {
+		this.unitLabel = unitLabel;
+	}
+
 
 	/**
 	 * Land ctor
@@ -92,7 +114,7 @@ public class Country extends SVGPath {
 	 * @return Menge Einheiten als Integer
 	 */
 	public int getUnits() {
-		units = SqlHelper.getCountryUnits(this.countryId, this.owner.getLobbyId());
+		//units = SqlHelper.getCountryUnits(this.countryId, this.owner.getLobbyId());
 		return units;
 	}
 
@@ -103,12 +125,12 @@ public class Country extends SVGPath {
 	 */
 	public void setUnits(int units) {
 		this.units = units;
-		SqlHelper.updateUnits(owner.getLobbyId(), this.countryId, units);
+		SqlHelper.updateCountryUnits(owner.getLobbyId(), this.countryId, units);
 	}
 	
 	/**
 	 * Getter Farbe des Landes
-	 * @return Farbe des Landes (SVGPath)
+	 * @return Farbe des Landes (SVGPath) als Paint Objekt
 	 */
 	public Paint getColor() {
 		return this.getFill();
@@ -116,10 +138,11 @@ public class Country extends SVGPath {
 	
 	/**
 	 * Setter Farbe des Landes
-	 * @param C Neue Farbe als String
+	 * @param colorValue String
 	 */
-	public void setColor(String C) {
-		this.setFill(Color.web(C));
+	public void setColor(String colorValue) {
+		this.setFill(Color.web(colorValue));
+		SqlHelper.insertColor(owner.getPlayerId(),colorValue , owner.getLobbyId());
 	}
 	
 	/**
@@ -146,7 +169,7 @@ public class Country extends SVGPath {
 	 * @return Besitzer 
 	 */
 	public Player getOwner() {
-		owner = SqlHelper.getCountyOwner(this.countryId, owner.getLobby());
+//		owner = SqlHelper.getCountyOwner(this.countryId, owner.getLobby());
 		return this.owner;
 	}
 

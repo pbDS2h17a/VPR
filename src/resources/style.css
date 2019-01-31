@@ -41,10 +41,6 @@
 	-fx-padding: 1px 0 1px 10px;
 }
 
-/*.chat-button, .chat-controls, .scroll-window {
-	-fx-border-width: 2px;
-}*/
-
 .chat-textfield {
 	-fx-padding: 5px;
 	-fx-background-color: rgba(0,146,69,.05);
