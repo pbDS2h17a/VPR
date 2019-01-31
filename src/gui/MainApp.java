@@ -144,6 +144,8 @@ public class MainApp extends Application {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
 	    	// Debug ausgabe Lobby ID
+	    	lobbyFX.setLobby(new Lobby());
+	    	lobbyId = lobbyFX.getLobby().getLobbyId();
 			System.out.println(lobbyFX.getLobby().getLobbyId());
 
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
@@ -173,7 +175,7 @@ public class MainApp extends Application {
 	    	mpFX.playBtnSFX();
 
 	    	//Spieler-Objekt und Chat-Objekt werden erstellt
-	    	createPlayer();
+	    	//createPlayer();
 
 
 	    	//mpFX.playBtnSFX();
@@ -230,6 +232,7 @@ public class MainApp extends Application {
 				String value = lobbyFX.getColorRectArray()[COUNT].getFill().toString();
 
 				value = value.substring(2,8);
+				
 				System.out.println("Farbe:"+value);
 				player.setColor(value);
 	    		lobbyFX.guiChangeColor(player.getSlotId(), lobbyFX.getColorRectArray()[COUNT].getFill());
@@ -240,6 +243,7 @@ public class MainApp extends Application {
 	    lobbyFX.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Ändert den Namen des Spielers in seinem Slot
 	    	lobbyFX.changePlayerName(player.getSlotId(), lobbyFX.getInputName().getText());
+	    	player.setName(lobbyFX.getInputName().getText());
 	    });
 	    
 	    // Wenn im Namens-Eingabefeld eine Taste gedrückt wird
@@ -247,7 +251,7 @@ public class MainApp extends Application {
 	    	// Wenn diese Taste "Enter" ist...
 	    	if (event.getCode() == KeyCode.ENTER) {
 	    		// ...wird der Name des Spielers in seinem Slot geändert
-	    		lobbyFX.changePlayerName(lobbyFX.getNextSlotId(), lobbyFX.getInputName().getText());
+	    		lobbyFX.changePlayerName(player.getSlotId(), lobbyFX.getInputName().getText());
 	    	}
 
 	    });
@@ -307,8 +311,10 @@ public class MainApp extends Application {
 			joinFX.getUserList()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 		    	// Beendet die Animation des Logos
 		    	titleFX.setLogoAnimated(false);
-		    	
 				// Startet die Animation für den Übergang zwischen zwei Panes
+		    	
+		    	lobbyFX.setLobby(SqlHelper.getLobby(joinFX.getLobbyIdArray()[tmp]));
+		    	
 				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
 			});
 		}
@@ -587,19 +593,18 @@ public class MainApp extends Application {
 		country.setFill(Color.web(country.getOwner().getColor()));
 		country.getRectangle().setFill(country.getFill());
 	}
-
+	private int lobbyId;
 	/**
 	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
 	 */
 	public void gameLoop() {
 		new AnimationTimer() {
-
 			private int count = 0;
-			private int lobbyId = lobbyFX.getLobby().getLobbyId();
-			private long currentLastChange = SqlHelper.getLastChange(lobbyId);
+			private long currentLastChange = 0;
 
 	        public void handle(long currentNanoTime) {
 	        	if(listen) {
+	        		
 	        		long newLastChange = SqlHelper.getLastChange(lobbyId);
 		        	if(count != 0 && count % 30 == 0) {
 		        		count = 0;

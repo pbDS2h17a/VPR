@@ -17,6 +17,13 @@ public class Lobby {
         this.players = new ArrayList<>();
         this.lobbyId = SqlHelper.insertLobby();
     }
+    
+    public Lobby(int lobbyId, int leaderId) {
+        this.MAX_PLAYER_COUNT = 6;
+        this.players = new ArrayList<>();
+        this.lobbyId = lobbyId;
+        this.leaderId = leaderId;
+    }
 
     public int getLeaderId()
 	{
@@ -48,11 +55,10 @@ public class Lobby {
     public int getMAX_PLAYER_COUNT() {
         return MAX_PLAYER_COUNT;
     }
-
+    
     public void addPlayer(Player player) {
         if (players.size() < MAX_PLAYER_COUNT) {
             players.add(player);
-            System.out.println(player);
         }
     }
 

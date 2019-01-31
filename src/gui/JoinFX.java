@@ -22,6 +22,11 @@ public class JoinFX {
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
 	private Rectangle listBG = new Rectangle(900, 650);	
 	private int[] lobbyIdArray = SqlHelper.getAllLobbyId();
+	
+	public int[] getLobbyIdArray() {
+		return lobbyIdArray;
+	}
+
 	private Label[] listUsers = new Label[lobbyIdArray.length];
 	private Label listLabel = new Label("Partie aussuchen");
 	

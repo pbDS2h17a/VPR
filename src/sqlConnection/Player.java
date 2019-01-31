@@ -56,6 +56,8 @@ public class Player {
 		this.name = name;
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
+		this.slotId = lobby.getNextSlotId();
+		this.countryList = new ArrayList<>();
 	}
 
 	
