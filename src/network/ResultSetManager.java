@@ -21,14 +21,14 @@ public class ResultSetManager
 	public static List<List<String>> toList(ResultSet r) throws SQLException
 	{
 		List<List<String>> set;
-		try { r.next(); } 
+		try { if(!r.next()) throw new SQLException(); } 
 		catch (SQLException s) { return null; }
 		set = new ArrayList<>();
 		//Erste Zeile -> Bestimmung der Länge der Datensätze
 		List<String> zeile = new ArrayList<>();
 		int length = 1;
 		while(true) {
-			try { zeile.add(r.getString(length).trim()); length++; }
+			try { zeile.add(r.getString(length)); length++; }
 			catch (SQLException s) { break; }
 		}
 		if(length == 1 && zeile.size() == 0) {return null;}
