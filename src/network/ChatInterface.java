@@ -29,25 +29,77 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import sqlConnection.Player;
 
+/**
+ * Stellt die grafische Benutzeroberfläche für den Chat bereit.
+ * @author Erik Schaumlöffel
+ * @author PeRoScKu
+ */
 public class ChatInterface{
 	
+	/**
+	 * Fensterbreite
+	 */
 	private final static int PANE_WIDTH = 300;
+	/**
+	 * Fensterhöhe
+	 */
 	private final static int PANE_HEIGHT = 500;
+	/**
+	 * Chatteilnehmer
+	 */
 	private Player player;
+	/**
+	 * Verwendeter Chat
+	 * @see {@link network.ChatManager}
+	 */
 	private ChatManager cm;
+	/**
+	 * Zeitstempel, für die Zeit, bei der der Spieler dem Chat beigetreten ist. 
+	 */
 	private long timestamp; 
+	/**
+	 * GUI-Element
+	 */
 	private BorderPane bp;
+	/**
+	 * Nachrichteneingabefeld
+	 */
 	private TextField tf;
+	/**
+	 * Absendebutton
+	 */
 	private Button send;
+	/**
+	 * Zurücksetzen des Chatfensterinhalts
+	 */
 	private Button reset;
+	/**
+	 * GUI-Element
+	 */
 	private HBox hb;
+	/**
+	 * Chatverlauf
+	 */
 	private VBox chatHistory;
+	/**
+	 * GUI-Element
+	 */
 	private AnchorPane anchor;
+	/**
+	 * GUI-Element
+	 */
 	private ScrollPane scrollWindow;
+	/**
+	 * Zeichenzähler
+	 */
 	private Label charCount;
 	private HBox charCountContainer;
 	private Region fill;
 	
+	/**
+	 * Erstellt ein Chatfenster
+	 * @param player Am Chat teilnehmender Spieler.
+	 */
 	public ChatInterface(Player player) {
 		this.player = player;
 		this.cm = new ChatManager(this.player.getLobbyId(), this.player.getPlayerId());
@@ -137,8 +189,8 @@ public class ChatInterface{
 
 
 	/**
-	 * Sends the input text of the specified TextField to the database. 
-	 * @param tf	TextField which content shall be send to the database.
+	 * Schickt die eingegebene Nachricht ab.
+	 * @param tf Inhalt des Textfeldes
 	 */
 	private void send() {
 		if(this.tf.getText() == "") return;
@@ -151,27 +203,27 @@ public class ChatInterface{
 		this.charCount.setText("0/255");
 	}
 	
-//	/**
-//	 * Deletes all entries of the specified table and sets the specified TextField = "".
-//	 * @param tableName	Name of the table to truncate
-//	 * @param tf				TextField to set = ""
-//	 */
-//	private void deleteAll (String tableName, TextField tf) {
-//		SqlHelper.clearTable(tableName);
-//		tf.setText("");
-//	}
-	
-	
+	/**
+	 * Chatfensterinhalt löschen.
+	 */
 	private void reset() {
 		timestamp = cm.getTimestamp();
 		chatHistory.getChildren().clear();
 		this.chatHistory.setPrefSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
 	}
 	
+	/**
+	 * Chatfensterpane holen
+	 * @return Chatfenster
+	 */
 	public BorderPane getPane() {
 		return this.bp;
 	}
 	
+	/**
+	 * Zweiter Task, der im gegebenen Zeitintervall die Datenbank nach neuen Einträgen abfragt und den Chat aktualisiert.
+	 * @return Diesen Task
+	 */
 	public Task<Void> getUpdateTask() {
 		// Task anlegen, der vom neuen Thread alle 2s ausgeführt werden soll
 		Task<Void> task = new Task<Void>() {
@@ -193,6 +245,10 @@ public class ChatInterface{
 		return task;
 	}
 	
+	/**
+	 * Aktualisieren des Chatfensters
+	 * @param chat Aktueller Chatverlauf
+	 */
 	private void update(List<List<String>> chat) {
 		// Alte Einträge löschen
 		this.chatHistory.getChildren().clear();

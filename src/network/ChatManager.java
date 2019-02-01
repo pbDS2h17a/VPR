@@ -13,19 +13,37 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import sqlConnection.SqlHelper;
 
+/**
+ * Bietet Methoden für den Chat an. Fungiert als Container für die SQLHelper-Klasse.
+ * @author Erik Schaumlöffel
+ * @author PeRoScKu
+ * @see sqlConnection.SqlHelper
+ */
 public class ChatManager {
 	private int lobby_id;
 	private int player_id;
 	
+	/**
+	 * Konstruktor
+	 * @param lobby_id Lobby des chattenden Spielers
+	 * @param player_id ID des chattenden Spielers
+	 */
 	public ChatManager(int lobby_id, int player_id) {
 		this.lobby_id = lobby_id;
 		this.player_id = player_id;
 		SqlHelper.getStatement();
 	}
 	
+	/**
+	 * Chatverlauf aus der Datenbank abfragen
+	 * @param timestamp Zeitstempel
+	 * @return Chatverlauf ab dem gegebenen Zeitstempel
+	 * @throws SQLException
+	 */
 	public List<List<String>> getChatHistory(long timestamp) throws SQLException {
 		return SqlHelper.getChatHistory(timestamp, lobby_id);
 	}
+	
 	
 	public String formatMessage(List<String> message) {
 		return String.format("%s [%s:%s] %s", message.get(0), message.get(1).substring(8,10), message.get(1).substring(10,12), message.get(2));
