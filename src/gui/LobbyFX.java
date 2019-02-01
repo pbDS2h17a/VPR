@@ -25,18 +25,19 @@ public class LobbyFX {
 
 	// Globale Variablen
 	private Pane ctn = new Pane();
-    private Lobby lobby = new Lobby();
-	private ImageView[] slotViewArray = new ImageView[lobby.getMAX_PLAYER_COUNT()];
+    private Lobby lobby = null;
+    private final int MAX_PLAYER = 6;
+	private ImageView[] slotViewArray = new ImageView[MAX_PLAYER];
     private TextField inputName = new TextField();
     private Group groupColors = new Group();
     private Group groupSlots = new Group();
     private Group groupRoles = new Group();
-	private Label[] labelArray = new Label[lobby.getMAX_PLAYER_COUNT()];
+	private Label[] labelArray = new Label[MAX_PLAYER];
     private Label colorLabel = new Label("Farbe auswählen");
     private Label inputNameLabel = new Label("Name eingeben");
-    private Rectangle[] colorRectArray = new Rectangle[lobby.getMAX_PLAYER_COUNT()];
-    private Polygon[] triangleArray = new Polygon[lobby.getMAX_PLAYER_COUNT()];
-    private Sprite[] slotRolesArray = new Sprite[lobby.getMAX_PLAYER_COUNT()];
+    private Rectangle[] colorRectArray = new Rectangle[MAX_PLAYER];
+    private Polygon[] triangleArray = new Polygon[MAX_PLAYER];
+    private Sprite[] slotRolesArray = new Sprite[MAX_PLAYER];
 	private Sprite btnReady = new Sprite("resources/btn_bereit.png");
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
 	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");
@@ -190,7 +191,7 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param name String
 	 */
-	public void changePlayerName(int slotId, String name) {
+	public void guiChangePlayerName(int slotId, String name) {
 		// Wenn kein leerer String übergeben wurde...
 		if(!name.isEmpty() && name != null) {
 			// ...wird der Name gesetzt
@@ -212,9 +213,9 @@ public class LobbyFX {
 	 * @param slotId int
 	 * @param paint Paint
 	 */
-	public void guiChangeColor(int slotId, Paint paint) {
+	public void guiChangeColor(int slotId, String colorValue) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
-		triangleArray[slotId].setFill(paint);
+		triangleArray[slotId].setFill(Color.web(colorValue));
 		// Wenn auch schon ein Name übergeben wurde...
 		if(!labelArray[slotId].getText().isEmpty()) {
 			// ...wird der Bereit-Button aktiviert
@@ -266,6 +267,15 @@ public class LobbyFX {
 	 */
 	public Lobby getLobby() {
 		return this.lobby;
+	}
+	
+	/**
+	 * Methode, die sich die Lobby-Funktionen besorgt
+	 *
+	 * @return das Lobby-Objekt mit allen Methoden
+	 */
+	public void setLobby(Lobby lobby) {
+		this.lobby = lobby;
 	}
 
 	/**

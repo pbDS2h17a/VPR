@@ -27,9 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import sqlConnection.Player;
-import sun.launcher.resources.launcher;
 
 public class ChatInterface{
 	
@@ -203,7 +201,7 @@ public class ChatInterface{
 			HBox textHb = new HBox();
 			Text text = new Text(this.cm.formatMessage(message));
 			textHb.getStyleClass().add("chat-message-container");
-			textHb.setBorder(new Border(new BorderStroke(Color.web(this.player.getColor()), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 5.0), Insets.EMPTY)));
+			textHb.setBorder(new Border(new BorderStroke(Color.web(this.player.getColorValue()), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 5.0), Insets.EMPTY)));
 			text.getStyleClass().add("chat-message");
 			
 			text.wrappingWidthProperty().set(bp.getPrefWidth());

@@ -22,7 +22,8 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345" };
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+	};
 
 	//###################################################################################################################
 	// Verbindung aufbauen
@@ -234,6 +235,46 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static Lobby getLobby (int lobbyId) {
+		Lobby lobby = null;
+		String queryLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d",lobbyId);
+		
+		try{
+			ResultSet rs = getStatement().executeQuery(queryLeader);
+			rs.next();
+			int leaderId = rs.getInt(1);
+			rs.close();
+			
+			lobby = new Lobby(lobbyId, leaderId);
+			
+			for (int playerId : SqlHelper.getPlayerIdsFromLobby(lobbyId)) {
+				System.out.println(SqlHelper.getSelectedColorValue(playerId, lobbyId));
+				lobby.addPlayer(new Player(playerId, SqlHelper.getPlayerName(playerId), lobby, SqlHelper.getSelectedColorValue(playerId, lobbyId)));
+			}
+
+		} catch(Exception e){
+			System.out.println("Fehler beim holen des Besitzers des Landes");
+			e.printStackTrace();
+		}
+		return lobby;
+	}
+
+	public static String getSelectedColorValue (int playerId, int lobbyId) {
+		String query = String.format("SELECT c.value FROM color_player cp, color c WHERE cp.color_id = c.color_id AND cp.player_id = %d AND cp.lobby_id = %d",playerId, lobbyId);
+		String colorValue = null;
+		try{
+			ResultSet rs = getStatement().executeQuery(query);
+			rs.next();
+			colorValue = rs.getString(1);
+			rs.close();
+
+		}catch(Exception e){
+			System.out.println("Fehler beim holen der Farbe des Spielers");
+			e.printStackTrace();
+		}
+		return colorValue;
 	}
 
 	/**
@@ -555,7 +596,6 @@ public class SqlHelper {
             getStatement().executeUpdate(sql);
         } catch (SQLException e) {
             System.out.println("Fehler beim einfügen der Farbe");
-            e.printStackTrace();
         }
     }
 

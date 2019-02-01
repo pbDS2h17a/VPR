@@ -10,6 +10,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.paint.Color;
 import javafx.util.converter.IntegerStringConverter;
+import network.ChatInterface;
 import sqlConnection.Country;
 import sqlConnection.Player;
 
@@ -564,7 +565,7 @@ public class GameMechanics {
 	 * @param activePlayer Player
 	 */
 	public void updatePlayerInterface(Player activePlayer) {
-		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColor()));
+		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColorValue()));
 		this.match.setInventoryCountryLabel(activePlayer.getCountryList().size());
 		this.match.setInventoryUnitsLabel(activePlayer.getUnassignedUnits());
 	}
