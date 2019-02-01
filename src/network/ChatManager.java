@@ -44,15 +44,28 @@ public class ChatManager {
 		return SqlHelper.getChatHistory(timestamp, lobby_id);
 	}
 	
-	
+	/**
+	 * Formatiert die Nachricht für das Chatfenster.
+	 * @param message zu formatierende Nachricht
+	 * @return Formatierte Nachricht
+	 */
 	public String formatMessage(List<String> message) {
 		return String.format("%s [%s:%s] %s", message.get(0), message.get(1).substring(8,10), message.get(1).substring(10,12), message.get(2));
 	}
 	
+	/**
+	 * Sendet die Nachricht an die Datenbank
+	 * @param message zu sendende Nachricht
+	 * @throws SQLException
+	 */
 	public void sendMessage(String message) throws SQLException {
 		SqlHelper.sendMessage(message, player_id, lobby_id);
 	}
 	
+	/**
+	 * Zeitstempel holen
+	 * @return Aktueller Zeitstempel
+	 */
 	public long getTimestamp() {
 		LocalDateTime dt = LocalDateTime.now();
 		long timestamp = 0;
