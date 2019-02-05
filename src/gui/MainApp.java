@@ -100,6 +100,7 @@ public class MainApp extends Application {
 		
 		// Setzt den Titel für die Anwendung in die Scene und startet sie in der Main
 		stage.setTitle("CONQUER | All risk all fun");
+		scene.getStylesheets().add("resources/style.css");
 		stage.setScene(scene);
 		stage.show();
 
