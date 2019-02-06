@@ -601,6 +601,10 @@ public class MainApp extends Application {
 	
 	/**
 	 * Schreibt neue Werte in DB und GUI
+	 * Aktualisiert:
+	 * Besitzer
+	 * Einheiten
+	 * Farbe (Land+Einheiten Icon)
 	 * @param country
 	 * @param lobby
 	 */
@@ -627,42 +631,40 @@ public class MainApp extends Application {
 
 	        public void handle(long currentNanoTime) {
 	        	// Aktualisiert die Lobby
-				
-	        	if(listenLobby) {
 
-	        		System.out.println("Test");
-	        		
-	        	}
-				
-	        	if(listenGame) {
+				// Aktualisierung alle 500ms
+				if(count != 0 && count % 30 == 0) {
+					// Count zurücksetzen
+					count = 0;
 
-	        		// GUI Updater
-	        		long newLastChange = SqlHelper.getLastChange(lobbyId);
-	        		
-		        	if(count != 0 && count % 30 == 0) {
-		        		count = 0;
-		        		
+					// Update Listener in Lobby
+					if(listenLobby) {
+						int playerCount = SqlHelper.getPlayerIdsFromLobby(lobbyFX.getLobby().getLobbyId()).size();
+						System.out.println(playerCount);
+					}
+
+					// UpdateListener im Spiel
+					if(listenGame) {
+						// GUI Updater
+						// Lastchange aus DB auslesen
+						long newLastChange = SqlHelper.getLastChange(lobbyId);
+						// Nur wenn die neue lastChangeID größer ist als die eigene wird aktualisiert
 						if(newLastChange > currentLastChange) {
-							System.out.println("Änderungen");
-							
+							// Debug ausgabe
+							System.out.println("Änderungen in Länder");
+
 							// Akualisiert alle Länder
 							for (Country country : matchFX.getCountryArray()) {
 								updateCountry(country,lobbyFX.getLobby());
 							}
-							
-							SqlHelper.insertPlayer("Bob", lobbyFX.getLobby().getLobbyId());
-							
-							
-							
-							
 
+							SqlHelper.insertPlayer("Bob", lobbyFX.getLobby().getLobbyId());
+							// LastChange akualisieren
 							currentLastChange = newLastChange;
 						}
-		        	}
-		        	count++;
-
+					}
 	        	}
-
+				count++;
 
 	            // Wir erhalten eine Liste welches die IDs aller Spieler enthählt,
 	            // die sich zurzeit in der lobby befinden
@@ -818,8 +820,6 @@ public class MainApp extends Application {
 		lobbyFX.guiAddPlayer(player.getSlotId());
 		lobbyFX.getLobby().addPlayer(player);
 		player.setColorValue("000000");
-
-
 		// Erstellt das ChatInterface und positioniert es in der Lobby
 		chatFX = new ChatInterface(player);
 		ctnApp.getChildren().add(chatFX.getPane());
