@@ -40,7 +40,8 @@ public class MainApp extends Application {
 	private boolean isTransitioning = false;
 	private boolean isMatchActive = false;
 	private Scene scene = new Scene(app);
-	private boolean listen = false;
+	private boolean listenGame = false;
+	private boolean listenLobby = false;
 	private Player player;
 
     // Spiel-Oberflächen
@@ -144,6 +145,7 @@ public class MainApp extends Application {
 	    	titleFX.setLogoAnimated(false);
 	    	// Debug ausgabe Lobby ID
 	    	lobbyFX.setLobby(new Lobby());
+	    	listenLobby = true;
 	    	lobbyId = lobbyFX.getLobby().getLobbyId();
 			System.out.println(lobbyFX.getLobby().getLobbyId());
 
@@ -177,7 +179,7 @@ public class MainApp extends Application {
 	    	
 	    	// Sound für den gedrückten Button wird abgespielt
 	    	mpFX.playBtnSFX();
-
+	    	
 	    	//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	//createPlayer();
 
@@ -316,16 +318,19 @@ public class MainApp extends Application {
 			joinFX.getUserList()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 		    	// Beendet die Animation des Logos
 		    	titleFX.setLogoAnimated(false);
-				// Startet die Animation für den Übergang zwischen zwei Panes
+				
 
 				// Lobby wird basierend auf der Auswahl gesetzt
 		    	lobbyFX.setLobby(SqlHelper.getLobby(joinFX.getLobbyIdArray()[tmp]));
 		    	createPlayer();
+		    	
 		    	for (Player player : lobbyFX.getLobby().getPlayers()) {
 		    		lobbyFX.guiAddPlayer(player.getSlotId());
 		    		lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
 		    		lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
 				}
+		    	
+		    	// Startet die Animation für den Übergang zwischen zwei Panes
 				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
 			});
 		}
@@ -593,7 +598,12 @@ public class MainApp extends Application {
 		 ctn_app.relocate(stage.getWidth()/2 - ctn_app.getPrefWidth()/2, stage.getHeight()/2 - ctn_app.getPrefHeight()/2);
 	}
 	
-	public void updateDisplayCountry(Country country, Lobby lobby) {
+	/**
+	 * Schreibt neue Werte in DB und GUI
+	 * @param country
+	 * @param lobby
+	 */
+	public void updateCountry(Country country, Lobby lobby) {
 		int countryId = country.getCountryId();
 		int lobbyId = lobby.getLobbyId();
 		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
@@ -604,6 +614,7 @@ public class MainApp extends Application {
 		country.setFill(Color.web(country.getOwner().getColorValue()));
 		country.getRectangle().setFill(country.getFill());
 	}
+	
 	private int lobbyId;
 	/**
 	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
@@ -614,18 +625,35 @@ public class MainApp extends Application {
 			private long currentLastChange = 0;
 
 	        public void handle(long currentNanoTime) {
-	        	if(listen) {
+	        	// Aktualisiert die Lobby
+				
+	        	if(listenLobby) {
+
+	        		System.out.println("Test");
+	        		
+	        	}
+				
+	        	if(listenGame) {
 
 	        		// GUI Updater
 	        		long newLastChange = SqlHelper.getLastChange(lobbyId);
+	        		
 		        	if(count != 0 && count % 30 == 0) {
 		        		count = 0;
+		        		
 						if(newLastChange > currentLastChange) {
 							System.out.println("Änderungen");
 							
+							// Akualisiert alle Länder
 							for (Country country : matchFX.getCountryArray()) {
-								updateDisplayCountry(country,lobbyFX.getLobby());
+								updateCountry(country,lobbyFX.getLobby());
 							}
+							
+							SqlHelper.insertPlayer("Bob", lobbyFX.getLobby().getLobbyId());
+							
+							
+							
+							
 
 							currentLastChange = newLastChange;
 						}
