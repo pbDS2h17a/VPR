@@ -213,7 +213,7 @@ public class SqlHelper {
 		return unitCount;
 	}
 
-	public static Player getPlayerFromId(int playerId) {
+	public static Player getPlayerFromId(int playerId, Lobby lobby) {
 //		int playerId, String name, Lobby lobby, String colorValue
 		String playerName = null;
 		String colorValue = null;
@@ -245,7 +245,7 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 
-		return new Player(playerId, playerName, getLobby(lobbyId), colorValue);
+		return new Player(playerId, playerName, lobby, colorValue);
 
 	}
 
@@ -287,8 +287,7 @@ public class SqlHelper {
 			lobby = new Lobby(lobbyId, leaderId);
 			
 			for (int playerId : SqlHelper.getPlayerIdsFromLobby(lobbyId)) {
-				System.out.println(SqlHelper.getSelectedColorValue(playerId, lobbyId));
-				lobby.addPlayer(new Player(playerId, SqlHelper.getPlayerName(playerId), lobby, SqlHelper.getSelectedColorValue(playerId, lobbyId)));
+				lobby.addPlayer(getPlayerFromId(playerId, lobby));
 			}
 
 		} catch(Exception e){

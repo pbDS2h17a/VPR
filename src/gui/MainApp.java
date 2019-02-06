@@ -163,14 +163,14 @@ public class MainApp extends Application {
 			lobbyFX.getLobby().clearPlayers();
 
 			//Spieler-Objekt und Chat-Objekt werden erstellt
-	    	createPlayer();
+	    	createPlayer("FFD800");
 	    	lobbyFX.getLobby().setLobbyLeader(player);
 	    	lobbyFX.guiChangePlayerName(player.getSlotId(),player.getName());
 	    	lobbyFX.guiChangeColor(player.getSlotId(), player.getColorValue());
 	    	// Debug Spieler
-			createPlayer2();
-			lobbyFX.guiChangePlayerName(player.getSlotId(),player.getName());
-			lobbyFX.guiChangeColor(player.getSlotId(), player.getColorValue());
+//			createPlayer2();
+//			lobbyFX.guiChangePlayerName(player.getSlotId(),player.getName());
+//			lobbyFX.guiChangeColor(player.getSlotId(), player.getColorValue());
 	    });
 	   
 	    // Wenn der Button zum Spiel beitreten gedrückt wird
@@ -185,7 +185,7 @@ public class MainApp extends Application {
 	    	mpFX.playBtnSFX();
 	    	
 	    	//Spieler-Objekt und Chat-Objekt werden erstellt
-	    	//createPlayer();
+	    	createPlayer("000000");
 
 			System.out.println(lobbyFX.getLobby());
 
@@ -326,13 +326,8 @@ public class MainApp extends Application {
 
 				// Lobby wird basierend auf der Auswahl gesetzt
 		    	lobbyFX.setLobby(SqlHelper.getLobby(joinFX.getLobbyIdArray()[tmp]));
-		    	createPlayer();
 		    	
-		    	for (Player player : lobbyFX.getLobby().getPlayers()) {
-		    		lobbyFX.guiAddPlayer(player.getSlotId());
-		    		lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
-		    		lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
-				}
+//
 		    	
 		    	// Startet die Animation für den Übergang zwischen zwei Panes
 				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
@@ -642,21 +637,16 @@ public class MainApp extends Application {
 
 					// Update Listener in Lobby
 					if(listenLobby) {
-						Lobby lobby = lobbyFX.getLobby();
-						ArrayList<Integer> playerIds= SqlHelper.getPlayerIdsFromLobby(lobbyFX.getLobby().getLobbyId());
-						for (Player player : lobby.getPlayers()) {
-							if(playerIds.contains(playerIds)) {
-								playerIds.remove(player.getPlayerId());
-							}
-						}
+					lobbyFX.setLobby(SqlHelper.getLobby(lobbyFX.getLobby().getLobbyId()));
 
-						for (int playerId : playerIds) {
-							System.out.println("Neue Spieler:"+playerId);
-							Player tmpPlayer = SqlHelper.getPlayerFromId(playerId);
-							lobby.addPlayer(tmpPlayer);
-						}
+					for (Player player : lobbyFX.getLobby().getPlayers()) {
+						lobbyFX.guiAddPlayer(player.getSlotId());
+						lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
+						lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
+					}
 
-						
+
+
 					}
 
 					// UpdateListener im Spiel
@@ -818,17 +808,17 @@ public class MainApp extends Application {
 	 * Erstellt ein Player-Objekt und ein zugehöriges Chat-Interface
 	 * @author pbs2h17asc
 	 */
-	private void createPlayer() {
+	private void createPlayer(String color) {
 		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
 		lobbyFX.guiAddPlayer(player.getSlotId());
 		lobbyFX.getLobby().addPlayer(player);
-		player.setColorValue("FFD800");
+		player.setColorValue(color);
 
 		// Erstellt das ChatInterface und positioniert es in der Lobby
-		chatFX = new ChatInterface(player);
-		chatFX.getPane().setVisible(false);
-		ctnApp.getChildren().add(chatFX.getPane());
-		chatFX.getPane().relocate(42, 420);
+//		chatFX = new ChatInterface(player);
+//		chatFX.getPane().setVisible(false);
+//		ctnApp.getChildren().add(chatFX.getPane());
+//		chatFX.getPane().relocate(42, 420);
 	}
 
 	private void createPlayer2() {
@@ -836,10 +826,12 @@ public class MainApp extends Application {
 		lobbyFX.guiAddPlayer(player.getSlotId());
 		lobbyFX.getLobby().addPlayer(player);
 		player.setColorValue("000000");
+
 		// Erstellt das ChatInterface und positioniert es in der Lobby
-		chatFX = new ChatInterface(player);
-		ctnApp.getChildren().add(chatFX.getPane());
-		chatFX.getPane().relocate(42, 420);
+//		chatFX = new ChatInterface(player);
+//		chatFX.getPane().setVisible(false);
+//		ctnApp.getChildren().add(chatFX.getPane());
+//		chatFX.getPane().relocate(42, 420);
 	}
 
 }
