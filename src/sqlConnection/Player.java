@@ -33,7 +33,7 @@ public class Player {
 	 */
 	public Player(Lobby lobby, int slotId) {
 		System.out.println("Ein Spieler wurde erstellt");
-		this.name = String.format("Tester %d", slotId);
+		this.name = String.format("Spieler %d", slotId);
 		this.countryList = new ArrayList<>();
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
