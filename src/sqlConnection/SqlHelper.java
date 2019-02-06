@@ -22,7 +22,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azzTest","pbs2h17azz","Bib12345"
 	};
 
 	//###################################################################################################################
@@ -212,6 +212,43 @@ public class SqlHelper {
 		}
 		return unitCount;
 	}
+
+	public static Player getPlayerFromId(int playerId) {
+//		int playerId, String name, Lobby lobby, String colorValue
+		String playerName = null;
+		String colorValue = null;
+		int lobbyId = -1;
+
+		String queryPlayer = String.format("SELECT name, lobby_id FROM player WHERE player_id = %d", playerId);
+		try{
+			ResultSet rs = getStatement().executeQuery(queryPlayer);
+			rs.next();
+			playerName = rs.getString(1);
+			lobbyId = rs.getInt(2);
+			rs.close();
+		}catch(Exception e){
+			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
+			e.printStackTrace();
+		}
+
+
+		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
+				" WHERE player_id = %d AND lobby_id = %d;",playerId, lobbyId );
+
+		try{
+			ResultSet rs = getStatement().executeQuery(queryColor);
+			rs.next();
+			colorValue = rs.getString(1);
+			rs.close();
+		}catch(Exception e){
+			System.out.println("Fehler beim holen der Einheiten im Land");
+			e.printStackTrace();
+		}
+
+		return new Player(playerId, playerName, getLobby(lobbyId), colorValue);
+
+	}
+
 	/**
 	 * Methode zum Auslesen des Besatzers eines Landes
 	 * @param countryId

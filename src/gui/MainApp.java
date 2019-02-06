@@ -19,6 +19,9 @@ import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Startet das gesamte Spiel, indem die anderen Oberflächen-Klassen eingebunden werden
  * und die gesamte Scene administriert.
@@ -639,8 +642,21 @@ public class MainApp extends Application {
 
 					// Update Listener in Lobby
 					if(listenLobby) {
-						int playerCount = SqlHelper.getPlayerIdsFromLobby(lobbyFX.getLobby().getLobbyId()).size();
-						System.out.println(playerCount);
+						Lobby lobby = lobbyFX.getLobby();
+						ArrayList<Integer> playerIds= SqlHelper.getPlayerIdsFromLobby(lobbyFX.getLobby().getLobbyId());
+						for (Player player : lobby.getPlayers()) {
+							if(playerIds.contains(playerIds)) {
+								playerIds.remove(player.getPlayerId());
+							}
+						}
+
+						for (int playerId : playerIds) {
+							System.out.println("Neue Spieler:"+playerId);
+							Player tmpPlayer = SqlHelper.getPlayerFromId(playerId);
+							lobby.addPlayer(tmpPlayer);
+						}
+
+						
 					}
 
 					// UpdateListener im Spiel
