@@ -190,6 +190,18 @@ public class MainApp extends Application {
 	    	//mpFX.playBtnSFX();
 	    });
 	    
+	    // Wenn der Button zum Tutorial gedrückt wird
+	    titleFX.getBtnTutorial().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	    	// Öffnet die Anleitung die sich Online beim Hersteller befindet
+	    	String url_open ="https://risiko.hasbro.com/wp-content/uploads/2015/04/Risiko_Classic_Spielanleitung.pdf";
+			try {
+				java.awt.Desktop.getDesktop().browse(java.net.URI.create(url_open));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    });
+	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
 	    lobbyFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Startet die Animation des Logos
