@@ -215,7 +215,12 @@ public class LobbyFX {
 	 */
 	public void guiChangeColor(int slotId, String colorValue) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
-		triangleArray[slotId].setFill(Color.web(colorValue));
+		if(colorValue != null) {
+			triangleArray[slotId].setFill(Color.web(colorValue));
+		} else {
+			triangleArray[slotId].setFill(Color.GREY);
+		}
+
 		// Wenn auch schon ein Name übergeben wurde...
 		if(!labelArray[slotId].getText().isEmpty()) {
 			// ...wird der Bereit-Button aktiviert

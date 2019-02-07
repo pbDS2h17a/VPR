@@ -163,7 +163,7 @@ public class MainApp extends Application {
 			lobbyFX.getLobby().clearPlayers();
 
 			//Spieler-Objekt und Chat-Objekt werden erstellt
-	    	createPlayer("FFD800");
+	    	createPlayer();
 	    	lobbyFX.getLobby().setLobbyLeader(player);
 	    	lobbyFX.guiChangePlayerName(player.getSlotId(),player.getName());
 	    	lobbyFX.guiChangeColor(player.getSlotId(), player.getColorValue());
@@ -331,7 +331,7 @@ public class MainApp extends Application {
 
 				// Lobby wird basierend auf der Auswahl gesetzt
 		    	lobbyFX.setLobby(SqlHelper.getLobby(joinFX.getLobbyIdArray()[tmp]));
-		    	
+		    	createPlayer();
 //
 		    	
 		    	// Startet die Animation für den Übergang zwischen zwei Panes
@@ -814,11 +814,10 @@ public class MainApp extends Application {
 	 * Erstellt ein Player-Objekt und ein zugehöriges Chat-Interface
 	 * @author pbs2h17asc
 	 */
-	private void createPlayer(String color) {
+	private void createPlayer() {
 		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
 		lobbyFX.guiAddPlayer(player.getSlotId());
 		lobbyFX.getLobby().addPlayer(player);
-		player.setColorValue(color);
 
 		// Erstellt das ChatInterface und positioniert es in der Lobby
 //		chatFX = new ChatInterface(player);

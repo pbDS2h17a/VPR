@@ -241,8 +241,8 @@ public class SqlHelper {
 			colorValue = rs.getString(1);
 			rs.close();
 		}catch(Exception e){
-			System.out.println("Fehler beim holen der Einheiten im Land");
-			e.printStackTrace();
+//			System.out.println("Fehler beim holen der Farbe");
+//			e.printStackTrace();
 		}
 
 		return new Player(playerId, playerName, lobby, colorValue);
@@ -291,8 +291,8 @@ public class SqlHelper {
 			}
 
 		} catch(Exception e){
-			System.out.println("Fehler beim holen des Besitzers des Landes");
-			e.printStackTrace();
+			//System.out.println("Fehler beim holen des Besitzers des Landes");
+			//e.printStackTrace();
 		}
 		return lobby;
 	}
