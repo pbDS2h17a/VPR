@@ -487,6 +487,7 @@ public class MatchFX {
 		Random rand = new Random();
 		// Verteilung der Länder
 		for (int i = 0; i < countryArray.length; i++) {
+
 			// Zufälliges Land aus der Länder-Liste wird ausgewählt
 			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));

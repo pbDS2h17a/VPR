@@ -583,11 +583,10 @@ public class SqlHelper {
 	 */
 	public static int insertPlayer(String name, int lobbyId) {
 		String query = String.format("INSERT INTO player (name, lobby_id) VALUES('%s', %d);", name, lobbyId);
-		Statement stmt = SqlHelper.getStatement();
 		int id = -1;
 		try {
-			stmt.executeUpdate(query,Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			SqlHelper.getStatement().executeUpdate(query,Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = SqlHelper.getStatement().getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
 			rs.close();
