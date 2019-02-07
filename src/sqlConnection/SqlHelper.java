@@ -715,6 +715,7 @@ public class SqlHelper {
 		String query = String.format("INSERT INTO country_player VALUES(%d, %d, %d, %d);", playerId, countryId, lobbyId, 1);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Es ist ein Fehler beim einfügen in country_player aufgetreten");
 			e.printStackTrace();
@@ -775,6 +776,7 @@ public class SqlHelper {
 		String query = String.format("UPDATE country_player SET player_id = %d  WHERE country_id = %d AND lobby_id= %d;", playerId, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim updaten vom country owner");
 			e.printStackTrace();
@@ -791,6 +793,7 @@ public class SqlHelper {
 		String query = String.format("UPDATE country_player SET unit_count = %d WHERE country_id = %d AND lobby_id= %d;", amountUnits, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim aktuallisieren der Units");
 			e.printStackTrace();
