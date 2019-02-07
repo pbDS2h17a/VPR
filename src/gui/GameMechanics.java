@@ -412,7 +412,7 @@ public class GameMechanics {
 		if(cDef.getUnits() - fightB[1] == 0) {
 			// ...wird das Land erobert und erhält die Informationen des Eroberers
 			cDef.setUnits(fightA[0] - fightA[1] + additionalAttacker);
-			cDef.setOwner(cAtk.getOwner());
+			cDef.setOwner(cAtk.getOwner(), cDef);
 			cDef.setFill(cAtk.getFill());
 			// ... werden alle eingesetzten Einheiten von Land A abgezogen
 			cAtk.setUnits(cAtk.getUnits() - fightA[0] - additionalAttacker);

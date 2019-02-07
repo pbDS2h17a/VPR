@@ -5,6 +5,7 @@ import network.ResultSetManager;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SqlHelper {
@@ -213,10 +214,29 @@ public class SqlHelper {
 		return unitCount;
 	}
 
+	public static ArrayList<Country> getPlayerCountries(int playerId, int lobbyId) {
+		//TODO geht vermutlich nicht!!
+		String query = String.format("SELECT country_id FROM country_player WHERE lobby_id = %d AND player_id = %d",playerId, lobbyId);
+		ArrayList<Country> countryList = new ArrayList<Country>();
+		try{
+			ResultSet rs = getStatement().executeQuery(query);
+			while(rs.next()) {
+				countryList.add(new Country(rs.getInt(1)+1));
+			}
+			rs.close();
+		}catch(Exception e){
+			System.out.println("Fehler beim holen der Einheiten im Land");
+			e.printStackTrace();
+		}
+
+		return countryList;
+	}
+
 	public static Player getPlayerFromId(int playerId, Lobby lobby) {
 //		int playerId, String name, Lobby lobby, String colorValue
 		String playerName = null;
 		String colorValue = null;
+		Country[] countryArray = null;
 		int lobbyId = -1;
 
 		String queryPlayer = String.format("SELECT name, lobby_id FROM player WHERE player_id = %d", playerId);
@@ -225,6 +245,7 @@ public class SqlHelper {
 			rs.next();
 			playerName = rs.getString(1);
 			lobbyId = rs.getInt(2);
+
 			rs.close();
 		}catch(Exception e){
 			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
@@ -245,7 +266,7 @@ public class SqlHelper {
 //			e.printStackTrace();
 		}
 
-		return new Player(playerId, playerName, lobby, colorValue);
+		return new Player(playerId, playerName, lobby, colorValue, getPlayerCountries(playerId,lobbyId));
 
 	}
 
@@ -268,7 +289,7 @@ public class SqlHelper {
 				}
 			}
 		}catch(Exception e){
-			System.out.println("Fehler beim holen des Besatzers des Landes");
+			System.out.println("Fehler beim holen des Besitzers des Landes");
 			e.printStackTrace();
 		}
 		return null;
@@ -287,7 +308,9 @@ public class SqlHelper {
 			lobby = new Lobby(lobbyId, leaderId);
 			
 			for (int playerId : SqlHelper.getPlayerIdsFromLobby(lobbyId)) {
-				lobby.addPlayer(getPlayerFromId(playerId, lobby));
+				Player tmpPlayer = getPlayerFromId(playerId, lobby);
+				System.out.println(tmpPlayer.toString());
+				lobby.addPlayer(tmpPlayer);
 			}
 
 		} catch(Exception e){
@@ -385,7 +408,7 @@ public class SqlHelper {
 	public static int getLastChange(int lobbyId){
 		String query = String.format("SELECT last_change FROM lobby WHERE lobby_id = %d", lobbyId);
 		int lastChange = -1;
-
+		
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
@@ -393,7 +416,7 @@ public class SqlHelper {
 			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Fehler beim lesen des LastChange");
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 
 		return lastChange;
@@ -850,8 +873,8 @@ public class SqlHelper {
 	 * @param lobbyId lobby_id
 	 */
 	public static void updateLastChange(int lobbyId) {
-		long currentLastChange = SqlHelper.getLastChange(lobbyId);
-		String query = String.format("UPDATE lobby SET last_change = %d;",(currentLastChange + 1));
+		int currentLastChange = SqlHelper.getLastChange(lobbyId);
+		String query = String.format("UPDATE lobby SET last_change = %d WHERE lobby_id = %d;",(currentLastChange + 1), lobbyId);
 		try {
 			getStatement().executeUpdate(query);
 		} catch (SQLException e) {

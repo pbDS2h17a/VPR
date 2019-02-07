@@ -150,7 +150,6 @@ public class MainApp extends Application {
 	    	// Debug ausgabe Lobby ID
 	    	lobbyFX.setLobby(new Lobby());
 	    	listenLobby = true;
-	    	lobbyId = lobbyFX.getLobby().getLobbyId();
 			System.out.println(lobbyFX.getLobby().getLobbyId());
 
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
@@ -171,23 +170,12 @@ public class MainApp extends Application {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
 
-	    	// Horcht auf Lobby änderungen
-			listenLobby = true;
-	    	
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnJoin(), titleFX.getContainer(), joinFX.getContainer());
 	    	
 	    	// Sound für den gedrückten Button wird abgespielt
 	    	mpFX.playBtnSFX();
-	    	
-	    	//Spieler-Objekt und Chat-Objekt werden erstellt
-	    	createPlayer();
 
-	    	//SqlHelper.insertPlayer(player.getName(),player.getLobbyId());
-
-			//System.out.println(lobbyFX.getLobby());
-
-	    	//mpFX.playBtnSFX();
 	    });
 	    
 	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
@@ -226,9 +214,15 @@ public class MainApp extends Application {
 				mpFX.stopBgmStart();
 				mpFX.playBgmGame();
 				
-				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-				matchFX.initializeMatch(lobbyFX);
-				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
+				// Lobby Leader erstellt GameMechanics und initalisiert das Spiel
+				if(player.getPlayerId() == lobbyFX.getLobby().getLeaderId()) {
+					matchFX.initializeMatch(lobbyFX);
+					matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
+				}
+
+				// Hörtauf die Lobby abzuhorchen
+				listenLobby = false;
+				// Fängt an das Spiel abzuhorchen
 				listenGame = true;
 
 	    	}
@@ -322,11 +316,16 @@ public class MainApp extends Application {
 			joinFX.getUserList()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 		    	// Beendet die Animation des Logos
 		    	titleFX.setLogoAnimated(false);
-				
+
+
 
 				// Lobby wird basierend auf der Auswahl gesetzt
 		    	lobbyFX.setLobby(SqlHelper.getLobby(joinFX.getLobbyIdArray()[tmp]));
+				//Spieler-Objekt und Chat-Objekt werden erstellt
 		    	createPlayer();
+				listenLobby = true;
+
+				System.out.println("Lobby beigetreten:"+lobbyFX.getLobby().getLobbyId());
 
 		    	// Startet die Animation für den Übergang zwischen zwei Panes
 				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
@@ -603,21 +602,21 @@ public class MainApp extends Application {
 	 * Einheiten
 	 * Farbe (Land+Einheiten Icon)
 	 * @param country
-	 * @param lobby
 	 */
 	public void updateCountry(Country country, Lobby lobby) {
 		int countryId = country.getCountryId();
-		int lobbyId = lobby.getLobbyId();
-		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
-
-		country.setOwner(SqlHelper.getCountyOwner(countryId, lobby));
-		country.setUnits(newUnits);
-		country.getUnitLabel().setText(String.valueOf(newUnits));
-		country.setFill(Color.web(country.getOwner().getColorValue()));
-		country.getRectangle().setFill(country.getFill());
+//		int lobbyId = lobby.getLobbyId();
+//		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
+//
+//		System.out.println("Hallo!");
+//
+//		country.setOwner(SqlHelper.getCountyOwner(countryId, lobby),country);
+//		country.setUnits(newUnits);
+//		country.getUnitLabel().setText(String.valueOf(newUnits));
+//		country.setFill(Color.web(country.getOwner().getColorValue()));
+//		country.getRectangle().setFill(country.getFill());
 	}
-	
-	private int lobbyId;
+
 	/**
 	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
 	 */
@@ -652,12 +651,14 @@ public class MainApp extends Application {
 					if(listenGame) {
 						// GUI Updater
 						// Lastchange aus DB auslesen
-						long newLastChange = SqlHelper.getLastChange(lobbyId);
+						int newLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
 						// Nur wenn die neue lastChangeID größer ist als die eigene wird aktualisiert
 						if(newLastChange > currentLastChange) {
 							// Debug ausgabe
 							System.out.println("Änderungen in Länder");
-
+							for (Player p : lobbyFX.getLobby().getPlayers()) {
+								System.out.println(p);
+							}
 							// Akualisiert alle Länder
 							for (Country country : matchFX.getCountryArray()) {
 								updateCountry(country,lobbyFX.getLobby());

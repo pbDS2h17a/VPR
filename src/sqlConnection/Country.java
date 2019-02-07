@@ -150,18 +150,18 @@ public class Country extends SVGPath {
 	 * Schreibt Daten direkt in die Datenbank
 	 * @param newOwner : Player Objekt
 	 */
-	public void setOwner(Player newOwner) {
+	public void setOwner(Player newOwner, Country country) {
 		// Land wird vom Aktuellen Besitzer entfernt
 		if(this.owner != null) {
-			this.owner.removeCountry(this);
+			this.owner.removeCountry(country);
 		}
 
 		// Beseitzer wird auf den neuen Spieler gesetzt
 		this.owner = newOwner;
 		// Dem neuen Besitzer wird das Land hinzugefügt
-		newOwner.addCountry(this);
+		this.owner.addCountry(country);
 		// Der Besitzer des Landes ändert sich
-		SqlHelper.updateCountryOwner(newOwner.getLobbyId(), newOwner.getPlayerId(),  this.countryId);
+		SqlHelper.updateCountryOwner(this.owner.getLobbyId(), this.owner.getPlayerId(),  this.countryId);
 	}
 	
 	/**

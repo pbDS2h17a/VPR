@@ -49,7 +49,7 @@ public class Player {
 	 * @param name
 	 * @param lobby
 	 */
-	public Player(int playerId, String name, Lobby lobby, String colorValue) {
+	public Player(int playerId, String name, Lobby lobby, String colorValue, ArrayList<Country> countries) {
 		this.playerId = playerId;
 		this.name = name;
 		this.lobby = lobby;
@@ -57,6 +57,7 @@ public class Player {
 		this.slotId = lobby.getNextSlotId();
 		this.countryList = new ArrayList<>();
 		this.colorValue = colorValue;
+		this.countryList = countries;
 	}
 
 	

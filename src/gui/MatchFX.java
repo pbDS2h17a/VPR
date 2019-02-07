@@ -492,7 +492,7 @@ public class MatchFX {
 			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwner(currentPlayer);
+			randomCountry.setOwner(currentPlayer,randomCountry);
 			randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
