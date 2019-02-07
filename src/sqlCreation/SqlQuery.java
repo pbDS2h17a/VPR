@@ -457,8 +457,8 @@ class SqlQuery {
 	static void createTableColorPlayer(){
 		String sqlColorPlayer =
 				" CREATE TABLE IF NOT EXISTS color_player (" +
-				" player_id INT DEFAULT NULL, "+
-				" color_id INT DEFAULT NULL, "+
+				" player_id INT, "+
+				" color_id INT, "+
 				" lobby_id INT, "+
 				" FOREIGN KEY(player_id) REFERENCES player(player_id), " +
 				" FOREIGN KEY(lobby_id) REFERENCES lobby(lobby_id), " +

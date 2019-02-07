@@ -141,8 +141,13 @@ public class Country extends SVGPath {
 	 * @param colorValue String
 	 */
 	public void setColor(String colorValue) {
-		this.setFill(Color.web(colorValue));
-		SqlHelper.updateColor(owner.getPlayerId(),colorValue , owner.getLobbyId());
+		try {
+			SqlHelper.updateColor(owner.getPlayerId(),colorValue , owner.getLobbyId());
+			this.setFill(Color.web(colorValue));
+		} catch (SQLException e) {
+
+		}
+
 	}
 	
 	/**

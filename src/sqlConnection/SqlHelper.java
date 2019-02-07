@@ -2,6 +2,7 @@ package sqlConnection;
 
 import network.ResultSetManager;
 
+import java.awt.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azzTest","pbs2h17azz","Bib12345"
+			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	};
 
 	//###################################################################################################################
@@ -83,8 +84,6 @@ public class SqlHelper {
 	 * (mit Unterstützung der getPlayerName(playerId : int)-Methode).
 	 * @param lobbyId Identifikationsnummer einer Lobby
 	 * @return String Lobbyleadername
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
 	 * @author Jona Petrikowski
 	 * @author Nick Kuhn
 	 */
@@ -215,13 +214,16 @@ public class SqlHelper {
 	}
 
 	public static ArrayList<Country> getPlayerCountries(int playerId, int lobbyId) {
-		//TODO geht vermutlich nicht!!
-		String query = String.format("SELECT country_id FROM country_player WHERE lobby_id = %d AND player_id = %d",playerId, lobbyId);
-		ArrayList<Country> countryList = new ArrayList<Country>();
+		String query = String.format("SELECT country_id FROM country_player WHERE lobby_id = %d AND player_id = %d", lobbyId, playerId);
+		ArrayList<Integer> countryIdList = new ArrayList<>();
+		ArrayList<Country> countryList = new ArrayList<>();
 		try{
 			ResultSet rs = getStatement().executeQuery(query);
+			// Länder dürfen nicht in WHILE block erstellt werden
+			// Da sie ihre Werte aus der DB Ziehen
+			// ein weiterer BD Zugriff in einem offenem DB Zugriff ist nicht möglich
 			while(rs.next()) {
-				countryList.add(new Country(rs.getInt(1)+1));
+				countryIdList.add(rs.getInt(1));
 			}
 			rs.close();
 		}catch(Exception e){
@@ -229,32 +231,18 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 
+		// Länder werden basierend auf IDs erstellt
+		for (int id : countryIdList) {
+			countryList.add(new Country(id));
+		}
+
 		return countryList;
 	}
 
-	public static Player getPlayerFromId(int playerId, Lobby lobby) {
-//		int playerId, String name, Lobby lobby, String colorValue
-		String playerName = null;
+	public static String getColorValueFromPlayer(int playerId, int lobbyId) {
 		String colorValue = null;
-		Country[] countryArray = null;
-		int lobbyId = -1;
-
-		String queryPlayer = String.format("SELECT name, lobby_id FROM player WHERE player_id = %d", playerId);
-		try{
-			ResultSet rs = getStatement().executeQuery(queryPlayer);
-			rs.next();
-			playerName = rs.getString(1);
-			lobbyId = rs.getInt(2);
-
-			rs.close();
-		}catch(Exception e){
-			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
-			e.printStackTrace();
-		}
-
-
 		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
-				" WHERE player_id = %d AND lobby_id = %d;",playerId, lobbyId );
+				" WHERE player_id = %d AND lobby_id = %d;", playerId, lobbyId );
 
 		try{
 			ResultSet rs = getStatement().executeQuery(queryColor);
@@ -262,13 +250,82 @@ public class SqlHelper {
 			colorValue = rs.getString(1);
 			rs.close();
 		}catch(Exception e){
-//			System.out.println("Fehler beim holen der Farbe");
+			System.out.println("Fehler beim holen der Farbe");
 //			e.printStackTrace();
 		}
 
-		return new Player(playerId, playerName, lobby, colorValue, getPlayerCountries(playerId,lobbyId));
-
+		return colorValue;
 	}
+
+
+	/**
+	 * Holt Namen und Farbe eines Spielers in einer Lobby
+	 * @param playerId
+	 * @param lobby
+	 * @return
+	 */
+	public static Player getLobbyPlayerFromId(int playerId, Lobby lobby) {
+		String playerName = null;
+		String colorValue = null;
+		int lobbyId = lobby.getLobbyId();
+
+		String queryPlayer = String.format("SELECT name FROM player WHERE player_id = %d AND lobby_id = %d",
+				playerId, lobbyId);
+
+		try{
+			ResultSet rs = getStatement().executeQuery(queryPlayer);
+			rs.next();
+			playerName = rs.getString(1);
+			rs.close();
+		}catch(Exception e){
+			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
+			e.printStackTrace();
+		}
+
+		colorValue = getColorValueFromPlayer(playerId, lobbyId);
+
+
+
+		return new Player(playerId, playerName, lobby, colorValue);
+	}
+
+//	public static Player getPlayerFromId(int playerId, Lobby lobby) {
+////		int playerId, String name, Lobby lobby, String colorValue
+//		String playerName = null;
+//		String colorValue = null;
+//		Country[] countryArray = null;
+//		int lobbyId = -1;
+//
+//		String queryPlayer = String.format("SELECT name, lobby_id FROM player WHERE player_id = %d", playerId);
+//		try{
+//			ResultSet rs = getStatement().executeQuery(queryPlayer);
+//			rs.next();
+//			playerName = rs.getString(1);
+//			lobbyId = rs.getInt(2);
+//
+//			rs.close();
+//		}catch(Exception e){
+//			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
+//			e.printStackTrace();
+//		}
+//
+//
+//		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
+//				" WHERE player_id = %d AND lobby_id = %d;",playerId, lobbyId );
+//
+//		try{
+//			ResultSet rs = getStatement().executeQuery(queryColor);
+//			rs.next();
+//			colorValue = rs.getString(1);
+//			rs.close();
+//		}catch(Exception e){
+////			System.out.println("Fehler beim holen der Farbe");
+////			e.printStackTrace();
+//		}
+//
+//		return new Player(playerId, playerName, lobby, colorValue, getPlayerCountries(playerId,lobbyId));
+//
+//	}
 
 	/**
 	 * Methode zum Auslesen des Besatzers eines Landes
@@ -295,6 +352,11 @@ public class SqlHelper {
 		return null;
 	}
 
+	/**
+	 * Holt Spielerdaten einer Lobby
+	 * @param lobbyId
+	 * @return
+	 */
 	public static Lobby getLobby (int lobbyId) {
 		Lobby lobby = null;
 		String queryLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d",lobbyId);
@@ -305,10 +367,10 @@ public class SqlHelper {
 			int leaderId = rs.getInt(1);
 			rs.close();
 			
-			lobby = new Lobby(lobbyId, leaderId);
+			lobby = new Lobby(null, lobbyId, leaderId);
 			
 			for (int playerId : SqlHelper.getPlayerIdsFromLobby(lobbyId)) {
-				Player tmpPlayer = getPlayerFromId(playerId, lobby);
+				Player tmpPlayer = getLobbyPlayerFromId(playerId, lobby);
 				System.out.println(tmpPlayer.toString());
 				lobby.addPlayer(tmpPlayer);
 			}
@@ -318,22 +380,6 @@ public class SqlHelper {
 			//e.printStackTrace();
 		}
 		return lobby;
-	}
-
-	public static String getSelectedColorValue (int playerId, int lobbyId) {
-		String query = String.format("SELECT c.value FROM color_player cp, color c WHERE cp.color_id = c.color_id AND cp.player_id = %d AND cp.lobby_id = %d",playerId, lobbyId);
-		String colorValue = null;
-		try{
-			ResultSet rs = getStatement().executeQuery(query);
-			rs.next();
-			colorValue = rs.getString(1);
-			rs.close();
-
-		}catch(Exception e){
-			System.out.println("Fehler beim holen der Farbe des Spielers");
-			e.printStackTrace();
-		}
-		return colorValue;
 	}
 
 	/**
@@ -578,6 +624,7 @@ public class SqlHelper {
 	}
 
 	public static int getColorId(String colorValue) {
+		System.out.println("Farbwert:"+colorValue);
 		String query = String.format("SELECT color_id FROM color WHERE value = '%s'", colorValue);
 		int colorId = -1;
 		try {
@@ -587,7 +634,7 @@ public class SqlHelper {
 			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Fehler beim auslesen der FarbId");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return colorId;
@@ -630,11 +677,11 @@ public class SqlHelper {
 	 */
 	public static int insertLobby() {
 		int id = -1;
-		ResultSet rs = null;
+
 		try {
 			// RETURN_GENERATED_KEYS gibt die Id des Autoincrement zurück
 			getStatement().executeUpdate("INSERT INTO lobby (last_change) VALUES (1)", Statement.RETURN_GENERATED_KEYS);
-			rs = getStatement().getGeneratedKeys();
+			ResultSet rs = getStatement().getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
 			rs.close();
@@ -645,35 +692,24 @@ public class SqlHelper {
 		return id;
 	}
 
-	public static void insertColor(int lobbyId) {
-		for (int i = 0; i < 6; i++) {
-			String sql = String.format("INSERT INTO color_player(lobby_id) VALUES(%d)", lobbyId);
-			try {
-				getStatement().executeUpdate(sql);
-			} catch (SQLException e) {
-				System.out.println("Fehler beim einfügen der Farbe");
-			}
-		}
-	}
-
-    public static void updateColor(int playerId, String colorValue, int lobbyId) {
+    public static void updateColor(int playerId, String colorValue, int lobbyId) throws SQLException {
 
         int colorId = getColorId(colorValue);
 
      	String delete = String.format("DELETE FROM color_player WHERE player_id = %d",playerId);
-
+		// Farbe löschen
 		try {
 			getStatement().executeUpdate(delete);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim löschen der Farbe");
 		}
 
+		// Versuche neue Farbe einzufügen
         String sql = String.format("INSERT INTO color_player VALUES(%d, %d, %d);", playerId, colorId, lobbyId);
-        try {
-            getStatement().executeUpdate(sql);
-        } catch (SQLException e) {
-            System.out.println("Fehler beim einfügen der Farbe");
-        }
+
+		getStatement().executeUpdate(sql);
+		updateLastChange(lobbyId);
+
     }
 
 	/**
@@ -890,10 +926,12 @@ public class SqlHelper {
 	 * @param newPlayerName Neuer Name des Spielers
 	 * @author pbs2h17asc
 	 */
-	public static void updatePlayerName(int player_id, String newPlayerName) {
+	public static void updatePlayerName(int lobbyId, int player_id, String newPlayerName) {
+		System.out.println("Name:"+player_id);
 		String query = String.format("UPDATE player SET name = '%s' WHERE player_id = %d;", newPlayerName, player_id);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.printf("Fehler beim Schreiben des Spielernamens %s, ID %d ", newPlayerName, player_id);
 			e.printStackTrace();

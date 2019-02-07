@@ -1,5 +1,7 @@
 package sqlConnection;
 
+import gui.LobbyFX;
+
 import java.util.ArrayList;
 
 /**
@@ -12,17 +14,29 @@ public class Lobby {
     private int lobbyId;
     private int leaderId;
 
-    public Lobby() {
+    public LobbyFX getLobbyFX() {
+        return lobbyFX;
+    }
+
+    public void setLobbyFX(LobbyFX lobbyFX) {
+        this.lobbyFX = lobbyFX;
+    }
+
+    private LobbyFX lobbyFX;
+
+    public Lobby(LobbyFX lobbyFX) {
         this.MAX_PLAYER_COUNT = 6;
         this.players = new ArrayList<>();
         this.lobbyId = SqlHelper.insertLobby();
+        this.lobbyFX = lobbyFX;
     }
     
-    public Lobby(int lobbyId, int leaderId) {
+    public Lobby(LobbyFX lobbyFX, int lobbyId, int leaderId) {
         this.MAX_PLAYER_COUNT = 6;
         this.players = new ArrayList<>();
         this.lobbyId = lobbyId;
         this.leaderId = leaderId;
+        this.lobbyFX = lobbyFX;
     }
 
     public int getLeaderId()
@@ -59,7 +73,7 @@ public class Lobby {
     public void addPlayer(Player player) {
         if (players.size() < MAX_PLAYER_COUNT) {
             players.add(player);
-            System.out.println(player.toString());
+            //System.out.println(player.toString());
         }
     }
 
@@ -92,10 +106,6 @@ public class Lobby {
         }
 
         return sb.toString();
-    }
-
-    public void changePlayerName(int slot_id, String newPlayerName) {
-    	SqlHelper.updatePlayerName(players.get(slot_id).getPlayerId(), newPlayerName);
     }
 
 	/**

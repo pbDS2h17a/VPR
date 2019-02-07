@@ -2,8 +2,8 @@ package sqlCreation;
 
 import sqlConnection.*;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+
 
 /**
  * @author pbs2h17awb
@@ -13,20 +13,8 @@ import java.sql.Statement;
 public class SqlTester {
 
     public static void main(String[] args) {
-//        boolean useTimer = true;
-//        long endTime = 0;
-//        long startTime = 0;
-        
-//        if(useTimer) {
-//            startTime = System.nanoTime();
-//        }
-
-
-        // Timed performance tests
-//        if(useTimer) {
-//            endTime = System.nanoTime();
-//            System.out.printf("Zeit: %d Millisekunden",(endTime - startTime) /  1000000);
-//        }
+       ArrayList<Country> list = SqlHelper.getPlayerCountries(83, 28);
+        System.out.println(list.size());
     }
 
     /**

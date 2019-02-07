@@ -1,5 +1,7 @@
 package sqlConnection;
 
+import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class Player {
 	 * @param lobby
 	 */
 	public Player(Lobby lobby, int slotId) {
-		System.out.println("Ein Spieler wurde erstellt");
+		System.out.println("Ein Spieler wurde Typ A erstellt");
 		this.name = String.format("Spieler %d", slotId);
 		this.countryList = new ArrayList<>();
 		this.lobby = lobby;
@@ -49,7 +51,8 @@ public class Player {
 	 * @param name
 	 * @param lobby
 	 */
-	public Player(int playerId, String name, Lobby lobby, String colorValue, ArrayList<Country> countries) {
+	public Player(int playerId, String name, Lobby lobby, String colorValue) {
+		System.out.println("Ein Spieler wurde Typ B erstellt");
 		this.playerId = playerId;
 		this.name = name;
 		this.lobby = lobby;
@@ -57,7 +60,6 @@ public class Player {
 		this.slotId = lobby.getNextSlotId();
 		this.countryList = new ArrayList<>();
 		this.colorValue = colorValue;
-		this.countryList = countries;
 	}
 
 	
@@ -75,6 +77,8 @@ public class Player {
 	 */
 	public void setName(String name) {
 		this.name = name;
+		lobby.getLobbyFX().guiChangePlayerName(this.slotId, this.name);
+		SqlHelper.updatePlayerName(this.lobbyId, this.playerId, this.name);
 	}
 
 	public int getSlotId() {
@@ -111,8 +115,15 @@ public class Player {
 	 * @param colorValue die Farbe als String
 	 */
 	public void setColorValue(String colorValue) {
-		this.colorValue = colorValue;
-		SqlHelper.updateColor(this.playerId, this.colorValue, this.lobbyId);
+		try {
+			SqlHelper.updateColor(this.playerId, colorValue, this.lobbyId);
+			this.colorValue = colorValue;
+			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), colorValue);
+		} catch (SQLException e) {
+			String grayString = String.format("%02x%02x%02x", Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue());
+			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), grayString);
+		}
+
 	}
 
 	/**

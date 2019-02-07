@@ -133,10 +133,6 @@ public class MatchFX {
     		
     		lineArray[i].setStroke(Color.WHITE);
     		lineArray[i].setStrokeWidth(5);
-//    		lineArray[i].setStartX(seaRoutesCoordinates[i][0] + 20);
-//    		lineArray[i].setStartY(seaRoutesCoordinates[i][1] + 20);
-//    		lineArray[i].setEndX(seaRoutesCoordinates[i+1][0] + 20);
-//    		lineArray[i].setEndY(seaRoutesCoordinates[i+1][1] + 20);
     		ctn.getChildren().add(lineArray[i]);
 		}
 
@@ -464,14 +460,14 @@ public class MatchFX {
 		
 
 		// Die Partie wird begonnen
-		//initializeMatch();
+		//distributeCountries();
 	}
 
     /**
-     * Prozedur, die die Partie beginnt und die Lobby ausliest um die aktuellen Teilnehmer zu integrieren.
+     * Verteilt die Länder
      *
      */
-	public void initializeMatch(LobbyFX lobbyFX) {
+	public void distributeCountries(LobbyFX lobbyFX) {
 		Lobby lobby = lobbyFX.getLobby();
 		int lobbyId = lobby.getLobbyId();
 
@@ -494,6 +490,7 @@ public class MatchFX {
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer,randomCountry);
 			randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
+			System.out.println("Länder in DB schreiben");
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
 			// Wenn die Spieler-Liste am Ende angekommen ist...
