@@ -211,7 +211,7 @@ public class LobbyFX {
 	 * Ändert die Farbe eines Slots, basierend auf seiner ID
 	 *
 	 * @param slotId int
-	 * @param paint Paint
+	 * @param colorValue Farbe
 	 */
 	public void guiChangeColor(int slotId, String colorValue) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe

@@ -142,7 +142,7 @@ public class Country extends SVGPath {
 	 */
 	public void setColor(String colorValue) {
 		this.setFill(Color.web(colorValue));
-		SqlHelper.insertColor(owner.getPlayerId(),colorValue , owner.getLobbyId());
+		SqlHelper.updateColor(owner.getPlayerId(),colorValue , owner.getLobbyId());
 	}
 	
 	/**

@@ -623,9 +623,28 @@ public class SqlHelper {
 		return id;
 	}
 
-    public static void insertColor(int playerId, String colorValue, int lobbyId) {
+	public static void insertColor(int lobbyId) {
+		for (int i = 0; i < 6; i++) {
+			String sql = String.format("INSERT INTO color_player(lobby_id) VALUES(%d)", lobbyId);
+			try {
+				getStatement().executeUpdate(sql);
+			} catch (SQLException e) {
+				System.out.println("Fehler beim einfügen der Farbe");
+			}
+		}
+	}
+
+    public static void updateColor(int playerId, String colorValue, int lobbyId) {
 
         int colorId = getColorId(colorValue);
+
+     	String delete = String.format("DELETE FROM color_player WHERE player_id = %d",playerId);
+
+		try {
+			getStatement().executeUpdate(delete);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim löschen der Farbe");
+		}
 
         String sql = String.format("INSERT INTO color_player VALUES(%d, %d, %d);", playerId, colorId, lobbyId);
         try {

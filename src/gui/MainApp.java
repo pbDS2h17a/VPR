@@ -177,6 +177,9 @@ public class MainApp extends Application {
 	    titleFX.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
+
+	    	// Horcht auf Lobby änderungen
+			listenLobby = true;
 	    	
 	    	// Startet die Animation für den Übergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnJoin(), titleFX.getContainer(), joinFX.getContainer());
@@ -185,9 +188,11 @@ public class MainApp extends Application {
 	    	mpFX.playBtnSFX();
 	    	
 	    	//Spieler-Objekt und Chat-Objekt werden erstellt
-	    	createPlayer("000000");
+	    	//createPlayer("000000");
 
-			System.out.println(lobbyFX.getLobby());
+	    	//SqlHelper.insertPlayer(player.getName(),player.getLobbyId());
+
+			//System.out.println(lobbyFX.getLobby());
 
 	    	//mpFX.playBtnSFX();
 	    });
@@ -637,15 +642,17 @@ public class MainApp extends Application {
 
 					// Update Listener in Lobby
 					if(listenLobby) {
-					lobbyFX.setLobby(SqlHelper.getLobby(lobbyFX.getLobby().getLobbyId()));
+						// Lobby auf DB Daten erstellen
+						lobbyFX.setLobby(SqlHelper.getLobby(lobbyFX.getLobby().getLobbyId()));
 
-					for (Player player : lobbyFX.getLobby().getPlayers()) {
-						lobbyFX.guiAddPlayer(player.getSlotId());
-						lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
-						lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
-					}
+						System.out.println("LobbyID:"+lobbyFX.getLobby().getLobbyId());
 
-
+						// GUI Updaten
+						for (Player player : lobbyFX.getLobby().getPlayers()) {
+							lobbyFX.guiAddPlayer(player.getSlotId());
+							lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
+							lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
+						}
 
 					}
 
@@ -664,7 +671,6 @@ public class MainApp extends Application {
 								updateCountry(country,lobbyFX.getLobby());
 							}
 
-							SqlHelper.insertPlayer("Bob", lobbyFX.getLobby().getLobbyId());
 							// LastChange akualisieren
 							currentLastChange = newLastChange;
 						}

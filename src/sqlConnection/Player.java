@@ -38,7 +38,7 @@ public class Player {
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
 		this.slotId = slotId;
-		// Spieler in Db einfügen
+		// Spieler in DB einfügen
 		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
 	}
 
@@ -70,7 +70,7 @@ public class Player {
 	
 	/**
 	 * setter für den Spieler-Namen
-	 * @param den Namen als String
+	 * @param name den Namen als String
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -107,11 +107,11 @@ public class Player {
 	
 	/**
 	 * setter für die Spieler-Farbe
-	 * @param die Farbe als String
+	 * @param colorValue die Farbe als String
 	 */
 	public void setColorValue(String colorValue) {
 		this.colorValue = colorValue;
-		SqlHelper.insertColor(this.playerId, this.colorValue, this.lobbyId);
+		SqlHelper.updateColor(this.playerId, this.colorValue, this.lobbyId);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class Player {
 
 	/**
 	 * setter für den Country-Liste
-	 * @param die countryList als Liste vom Typ Country
+	 * @param countryList die countryList als Liste vom Typ Country
 	 */
 	public void setCountryList(List<Country> countryList) {
 		this.countryList = countryList;
@@ -148,7 +148,7 @@ public class Player {
 
 	/**
 	 * setter für die Lobby-Id des Spielers
-	 * @param die Lobby-Id als Integer
+	 * @param lobbyId die Lobby-Id als Integer
 	 */
 	public void setLobbyId(int lobbyId) {
 		this.lobbyId = lobbyId;
