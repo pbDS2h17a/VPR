@@ -37,9 +37,10 @@ public class MainApp extends Application {
 	private Pane paneTo;
 	private Pane app = new Pane();
     private Pane ctnApp = new Pane();
+	private Scene scene = new Scene(app);
 	private boolean isTransitioning = false;
 	private boolean isMatchActive = false;
-	private Scene scene = new Scene(app);
+	private int diceCounter = 0;
 	private boolean listenGame = false;
 	private boolean listenLobby = false;
 	private Player player;
@@ -201,7 +202,6 @@ public class MainApp extends Application {
 			 * Sound für den gedrückten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
-			mpFX.playBgmStart();
 			mpFX.stopBgmGame();
 	    });
 	    
@@ -287,7 +287,6 @@ public class MainApp extends Application {
 			 * Sound für den gedrückten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
-			mpFX.playBgmStart();
 			mpFX.stopBgmGame();
 	    });
 	    
@@ -728,6 +727,8 @@ public class MainApp extends Application {
 	        	}
 
 	        	if(matchFX.isFightStarting()) {
+	        		chatFX.getPane().setVisible(false);
+	        		
 	        		// Wenn die Positionen der Hintergründe noch nicht die Ziel-Position haben...
 	        		if(matchFX.getBattleBackgroundA().getLayoutX() < -10) {
 	        			// ...wird der Wert angepasst
@@ -760,10 +761,15 @@ public class MainApp extends Application {
 	        			}
 
 	        			if(matchFX.getDicesA().getLayoutX() >= 0 && matchFX.getDicesB().getLayoutX() <= 1670) {
+	        				diceCounter++;
 	    		    		// Ist der Kampf vorbei wird der Kampf beendet und die Länder aktualisiert
-	    		    		matchFX.getGameMechanics().endFight();
-	    		    		matchFX.setStartDicing(false);
-		        			matchFX.setFightStarting(false);
+	        				if(diceCounter == 240) {
+		        				diceCounter = 0;
+		        				chatFX.getPane().setVisible(true);
+		    		    		matchFX.getGameMechanics().endFight();
+		    		    		matchFX.setStartDicing(false);
+			        			matchFX.setFightStarting(false);
+	        				}
 	        			}
 	        		}
 	        	}

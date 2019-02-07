@@ -14,8 +14,8 @@ public class MediaPlayerFX {
 	
 	// Globale Variablen
 	// Hintergrundmusik
-	Sounds menuBackgroundMusic = new Sounds("resources/Mechanolith.mp3");
-	Sounds gameBackgroundMusic = new Sounds("resources/FinalBattleoftheDarkWizards.mp3");
+	Sounds menuBackgroundMusic = new Sounds("resources/menuBackgroundMusic.mp3");
+	Sounds gameBackgroundMusic = new Sounds("resources/gameBackgroundMusic.mp3");
 	
 	// Button-Sounds
 	Sounds menuClick = new Sounds("resources/menuClick.wav");

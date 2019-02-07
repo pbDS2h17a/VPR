@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
+
+import javafx.scene.control.Label;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.paint.Color;
@@ -300,12 +302,16 @@ public class GameMechanics {
 	 * Prozedur, die einen Kampf beginnt, wenn zwei passende Länder ausgewählt wurden
 	 */
 	public void startFight() {
-		// EHHHHHHHHHHHHHHHHHHHHHHHH
+		// ordnet den Lambda Ausdruck zu
 		UnaryOperator<Change> integerFilter = change -> {
+			// der "neue" (temporäre) String wird gesetzt
 		    String newText = change.getControlNewText();
+		    //prüft ob der neue String am Anfang eine Ziffer, welche nicht 0 sein darf, hat und ob der gesammte String nicht 99 überschreitet
 		    if (newText.matches("-?([1-9][0-9]*)?")) {
+		    	//dann wird der neue String in das Textlabel gesetzt
 		        return change;
 		    }
+		    // sonst wird nix geändert
 		    return null;
 		};
 		
@@ -314,10 +320,17 @@ public class GameMechanics {
 		this.match.getBattleInputB().setText("1");
 		// Beschränkt das Eingabefeld A auf zwei Zeichen (max. 99)
 		MainApp.addTextLimiter(this.match.getBattleInputA(), 2);
-		// EHHHHHHHHHHHHHHHHHH
+		// fügt den Lambdaausdruck in A hinzu
 		this.match.getBattleInputA().setTextFormatter(
 				new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter)
 	    );
+		// Beschränkt das Eingabefeld A auf zwei Zeichen (max. 99)
+		MainApp.addTextLimiter(this.match.getBattleInputB(), 2);
+		// fügt den Lambdaausdruck in B hinzu
+		this.match.getBattleInputB().setTextFormatter(
+				new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter)
+	    );
+		
 		// Deaktiviert Eingabefeld B und aktiviert A
 		this.match.getBattleInputA().setDisable(false);
 		this.match.getBattleInputB().setDisable(true);
@@ -395,6 +408,30 @@ public class GameMechanics {
 		int[] fightA = {diceListA.size(), lostUnitsA};
 		int[] fightB = {diceListB.size(), lostUnitsB};
 		
+		// Setzt die Würfel von A zurück
+		for (int i = 0; i < this.match.getDicesA().getChildren().size(); i++) {
+			Label tmpLabel = (Label) this.match.getDicesA().getChildren().get(i);
+			tmpLabel.setText("");
+		}
+		
+		// Setzt die Würfel von B zurück
+		for (int i = 0; i < this.match.getDicesB().getChildren().size(); i++) {
+			Label tmpLabel = (Label) this.match.getDicesB().getChildren().get(i);
+			tmpLabel.setText("");
+		}
+		
+		// Setzt die Werte in die Würfel von A
+		for (int i = 0; i < diceListA.size(); i++) {
+			Label tmpLabel = (Label) this.match.getDicesA().getChildren().get(i);
+			tmpLabel.setText(String.valueOf(diceListA.get(i)));
+		}
+		
+		// Setzt die Werte in die Würfel von B
+		for (int i = 0; i < diceListB.size(); i++) {
+			Label tmpLabel = (Label) this.match.getDicesB().getChildren().get(i);
+			tmpLabel.setText(String.valueOf(diceListB.get(i)));
+		}
+		
 		// Startet die Prozedur, die die Konsequenzen des Kampfes auswertet
 		countryAftermath(fightA, fightB, countryAttack, countryDefense);
 	}
@@ -461,6 +498,8 @@ public class GameMechanics {
 		this.match.getFightTextGroup().setVisible(false);
 		this.match.getBattleBackgroundA().relocate(-960, 0);
 		this.match.getBattleBackgroundB().relocate(1920, 0);
+		this.match.getDicesA().relocate(-400, this.match.getContainer().getPrefHeight()/2 - 515/2);
+		this.match.getDicesB().relocate(2320, this.match.getContainer().getPrefHeight()/2 - 415/2);
 		this.match.getPhaseBtnGroup().setVisible(true);
 		// Setzt den Kampfbildschirm zurück
 		this.match.getBattleInterface().setVisible(false);
