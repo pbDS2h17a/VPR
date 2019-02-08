@@ -489,7 +489,7 @@ public class MatchFX {
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer,randomCountry);
-			randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
+			//randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
 			System.out.println("Länder in DB schreiben");
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
@@ -503,18 +503,23 @@ public class MatchFX {
 			}
 		}
 
+
 		// Passt die Einheiten-Anzeige der Länder an
+		initializeCountryGUI();
+
+		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
+		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColorValue()));
+	}
+
+	public void initializeCountryGUI() {
 		for (int i = 0; i < countryArray.length; i++) {
 			countryUnitsBGArray[i].setFill(countryArray[i].getFill());
 			countryUnitsLabelArray[i].setText(String.valueOf(countryArray[i].getUnits()));
 			countryArray[i].setUnitLabel(countryUnitsLabelArray[i]);
 			countryArray[i].setRectangle(countryUnitsBGArray[i]);
 		}
-		
-		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
-		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColorValue()));
 	}
-	
+
 	/**
 	 * Aktualisiert die Land-Informationen mittig unten auf der Weltkarte
 	 * 

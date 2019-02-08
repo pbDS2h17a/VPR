@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class SqlTester {
 
     public static void main(String[] args) {
-       ArrayList<Country> list = SqlHelper.getPlayerCountries(83, 28);
-        System.out.println(list.size());
+        //ArrayList<Country> list = SqlHelper.getPlayerCountries(83, 28);
+        // System.out.println(list.size());
     }
 
     /**

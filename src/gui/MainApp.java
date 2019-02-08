@@ -220,12 +220,12 @@ public class MainApp extends Application {
 				// Lobby Leader erstellt GameMechanics und initalisiert das Spiel
 				if(player.getPlayerId() == lobbyFX.getLobby().getLeaderId()) {
 					matchFX.distributeCountries(lobbyFX);
+					matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
 					System.out.println("Du bist Spieleiter!");
 				} else {
 					System.out.println("Du bist Spieler!");
 					listenInit = true;
 				}
-				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
 
 
 				// Hörtauf die Lobby abzuhorchen
@@ -246,8 +246,6 @@ public class MainApp extends Application {
 
 				// Relevante Stelle des Color String wird gehohlt
 				colorValue = colorValue.substring(2,8);
-
-				System.out.println("Farbwert GUI:"+colorValue);
 
 				player.setColorValue(colorValue);
 
@@ -624,6 +622,16 @@ public class MainApp extends Application {
 		country.getRectangle().setFill(country.getFill());
 	}
 
+	public void updateCountryGui(Country country, Lobby lobby) {
+		int countryId = country.getCountryId();
+		int lobbyId = lobby.getLobbyId();
+		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
+
+		country.getUnitLabel().setText(String.valueOf(newUnits));
+		country.setFill(Color.web(country.getOwner().getColorValue()));
+		country.getRectangle().setFill(country.getFill());
+	}
+
 	/**
 	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
 	 */
@@ -636,13 +644,14 @@ public class MainApp extends Application {
 	        	// Aktualisiert die Lobby
 
 				// Aktualisierung alle 500ms
-				if(count != 0 && count % 60 == 0) {
+				if(count != 0 && count % 30 == 0) {
 					// Count zurücksetzen
 					count = 0;
 
 					// Update Listener in Lobby
 					if(listenLobby) {
 						int newLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
+
 						if(newLastChange > currentLastChange) {
 							// Lobby wird mit neuen Spieler aktualisiert
 							lobbyFX.setLobby(SqlHelper.getLobby(lobbyFX.getLobby().getLobbyId()));
@@ -652,17 +661,13 @@ public class MainApp extends Application {
 							// GUI Updaten
 							for (Player player : lobbyFX.getLobby().getPlayers()) {
 								// Spieler die breits vorhanden sind werrden ignoriert
-
 								lobbyFX.guiAddPlayer(player.getSlotId());
 								lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
 								lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
-
-
 							}
 
-							currentLastChange = newLastChange;
+							currentLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
 						}
-						// Lobby auf DB Daten erstellen
 
 					}
 
@@ -670,11 +675,18 @@ public class MainApp extends Application {
 					// UpdateListener zum erstmaligen laden der Spieldaten
 					if(listenInit) {
 						System.out.println("Inital einlesen der Daten");
-						for (Player player : lobbyFX.getLobby().getPlayers()) {
-							ArrayList<Country> list = SqlHelper.getPlayerCountries(player.getPlayerId(), player.getLobbyId());
-							player.setCountryList(list);
 
+						for (Player player : lobbyFX.getLobby().getPlayers()) {
+							System.out.println("LobbyID:"+ player.getLobbyId());
+							System.out.println("SpielerID:"+player.getPlayerId());
+							ArrayList<Country> list = SqlHelper.getPlayerCountries(player.getPlayerId(), player.getLobbyId());
+							System.out.println("Spieler länder anz:"+list.size());
+							player.setCountryList(list);
+							for (Country c : list) {
+								updateCountryGui(c, lobbyFX.getLobby());
+							}
 						}
+						matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
 						listenInit = false;
 					}
 
@@ -693,10 +705,10 @@ public class MainApp extends Application {
 								updateCountry(country,lobbyFX.getLobby());
 							}
 
-							matchFX.getGameMechanics().setPlayerList(lobbyFX.getLobby().getPlayers());
+							//matchFX.getGameMechanics().setPlayerList(lobbyFX.getLobby().getPlayers());
 
 							// LastChange akualisieren
-							currentLastChange = newLastChange;
+							currentLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
 						}
 					}
 	        	}
