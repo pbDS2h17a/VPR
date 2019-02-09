@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -53,8 +54,7 @@ public class MainApp extends Application {
     private JoinFX joinFX = new JoinFX();
     private MatchFX matchFX = new MatchFX();
     private MediaPlayerFX mpFX = new MediaPlayerFX();
-    private ChatInterface chatFX;
-	private boolean listenInit;
+//    private ChatInterface chatFX;
 
 	/**
 	 * Stellt alle Spiel-Einstellungen ein damit sie in der main gestartet werden kann.
@@ -123,10 +123,10 @@ public class MainApp extends Application {
 	@Override
 	public void stop(){
 	    System.out.println("Sql verbindung beenden");
-	    if(chatFX != null) {
-			chatFX.getUpdateTask().cancel();
-			System.out.println("Chat Updatethread beendet");
-		}
+//	    if(chatFX != null) {
+//			chatFX.getUpdateTask().cancel();
+//			System.out.println("Chat Updatethread beendet");
+//		}
 
 	    SqlHelper.closeStatement();
 	}
@@ -139,7 +139,7 @@ public class MainApp extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	/**
 	 * Prozedur, die alle EventListener startet die für den 
 	 */
@@ -205,8 +205,8 @@ public class MainApp extends Application {
 				paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
 				
 				// ...wird zur Weltkarte gewechselt positioniert sich der Chat neu
-				chatFX.getPane().relocate(1580, 460);
-				chatFX.getPane().setPrefWidth(300);
+//				chatFX.getPane().relocate(1580, 460);
+//				chatFX.getPane().setPrefWidth(300);
 				
 				/*
 				 * Sound für den gedrückten Button wird abgespielt
@@ -224,7 +224,51 @@ public class MainApp extends Application {
 					System.out.println("Du bist Spieleiter!");
 				} else {
 					System.out.println("Du bist Spieler!");
-					listenInit = true;
+					System.out.println("### Erstellen der Daten! ###");
+
+					// Task erstellen
+					Task task = new Task<Void>() {
+						@Override
+						protected Void call() {
+							return null;
+						}
+
+
+						@Override public void run() {
+							// Länder aus MatchFX
+							Country[] countryListMatch = matchFX.getCountryArray();
+
+							// Spieler durchiterieren
+							for (Player player : lobbyFX.getLobby().getPlayers()) {
+								System.out.println(player.getName());
+								int[] countryIds = SqlHelper.getPlayerCountries(player.getPlayerId(), player.getLobbyId());
+
+								for (int countryId : countryIds) {
+									Country currentCountry = 	countryListMatch[countryId-1];
+									currentCountry.setOwner(player);
+									System.out.println(currentCountry);
+									currentCountry.setColor(player.getColorValue());
+									currentCountry.setRectangle(matchFX.getCountryUnitsBGArray()[countryId-1]);
+									currentCountry.setUnitLabel(matchFX.getCountryUnitsLabelArray()[countryId-1]);
+									currentCountry.setUnits(SqlHelper.getCountryUnits(countryId, player.getLobbyId()));
+
+								}
+
+							}
+
+						}
+					};
+
+					// task starten
+					Thread th = new Thread(task);
+					th.setDaemon(true);
+					th.start();
+					try {
+						th.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
 				}
 
 
@@ -615,7 +659,7 @@ public class MainApp extends Application {
 		int lobbyId = lobby.getLobbyId();
 		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
 
-		country.setOwner(SqlHelper.getCountyOwner(countryId, lobby),country);
+		country.setOwner(SqlHelper.getCountyOwner(countryId, lobby));
 		country.setUnits(newUnits);
 		country.getUnitLabel().setText(String.valueOf(newUnits));
 		country.setFill(Color.web(country.getOwner().getColorValue()));
@@ -671,24 +715,6 @@ public class MainApp extends Application {
 
 					}
 
-
-					// UpdateListener zum erstmaligen laden der Spieldaten
-					if(listenInit) {
-						System.out.println("Inital einlesen der Daten");
-
-						for (Player player : lobbyFX.getLobby().getPlayers()) {
-							System.out.println("LobbyID:"+ player.getLobbyId());
-							System.out.println("SpielerID:"+player.getPlayerId());
-							ArrayList<Country> list = SqlHelper.getPlayerCountries(player.getPlayerId(), player.getLobbyId());
-							System.out.println("Spieler länder anz:"+list.size());
-							player.setCountryList(list);
-							for (Country c : list) {
-								updateCountryGui(c, lobbyFX.getLobby());
-							}
-						}
-						matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
-						listenInit = false;
-					}
 
 					// UpdateListener im Spiel
 					if(listenGame) {
@@ -855,10 +881,10 @@ public class MainApp extends Application {
 		lobbyFX.getLobby().addPlayer(player);
 
 		// Erstellt das ChatInterface und positioniert es in der Lobby
-		chatFX = new ChatInterface(player);
-		chatFX.getPane().setVisible(false);
-		ctnApp.getChildren().add(chatFX.getPane());
-		chatFX.getPane().relocate(42, 420);
+//		chatFX = new ChatInterface(player);
+//		chatFX.getPane().setVisible(false);
+//		ctnApp.getChildren().add(chatFX.getPane());
+//		chatFX.getPane().relocate(42, 420);
 	}
 
 }

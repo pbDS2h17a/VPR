@@ -25,7 +25,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azzTest","pbs2h17azz","Bib12345"
+			"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	};
 
 	//###################################################################################################################
@@ -214,10 +214,10 @@ public class SqlHelper {
 		return unitCount;
 	}
 
-	public static ArrayList<Country> getPlayerCountries(int playerId, int lobbyId) {
+	public static int[] getPlayerCountries(int playerId, int lobbyId) {
 		String query = String.format("SELECT country_id FROM country_player WHERE lobby_id = %d AND player_id = %d", lobbyId, playerId);
 		ArrayList<Integer> countryIdList = new ArrayList<>();
-		ArrayList<Country> countryList = new ArrayList<>();
+
 		try{
 			ResultSet rs = getStatement().executeQuery(query);
 			// Länder dürfen nicht in WHILE block erstellt werden
@@ -232,12 +232,10 @@ public class SqlHelper {
 			e.printStackTrace();
 		}
 
-		// Länder werden basierend auf IDs erstellt
-		for (int id : countryIdList) {
-			countryList.add(new Country(id));
-		}
 
-		return countryList;
+		int[] countryIdArray = countryIdList.stream().mapToInt(i->i).toArray();
+
+		return countryIdArray;
 	}
 
 	public static String getColorValueFromPlayer(int playerId, int lobbyId) {

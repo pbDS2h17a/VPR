@@ -143,15 +143,15 @@ public class MatchFX {
 
 	    // Schleife um einzelne Länder zu erzeugen
 	    for(int i = 0; i < countryArray.length; i++) {
-				// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
-				countryArray[i] = new Country(i+1);
-		    	countryArray[i].setFill(Color.WHITE);
-		    	countryArray[i].setStroke(Color.WHITE);
-		    	countryArray[i].setStrokeWidth(0);
-		    	countryArray[i].setScaleX(1.02);
-		    	countryArray[i].setScaleY(1.02);
-		    	groupLands.getChildren().add(countryArray[i]);
-	    	}
+			// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
+			countryArray[i] = new Country(i+1);
+			countryArray[i].setFill(Color.WHITE);
+			countryArray[i].setStroke(Color.WHITE);
+			countryArray[i].setStrokeWidth(0);
+			countryArray[i].setScaleX(1.02);
+			countryArray[i].setScaleY(1.02);
+			groupLands.getChildren().add(countryArray[i]);
+		}
 	    
 	    ctn.getChildren().add(groupLands);
 
@@ -475,6 +475,7 @@ public class MatchFX {
 		// Länder-Array wird in eine Liste konvertiert
 		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(countryArray));
 
+
         // Lobbyleader setzen auf ersten Spieler in der Lobby
         lobby.setLobbyLeader(lobby.getPlayers().get(0));
 		playersInLobby = lobby.getPlayers();
@@ -488,7 +489,7 @@ public class MatchFX {
 			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
-			randomCountry.setOwner(currentPlayer,randomCountry);
+			randomCountry.setOwner(currentPlayer);
 			//randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
 			System.out.println("Länder in DB schreiben");
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
