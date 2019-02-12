@@ -14,7 +14,6 @@ import javafx.util.Duration;
  * 
  * @author Nam-Max Liebner
  */
-
 public class Sounds {
 	
 	// Globale Variablen
@@ -23,7 +22,8 @@ public class Sounds {
 	
 	/**
 	 * Konstruktor.
-	 * @param mediaPath
+	 * 
+	 * @param mediaPath String
 	 */
 	public Sounds(String mediaPath){
 		// Path Converter für die Media Source.
@@ -76,7 +76,8 @@ public class Sounds {
 	
 	/**
 	 * Regelt die Lautstärke
-	 * @param volumeSlider
+	 * 
+	 * @param volumeSlider Slider
 	 */
 	public void setVolume(Slider volumeSlider){
 		/* Setzt einen Wert zwischen 0 und 1 (wobei 0: Stumm, 1: Maximale Lautstärke),
