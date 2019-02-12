@@ -20,8 +20,6 @@ public class Sprite extends ImageView
 	private boolean isActive = true;
 	private double vx;
 	private double vy;
-	private double scale;
-	private double vscale;
 	
 	ColorAdjust colorAdjust = new ColorAdjust();
 /**
@@ -92,14 +90,6 @@ public class Sprite extends ImageView
 		return vy;
 	}
 
-	public double getScale() {
-		return scale;
-	}
-
-	public double getVscale() {
-		return vscale;
-	}
-
 	public void setVx(double vx){
 		this.vx = vx;
 	}
@@ -107,22 +97,14 @@ public class Sprite extends ImageView
 	public void setVy(double vy) {
 		this.vy = vy;
 	}
-
-	public void setScale(double scale) {
-		this.scale = scale;
-	}
-
-	public void setVscale(double vscale) {
-		this.vscale = vscale;
-	}
 /**
  * Methode die, beim Erstellen einer Sprite, Events einfügt<br>
  * beim Hovern wird ein Soundeffekt abgespielt
  */
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
-			MediaPlayerFX.menuHover.play();
 			if(isButtonMode() && isActive()) {
+				MediaPlayerFX.menuHover.play();
 				colorAdjust.setBrightness(0.1);
 				colorAdjust.setContrast(0.3);
 				colorAdjust.setHue(0.025);
@@ -132,9 +114,10 @@ public class Sprite extends ImageView
 			if(isButtonMode())
 				getScene().setCursor(Cursor.HAND);
 		});
+		
 		setOnMouseExited(eventExited->{
-			MediaPlayerFX.menuHover.stop();
 			if(isButtonMode() && isActive()) {
+				MediaPlayerFX.menuHover.stop();
 				colorAdjust.setBrightness(0);
 				colorAdjust.setContrast(0);
 				colorAdjust.setHue(0);

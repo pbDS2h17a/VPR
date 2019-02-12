@@ -84,22 +84,42 @@ public class Player {
 		SqlHelper.updatePlayerName(this.lobbyId, this.playerId, this.name);
 	}
 
+	/**
+	 * getter für den Spieler-Slot in der Spielerliste
+	 * @return die Id des Slots als int
+	 */
 	public int getSlotId() {
 		return slotId;
 	}
 	
+	/**
+	 * getter für die Spieler-Einheiten
+	 * @return die Spielereinheiten als int
+	 */
 	public int getUnitsPerRound() {
 		return unitsPerRound;
 	}
 
+	/**
+	 * setter für die Spieler-Einheiten
+	 * @param die Spielereinheiten als int
+	 */
 	public void setUnitsPerRound(int unitsPerRound) {
 		this.unitsPerRound = unitsPerRound;
 	}
 
+	/**
+	 * Entfernt ein Land von den Länderliste des Spielers
+	 * @param das Land als Country-Objekt
+	 */
 	public void removeCountry(Country country) {
 		this.countryList.remove(country);
 	}
 
+	/**
+	 * Fügt ein Land zu der Länderliste des Spielers hinzu
+	 * @param das Land als Country-Objekt
+	 */
 	public void addCountry(Country country) {
 		this.countryList.add(country);
 		SqlHelper.updateCountryOwner(this.lobbyId, this.playerId, country.getCountryId());
@@ -168,6 +188,10 @@ public class Player {
 		this.lobbyId = lobbyId;
 	}
 
+	/**
+	 * Überschreibt die toString-Methode
+	 * @return String mit den Angaben über die Id, den Namen, der Farbe, den Einheiten und den Ländern
+	 */
 	@Override
 	public String toString() {
 		String output = String.format("Player\n" +
@@ -196,14 +220,22 @@ public class Player {
 		return this.getPlayerId() == player.getPlayerId();
 	}
 
+	/**
+	 * getter für die nicht vergebenen Einheiten
+	 * @return die Anzahl als int
+	 */
 	public int getUnassignedUnits() {
 		return unassignedUnits;
 	}
 
+	/**
+	 * setter für die nicht vergebenen Einheiten
+	 * @param die Anzahl als int
+	 */
 	public void setUnassignedUnits(int unassignedUnits) {
 		this.unassignedUnits = unassignedUnits;
 	}
-
+	
 	public int getCard1() {
 		return card1;
 	}
@@ -228,6 +260,10 @@ public class Player {
 		this.card3 = card3;
 	}
 
+	/**
+	 * getter für die Lobby des Spielers
+	 * @return die Lobby als Lobby-Objekt
+	 */
 	public Lobby getLobby() {
 		return lobby;
 	}

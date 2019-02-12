@@ -78,6 +78,15 @@ public class TitleFX {
 	}
 
 	/**
+	 * Der Button das Tutorial auflistet
+	 * 
+	 * @return gibt den Button zum Tutorial beitreten zurück
+	 */
+	public Sprite getBtnTutorial() {
+		return btnTutorial;
+	}
+
+	/**
 	 * Methode, die fragt ob das Logo animiert werden soll
 	 * 
 	 * @return gibt den true/false-Wert zurück
