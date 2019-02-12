@@ -193,9 +193,9 @@ public class SqlHelper {
 	
 	/**
 	 * Methode zum Auslesen der Einheiten, die in einem Land Stationiert sind.
-	 * @param countryId
-	 * @param lobbyId
-	 * @return
+	 * @param countryId Id des jeweiligen Landes
+	 * @param lobbyId Id der aktuellen Lobbys
+	 * @return Anzahl der Armeen auf einem Land
 	 */
 	public static int getCountryUnits (int countryId, int lobbyId) {
 		String query = String.format("SELECT unit_count FROM country_player WHERE country_id = %d  AND lobby_id= %d",countryId, lobbyId);
@@ -326,9 +326,9 @@ public class SqlHelper {
 
 	/**
 	 * Methode zum Auslesen des Besatzers eines Landes
-	 * @param countryId
-	 * @param lobby
-	 * @return
+	 * @param countryId Wert zum identifizieren des Landes
+	 * @param lobby Spiellobby
+	 * @return Besitzer des jeweilige Landes
 	 */
 	public static Player getCountyOwner (int countryId, Lobby lobby) {
 		String query = String.format("SELECT player_id FROM country_player WHERE country_id = %d  AND lobby_id= %d",countryId, lobby.getLobbyId());
@@ -381,8 +381,8 @@ public class SqlHelper {
 
 	/**
 	 * Methode zum Auslesen der ContinentId eines Landes
-	 * @param countryId
-	 * @return
+	 * @param countryId Id-Wert des jeweiligen Landes
+	 * @return Id des Kontinent des jeweiligen Landes
 	 */
 	public static int getCountryContinentId(int countryId){
 		String query = String.format("SELECT continent_id FROM country WHERE country_id = %d ",countryId);
@@ -553,8 +553,8 @@ public class SqlHelper {
 
 	/**
 	 *
-	 * @param missionId
-	 * @return
+	 * @param missionId Id-Wert der jeweiligen Mission
+	 * @return Beschreibung der jeweiligen Mission
 	 */
 	public static String getMissionDescription(int missionId){
 		String query = String.format("SELECT description FROM mission WHERE mission_id =  %d",missionId);

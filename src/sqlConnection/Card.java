@@ -57,7 +57,7 @@ public class Card
 	/**
 	 * Holt sich von der Datenbank den Kartenwert und den Namen des Landes
 	 * @param cardId Karten-Id
-	 * @throws SQLException
+	 * @throws SQLException 
 	 */
 	public Card(int cardId) throws SQLException {
 		this.cardId = cardId;
