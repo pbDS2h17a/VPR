@@ -768,7 +768,7 @@ public class MainApp extends Application {
 	        			// Wenn die Würfel-Gruppen noch nicht die richtige positioniert ist...
 	        			if(matchFX.getDicesB().getLayoutX() > 1670) {
 	        				// ...wird die Position angepasst
-	        				System.out.println(matchFX.getDicesB().getLayoutX());
+	        				// System.out.println(matchFX.getDicesB().getLayoutX());
 	        				matchFX.getDicesB().setLayoutX(matchFX.getDicesB().getLayoutX() - 10);
 	        			}
 
