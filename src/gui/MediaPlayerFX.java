@@ -38,6 +38,9 @@ public class MediaPlayerFX {
 	// MediaPlayer-Komponentengruppe
 	Group mediaPlayerGroup;
 	
+	/**
+	 * Konstruktor, der alle MediaPlayer-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
+	 */
 	public MediaPlayerFX() {
 		// Erstellt Mediaplayer Gruppe (inkludiert alle Komponenten für den Mediaplayer).
 		mediaPlayerGroup = new Group();

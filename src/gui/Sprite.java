@@ -6,63 +6,65 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * @author Dang, Hoang-Ha
+ * 
+ * Beinhaltet die Sprite-Klasse, die von ImageView erbt und sie mit interaktiven
+ * Elementen und Listenern ausstattet, um die restlichen Objekte entlasten.
+ * 
+ * @author Hoang-Ha Dang
  */
-
-/**
- * Sprite Klasse
- */
-public class Sprite extends ImageView
-{
+public class Sprite extends ImageView {
+	
+	// Globale Variablen
 	private String imagePath;
 	private Image image;
 	private boolean isButton;
 	private boolean isActive = true;
 	private double vx;
 	private double vy;
-	
-	ColorAdjust colorAdjust = new ColorAdjust();
-/**
- * Sprite Constructor<br>
- * Sprite wird durch einen Pfad erstellt und Listener werden hinzugefügt
- * @param path
- * 			Dateipfad für die Sprite
- */
+	private ColorAdjust colorAdjust = new ColorAdjust();
+
+	/**
+	 * Konstruktor, der die Sprite durch einen Pfad erstellt und die Listener hinzugefügt
+	 * 
+	 * @param path String
+	 */
 	public Sprite(String path) {
 		image = new Image(path);
 		this.setImage(image);
 		imagePath = path;
 		initializeListeners();
 	}
-/**
- * Methode die den Dateipfad für die Sprite zurückgibt
- * @return imagePath
- * 			Dateipfad für die Sprite
- */
+	
+	/**
+	 * Methode die den Dateipfad für die Sprite zurückgibt
+	 * 
+	 * @return Dateipfad für die Sprite
+	 */
 	public String getImagePath() {
 		return imagePath;
 	}
-/**	
- * Methode die zurückgibt ob die Sprite ein Button ist
- * @return isButton
- * 			true = Sprite ist ein Button
- */
+	
+	/**	
+	 * Methode die zurückgibt ob die Sprite ein Button ist
+	 * 
+	 * @return gibt zurück, ob Sprite ein Button ist
+	 */
 	public boolean isButtonMode() {
 		return this.isButton;
 	}
-/**
- * Methode um den ButtonMode für die Sprite zuändern
- * @param mode
- * 			true = Sprite ist ein Button
- */
+	
+	/**
+	 * Methode um den ButtonMode für die Sprite zu ändern
+	 * 
+	 * @param mode boolean
+	 */
 	public void setButtonMode(boolean mode) {
 		this.isButton = mode;
 	}
-/**
- * Sollte der mode false sein wird das Bild zusätzlich ausgegraut
- * @param mode
- * 			true = aktiv
- */
+	
+	/**
+	 * Sollte der mode false sein wird das Bild zusätzlich ausgegraut
+	 */
 	public void setActive(boolean mode) {
 		if (mode) {
 			colorAdjust.setSaturation(0);
@@ -73,34 +75,57 @@ public class Sprite extends ImageView
 		}
 		this.isActive = mode;
 	}
-/**
- * Mthode die zurückgibt ob die Sprite aktiv ist
- * @return isActive
- * 			ture = aktiv
- */
+	
+	/**
+	 * Methode die zurückgibt ob die Sprite aktiv ist
+	 * 
+	 * @return gibt zurück, ob die Sprite aktiv ist
+	 */
 	public boolean isActive() {
 		return this.isActive;
 	}
 	
+	/**
+	 * Methode die den Velocity X-Wert zurückgibt
+	 * 
+	 * @return gibt den double-Wert zurück
+	 */
 	public double getVx() {
 		return vx;
 	}
 
+	/**
+	 * Methode die den Velocity Y-Wert zurückgibt
+	 * 
+	 * @return gibt den double-Wert zurück
+	 */
 	public double getVy() {
 		return vy;
 	}
 
+	
+	/**
+	 * Methode, die den Velocity X-Wert setzt
+	 * 
+	 * @param vx double
+	 */
 	public void setVx(double vx){
 		this.vx = vx;
 	}
 
+	/**
+	 * Methode, die den Velocity Y-Wert setzt
+	 * 
+	 * @param vy double
+	 */
 	public void setVy(double vy) {
 		this.vy = vy;
 	}
-/**
- * Methode die, beim Erstellen einer Sprite, Events einfügt<br>
- * beim Hovern wird ein Soundeffekt abgespielt
- */
+	
+	/**
+	 * Methode die, beim Erstellen einer Sprite, Events einfügt und 
+	 * beim Hovern ein Soundeffekt abspielt
+	 */
 	public void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
 			if(isButtonMode() && isActive()) {
@@ -128,4 +153,5 @@ public class Sprite extends ImageView
 				getScene().setCursor(Cursor.DEFAULT);
 		});
 	}
+	
 }
