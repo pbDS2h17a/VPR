@@ -34,10 +34,11 @@ public class Player {
 
 
 	/**
-	 * Konstruktor fürs erstmalige Erstellen eines Spielers beim beitreten bzw erstellen einer Lobby
+	 * Konstruktor fürs erstmalige Erstellen eines Spielers beim Beitreten bzw Erstellen einer Lobby
 	 * Die Daten werden sowohl in Java und der Datenbank gespeichert
 	 * playerId wird durch Autoincrement erzeugt und aus der Datenbank gelesen
-	 * @param lobby
+	 * @param lobby Lobby
+	 * @param slotId Slot des Spielers in der Lobby
 	 */
 	public Player(Lobby lobby, int slotId) {
 		System.out.println("Ein Spieler wurde Typ A erstellt");
@@ -52,11 +53,12 @@ public class Player {
 	}
 
 	/**
-	 * Konstruktor fürs erstellen von Spielern die der Lobby beitreten
+	 * Konstruktor für das Erstellen von Spielern die der Lobby beitreten
 	 * Die Daten werden nur Java gespeichert, da sie bereits in der DB vorhanden sind
-	 * @param playerId
-	 * @param name
-	 * @param lobby
+	 * @param playerId PlayerID
+	 * @param name	Spielername
+	 * @param lobby Lobby
+	 * @param colorValue Farbwert
 	 */
 	public Player(int playerId, String name, Lobby lobby, String colorValue) {
 		System.out.println("Ein Spieler wurde Typ B erstellt");
@@ -105,8 +107,8 @@ public class Player {
 	}
 
 	/**
-	 * setter für die Spieler-Einheiten
-	 * @param die Spielereinheiten als int
+	 * Setter für die Spieler-Einheiten
+	 * @param unitsPerRound die Spielereinheiten als int
 	 */
 	public void setUnitsPerRound(int unitsPerRound) {
 		this.unitsPerRound = unitsPerRound;
@@ -114,7 +116,7 @@ public class Player {
 
 	/**
 	 * Entfernt ein Land von den Länderliste des Spielers
-	 * @param das Land als Country-Objekt
+	 * @param country das Land als Country-Objekt
 	 */
 	public void removeCountry(Country country) {
 		this.countryList.remove(country);
@@ -122,7 +124,7 @@ public class Player {
 
 	/**
 	 * Fügt ein Land zu der Länderliste des Spielers hinzu
-	 * @param das Land als Country-Objekt
+	 * @param country das Land als Country-Objekt
 	 */
 	public void addCountry(Country country) {
 		this.countryList.add(country);
@@ -244,7 +246,7 @@ public class Player {
 
 	/**
 	 * setter für die nicht vergebenen Einheiten
-	 * @param die Anzahl als int
+	 * @param unassignedUnits die Anzahl als int
 	 */
 	public void setUnassignedUnits(int unassignedUnits) {
 		this.unassignedUnits = unassignedUnits;

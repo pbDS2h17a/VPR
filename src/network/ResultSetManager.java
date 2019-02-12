@@ -49,7 +49,7 @@ public class ResultSetManager
 			}
 			set.add(zeile);
 		}
-		//r.close();
+		r.close();
 		return set;
 	}
 

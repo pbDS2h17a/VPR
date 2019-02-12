@@ -60,11 +60,9 @@ public class Country extends SVGPath {
 		this.unitLabel = unitLabel;
 	}
 
-
 	/**
 	 * Land ctor
 	 * @param id Land ID als Integer
-	 * @throws SQLException
 	 */
 	public Country(int id) {
 		this.countryId = id;
