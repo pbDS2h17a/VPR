@@ -1,35 +1,26 @@
-//package sqlConnection;
-//
-//import javafx.application.Application;
-//import javafx.scene.Scene;
-//import javafx.scene.control.Button;
-//import javafx.scene.control.TextField;
-//import javafx.scene.layout.Pane;
-//import javafx.stage.Stage;
-//
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.Statement;
-//import java.util.ArrayList;
-//
-///**
-// * @author Lea-Marie Mönikes
-// * Überprüfung des Usernames
-// */
-//
-//public class Username extends Application{
-//
-//
-///**
-// * Test-GUI, dient nur zu Testzwecken
-// * Hier kann der Username eingegeben werden
-// * @param bekommt die Stage übergeben
-// */
-//
-//	//
-//	@Override
-//	public void start(Stage stage) throws Exception
-//	{
+package sqlConnection;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+/**
+ * @author Lea-Marie Mönikes
+ * Überprüfung des Usernames
+ */
+
+public class Username extends Application{
+
+
+/**
+ * Test-GUI, dient nur zu Testzwecken
+ * Hier kann der Username eingegeben werden
+ * @param bekommt die Stage übergeben
+ */
+
+	//
+	@Override
+	public void start(Stage stage) throws Exception
+	{
 //		stage.setWidth(300);
 //		stage.setHeight(300);
 //
@@ -63,8 +54,8 @@
 //		stage.setScene(scene);
 //
 //		stage.show();
-//	}
-//
+	}
+}
 //	**
 // * Main zum Launch der GUI 
 // * @param bekommt String[] args übergeben
