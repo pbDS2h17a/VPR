@@ -664,7 +664,7 @@ public class SqlHelper {
 			System.out.println("fillDatabase error");
 			e.printStackTrace();
 		}
-
+		updateLastChange(lobbyId);
 		return id;
 	}
 
@@ -726,6 +726,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim senden einer NAchricht");
 			e.printStackTrace();
 		}
+		updateLastChange(lobby_id);
 	}
 
 	/**
@@ -778,6 +779,7 @@ public class SqlHelper {
 			System.out.println("Es ist ein Fehler beim einfügen in country_player aufgetreten");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	//###################################################################################################################
@@ -805,6 +807,7 @@ public class SqlHelper {
 			System.out.println("Error deletePlayer");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -822,6 +825,7 @@ public class SqlHelper {
 			System.out.println("Error joinLobby");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -840,6 +844,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim updaten vom country owner");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -857,6 +862,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim aktuallisieren der Units");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -872,6 +878,7 @@ public class SqlHelper {
 			System.out.println("Error updateLobbyLeader");
 			e.printStackTrace();
 		}	
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -887,6 +894,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim ändern des Spielers, der 'dran' ist");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -902,6 +910,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim Ändern der Spieler Reihenfolge");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -936,6 +945,7 @@ public class SqlHelper {
 			System.out.printf("Fehler beim Schreiben des Spielernamens %s, ID %d ", newPlayerName, player_id);
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
