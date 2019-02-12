@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author pbs2h17a
+ */
 public class SqlHelper {
 	
 	private static Statement stmt = null;
@@ -129,7 +132,7 @@ public class SqlHelper {
 		return colorArray;
 	}
 	/**
-	 * Lieﬂt die Lobby IDs aller Lobbies die zurzeit in der Datenbank sind
+	 * Liest die Lobby IDs aller Lobbies die zurzeit in der Datenbank sind
 	 * @return
 	 */
 	public static int[] getAllLobbyId() {
