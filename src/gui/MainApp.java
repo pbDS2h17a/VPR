@@ -54,7 +54,7 @@ public class MainApp extends Application {
     private JoinFX joinFX = new JoinFX();
     private MatchFX matchFX = new MatchFX();
     private MediaPlayerFX mpFX = new MediaPlayerFX();
-//    private ChatInterface chatFX;
+    private ChatInterface chatFX;
 
 	/**
 	 * Stellt alle Spiel-Einstellungen ein damit sie in der main gestartet werden kann.
@@ -123,10 +123,10 @@ public class MainApp extends Application {
 	@Override
 	public void stop(){
 	    System.out.println("Sql verbindung beenden");
-//	    if(chatFX != null) {
-//			chatFX.getUpdateTask().cancel();
-//			System.out.println("Chat Updatethread beendet");
-//		}
+	    if(chatFX != null) {
+			chatFX.getUpdateTask().cancel();
+			System.out.println("Chat Updatethread beendet");
+		}
 
 	    SqlHelper.closeStatement();
 	}
@@ -205,8 +205,8 @@ public class MainApp extends Application {
 				paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
 				
 				// ...wird zur Weltkarte gewechselt positioniert sich der Chat neu
-//				chatFX.getPane().relocate(1580, 460);
-//				chatFX.getPane().setPrefWidth(300);
+				chatFX.getPane().relocate(1580, 460);
+				chatFX.getPane().setPrefWidth(300);
 				
 				/*
 				 * Sound für den gedrückten Button wird abgespielt
@@ -881,10 +881,10 @@ public class MainApp extends Application {
 		lobbyFX.getLobby().addPlayer(player);
 
 		// Erstellt das ChatInterface und positioniert es in der Lobby
-//		chatFX = new ChatInterface(player);
-//		chatFX.getPane().setVisible(false);
-//		ctnApp.getChildren().add(chatFX.getPane());
-//		chatFX.getPane().relocate(42, 420);
+		chatFX = new ChatInterface(player);
+		chatFX.getPane().setVisible(true);
+		ctnApp.getChildren().add(chatFX.getPane());
+		chatFX.getPane().relocate(42, 420);
 	}
 
 }
