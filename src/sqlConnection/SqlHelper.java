@@ -581,7 +581,7 @@ public class SqlHelper {
 	 * @author Schaumloeffel
 	 */
 	public static List<List<String>> getChatHistory(long timestamp, int lobbyId){
-		String query = String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c "
+		String query = String.format("SELECT c.player_id, c.lobby_id, p.name, c.timestamp, c.message FROM player p, chat c "
 				+ "WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lobbyId, timestamp);
 		List<List<String>> history = null;
 		try {
@@ -812,6 +812,7 @@ public class SqlHelper {
 	 * schreibt bei dem dazugehörigen Player-Datensatz in die Spalte LobbyId die Id der zu joinenden Lobby.
 	 * @param player = Der Spieler als Objekt Player.
 	 * @author Jörg Römmich
+	 * @author Jona Petrikowski
 	 */
 	public static void joinLobby (Player player, int lobbyId) {
 		String queryJoinLobby = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getPlayerId());

@@ -25,6 +25,8 @@ public class Player {
 	private int card1 = 0;
 	private int card2 = 0;
 	private int card3 = 0;
+	
+	public static final String DEFAULT_COLOR = String.format("%02x%02x%02x", Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue());
 
 
 	/**
@@ -35,8 +37,9 @@ public class Player {
 	 */
 	public Player(Lobby lobby, int slotId) {
 		System.out.println("Ein Spieler wurde Typ A erstellt");
-		this.name = String.format("Spieler %d", slotId);
+		this.name = String.format("Spieler %d", slotId+1);
 		this.countryList = new ArrayList<>();
+		this.colorValue = DEFAULT_COLOR;
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
 		this.slotId = slotId;
@@ -140,8 +143,7 @@ public class Player {
 			this.colorValue = colorValue;
 			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), colorValue);
 		} catch (SQLException e) {
-			String grayString = String.format("%02x%02x%02x", Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue());
-			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), grayString);
+			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), DEFAULT_COLOR);
 		}
 
 	}

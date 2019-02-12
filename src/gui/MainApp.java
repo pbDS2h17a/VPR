@@ -124,10 +124,10 @@ public class MainApp extends Application {
 	@Override
 	public void stop(){
 	    System.out.println("Sql verbindung beenden");
-//	    if(chatFX != null) {
-//			chatFX.getUpdateTask().cancel();
-//			System.out.println("Chat Updatethread beendet");
-//		}
+	    if(chatFX != null) {
+			chatFX.getUpdateTask().cancel();
+			System.out.println("Chat Updatethread beendet");
+		}
 
 	    SqlHelper.closeStatement();
 	}
