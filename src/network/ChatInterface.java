@@ -28,7 +28,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import sqlConnection.Player;
-import sqlConnection.SqlHelper;
 
 /**
  * Stellt die grafische Benutzeroberfläche für den Chat bereit.
@@ -59,42 +58,49 @@ public class ChatInterface{
 	 */
 	private long timestamp; 
 	/**
-	 * GUI-Element
+	 * Oberste Pane
 	 */
-	private BorderPane bp;
+	private BorderPane chatPane;
 	/**
 	 * Nachrichteneingabefeld
 	 */
-	private TextField tf;
+	private TextField inputField;
 	/**
 	 * Absendebutton
 	 */
-	private Button send;
+	private Button sendButton;
 	/**
 	 * Zurücksetzen des Chatfensterinhalts
 	 */
-	private Button reset;
+	private Button resetButton;
 	/**
-	 * GUI-Element
+	 * HBox, die alle Kontrollelemente enthält
 	 */
-	private HBox hb;
+	private HBox controlBar;
 	/**
-	 * Chatverlauf
+	 * VBox, die den Chatverlauf enthält (jede Nachricht in einer HBox)
 	 */
 	private VBox chatHistory;
 	/**
-	 * GUI-Element
+	 * AnchorPane zum Verankern der ScrollPane am unteren Rand
 	 */
 	private AnchorPane anchor;
 	/**
-	 * GUI-Element
+	 * ScrollPane, die den ChatInhalt darstellt
 	 */
 	private ScrollPane scrollWindow;
 	/**
 	 * Zeichenzähler
 	 */
 	private Label charCount;
+	/**
+	 * HBox, die das charCount-Label,
+	 * sowie eine Region fill mit HGrow-Attribut enthält.
+	 */
 	private HBox charCountContainer;
+	/**
+	 * Schiebt das Label in der HBox nach rechts
+	 */
 	private Region fill;
 	
 	/**
@@ -106,11 +112,11 @@ public class ChatInterface{
 		this.cm = new ChatManager(this.player.getLobbyId(), this.player.getPlayerId());
 		this.timestamp = cm.getTimestamp();
 		
-		this.bp = new BorderPane();
-		this.tf = new TextField();
-		this.send = new Button(">");
-		this.reset = new Button("X");
-		this.hb = new HBox();
+		this.chatPane = new BorderPane();
+		this.inputField = new TextField();
+		this.sendButton = new Button(">");
+		this.resetButton = new Button("X");
+		this.controlBar = new HBox();
 		this.chatHistory = new VBox();
 		this.anchor = new AnchorPane();
 		this.scrollWindow = new ScrollPane(this.anchor);
@@ -118,64 +124,64 @@ public class ChatInterface{
 		this.charCount = new Label("0/255");
 		this.charCountContainer = new HBox();
 		
-		this.hb.getChildren().add(this.tf);
-		this.hb.getChildren().add(this.send);
-		this.hb.getChildren().add(this.reset);
+		this.controlBar.getChildren().add(this.inputField);
+		this.controlBar.getChildren().add(this.sendButton);
+		this.controlBar.getChildren().add(this.resetButton);
 		this.anchor.getChildren().add(this.chatHistory);
 		this.charCountContainer.getChildren().add(this.fill);
 		this.charCountContainer.getChildren().add(this.charCount);
 		this.chatHistory.getChildren().add(this.charCountContainer);
-		this.bp.setBottom(this.hb);
+		this.chatPane.setBottom(this.controlBar);
 		
 		//Größe und Verhalten der Nodes
-		this.hb.setPrefHeight(40);
-		this.tf.setPrefHeight(this.hb.getPrefHeight());
-		this.send.setMinHeight(40);
-		this.reset.setMinHeight(40);
-		this.tf.setPromptText("Nachricht eingeben...");
-		HBox.setHgrow(this.tf, Priority.ALWAYS);
+		this.controlBar.setPrefHeight(40);
+		this.inputField.setPrefHeight(this.controlBar.getPrefHeight());
+		this.sendButton.setMinHeight(40);
+		this.resetButton.setMinHeight(40);
+		this.inputField.setPromptText("Nachricht eingeben...");
+		HBox.setHgrow(this.inputField, Priority.ALWAYS);
 		HBox.setHgrow(this.fill, Priority.ALWAYS);
 		this.scrollWindow.setPrefSize(PANE_WIDTH,PANE_HEIGHT);
 		this.scrollWindow.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		this.anchor.setMinSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
 		AnchorPane.setBottomAnchor(this.chatHistory, 5.0);
-		this.bp.setTop(this.scrollWindow);
-		this.send.setMinWidth(80);
+		this.chatPane.setTop(this.scrollWindow);
+		this.sendButton.setMinWidth(80);
 		this.charCountContainer.setMinWidth(this.scrollWindow.getPrefWidth());
 		
 		//CSS-Klassen
-		this.bp.getStyleClass().add("chat");
-		this.hb.getStyleClass().add("chat-controls");
+		this.chatPane.getStyleClass().add("chat");
+		this.controlBar.getStyleClass().add("chat-controls");
 		this.scrollWindow.getStyleClass().add("scroll-window");
 		this.chatHistory.getStyleClass().add("chat-history");
-		this.send.getStyleClass().add("chat-button");
-		this.send.getStyleClass().add("chat-send-button");
-		this.reset.getStyleClass().add("chat-button");
-		this.reset.getStyleClass().add("chat-reset-button");
-		this.tf.getStyleClass().add("chat-textfield");
+		this.sendButton.getStyleClass().add("chat-button");
+		this.sendButton.getStyleClass().add("chat-send-button");
+		this.resetButton.getStyleClass().add("chat-button");
+		this.resetButton.getStyleClass().add("chat-reset-button");
+		this.inputField.getStyleClass().add("chat-textfield");
 		this.anchor.getStyleClass().add("chat-anchor"); 
 		this.charCountContainer.getStyleClass().add("chat-char-count-container");
 		this.charCount.getStyleClass().add("chat-char-count");
 		
 		//Schriftarten und -farben
 		Font cons20 = Font.font("Console", FontWeight.BOLD, 20);
-		this.send.setFont(cons20);
-		this.send.setTextFill(Color.WHITE);
-		this.reset.setFont(cons20);
-		this.reset.setTextFill(Color.WHITE);
+		this.sendButton.setFont(cons20);
+		this.sendButton.setTextFill(Color.WHITE);
+		this.resetButton.setFont(cons20);
+		this.resetButton.setTextFill(Color.WHITE);
 		this.charCount.setFont(Font.font("Console", 14));
 		this.charCount.setTextFill(new Color(0.8,0.8,0.8,0.6));
 		
 		// Eventhandler
-		this.send.setOnAction(a -> send());
-		this.reset.setOnAction(a -> reset());
-		this.tf.setOnKeyPressed(k -> {
+		this.sendButton.setOnAction(a -> send());
+		this.resetButton.setOnAction(a -> reset());
+		this.inputField.setOnKeyPressed(k -> {
 			if(k.getCode() == KeyCode.ENTER) send();
 		});
-		this.tf.setOnKeyReleased(k -> {
-			this.charCount.setText(String.format("%d/255", tf.getText().length()));
-			if(tf.getText().length() > 255) {
-				this.tf.setText(this.tf.getText().substring(0,255));
+		this.inputField.setOnKeyReleased(k -> {
+			this.charCount.setText(String.format("%d/255", inputField.getText().length()));
+			if(inputField.getText().length() > 255) {
+				this.inputField.setText(this.inputField.getText().substring(0,255));
 			}
 		});
 		//Binding des Scroll-Status der ScrollPane an die Höhe der vBox, die darin liegt
@@ -191,16 +197,16 @@ public class ChatInterface{
 
 	/**
 	 * Schickt die eingegebene Nachricht ab.
-	 * @param tf Inhalt des Textfeldes
+	 * @param inputField Inhalt des Textfeldes
 	 */
 	private void send() {
-		if(this.tf.getText() == "") return;
+		if(this.inputField.getText() == "") return;
 		try { 
-			cm.sendMessage(this.tf.getText());
+			cm.sendMessage(this.inputField.getText());
 		} catch(SQLException s) {
 				s.printStackTrace();
 			}
-		this.tf.setText("");
+		this.inputField.setText("");
 		this.charCount.setText("0/255");
 	}
 	
@@ -208,9 +214,10 @@ public class ChatInterface{
 	 * Chatfensterinhalt löschen.
 	 */
 	private void reset() {
-		timestamp = cm.getTimestamp();
-		chatHistory.getChildren().clear();
-		this.chatHistory.setPrefSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
+		this.timestamp = this.cm.getTimestamp();
+		//Liste nicht ganz leeren, damit charCount vorhanden bleibt
+		this.chatHistory.getChildren().remove(0, this.chatHistory.getChildren().size()-1);
+		//this.chatHistory.setPrefSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
 	}
 	
 	/**
@@ -218,7 +225,7 @@ public class ChatInterface{
 	 * @return Chatfenster
 	 */
 	public BorderPane getPane() {
-		return this.bp;
+		return this.chatPane;
 	}
 	
 	/**
@@ -258,13 +265,13 @@ public class ChatInterface{
 			HBox textHb = new HBox();
 			Text text = new Text(this.cm.formatMessage(message));
 			textHb.getStyleClass().add("chat-message-container");
-			textHb.setBorder(
-					new Border(new BorderStroke(
-							Color.web(cm.getMessagePlayerColor(message) == null ? Player.DEFAULT_COLOR : cm.getMessagePlayerColor(message)),
+			textHb.setBorder( 
+					new Border(new BorderStroke(Color.web(
+							this.cm.getMessagePlayerColor(message) == null ? Player.DEFAULT_COLOR : cm.getMessagePlayerColor(message)),
 							BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 5.0), Insets.EMPTY)));
 			text.getStyleClass().add("chat-message");
 			
-			text.wrappingWidthProperty().set(bp.getPrefWidth());
+			text.wrappingWidthProperty().set(chatPane.getPrefWidth());
 			text.setFill(Color.WHITE);
 			textHb.setMinWidth(this.scrollWindow.getPrefWidth());
 			textHb.getChildren().add(text);
