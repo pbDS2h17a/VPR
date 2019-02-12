@@ -16,14 +16,18 @@ import sqlConnection.Country;
 import sqlConnection.Player;
 
 /**
- * Beinhaltet alle Spielmechaniken, die beim Start der Partie benötigt werden. 
- * Dinge die während der Partie passieren werden direkt in die Datenbank gespeist,
+ * Beinhaltet alle Spielmechaniken, die beim Start der Partie benÃ¶tigt werden. 
+ * Dinge die wÃ¤hrend der Partie passieren werden direkt in die Datenbank gespeist,
  * um sie immer aktuell zu halten.
  * 
  * @author Adrian Ledwinka
  * @author Kevin Daniels
  */
 public class GameMechanics {
+
+	public void setPlayerList(ArrayList<Player> playerList) {
+		this.playerList = playerList;
+	}
 
 	// Globale Variablen
 	private ArrayList<Player> playerList;
@@ -47,9 +51,9 @@ public class GameMechanics {
 	 * @param playerList ArrayList
 	 */
 	public GameMechanics(MatchFX match, ArrayList<Player> playerList) {
-		// Setzt den Aktuellen Spieler zurück
+		// Setzt den Aktuellen Spieler zurÃ¼ck
 		this.activePlayerIndex = 0;
-		// Füllt die Klasse mit Daten
+		// FÃ¼llt die Klasse mit Daten
 		this.playerList = playerList;
 		this.match = match;
 		// Startet die 0. Phase (einzelnes Setzen)
@@ -57,15 +61,15 @@ public class GameMechanics {
 	}
 	
 	/**
-	 * Bei einem Klick auf auf das Land wird der Klick abhängig 
+	 * Bei einem Klick auf auf das Land wird der Klick abhÃ¤ngig
 	 * von der Phase unterschiedlich behandelt.
-	 * 
+	 *
 	 * @param index int
 	 */
 	public void manageCountryClick(int index) {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...
 		if(isAssigning()) {
-			// Wenn einem das Land gehört...
+			// Wenn einem das Land gehÃ¶rt...
 			if(isOwnLand(match.getCountryArray()[index])) {
 				// ...werden die ungesetzten Einheiten um eins reduziert
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
@@ -78,7 +82,7 @@ public class GameMechanics {
 					// ...ist der 1. Spieler wieder der aktive Spieler
 					setActivePlayerIndex(0);
 				} else {
-					// sonst wird der nächste Spieler der aktive Spieler
+					// sonst wird der nÃ¤chste Spieler der aktive Spieler
 					setActivePlayerIndex(getActivePlayerIndex() + 1);
 				}
 			}
@@ -86,30 +90,30 @@ public class GameMechanics {
 		
 		// Wenn man in der 1. Phase (setzen) steckt...
 		else if(isAdding()) {
-			// Wenn einem das Land gehört und noch nicht unverteilte Einheiten im Inventar sind...
+			// Wenn einem das Land gehÃ¶rt und noch nicht unverteilte Einheiten im Inventar sind...
 			if(isOwnLand(match.getCountryArray()[index]) && getActivePlayer().getUnassignedUnits() > 0) {
 				// ...wird ein Spieler aus dem Inventar verschoben...
 				getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() - 1);
-				// ...und dem Land hinzugefügt 
+				// ...und dem Land hinzugefÃ¼gt 
 				match.getCountryArray()[index].setUnits(match.getCountryArray()[index].getUnits() + 1);
 				match.getCountryUnitsLabelArray()[index].setText(String.valueOf(match.getCountryArray()[index].getUnits()));
 			}
 		}
 		
-		// Wenn man in der 2. Phase (kämpfen) steckt...
+		// Wenn man in der 2. Phase (kÃ¤mpfen) steckt...
 		else if(isFighting()) {
-			// Wenn noch nicht das erste Land ausgewählt wurde...
+			// Wenn noch nicht das erste Land ausgewÃ¤hlt wurde...
 			if(getCountryA() == null) {
 				// Wenn es das eigene Land ist und sich mehr als eine Einheit darauf befindet...
 				if(isOwnLand(match.getCountryArray()[index]) && match.getCountryArray()[index].getUnits() > 1) {
-					// ...wird das erste Land ausgewählt
+					// ...wird das erste Land ausgewÃ¤hlt
 					setCountryA(match.getCountryArray()[index]);
 				}
 			}
 			
 			// Sonst wenn es nicht das eigene Land ist und benachbart ist...
 			else if(!isOwnLand(match.getCountryArray()[index]) && isNeighbour(getCountryA(), match.getCountryArray()[index])) {
-				// ...wird das zweite Land ausgewählt und der Kampf gestartet
+				// ...wird das zweite Land ausgewÃ¤hlt und der Kampf gestartet
 				setCountryB(match.getCountryArray()[index]);
 				match.setFightStarting(true);
 				startFight();
@@ -120,15 +124,15 @@ public class GameMechanics {
 		else if(isMoving()) {
 			// Wenn es das eigene Land ist...
 			if(isOwnLand(match.getCountryArray()[index])) {
-				// Wenn noch nicht das erste Land ausgewählt wurde...
+				// Wenn noch nicht das erste Land ausgewÃ¤hlt wurde...
 				if(getCountryA() == null) {
-					// ...wird das erste Land ausgewählt
+					// ...wird das erste Land ausgewÃ¤hlt
 					setCountryA(match.getCountryArray()[index]);
 				}
 				
 				// Sonst...
 				else {
-					// ...wird das zweite Land ausgewählt
+					// ...wird das zweite Land ausgewÃ¤hlt
 					setCountryB(match.getCountryArray()[index]);
 					// ...Wenn das Land benachbart ist und das erste Land mehr als eine Einheit beinhaltet
 					if(isNeighbour(getCountryA(), getCountryB()) && getCountryA().getUnits() > 1) {
@@ -138,7 +142,7 @@ public class GameMechanics {
 						getCountryB().setUnits(getCountryB().getUnits() + 1);
 						match.getCountryUnitsLabelArray()[getCountryB().getCountryId()-1].setText(String.valueOf(getCountryB().getUnits()));
 					}
-					// ...werden das erste und zweite Land zurückgesetzt
+					// ...werden das erste und zweite Land zurÃ¼ckgesetzt
 					setCountryA(null);
 					setCountryB(null);
 				}	
@@ -147,7 +151,7 @@ public class GameMechanics {
 		
 		// Wenn man alle Einheiten in der 0. Phase (einzeln setzen) verteilt hat...
 		if(isAssigning() && isFinishedAssigning()) {
-			// ...erhält der erste Spieler seine Einheiten pro Runde
+			// ...erhÃ¤lt der erste Spieler seine Einheiten pro Runde
 			getActivePlayer().setUnassignedUnits(getActivePlayer().getUnassignedUnits() + getActivePlayer().getUnitsPerRound());
 			// ...wird die 0. Phase beendet und die 1. Phase begonnen
 			this.isAssigning = false;
@@ -162,7 +166,7 @@ public class GameMechanics {
 
 	/**
 	 * Startet die 0. Phase mit der aktuellen Spielerliste, 
-	 * die ein einzelnes Setzen einer Einheit pro Spieler ermöglicht.
+	 * die ein einzelnes Setzen einer Einheit pro Spieler ermÃ¶glicht.
 	 * 
 	 * @param playerArray ArrayList<Player>
 	 */
@@ -231,7 +235,7 @@ public class GameMechanics {
 			}
 		}
 		
-		// Sonst wird regulär true ausgegeben
+		// Sonst wird regulÃ¤r true ausgegeben
 		return true;
 	}
 	
@@ -249,7 +253,7 @@ public class GameMechanics {
 	}
 
 	/**
-	 * Prozedur, die die 2. Phase (kämpfen) startet
+	 * Prozedur, die die 2. Phase (kÃ¤mpfen) startet
 	 */
 	public void phaseFight() {
 		// Startet die 2. Phase und deaktiviert alle anderen
@@ -275,7 +279,7 @@ public class GameMechanics {
 	}
 	
 	/**
-	 * Prozedur, die die Runde beendet und den nächsten Spieler am Zug lässt
+	 * Prozedur, die die Runde beendet und den nÃ¤chsten Spieler am Zug lÃ¤sst
 	 */
 	public void nextTurn() {
 		// Wenn der aktive Spieler am Ende der Spielerliste angekommen ist...
@@ -286,45 +290,45 @@ public class GameMechanics {
 		
 		// Sonst...
 		else {
-			// ...ist der nächste Spieler am Zug
+			// ...ist der nÃ¤chste Spieler am Zug
 			this.setActivePlayerIndex(this.getActivePlayerIndex() + 1);
 		}
 		
-		// Gibt dem aktuellen Spieler die Einheiten, die er pro Runde bekommen würde dazu
+		// Gibt dem aktuellen Spieler die Einheiten, die er pro Runde bekommen wÃ¼rde dazu
 		this.getActivePlayer().setUnassignedUnits(this.getActivePlayer().getUnassignedUnits() + this.getActivePlayer().getUnitsPerRound());
 		// Startet wieder die 1. Phase
 		phaseAdd();
 	}
 
 	/**
-	 * Prozedur, die einen Kampf beginnt, wenn zwei passende Länder ausgewählt wurden
+	 * Prozedur, die einen Kampf beginnt, wenn zwei passende LÃ¤nder ausgewÃ¤hlt wurden
 	 */
 	public void startFight() {
 		// ordnet den Lambda Ausdruck zu
 		UnaryOperator<Change> integerFilter = change -> {
-			// der "neue" (temporäre) String wird gesetzt
+			// der "neue" (temporÃ¤re) String wird gesetzt
 		    String newText = change.getControlNewText();
-		    //prüft ob der neue String am Anfang eine Ziffer, welche nicht 0 sein darf, hat und ob der gesammte String nicht 99 überschreitet
+		    //prÃ¼ft ob der neue String am Anfang eine Ziffer, welche nicht 0 sein darf, hat und ob der gesammte String nicht 99 Ã¼berschreitet
 		    if (newText.matches("-?([1-9][0-9]*)?")) {
 		    	//dann wird der neue String in das Textlabel gesetzt
 		        return change;
 		    }
-		    // sonst wird nix geändert
+		    // sonst wird nix geÃ¤ndert
 		    return null;
 		};
 		
 		// Gibt beiden Eingabefeldern schon den Minimal-Wert
 		this.match.getBattleInputA().setText("1");
 		this.match.getBattleInputB().setText("1");
-		// Beschränkt das Eingabefeld A auf zwei Zeichen (max. 99)
+		// BeschrÃ¤nkt das Eingabefeld A auf zwei Zeichen (max. 99)
 		MainApp.addTextLimiter(this.match.getBattleInputA(), 2);
-		// fügt den Lambdaausdruck in A hinzu
+		// fÃ¼gt den Lambdaausdruck in A hinzu
 		this.match.getBattleInputA().setTextFormatter(
 				new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter)
 	    );
-		// Beschränkt das Eingabefeld A auf zwei Zeichen (max. 99)
+		// BeschrÃ¤nkt das Eingabefeld A auf zwei Zeichen (max. 99)
 		MainApp.addTextLimiter(this.match.getBattleInputB(), 2);
-		// fügt den Lambdaausdruck in B hinzu
+		// fÃ¼gt den Lambdaausdruck in B hinzu
 		this.match.getBattleInputB().setTextFormatter(
 				new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter)
 	    );
@@ -332,16 +336,16 @@ public class GameMechanics {
 		// Deaktiviert Eingabefeld B und aktiviert A
 		this.match.getBattleInputA().setDisable(false);
 		this.match.getBattleInputB().setDisable(true);
-		// Füllt die linke Seite des Kampfbildschirms mit Informationen von Land A
+		// FÃ¼llt die linke Seite des Kampfbildschirms mit Informationen von Land A
 		this.match.getBattleBackgroundA().setFill(this.countryA.getFill());
 		this.match.getCountryNameA().setText("Angreifer\n" + this.countryA.getCountryName());
 		this.match.getCountryUnitsA().setText("/ " + (this.countryA.getUnits()-1));
-		// Füllt die rechte Seite des Kampfbildschirms mit Informationen von Land B
+		// FÃ¼llt die rechte Seite des Kampfbildschirms mit Informationen von Land B
 		this.match.getBattleBackgroundB().setFill(this.countryB.getFill());
 		this.match.getCountryNameB().setText("Verteidiger\n" + this.countryB.getCountryName());
 		this.match.getCountryUnitsB().setText("/ " + this.countryB.getUnits());
 		
-		// Deaktiviert die Weltkarte temporär
+		// Deaktiviert die Weltkarte temporÃ¤r
 		this.match.activateWorldMap(false);
 		// Versteckt die Phasen-Buttons
 		this.match.getPhaseBtnGroup().setVisible(false);
@@ -359,12 +363,12 @@ public class GameMechanics {
 	 */
 	public void updateFightResults(Integer[][] rolledDices, Country countryAttack, Country countryDefense) {
 
-		// Fügt die Würfel von Land A in eine Liste ein
+		// FÃ¼gt die WÃ¼rfel von Land A in eine Liste ein
 		List<Integer> diceListA = new ArrayList<Integer>();
 		for (int i = 0; i < rolledDices[0].length; i++) {
 			diceListA.add(rolledDices[0][i]);
 		}
-		// Fügt die Würfel von Land B in eine Liste ein
+		// FÃ¼gt die WÃ¼rfel von Land B in eine Liste ein
 		List<Integer> diceListB = new ArrayList<Integer>();
 		for (int i = 0; i < rolledDices[1].length; i++) {
 			diceListB.add(rolledDices[1][i]);
@@ -372,21 +376,21 @@ public class GameMechanics {
 		
 		/*
 		 * Variablen, die die verlorenen Einheiten speichert
-		 * und auch das Limit für die Schleife festlegt
+		 * und auch das Limit fÃ¼r die Schleife festlegt
 		 */
 		int lostUnitsA = 0;
 		int lostUnitsB = 0;
 		int limit = diceListA.size();
 		
-		// Wenn mehr Würfel in A geworfen wurden als in B...
+		// Wenn mehr WÃ¼rfel in A geworfen wurden als in B...
 		if(diceListA.size() > diceListB.size()) {
 			// ...ist die Anzahl von B das neue Limit
 			limit = diceListB.size();
 		}
 		
-		// Schleife, die den Würfel-Vergleich durchführt
+		// Schleife, die den WÃ¼rfel-Vergleich durchfÃ¼hrt
 		for (int i = 0; i < limit; i++) {
-			// Wenn das Würfel-Ergebnis von A größer als das von B ist...
+			// Wenn das WÃ¼rfel-Ergebnis von A grÃ¶ÃŸer als das von B ist...
 			if(diceListA.get(i) > diceListB.get(i)) {
 				// ...verliert B eine Einheit
 				lostUnitsB++;
@@ -406,25 +410,25 @@ public class GameMechanics {
 		int[] fightA = {diceListA.size(), lostUnitsA};
 		int[] fightB = {diceListB.size(), lostUnitsB};
 		
-		// Setzt die Würfel von A zurück
+		// Setzt die WÃ¼rfel von A zurÃ¼ck
 		for (int i = 0; i < this.match.getDicesA().getChildren().size(); i++) {
 			Label tmpLabel = (Label) this.match.getDicesA().getChildren().get(i);
 			tmpLabel.setText("");
 		}
 		
-		// Setzt die Würfel von B zurück
+		// Setzt die WÃ¼rfel von B zurÃ¼ck
 		for (int i = 0; i < this.match.getDicesB().getChildren().size(); i++) {
 			Label tmpLabel = (Label) this.match.getDicesB().getChildren().get(i);
 			tmpLabel.setText("");
 		}
 		
-		// Setzt die Werte in die Würfel von A
+		// Setzt die Werte in die WÃ¼rfel von A
 		for (int i = 0; i < diceListA.size(); i++) {
 			Label tmpLabel = (Label) this.match.getDicesA().getChildren().get(i);
 			tmpLabel.setText(String.valueOf(diceListA.get(i)));
 		}
 		
-		// Setzt die Werte in die Würfel von B
+		// Setzt die Werte in die WÃ¼rfel von B
 		for (int i = 0; i < diceListB.size(); i++) {
 			Label tmpLabel = (Label) this.match.getDicesB().getChildren().get(i);
 			tmpLabel.setText(String.valueOf(diceListB.get(i)));
@@ -445,7 +449,7 @@ public class GameMechanics {
 	public void countryAftermath(int[] fightA, int[] fightB, Country cAtk, Country cDef) {
 		// Wenn alle Einheiten in Land B besiegt wurden...
 		if(cDef.getUnits() - fightB[1] == 0) {
-			// ...wird das Land erobert und erhält die Informationen des Eroberers
+			// ...wird das Land erobert und erhÃ¤lt die Informationen des Eroberers
 			cDef.setUnits(fightA[0] - fightA[1] + additionalAttacker);
 			cDef.setOwner(cAtk.getOwner());
 			cDef.setFill(cAtk.getFill());
@@ -459,7 +463,7 @@ public class GameMechanics {
 		}
 		// Sonst...
 		else {
-			// ... werden die gestorbenen Einheiten in beiden Ländern abgezogen
+			// ... werden die gestorbenen Einheiten in beiden LÃ¤ndern abgezogen
 			cAtk.setUnits(cAtk.getUnits() - fightA[1]);
 			cDef.setUnits(cDef.getUnits() - fightB[1]);
 			// ...werden die Einheiten auf der Weltkarte angepasst
@@ -471,7 +475,7 @@ public class GameMechanics {
 		// Differenz der Einheiten von Land A, die nicht gestorben sind
 		additionalAttacker = 0;
 		
-		// Gibt die Einheiten der Länder nach dem Kampf aus
+		// Gibt die Einheiten der LÃ¤nder nach dem Kampf aus
 		System.out.println("A Einheiten nachher: " + cAtk.getUnits());
 		System.out.println("B Einheiten nachher: " + cDef.getUnits());
 		System.out.println();
@@ -487,7 +491,7 @@ public class GameMechanics {
 	 * Prozedur, die den Kampf beendet
 	 */
 	public void endFight() {
-		// Setzte beide gewählten Länder zurück
+		// Setzte beide gewÃ¤hlten LÃ¤nder zurÃ¼ck
 		this.countryA = null;
 		this.countryB = null;
 		// Aktiviert die Weltkarte und zeigt alle Phasen-Buttons wieder an
@@ -499,7 +503,7 @@ public class GameMechanics {
 		this.match.getDicesA().relocate(-400, this.match.getContainer().getPrefHeight()/2 - 515/2);
 		this.match.getDicesB().relocate(2320, this.match.getContainer().getPrefHeight()/2 - 415/2);
 		this.match.getPhaseBtnGroup().setVisible(true);
-		// Setzt den Kampfbildschirm zurück
+		// Setzt den Kampfbildschirm zurÃ¼ck
 		this.match.getBattleInterface().setVisible(false);
 		this.match.getBattleBackgroundA().relocate(-960, 0);
 		this.match.getBattleBackgroundB().relocate(1920, 0);
@@ -508,58 +512,58 @@ public class GameMechanics {
 	}
 
 	/**
-	 * Methode, die anhand der eingesetzten Einheiten Würfel würfelt
+	 * Methode, die anhand der eingesetzten Einheiten WÃ¼rfel wÃ¼rfelt
 	 * 
 	 * @param battleUnitsA int
 	 * @param battleUnitsB int
 	 * 
-	 * @return gibt ein 2D Array mit den Würfen zurück
+	 * @return gibt ein 2D Array mit den WÃ¼rfen zurÃ¼ck
 	 */
 	public Integer[][] rollTheDice(int battleUnitsA, int battleUnitsB) {
-		// Speichert die Anzahl der zu würfelnden Würfel
+		// Speichert die Anzahl der zu wÃ¼rfelnden WÃ¼rfel
 		int limitA = battleUnitsA;
 		int limitB = battleUnitsB;
 		additionalAttacker = 0;
 		
 		// Wenn mehr als 3 Einheiten in B eingesetzt werden...
 		if(battleUnitsA > 3) {
-			// ...werden die Würfel von A auf drei gesetzt
+			// ...werden die WÃ¼rfel von A auf drei gesetzt
 			limitA = 3;
-			// Differenz an Einheiten werden für den späteren Kampf gespeichert
+			// Differenz an Einheiten werden fÃ¼r den spÃ¤teren Kampf gespeichert
 			additionalAttacker = battleUnitsA - 3;
 		}
 		
 		// Wenn mehr als zwei Einheiten in Land B eingesetzt werden...
 		if(battleUnitsB > 2) {
-			// ...werden die Würfel von B auf zwei gesetzt
+			// ...werden die WÃ¼rfel von B auf zwei gesetzt
 			limitB = 2;
 		}
 		
-		// Array mit den Würfel-Ergebnissen werden erstellt
+		// Array mit den WÃ¼rfel-Ergebnissen werden erstellt
 		Integer[] dicesA = new Integer[limitA];
 		Integer[] dicesB = new Integer[limitB];
 		
-		// Würfelt die Würfel für Land A
+		// WÃ¼rfelt die WÃ¼rfel fÃ¼r Land A
 		for (int i = 0; i < dicesA.length; i++) {
 			dicesA[i] = randomInt(1, 6);
 		}
-		// Würfelt die Würfel für Land B
+		// WÃ¼rfelt die WÃ¼rfel fÃ¼r Land B
 		for (int i = 0; i < dicesB.length; i++) {
 			dicesB[i] = randomInt(1, 6);
 		}
 		
-		// Sortiert die Würfel von beiden Ländern vom größten zum kleinsten
+		// Sortiert die WÃ¼rfel von beiden LÃ¤ndern vom grÃ¶ÃŸten zum kleinsten
 		Arrays.sort(dicesA, Collections.reverseOrder());
 		Arrays.sort(dicesB, Collections.reverseOrder());
 		
-		// Gibt die Würfelergebnisse in der Konsole aus
-		System.out.print("A würfelte: ");
+		// Gibt die WÃ¼rfelergebnisse in der Konsole aus
+		System.out.print("A wÃ¼rfelte: ");
 		for (int i = 0; i < dicesA.length; i++) {
 			System.out.print(dicesA[i] + ", ");
 		}
 		System.out.println();
 		
-		System.out.print("B würfelte: ");
+		System.out.print("B wÃ¼rfelte: ");
 		for (int i = 0; i < dicesB.length; i++) {
 			System.out.print(dicesB[i] + ", ");
 		}
@@ -568,28 +572,28 @@ public class GameMechanics {
 		// Speichert die Ergebnisse in ein 2D Array
 		Integer[][] diceResults = {dicesA, dicesB};
 		
-		// Gibt das 2D Array zurück
+		// Gibt das 2D Array zurÃ¼ck
 		return diceResults;
 	}
 
 	/**
-	 * Methode, die kontrolliert, ob beide Länder miteinander benachbart sind
+	 * Methode, die kontrolliert, ob beide LÃ¤nder miteinander benachbart sind
 	 * 
 	 * @param a Country
 	 * @param b Country
 	 * 
-	 * @return gibt den true/false-Wert zurück
+	 * @return gibt den true/false-Wert zurÃ¼ck
 	 */
 	public boolean isNeighbour(Country a, Country b) {
 		return IntStream.of(a.getNeighborIdArray()).anyMatch(x -> x == b.getCountryId());
 	}
 		
 	/**
-	 * Methode, die kontrolliert, ob das Land dem aktuellen Spieler gehört
+	 * Methode, die kontrolliert, ob das Land dem aktuellen Spieler gehÃ¶rt
 	 * 
 	 * @param country Country
 	 * 
-	 * @return gibt den true/false-Wert zurück
+	 * @return gibt den true/false-Wert zurÃ¼ck
 	 */
 	public boolean isOwnLand(Country country) {
         return this.getActivePlayer().equals(country.getOwner());
@@ -610,14 +614,14 @@ public class GameMechanics {
 	/**
 	 * Methode, die den aktuellen Spieler holt
 	 * 
-	 * @return gibt das Player-Objekt zurück
+	 * @return gibt das Player-Objekt zurÃ¼ck
 	 */
 	public Player getActivePlayer() {
 		return playerList.get(activePlayerIndex);
 	}
 
 	/**
-	 * Prozedur, die den Index für den aktuellen Spieler setzt
+	 * Prozedur, die den Index fÃ¼r den aktuellen Spieler setzt
 	 * 
 	 * @param i int
 	 */
@@ -628,7 +632,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die den Index des aktuellen Spielers ausgibt
 	 * 
-	 * @return gibt den Index zurück
+	 * @return gibt den Index zurÃ¼ck
 	 */
 	public int getActivePlayerIndex() {
 		return this.activePlayerIndex;
@@ -637,7 +641,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die die aktuelle Spielerliste ausgibt
 	 * 
-	 * @return gibt die ArrayList zurück
+	 * @return gibt die ArrayList zurÃ¼ck
 	 */
 	public ArrayList<Player> getPlayerList() {
 		return this.playerList;
@@ -646,7 +650,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die kontrolliert, ob man noch in der 0. Phase ist
 	 * 
-	 * @return gibt den true/false-Wert zurück
+	 * @return gibt den true/false-Wert zurÃ¼ck
 	 */
 	public boolean isAssigning() {
 		return isAssigning;
@@ -655,7 +659,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die kontrolliert, ob man noch in der 1. Phase ist
 	 * 
-	 * @return gibt den true/false-Wert zurück
+	 * @return gibt den true/false-Wert zurÃ¼ck
 	 */
 	public boolean isAdding() {
 		return isAdding;
@@ -664,7 +668,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die kontrolliert, ob man noch in der 2. Phase ist
 	 * 
-	 * @return gibt den true/false-Wert zurück
+	 * @return gibt den true/false-Wert zurÃ¼ck
 	 */
 	public boolean isFighting() {
 		return isFighting;
@@ -673,7 +677,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die kontrolliert, ob man noch in der 3. Phase ist
 	 * 
-	 * @return gibt den true/false-Wert zurück
+	 * @return gibt den true/false-Wert zurÃ¼ck
 	 */
 	public boolean isMoving() {
 		return isMoving;
@@ -682,7 +686,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die das Land A ausgibt
 	 * 
-	 * @return gibt das Country-Objekt zurück
+	 * @return gibt das Country-Objekt zurÃ¼ck
 	 */
 	public Country getCountryA() {
 		return countryA;
@@ -700,7 +704,7 @@ public class GameMechanics {
 	/**
 	 * Methode, die das Land B ausgibt
 	 * 
-	 * @return gibt das Country-Objekt zurück
+	 * @return gibt das Country-Objekt zurÃ¼ck
 	 */
 	public Country getCountryB() {
 		return countryB;
@@ -716,16 +720,16 @@ public class GameMechanics {
 	}
 
 	/**
-	 * Methode, die die kämpfenden Einheiten von Land A ausgibt
+	 * Methode, die die kÃ¤mpfenden Einheiten von Land A ausgibt
 	 * 
-	 * @return gibt die Anzahl zurück
+	 * @return gibt die Anzahl zurÃ¼ck
 	 */
 	public int getBattleUnitsA() {
 		return battleUnitsA;
 	}
 	
 	/**
-	 * Prozedur, die die kämpfenden Einheiten von Land A setzt
+	 * Prozedur, die die kÃ¤mpfenden Einheiten von Land A setzt
 	 * 
 	 * @param battleUnitsA int
 	 */
@@ -734,16 +738,16 @@ public class GameMechanics {
 	}
 
 	/**
-	 * Methode, die die kämpfenden Einheiten von Land B ausgibt
+	 * Methode, die die kÃ¤mpfenden Einheiten von Land B ausgibt
 	 * 
-	 * @return gibt die Anzahl zurück
+	 * @return gibt die Anzahl zurÃ¼ck
 	 */
 	public int getBattleUnitsB() {
 		return battleUnitsB;
 	}
 	
 	/**
-	 * Prozedur, die die kämpfenden Einheiten von Land B setzt
+	 * Prozedur, die die kÃ¤mpfenden Einheiten von Land B setzt
 	 * 
 	 * @param battleUnitsB int
 	 */
@@ -752,11 +756,11 @@ public class GameMechanics {
 	}
 
 	/**
-	 * Methode, die eine zufällige Ganzzahl ausgibt
+	 * Methode, die eine zufÃ¤llige Ganzzahl ausgibt
 	 * 
 	 * @param min int
 	 * @param max int
-	 * @return gibt eine Zahl zwischen min und max zurück (inklusive)
+	 * @return gibt eine Zahl zwischen min und max zurÃ¼ck (inklusive)
 	 */
 	private static int randomInt(int min, int max) {
 	    return (int)(Math.random() * (max - min + 1)) + min;

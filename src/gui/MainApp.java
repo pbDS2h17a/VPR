@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -19,8 +20,11 @@ import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
- * Startet das gesamte Spiel, indem die anderen Oberflächen-Klassen eingebunden werden
+ * Startet das gesamte Spiel, indem die anderen OberflÃ¤chen-Klassen eingebunden werden
  * und die gesamte Scene administriert.
  * 
  * @author Adrian Ledwinka
@@ -45,7 +49,7 @@ public class MainApp extends Application {
 	private boolean listenLobby = false;
 	private Player player;
 
-    // Spiel-Oberflächen
+    // Spiel-OberflÃ¤chen
 	private TitleFX titleFX = new TitleFX();
     private LobbyFX lobbyFX = new LobbyFX();
     private JoinFX joinFX = new JoinFX();
@@ -62,18 +66,18 @@ public class MainApp extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		// Anwendungs-Container der das Spiel darstellt mit der eingestellten Auflösung (1600x900px)
+		// Anwendungs-Container der das Spiel darstellt mit der eingestellten AuflÃ¶sung (1600x900px)
 	    app.setPrefSize(APP_WIDTH, APP_HEIGHT);
 	    app.setStyle("-fx-background-image:url('resources/bg.png'); -fx-background-size: cover; -fx-background-position: 50% 50%;");
 	    
-	    // Favicon für die Taskleiste
+	    // Favicon fÃ¼r die Taskleiste
 	    stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("../resources/btn_lobby_host.png")));
 	    
-	    // Spiel-Container der alle Oberflächen sammelt und ausgibt
+	    // Spiel-Container der alle OberflÃ¤chen sammelt und ausgibt
 	    ctnApp.setPrefSize(1920, 1080);
 	    resizeThat(stage, ctnApp);
 
-	    // Alle Oberflächen werden in den Spiel-Container geladen
+	    // Alle OberflÃ¤chen werden in den Spiel-Container geladen
 		ctnApp.getChildren().addAll(
 				titleFX.getContainer(),
 				lobbyFX.getContainer(),
@@ -84,23 +88,23 @@ public class MainApp extends Application {
 		
 		app.getChildren().add(ctnApp);
 		
-		// Spielt die Hintergrund-Musik für das Hauptmenü ab
+		// Spielt die Hintergrund-Musik fÃ¼r das HauptmenÃ¼ ab
 		mpFX.playBgmStart();
 		
 		// Methode um die ClickEvents zu initialisieren
 	    initializeEventHandlers();
 	    
-	    // Methode um die Spiel-Schleife für die Animationen zu initialisieren
+	    // Methode um die Spiel-Schleife fÃ¼r die Animationen zu initialisieren
 		gameLoop();
 	    
-	    // Methode die das Spiel immer passend zur Fenstergröße skaliert
+	    // Methode die das Spiel immer passend zur FenstergrÃ¶ÃŸe skaliert
 	    ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
 	    	resizeThat(stage, ctnApp);
 
 		stage.widthProperty().addListener(stageSizeListener);
 		stage.heightProperty().addListener(stageSizeListener); 
 		
-		// Setzt den Titel für die Anwendung in die Scene und startet sie in der Main
+		// Setzt den Titel fÃ¼r die Anwendung in die Scene und startet sie in der Main
 		stage.setTitle("CONQUER | All risk all fun");
 		scene.getStylesheets().add("resources/style.css");
 		stage.setScene(scene);
@@ -108,7 +112,7 @@ public class MainApp extends Application {
 
 		//CSS-Sliderskin - Sliderthumb gecastet als Pane
 		mpFX.paneThumb = (Pane)mpFX.volumeSlider.lookup(".thumb");
-		// ändert MediaPlayer Sliderthumb
+		// Ã¤ndert MediaPlayer Sliderthumb
 		mpFX.sliderThumbChange();
 	}
 	
@@ -129,70 +133,58 @@ public class MainApp extends Application {
 	}
 
 	/**
-	 * Prozedur, die die ganze Anwendung startet sobald die Scene übergeben wurde
+	 * Prozedur, die die ganze Anwendung startet sobald die Scene Ã¼bergeben wurde
 	 * 
 	 * @param args String[]
 	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	/**
-	 * Prozedur, die alle EventListener startet die für den 
+	 * Prozedur, die alle EventListener startet die fÃ¼r den 
 	 */
     public void initializeEventHandlers(){
-    	// Wennn der Button zum Spiel erstellen gedrückt wird
+    	// Wennn der Button zum Spiel erstellen gedrÃ¼ckt wird
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
 	    	// Debug ausgabe Lobby ID
-	    	lobbyFX.setLobby(new Lobby());
+	    	lobbyFX.setLobby(new Lobby(lobbyFX));
 	    	listenLobby = true;
-	    	lobbyId = lobbyFX.getLobby().getLobbyId();
 			System.out.println(lobbyFX.getLobby().getLobbyId());
 
-	    	// Startet die Animation für den Übergang zwischen zwei Panes
+	    	// Startet die Animation fÃ¼r den Ãœbergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnCreate(), titleFX.getContainer(), lobbyFX.getContainer());
 
-	    	// Sound für den gedrückten Button wird abgespielt
+	    	// Sound fÃ¼r den gedrÃ¼ckten Button wird abgespielt
 			mpFX.playBtnSFX();
-
-			//Lobby leeren
-			lobbyFX.getLobby().clearPlayers();
 
 			//Spieler-Objekt und Chat-Objekt werden erstellt
 	    	createPlayer();
+	    	// Spielleietr setzen
 	    	lobbyFX.getLobby().setLobbyLeader(player);
+	    	// Farbe und Name in GUI setzen
 	    	lobbyFX.guiChangePlayerName(player.getSlotId(),player.getName());
 	    	lobbyFX.guiChangeColor(player.getSlotId(), player.getColorValue());
-	    	// Debug Spieler
-			createPlayer2();
-			lobbyFX.guiChangePlayerName(player.getSlotId(),player.getName());
-			lobbyFX.guiChangeColor(player.getSlotId(), player.getColorValue());
 	    });
 	   
-	    // Wenn der Button zum Spiel beitreten gedrückt wird
+	    // Wenn der Button zum Spiel beitreten gedrÃ¼ckt wird
 	    titleFX.getBtnJoin().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Beendet die Animation des Logos
 	    	titleFX.setLogoAnimated(false);
-	    	
-	    	// Startet die Animation für den Übergang zwischen zwei Panes
+
+	    	// Startet die Animation fÃ¼r den Ãœbergang zwischen zwei Panes
 	    	paneTransition(titleFX.getBtnJoin(), titleFX.getContainer(), joinFX.getContainer());
-	    	
-	    	// Sound für den gedrückten Button wird abgespielt
+
+	    	// Sound fÃ¼r den gedrÃ¼ckten Button wird abgespielt
 	    	mpFX.playBtnSFX();
-	    	
-	    	//Spieler-Objekt und Chat-Objekt werden erstellt
-	    	//createPlayer();
 
-			System.out.println(lobbyFX.getLobby());
-
-	    	//mpFX.playBtnSFX();
 	    });
 	    
-	    // Wenn der Button zum Tutorial gedrückt wird
+	    // Wenn der Button zum Tutorial gedrÃ¼ckt wird
 	    titleFX.getBtnTutorial().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    	// Öffnet die Anleitung die sich Online beim Hersteller befindet
+	    	// Ã–ffnet die Anleitung die sich Online beim Hersteller befindet
 	    	String url_open ="https://risiko.hasbro.com/wp-content/uploads/2015/04/Risiko_Classic_Spielanleitung.pdf";
 			try {
 				java.awt.Desktop.getDesktop().browse(java.net.URI.create(url_open));
@@ -202,26 +194,26 @@ public class MainApp extends Application {
 			}
 	    });
 	    
-	    // Wenn der Button zum Verlassen der Lobby gedrückt wird
+	    // Wenn der Button zum Verlassen der Lobby gedrÃ¼ckt wird
 	    lobbyFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Startet die Animation des Logos
 	    	titleFX.setLogoAnimated(true);
-	    	
-	    	// Startet die Animation für den Übergang zwischen zwei Panes
+	    	lobbyFX.setLobby(null);
+	    	// Startet die Animation fÃ¼r den Ãœbergang zwischen zwei Panes
 			paneTransition(lobbyFX.getBtnBack(), lobbyFX.getContainer(), titleFX.getContainer());
 			
 			/*
-			 * Sound für den gedrückten Button wird abgespielt
+			 * Sound fÃ¼r den gedrÃ¼ckten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
 			mpFX.stopBgmGame();
 	    });
 	    
-	    // Wenn der Button zum Spieler bestätigen gedrückt wird
+	    // Wenn der Button zum Spieler bestÃ¤tigen gedrÃ¼ckt wird
 	    lobbyFX.getBtnReady().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Wenn der Button aktiv ist...
 	    	if(lobbyFX.getBtnReady().isActive()) {
-		    	// ...startet die Animation für den Übergang zwischen zwei Panes
+		    	// ...startet die Animation fÃ¼r den Ãœbergang zwischen zwei Panes
 				paneTransition(lobbyFX.getBtnReady(), lobbyFX.getContainer(), matchFX.getContainer());
 				
 				// ...wird zur Weltkarte gewechselt positioniert sich der Chat neu
@@ -229,7 +221,7 @@ public class MainApp extends Application {
 				chatFX.getPane().setPrefWidth(300);
 				
 				/*
-				 * Sound für den gedrückten Button wird abgespielt
+				 * Sound fÃ¼r den gedrÃ¼ckten Button wird abgespielt
 				 * und die Hintergrund-Musik wird gewechselt
 				 */
 				isMatchActive = true;
@@ -237,40 +229,96 @@ public class MainApp extends Application {
 				mpFX.stopBgmStart();
 				mpFX.playBgmGame();
 				
-				// ...das Round-Objekt wird erstellt mit den Daten der Lobby und Weltkarte
-				matchFX.initializeMatch(lobbyFX);
-				matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
+				// Lobby Leader erstellt GameMechanics und initalisiert das Spiel
+				if(player.getPlayerId() == lobbyFX.getLobby().getLeaderId()) {
+					matchFX.distributeCountries(lobbyFX);
+					matchFX.setGameMechanics(new GameMechanics(matchFX,lobbyFX.getLobby().getPlayers()));
+					System.out.println("Du bist Spieleiter!");
+				} else {
+					System.out.println("Du bist Spieler!");
+					System.out.println("### Erstellen der Daten! ###");
+
+					// Task erstellen
+					Task task = new Task<Void>() {
+						@Override
+						protected Void call() {
+							return null;
+						}
+
+
+						@Override public void run() {
+							// LÃ¤nder aus MatchFX
+							Country[] countryListMatch = matchFX.getCountryArray();
+
+							// Spieler durchiterieren
+							for (Player player : lobbyFX.getLobby().getPlayers()) {
+								System.out.println(player.getName());
+								int[] countryIds = SqlHelper.getPlayerCountries(player.getPlayerId(), player.getLobbyId());
+
+								for (int countryId : countryIds) {
+									Country currentCountry = 	countryListMatch[countryId-1];
+									currentCountry.setOwner(player);
+									System.out.println(currentCountry);
+									currentCountry.setColor(player.getColorValue());
+									currentCountry.setRectangle(matchFX.getCountryUnitsBGArray()[countryId-1]);
+									currentCountry.setUnitLabel(matchFX.getCountryUnitsLabelArray()[countryId-1]);
+									currentCountry.setUnits(SqlHelper.getCountryUnits(countryId, player.getLobbyId()));
+
+								}
+
+							}
+
+						}
+					};
+
+					// task starten
+					Thread th = new Thread(task);
+					th.setDaemon(true);
+					th.start();
+					try {
+						th.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+
+
+				// HÃ¶rtauf die Lobby abzuhorchen
+				listenLobby = false;
+				// FÃ¤ngt an das Spiel abzuhorchen
+				listenGame = true;
+
 	    	}
 	    });
    
-	    // Wenn auf ein Farben-Quadrat in der Lobby gedrückt wird
+	    // Wenn auf ein Farben-Quadrat in der Lobby gedrÃ¼ckt wird
 	    for(int i = 0; i < lobbyFX.getColors().length; i++)  {
 	    	final int COUNT = i;
 
 	    	lobbyFX.getColorRectArray()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	    		// Farbe des Slots der Person die gedrückt hat wird aktualisiert
+	    		// Farbe des Slots der Person die gedrÃ¼ckt hat wird aktualisiert
 				String colorValue = lobbyFX.getColorRectArray()[COUNT].getFill().toString();
 
 				// Relevante Stelle des Color String wird gehohlt
 				colorValue = colorValue.substring(2,8);
 
 				player.setColorValue(colorValue);
-	    		lobbyFX.guiChangeColor(player.getSlotId(), colorValue);
+
 	    	});
 	    }
 	    
-	    // Wenn auf den Bestätigen-Button neben dem Namens-Eingefeld gedrückt wird
+	    // Wenn auf den BestÃ¤tigen-Button neben dem Namens-Eingefeld gedrÃ¼ckt wird
 	    lobbyFX.getBtnCheck().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			// Ändert den Namen des Spielers in seinem Slot
-	    	lobbyFX.guiChangePlayerName(player.getSlotId(), lobbyFX.getInputName().getText());
+			// Ã„ndert den Namen des Spielers in seinem Slot
 	    	player.setName(lobbyFX.getInputName().getText());
 	    });
 	    
-	    // Wenn im Namens-Eingabefeld eine Taste gedrückt wird
+	    // Wenn im Namens-Eingabefeld eine Taste gedrÃ¼ckt wird
 	    lobbyFX.getInputName().setOnKeyReleased(event -> {
 	    	// Wenn diese Taste "Enter" ist...
 	    	if (event.getCode() == KeyCode.ENTER) {
-	    		// ...wird der Name des Spielers in seinem Slot geändert
+	    		// ...wird der Name des Spielers in seinem Slot geÃ¤ndert
 	    		lobbyFX.guiChangePlayerName(player.getSlotId(), lobbyFX.getInputName().getText());
 	    	}
 
@@ -278,7 +326,7 @@ public class MainApp extends Application {
 	    // Limitiert die Zeichen im Eingabefeld auf 15 Zeichen
 	    addTextLimiter(lobbyFX.getInputName(), 15);
 	    
-	    // Wenn auf das rote Kreuz eines Spielers gedrückt wird
+	    // Wenn auf das rote Kreuz eines Spielers gedrÃ¼ckt wird
 	    for(int i = 1; i < lobbyFX.getSlotRolesArray().length; i++) {
 	    	final int COUNT = i;
 
@@ -287,22 +335,22 @@ public class MainApp extends Application {
 	    	});
 	    }
 	    
-	    // Wenn der Button zum Verlassen von "Spiel beitereten" gedrückt wird
+	    // Wenn der Button zum Verlassen von "Spiel beitereten" gedrÃ¼ckt wird
 	    joinFX.getBtnBack().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Startet die Animation des Logos
 	    	titleFX.setLogoAnimated(true);
 	    	
-	    	// Startet die Animation für den Übergang zwischen zwei Panes
+	    	// Startet die Animation fÃ¼r den Ãœbergang zwischen zwei Panes
 			paneTransition(joinFX.getBtnBack(), joinFX.getContainer(), titleFX.getContainer());
 			
 			/*
-			 * Sound für den gedrückten Button wird abgespielt
+			 * Sound fÃ¼r den gedrÃ¼ckten Button wird abgespielt
 			 * und die Hintergrund-Musik wird gewechselt
 			 */
 			mpFX.stopBgmGame();
 	    });
 	    
-	    // Wenn der Play-Button des MediaPlayers gedrückt wird
+	    // Wenn der Play-Button des MediaPlayers gedrÃ¼ckt wird
 		mpFX.getPlayBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Startet die Hintergrundmusik
 			if(isMatchActive){
@@ -312,7 +360,7 @@ public class MainApp extends Application {
 			}
 		});
 		
-		// Wenn der Stop-Button des MediaPlayers gedrückt wird
+		// Wenn der Stop-Button des MediaPlayers gedrÃ¼ckt wird
 		mpFX.title_btn_stop_mediaPlayer.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			// Stoppt die Hintergrundmusik
 			if(isMatchActive){
@@ -326,28 +374,27 @@ public class MainApp extends Application {
 		for (int i = 0; i < joinFX.getUserList().length; i++) {
 			final int tmp = i;
 			
-			// Wenn auf eine Lobby-Verbindung gedrückt wird
+			// Wenn auf eine Lobby-Verbindung gedrÃ¼ckt wird
 			joinFX.getUserList()[i].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 		    	// Beendet die Animation des Logos
 		    	titleFX.setLogoAnimated(false);
-				
 
 				// Lobby wird basierend auf der Auswahl gesetzt
 		    	lobbyFX.setLobby(SqlHelper.getLobby(joinFX.getLobbyIdArray()[tmp]));
+				lobbyFX.getLobby().setLobbyFX(lobbyFX);
+
+				//Spieler-Objekt und Chat-Objekt werden erstellt
 		    	createPlayer();
-		    	
-		    	for (Player player : lobbyFX.getLobby().getPlayers()) {
-		    		lobbyFX.guiAddPlayer(player.getSlotId());
-		    		lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
-		    		lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
-				}
-		    	
-		    	// Startet die Animation für den Übergang zwischen zwei Panes
+				listenLobby = true;
+
+				System.out.println("Lobby beigetreten:"+lobbyFX.getLobby().getLobbyId());
+
+		    	// Startet die Animation fÃ¼r den Ãœbergang zwischen zwei Panes
 				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
 			});
 		}
 		
-		// Wenn der Button für die 1. Phase (setzen) gedrückt wird
+		// Wenn der Button fÃ¼r die 1. Phase (setzen) gedrÃ¼ckt wird
 	    matchFX.getPhaseBtn1().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Wenn der Button aktiv ist...
 	    	if(matchFX.getPhaseBtn1().isActive()) {
@@ -356,7 +403,7 @@ public class MainApp extends Application {
 	    	}
 	    });
     	
-	    // Wenn der Button für die 2. Phase (kämpfen) gedrückt wird
+	    // Wenn der Button fÃ¼r die 2. Phase (kÃ¤mpfen) gedrÃ¼ckt wird
 	    matchFX.getPhaseBtn2().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Wenn der Button aktiv ist...
 	    	if(matchFX.getPhaseBtn2().isActive()) {
@@ -365,7 +412,7 @@ public class MainApp extends Application {
 	    	}
 	    });
 	    
-	    // Wenn der Button für die 3. Phase (bewegen) gedrückt wird
+	    // Wenn der Button fÃ¼r die 3. Phase (bewegen) gedrÃ¼ckt wird
 	    matchFX.getPhaseBtn3().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Wenn der Button aktiv ist...
 	    	if(matchFX.getPhaseBtn3().isActive()) {
@@ -374,7 +421,7 @@ public class MainApp extends Application {
 	    	}
 	    });
 	    
-	    // Wenn der Button für die 4. Phase (Ende) gedrückt wird
+	    // Wenn der Button fÃ¼r die 4. Phase (Ende) gedrÃ¼ckt wird
 	    matchFX.getPhaseBtn4().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Wenn der Button aktiv ist...
 	    	if(matchFX.getPhaseBtn4().isActive()) {
@@ -383,19 +430,19 @@ public class MainApp extends Application {
 	    	}
 	    });
 	    
-	    // Wenn der Cursor sich über den Auftrag-Button befindet
+	    // Wenn der Cursor sich Ã¼ber den Auftrag-Button befindet
 	    matchFX.getPlayerInfoAuftragGroup().addEventHandler(MouseEvent.MOUSE_MOVED, event ->
 	    	// Bewegt den Auftrag-Container nach rechts
 	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(200)
 	    );
 		
-	    // Wenn der Cursor den Auftrag-Button verlässt
+	    // Wenn der Cursor den Auftrag-Button verlÃ¤sst
 	    matchFX.getPlayerInfoAuftragGroup().addEventHandler(MouseEvent.MOUSE_EXITED, event ->
 	    	// Bewegt den Auftrag-Container wieder nach links
 	    	matchFX.getPlayerInfoAuftragGroup().setLayoutX(-200)
 		);
 	    
-	    // Wenn im Kampfbildschirm auf den Bestätige-Button gedrückt wird
+	    // Wenn im Kampfbildschirm auf den BestÃ¤tige-Button gedrÃ¼ckt wird
 	    matchFX.getBattleReadyBtn().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	/*
 	    	 * Wenn der Verteidigungs-Input deaktiviert ist befinden wir
@@ -408,7 +455,7 @@ public class MainApp extends Application {
 	    		// Wenn der Wert der Angreifer im erlaubten Bereich sind...
 		    	if(matchFX.getGameMechanics().getBattleUnitsA() > 0 && matchFX.getGameMechanics().getBattleUnitsA() < matchFX.getGameMechanics().getCountryA().getUnits()) {
 		    		
-		    		// ...werden die Eingabefelder getauscht, damit die Else-Bedingungen erfüllt wird
+		    		// ...werden die Eingabefelder getauscht, damit die Else-Bedingungen erfÃ¼llt wird
 		    		matchFX.getBattleInputA().setDisable(true);
 		    		matchFX.getBattleInputB().setDisable(false);
 		    	}
@@ -425,7 +472,7 @@ public class MainApp extends Application {
 	    		// Wenn der Wert der Verteidiger im erlaubten Bereich sind...
 		    	if(matchFX.getGameMechanics().getBattleUnitsB() > 0 && matchFX.getGameMechanics().getBattleUnitsB() < 3 && matchFX.getGameMechanics().getBattleUnitsB() <= matchFX.getGameMechanics().getCountryB().getUnits()) {
 		    		
-		    		// Ausgabe für die Konsole zur Kontrolle
+		    		// Ausgabe fÃ¼r die Konsole zur Kontrolle
 		    		System.out.println("*** Kampf beginnt ***");
 		    		System.out.println("A: " + matchFX.getGameMechanics().getCountryA().getCountryName() + " | B: " + matchFX.getGameMechanics().getCountryB().getCountryName());
 		    		System.out.println("A Einheiten vorher: " + matchFX.getGameMechanics().getCountryA().getUnits());
@@ -436,21 +483,21 @@ public class MainApp extends Application {
 		    		// Button wird deaktiviert um weitere Eingaben zu vermeiden
 		    		matchFX.getBattleReadyBtn().setActive(false);
 		    		
-		    		// Es werden Würfel gewürfelt anhand der eingesetzten Einheiten
+		    		// Es werden WÃ¼rfel gewÃ¼rfelt anhand der eingesetzten Einheiten
 		    		Integer[][] rolledDices = matchFX.getGameMechanics().rollTheDice(matchFX.getGameMechanics().getBattleUnitsA(), matchFX.getGameMechanics().getBattleUnitsB());
 		    		
-		    		// Auf Basis der Würfe wird der Kampf durchgeführt
+		    		// Auf Basis der WÃ¼rfe wird der Kampf durchgefÃ¼hrt
 		    		matchFX.getGameMechanics().updateFightResults(rolledDices, matchFX.getGameMechanics().getCountryA(), matchFX.getGameMechanics().getCountryB());
 		    		
-		    		// Startet die Würfel-Animation
+		    		// Startet die WÃ¼rfel-Animation
 		    		matchFX.setStartDicing(true);
 		    	}
 	    	}
 	    });
 	    
-	    // Country-Array zwischenspeichern um die Variablen-Namen der Schleife abzukürzen
+	    // Country-Array zwischenspeichern um die Variablen-Namen der Schleife abzukÃ¼rzen
 	    Country[] countryArray = matchFX.getCountryArray();
-	    // Schleife um mit allen 42 Ländern zu kommunizieren
+	    // Schleife um mit allen 42 LÃ¤ndern zu kommunizieren
 	    for (int i = 0; i < matchFX.getCountryArray().length; i++) {
 			final int COUNT = i;
 			
@@ -509,19 +556,19 @@ public class MainApp extends Application {
     }
 
 	/**
-	 * Steuert den Übergang zwischen zwei Panes für die Animation
+	 * Steuert den Ãœbergang zwischen zwei Panes fÃ¼r die Animation
 	 * 
 	 * @param trigger Sprite
 	 * @param from Pane
 	 * @param to Pane
 	 */
 	public void paneTransition(Sprite trigger, Pane from, Pane to) {
-		// Wenn der gedrückte Button aktiv ist, kann die Animation gestartet werden
+		// Wenn der gedrÃ¼ckte Button aktiv ist, kann die Animation gestartet werden
 		if(trigger.isActive()) {
 			
 			/*
-			 * Die noch aktive Pane wird mit Daten bestückt,
-			 * die sich während der Animation verändern schrittweise werden
+			 * Die noch aktive Pane wird mit Daten bestÃ¼ckt,
+			 * die sich wÃ¤hrend der Animation verÃ¤ndern schrittweise werden
 			 */
 			paneFrom = from;
 			paneFrom.setCache(true);
@@ -530,8 +577,8 @@ public class MainApp extends Application {
 			paneFrom.setScaleY(1);
 			
 			/*
-			 * Die noch deaktivierte Pane wird mit Daten bestückt,
-			 * die sich während der Animation verändern schrittweise werden
+			 * Die noch deaktivierte Pane wird mit Daten bestÃ¼ckt,
+			 * die sich wÃ¤hrend der Animation verÃ¤ndern schrittweise werden
 			 */
 			paneTo = to;
 			paneTo.setCache(true);
@@ -546,7 +593,7 @@ public class MainApp extends Application {
 	}
 
 	/**
-	 * Prozedur, die die ganze Anwendung startet sobald die Scene übergeben wurde
+	 * Prozedur, die die ganze Anwendung startet sobald die Scene Ã¼bergeben wurde
 	 * 
 	 * @param trigger Label
 	 * @param from Pane
@@ -555,8 +602,8 @@ public class MainApp extends Application {
 	 */
 	public void paneTransition(Label trigger, Pane from, Pane to) {
 		/*
-		 * Die noch aktive Pane wird mit Daten bestückt,
-		 * die sich während der Animation verändern schrittweise werden
+		 * Die noch aktive Pane wird mit Daten bestÃ¼ckt,
+		 * die sich wÃ¤hrend der Animation verÃ¤ndern schrittweise werden
 		 */
 		paneFrom = from;
 		paneFrom.setCache(true);
@@ -565,8 +612,8 @@ public class MainApp extends Application {
 		paneFrom.setScaleY(1);
 		
 		/*
-		 * Die noch deaktivierte Pane wird mit Daten bestückt,
-		 * die sich während der Animation verändern schrittweise werden
+		 * Die noch deaktivierte Pane wird mit Daten bestÃ¼ckt,
+		 * die sich wÃ¤hrend der Animation verÃ¤ndern schrittweise werden
 		 */
 		paneTo = to;
 		paneTo.setCache(true);
@@ -580,25 +627,25 @@ public class MainApp extends Application {
 	}
 	
 	/**
-	 * Wird aufgerufen wenn die Fenstergröße geändert wird und
+	 * Wird aufgerufen wenn die FenstergrÃ¶ÃŸe geÃ¤ndert wird und
 	 * skaliert den Spiel-Container immer passend
 	 * 
 	 * @param stage Stage
 	 * @param ctn_app Pane
 	 */
 	public void resizeThat(Stage stage, Pane ctn_app) {
-		 // speichert das gewünschte Seitenverhältnis
+		 // speichert das gewÃ¼nschte SeitenverhÃ¤ltnis
 		 double ratio = stage.getWidth() / stage.getHeight();
 		 double scale;
 		 
-		 // Vergleicht beide Verhältnisse und ändert dementsprechend den Skalierungs-Faktor
+		 // Vergleicht beide VerhÃ¤ltnisse und Ã¤ndert dementsprechend den Skalierungs-Faktor
 		 if(ratio > ctn_app.getPrefWidth() / ctn_app.getPrefHeight())
 			 scale = stage.getHeight() / ctn_app.getPrefHeight();
 		 else
 			 scale = stage.getWidth() / ctn_app.getPrefWidth();
 		 
 		 /*
-		  * Sollte es größer als 1080p sein wird die Skalierung auf 1 gesetzt
+		  * Sollte es grÃ¶ÃŸer als 1080p sein wird die Skalierung auf 1 gesetzt
 		  * um verpixelung der Bilder zu verhindern
 		  */ 
 		 if(scale >= 1)
@@ -628,10 +675,19 @@ public class MainApp extends Application {
 		country.setFill(Color.web(country.getOwner().getColorValue()));
 		country.getRectangle().setFill(country.getFill());
 	}
-	
-	private int lobbyId;
+
+	public void updateCountryGui(Country country, Lobby lobby) {
+		int countryId = country.getCountryId();
+		int lobbyId = lobby.getLobbyId();
+		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
+
+		country.getUnitLabel().setText(String.valueOf(newUnits));
+		country.setFill(Color.web(country.getOwner().getColorValue()));
+		country.getRectangle().setFill(country.getFill());
+	}
+
 	/**
-	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
+	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flÃ¼ssige Animationen zu ermÃ¶glichen
 	 */
 	public void gameLoop() {
 		new AnimationTimer() {
@@ -643,46 +699,65 @@ public class MainApp extends Application {
 
 				// Aktualisierung alle 500ms
 				if(count != 0 && count % 30 == 0) {
-					// Count zurücksetzen
+					// Count zurÃ¼cksetzen
 					count = 0;
 
 					// Update Listener in Lobby
 					if(listenLobby) {
-						int playerCount = SqlHelper.getPlayerIdsFromLobby(lobbyFX.getLobby().getLobbyId()).size();
-						System.out.println(playerCount);
+						int newLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
+
+						if(newLastChange > currentLastChange) {
+							// Lobby wird mit neuen Spieler aktualisiert
+							lobbyFX.setLobby(SqlHelper.getLobby(lobbyFX.getLobby().getLobbyId()));
+							lobbyFX.getLobby().setLobbyFX(lobbyFX);
+							// Spieler die bereits vorhanden waren werden
+
+							// GUI Updaten
+							for (Player player : lobbyFX.getLobby().getPlayers()) {
+								// Spieler die breits vorhanden sind werrden ignoriert
+								lobbyFX.guiAddPlayer(player.getSlotId());
+								lobbyFX.guiChangePlayerName(player.getSlotId(), player.getName());
+								lobbyFX.guiChangeColor(player.getSlotId(),player.getColorValue());
+							}
+
+							currentLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
+						}
+
 					}
+
 
 					// UpdateListener im Spiel
 					if(listenGame) {
 						// GUI Updater
 						// Lastchange aus DB auslesen
-						long newLastChange = SqlHelper.getLastChange(lobbyId);
-						// Nur wenn die neue lastChangeID größer ist als die eigene wird aktualisiert
+						int newLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
+						// Nur wenn die neue lastChangeID grÃ¶ÃŸer ist als die eigene wird aktualisiert
 						if(newLastChange > currentLastChange) {
 							// Debug ausgabe
-							System.out.println("Änderungen in Länder");
+							System.out.println("Ã„nderungen in LÃ¤nder");
 
-							// Akualisiert alle Länder
+							// Akualisiert alle LÃ¤nder
 							for (Country country : matchFX.getCountryArray()) {
 								updateCountry(country,lobbyFX.getLobby());
 							}
 
-							SqlHelper.insertPlayer("Bob", lobbyFX.getLobby().getLobbyId());
+							//matchFX.getGameMechanics().setPlayerList(lobbyFX.getLobby().getPlayers());
+
 							// LastChange akualisieren
-							currentLastChange = newLastChange;
+							currentLastChange = SqlHelper.getLastChange(lobbyFX.getLobby().getLobbyId());
 						}
 					}
 	        	}
 				count++;
 
-	            // Wir erhalten eine Liste welches die IDs aller Spieler enthählt,
+	            // Wir erhalten eine Liste welches die IDs aller Spieler enthÃ¤hlt,
 	            // die sich zurzeit in der lobby befinden
-	            // 1) Neue IDs müssen hinzugefügt werden
-	            // 2) Ids die nichtmehr vorhanden sind müssen entfernt werden
+	            // 1) Neue IDs mÃ¼ssen hinzugefÃ¼gt werden
+	            // 2) Ids die nichtmehr vorhanden sind mÃ¼ssen entfernt werden
 	            // Neuer Spieler in Java schreiben bzw entfernen
 
-	            // Wenn die DB lastChange größer als der aktuelle Wert ist
-	            // gab es eine änderung in der DB
+	            // Wenn die DB lastChange grÃ¶ÃŸer als der aktuelle Wert ist
+	            // gab es eine Ã¤nderung in der DB
 
 
 	        	// Wenn das Logo animiert werden soll...
@@ -702,7 +777,7 @@ public class MainApp extends Application {
 		        	}
 	        	}
 	        	
-	        	// Wenn der Übergang zwischen zwei Panes aktiviert wird
+	        	// Wenn der Ãœbergang zwischen zwei Panes aktiviert wird
 	        	if(isTransitioning) {
 	        		
 	        		// Die vorherige Pane wird schrittweise verkleinert und ausgeblendet
@@ -714,7 +789,7 @@ public class MainApp extends Application {
 	        		if(paneFrom.getOpacity() > 0)
 	        			paneFrom.setOpacity(paneFrom.getOpacity() - .05);
 	        		
-	        		// Die nächste Pane wird schrittweise vergrößert und eingeblendet
+	        		// Die nÃ¤chste Pane wird schrittweise vergrÃ¶ÃŸert und eingeblendet
 	        		if(paneTo.getScaleY() > 1) {
 	        			paneTo.setScaleX(paneTo.getScaleX() - .02);
 	        			paneTo.setScaleY(paneTo.getScaleY() - .02);
@@ -724,8 +799,8 @@ public class MainApp extends Application {
 	        			paneTo.setOpacity(paneTo.getOpacity() + .05);
 
 	        		/*
-	        		 * Sind beide Übergänge fertig wird die aktuelle Pane endgültig deaktiviert,
-	        		 * die nächste aktiviert und die Animation durch den boolean toPane beendet
+	        		 * Sind beide ÃœbergÃ¤nge fertig wird die aktuelle Pane endgÃ¼ltig deaktiviert,
+	        		 * die nÃ¤chste aktiviert und die Animation durch den boolean toPane beendet
 	        		 */
 	        		if(paneFrom.getScaleY() >= 1.5 && paneTo.getScaleY() <= 1) {
 	        			paneFrom.setCache(true);
@@ -739,31 +814,31 @@ public class MainApp extends Application {
 	        	if(matchFX.isFightStarting()) {
 	        		chatFX.getPane().setVisible(false);
 	        		
-	        		// Wenn die Positionen der Hintergründe noch nicht die Ziel-Position haben...
+	        		// Wenn die Positionen der HintergrÃ¼nde noch nicht die Ziel-Position haben...
 	        		if(matchFX.getBattleBackgroundA().getLayoutX() < -10) {
 	        			// ...wird der Wert angepasst
 	        			matchFX.getBattleBackgroundA().relocate(matchFX.getBattleBackgroundA().getLayoutX() + 20, 0);
 	        		}
-	        		// Wenn die Positionen der Hintergründe noch nicht die Ziel-Position haben...
+	        		// Wenn die Positionen der HintergrÃ¼nde noch nicht die Ziel-Position haben...
 	        		if(matchFX.getBattleBackgroundB().getLayoutX() > 960) {
 	        			// ...wird der Wert angepasst
 	        			matchFX.getBattleBackgroundB().relocate(matchFX.getBattleBackgroundB().getLayoutX() - 28, 0);
 	        		}
 
-	        		// Wenn beide Hintergründe am richtigen Platz sind
+	        		// Wenn beide HintergrÃ¼nde am richtigen Platz sind
 	        		if(matchFX.getBattleBackgroundA().getLayoutX() >= -10 && matchFX.getBattleBackgroundB().getLayoutX() <= 960) {
 	        			// ...wird die Animation beendet
 	        			matchFX.getFightTextGroup().setVisible(true);
 	        		}
 
-	        		// Wenn das würfeln begonnen wird...
+	        		// Wenn das wÃ¼rfeln begonnen wird...
 	        		if(matchFX.isStartDicing()) {
-	        			// Wenn die Würfel-Gruppen noch nicht die richtige positioniert ist...
+	        			// Wenn die WÃ¼rfel-Gruppen noch nicht die richtige positioniert ist...
 	        			if(matchFX.getDicesA().getLayoutX() < 0) {
 	        				// ...wird die Position angepasst
 	        				matchFX.getDicesA().setLayoutX(matchFX.getDicesA().getLayoutX() + 10);
 	        			}
-	        			// Wenn die Würfel-Gruppen noch nicht die richtige positioniert ist...
+	        			// Wenn die WÃ¼rfel-Gruppen noch nicht die richtige positioniert ist...
 	        			if(matchFX.getDicesB().getLayoutX() > 1670) {
 	        				// ...wird die Position angepasst
 	        				// System.out.println(matchFX.getDicesB().getLayoutX());
@@ -772,7 +847,7 @@ public class MainApp extends Application {
 
 	        			if(matchFX.getDicesA().getLayoutX() >= 0 && matchFX.getDicesB().getLayoutX() <= 1670) {
 	        				diceCounter++;
-	    		    		// Ist der Kampf vorbei wird der Kampf beendet und die Länder aktualisiert
+	    		    		// Ist der Kampf vorbei wird der Kampf beendet und die LÃ¤nder aktualisiert
 	        				if(diceCounter == 240) {
 		        				diceCounter = 0;
 		        				chatFX.getPane().setVisible(true);
@@ -784,7 +859,7 @@ public class MainApp extends Application {
 	        		}
 	        	}
 	        	
-	        	// Aktualisiert die Lautstärke der Hintergrund-Musik
+	        	// Aktualisiert die LautstÃ¤rke der Hintergrund-Musik
 	        	mpFX.setVolumeGame();
 	        	mpFX.setVolumeStart();
 	        }
@@ -813,31 +888,18 @@ public class MainApp extends Application {
 	    });
 	}
 
-
 	/**
-	 * Erstellt ein Player-Objekt und ein zugehöriges Chat-Interface
+	 * Erstellt ein Player-Objekt und ein zugehÃ¶riges Chat-Interface
 	 * @author pbs2h17asc
 	 */
 	private void createPlayer() {
 		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
 		lobbyFX.guiAddPlayer(player.getSlotId());
 		lobbyFX.getLobby().addPlayer(player);
-		player.setColorValue("FFD800");
 
 		// Erstellt das ChatInterface und positioniert es in der Lobby
 		chatFX = new ChatInterface(player);
-		chatFX.getPane().setVisible(false);
-		ctnApp.getChildren().add(chatFX.getPane());
-		chatFX.getPane().relocate(42, 420);
-	}
-
-	private void createPlayer2() {
-		player = new Player(lobbyFX.getLobby(),lobbyFX.getNextSlotId());
-		lobbyFX.guiAddPlayer(player.getSlotId());
-		lobbyFX.getLobby().addPlayer(player);
-		player.setColorValue("000000");
-		// Erstellt das ChatInterface und positioniert es in der Lobby
-		chatFX = new ChatInterface(player);
+		chatFX.getPane().setVisible(true);
 		ctnApp.getChildren().add(chatFX.getPane());
 		chatFX.getPane().relocate(42, 420);
 	}

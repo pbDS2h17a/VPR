@@ -18,7 +18,12 @@ public class JoinFX {
 	// Globale Variablen
 	private Pane ctn = new Pane();
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
-	private Rectangle listBG = new Rectangle(900, 650);	
+	private Rectangle listBG = new Rectangle(900, 650);
+
+	public void setLobbyIdArray(int[] lobbyIdArray) {
+		this.lobbyIdArray = lobbyIdArray;
+	}
+
 	private int[] lobbyIdArray = SqlHelper.getAllLobbyId();
 	
 	public int[] getLobbyIdArray() {

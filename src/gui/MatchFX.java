@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Beinhaltet die gesamte Oberfl‰che die beim Klick auf "Spiel beitreten" aufgerufen wird.
- * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfl‰che aufzurufen.
+ * Beinhaltet die gesamte Oberfl√§che die beim Klick auf "Spiel beitreten" aufgerufen wird.
+ * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfl√§che aufzurufen.
  * 
  * @author Kevin Daniels
  */
@@ -87,18 +87,18 @@ public class MatchFX {
 	private Line[] lineArray;
 
 	/**
-	 * Konstruktor, der alle Oberfl‰chen-Objekte erstellt und sie in einen gemeinsamen Container eingef¸gt wird.
+	 * Konstruktor, der alle Oberfl√§chen-Objekte erstellt und sie in einen gemeinsamen Container eingef√ºgt wird.
 	 */
 	public MatchFX() {
-		// Beitreten-Container der in der MainApp ausgegeben wird und alle Objekte f¸rs beitreten beinhaltet.
+		// Beitreten-Container der in der MainApp ausgegeben wird und alle Objekte f√ºrs beitreten beinhaltet.
 	    ctn.setCache(true);
 	    ctn.setId("Partie");
 	    ctn.setPrefSize(1920, 1080);
-	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was auﬂerhalb der Form ist wird ausgeblendet.
+	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was au√üerhalb der Form ist wird ausgeblendet.
 	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    ctn.setVisible(false);
 	    
-	    // Hintergrund f¸r die Spiel-Partie
+	    // Hintergrund f√ºr die Spiel-Partie
 	    ImageView bg = new ImageView("resources/game_bg.png");
 	    ctn.getChildren().add(bg);
 	    
@@ -132,33 +132,29 @@ public class MatchFX {
     		
     		lineArray[i].setStroke(Color.WHITE);
     		lineArray[i].setStrokeWidth(5);
-//    		lineArray[i].setStartX(seaRoutesCoordinates[i][0] + 20);
-//    		lineArray[i].setStartY(seaRoutesCoordinates[i][1] + 20);
-//    		lineArray[i].setEndX(seaRoutesCoordinates[i+1][0] + 20);
-//    		lineArray[i].setEndY(seaRoutesCoordinates[i+1][1] + 20);
     		ctn.getChildren().add(lineArray[i]);
 		}
 
-	    // Gruppe die alle L‰nder enth‰lt
+	    // Gruppe die alle L√§nder enth√§lt
 	    groupLands.setScaleX(.9);
 	    groupLands.setScaleY(.9);
 	    groupLands.relocate(ctn.getPrefWidth()/2 - 656, ctn.getPrefHeight()/2 - 432);
 
-	    // Schleife um einzelne L‰nder zu erzeugen
+	    // Schleife um einzelne L√§nder zu erzeugen
 	    for(int i = 0; i < countryArray.length; i++) {
-				// F‰ngt mit eins an, da die ID's der L‰nder in der Datenbank mit eins beginnen
-				countryArray[i] = new Country(i+1);
-		    	countryArray[i].setFill(Color.WHITE);
-		    	countryArray[i].setStroke(Color.WHITE);
-		    	countryArray[i].setStrokeWidth(0);
-		    	countryArray[i].setScaleX(1.02);
-		    	countryArray[i].setScaleY(1.02);
-		    	groupLands.getChildren().add(countryArray[i]);
-	    	}
+			// F√§ngt mit eins an, da die ID's der L√§nder in der Datenbank mit eins beginnen
+			countryArray[i] = new Country(i+1);
+			countryArray[i].setFill(Color.WHITE);
+			countryArray[i].setStroke(Color.WHITE);
+			countryArray[i].setStrokeWidth(0);
+			countryArray[i].setScaleX(1.02);
+			countryArray[i].setScaleY(1.02);
+			groupLands.getChildren().add(countryArray[i]);
+		}
 	    
 	    ctn.getChildren().add(groupLands);
 
-	    // Code um sich die Mauskoordinaten zu besorgen (NUR F‹R TEST- UND RECHERCHEZWECKE)
+	    // Code um sich die Mauskoordinaten zu besorgen (NUR F√úR TEST- UND RECHERCHEZWECKE)
 //	    for (int i = 0; i < countryArray.length; i++) {
 //			System.out.println(countryArray[i].getCountryName());
 //		}
@@ -208,7 +204,7 @@ public class MatchFX {
     	countryNameLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 27px;");
     	ctn.getChildren().add(countryNameLabel);
     	
-    	// Verbindungslinien f¸r die L‰nder
+    	// Verbindungslinien f√ºr die L√§nder
     	for (int i = 0; i < countryNeighbourLineArray.length; i++) {
     		countryNeighbourLineArray[i] = new Line();
     		countryNeighbourLineArray[i].setStrokeWidth(5);
@@ -217,7 +213,7 @@ public class MatchFX {
     		ctn.getChildren().add(countryNeighbourLineArray[i]);
 		}
     	
-    	// Koordinaten der L‰nder-Mittelpunkte
+    	// Koordinaten der L√§nder-Mittelpunkte
     	worldMapCoordinates = new double[][] {
 			{392, 234},
 			{503, 298},
@@ -263,7 +259,7 @@ public class MatchFX {
 			{1364, 828}
     	};
 
-    	// Erstellt die Einheiten-Anzeige f¸r jedes Land, basierend auf den Koordinaten
+    	// Erstellt die Einheiten-Anzeige f√ºr jedes Land, basierend auf den Koordinaten
     	for (int i = 0; i < worldMapCoordinates.length; i++) {
 			countryUnitsBGArray[i] = new Rectangle(40, 40);
 			countryUnitsBGArray[i].setStroke(Color.WHITE);
@@ -290,10 +286,10 @@ public class MatchFX {
     	inventoryUnitsLabel.relocate(90, inventoryUnitsBG.getLayoutY() + 18);
     	inventoryUnitsLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	inventoryGroup.getChildren().add(inventoryUnitsLabel);
-    	// Das Inventar des aktuellen Spielers (L‰nder, Hintergrund)
+    	// Das Inventar des aktuellen Spielers (L√§nder, Hintergrund)
     	inventoryCountryBG.relocate(10, inventoryUnitsBG.getLayoutY() + 85);
     	inventoryGroup.getChildren().add(inventoryCountryBG);
-    	// Das Inventar des aktuellen Spielers (L‰nder, Label)
+    	// Das Inventar des aktuellen Spielers (L√§nder, Label)
     	inventoryCountryLabel.relocate(90, inventoryCountryBG.getLayoutY() + 18);
     	inventoryCountryLabel.setStyle("-fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
     	inventoryGroup.getChildren().add(inventoryCountryLabel);
@@ -364,46 +360,46 @@ public class MatchFX {
     	phaseBtnGroup.getChildren().add(phaseBtn4);
 		ctn.getChildren().add(phaseBtnGroup);
 
-		// Die Oberfl‰che auf der der Kampf stattfindet (Gruppe)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Gruppe)
 		fightTextGroup.setVisible(false);
 		fightGroup.setVisible(false);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land eins, Hintergrund)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land eins, Hintergrund)
 		fightCountryOneBG.relocate(-960, 0);
 		fightCountryOneBG.setStroke(Color.WHITE);
 		fightCountryOneBG.setStrokeWidth(10);
 		fightGroup.getChildren().add(fightCountryOneBG);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land eins, Name)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land eins, Name)
 		fightCountryOneLabel.setPrefWidth(960);
 		fightCountryOneLabel.relocate(0, 50);
 		fightCountryOneLabel.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		fightTextGroup.getChildren().add(fightCountryOneLabel);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land eins, Eingabefeld)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land eins, Eingabefeld)
 		fightCountryOneInput.setPrefSize(120, 100);
 		fightCountryOneInput.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		fightCountryOneInput.relocate(600, 430);
 		fightTextGroup.getChildren().add(fightCountryOneInput);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land eins, max. Einheiten)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land eins, max. Einheiten)
 		fightCountryOneUnits.setPrefSize(120, 40);
 		fightCountryOneUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
 		fightCountryOneUnits.relocate(600, 550);
 		fightTextGroup.getChildren().add(fightCountryOneUnits);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land zwei, Hintergrund)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land zwei, Hintergrund)
 		fightCountryTwoBG.relocate(1920, 0);
 		fightCountryTwoBG.setStroke(Color.WHITE);
 		fightCountryTwoBG.setStrokeWidth(10);
 		fightGroup.getChildren().add(fightCountryTwoBG);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land zwei, Name)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land zwei, Name)
 		fightCountryTwoLabel.setPrefWidth(960);
 		fightCountryTwoLabel.relocate(960, 50);
 		fightCountryTwoLabel.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		fightTextGroup.getChildren().add(fightCountryTwoLabel);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land zwei, Eingabefeld)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land zwei, Eingabefeld)
 		fightCountryTwoInput.setPrefSize(120, 100);
 		fightCountryTwoInput.setStyle("-fx-alignment: center; -fx-background-color: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 50px;");
 		fightCountryTwoInput.relocate(1200, 430);
 		fightCountryTwoInput.setDisable(true);
 		fightTextGroup.getChildren().add(fightCountryTwoInput);
-		// Die Oberfl‰che auf der der Kampf stattfindet (Land zwei, max. Einheiten)
+		// Die Oberfl√§che auf der der Kampf stattfindet (Land zwei, max. Einheiten)
 		fightCountryTwoUnits.setPrefSize(120, 40);
 		fightCountryTwoUnits.setStyle("-fx-alignment: center; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30px;");
 		fightCountryTwoUnits.relocate(1200, 550);
@@ -422,37 +418,37 @@ public class MatchFX {
 		fightArrow.relocate(810, 480);
 		fightTextGroup.getChildren().add(fightArrow);
 		
-		// Button der die gesetzten Einheiten best‰tigen soll
+		// Button der die gesetzten Einheiten best√§tigen soll
 		fightBtnReady.setButtonMode(true);
 		fightBtnReady.relocate(960 - 167, 850);
 		fightTextGroup.getChildren().add(fightBtnReady);
 		
-		// Die W¸rfel von Land eins (Gruppe)
+		// Die W√ºrfel von Land eins (Gruppe)
 		dicesGroupA.relocate(-400, 0);
-		// Die W¸rfel von Land eins (W¸rfel eins)
+		// Die W√ºrfel von Land eins (W√ºrfel eins)
 		fightCountryOneDiceOne.setPrefSize(150, 150);
 		fightCountryOneDiceOne.relocate(100, 265);
 		fightCountryOneDiceOne.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		dicesGroupA.getChildren().add(fightCountryOneDiceOne);
-		// Die W¸rfel von Land eins (W¸rfel zwei)
+		// Die W√ºrfel von Land eins (W√ºrfel zwei)
 		fightCountryOneDiceTwo.setPrefSize(150, 150);
 		fightCountryOneDiceTwo.relocate(100, 465);
 		fightCountryOneDiceTwo.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		dicesGroupA.getChildren().add(fightCountryOneDiceTwo);
-		// Die W¸rfel von Land eins (W¸rfel drei)
+		// Die W√ºrfel von Land eins (W√ºrfel drei)
 		fightCountryOneDiceThree.setPrefSize(150, 150);
 		fightCountryOneDiceThree.relocate(100, 665);
 		fightCountryOneDiceThree.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		dicesGroupA.getChildren().add(fightCountryOneDiceThree);
 		fightTextGroup.getChildren().add(dicesGroupA);
-		// Die W¸rfel von Land zwei (Gruppe)
+		// Die W√ºrfel von Land zwei (Gruppe)
 		dicesGroupB.relocate(2320, 0);
-		// Die W¸rfel von Land zwei (Gruppe, W¸rfel eins)
+		// Die W√ºrfel von Land zwei (Gruppe, W√ºrfel eins)
 		fightCountryTwoDiceOne.setPrefSize(150, 150);
 		fightCountryTwoDiceOne.relocate(0, 365);
 		fightCountryTwoDiceOne.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
 		dicesGroupB.getChildren().add(fightCountryTwoDiceOne);
-		// Die W¸rfel von Land zwei (Gruppe, W¸rfel zwei)
+		// Die W√ºrfel von Land zwei (Gruppe, W√ºrfel zwei)
 		fightCountryTwoDiceTwo.setPrefSize(150, 150);
 		fightCountryTwoDiceTwo.relocate(0, 565);
 		fightCountryTwoDiceTwo.setStyle("-fx-border-color: white; -fx-border-width: 10; -fx-alignment: center; -fx-background-color: #008137; -fx-text-fill: white; -fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 100px;");
@@ -463,7 +459,7 @@ public class MatchFX {
 		
 
 		// Die Partie wird begonnen
-		//initializeMatch();
+		//distributeCountries();
 	}
 
     /**
@@ -471,13 +467,14 @@ public class MatchFX {
      * 
      * @param lobbyFX LobbyFX
      */
-	public void initializeMatch(LobbyFX lobbyFX) {
+	public void distributeCountries(LobbyFX lobbyFX) {
 		Lobby lobby = lobbyFX.getLobby();
 		int lobbyId = lobby.getLobbyId();
 
-		// Verteilung der L‰nder auf die Spieler
-		// L‰nder-Array wird in eine Liste konvertiert
+		// Verteilung der L√§nder auf die Spieler
+		// L√§nder-Array wird in eine Liste konvertiert
 		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(countryArray));
+
 
         // Lobbyleader setzen auf ersten Spieler in der Lobby
         lobby.setLobbyLeader(lobby.getPlayers().get(0));
@@ -485,14 +482,16 @@ public class MatchFX {
 
 		int userCount = lobby.getPlayers().size();
 		Random rand = new Random();
-		// Verteilung der L‰nder
+		// Verteilung der L√§nder
 		for (int i = 0; i < countryArray.length; i++) {
-			// Zuf‰lliges Land aus der L‰nder-Liste wird ausgew‰hlt
+
+			// Zuf√§lliges Land aus der L√§nder-Liste wird ausgew√§hlt
 			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer);
-			randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
+			//randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
+			System.out.println("L√§nder in DB schreiben");
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
 			// Wenn die Spieler-Liste am Ende angekommen ist...
@@ -505,56 +504,61 @@ public class MatchFX {
 			}
 		}
 
-		// Passt die Einheiten-Anzeige der L‰nder an
+
+		// Passt die Einheiten-Anzeige der L√§nder an
+		initializeCountryGUI();
+
+		// Aktualisiert den aktiven Spieler oben links in der Oberfl√§che
+		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColorValue()));
+	}
+
+	public void initializeCountryGUI() {
 		for (int i = 0; i < countryArray.length; i++) {
 			countryUnitsBGArray[i].setFill(countryArray[i].getFill());
 			countryUnitsLabelArray[i].setText(String.valueOf(countryArray[i].getUnits()));
 			countryArray[i].setUnitLabel(countryUnitsLabelArray[i]);
 			countryArray[i].setRectangle(countryUnitsBGArray[i]);
 		}
-		
-		// Aktualisiert den aktiven Spieler oben links in der Oberfl‰che
-		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColorValue()));
 	}
-	
+
 	/**
 	 * Aktualisiert die Land-Informationen mittig unten auf der Weltkarte
 	 * 
 	 * @param country Country
 	 */
 	public void updateCountryInfo(Country country) {
-		// Wenn die Farbe des Landes nicht bereits die gew¸nschte hat...
+		// Wenn die Farbe des Landes nicht bereits die gew√ºnschte hat...
 		if(countryNameBG.getFill() != country.getFill()) {
-			// ...wird sie ge‰ndert
+			// ...wird sie ge√§ndert
 			countryNameBG.setFill(country.getFill());
 		}
 		
-		// Wenn der Name des Landes nicht bereits den gew¸nschten hat...
+		// Wenn der Name des Landes nicht bereits den gew√ºnschten hat...
 		if(!countryNameLabel.getText().equals(country.getCountryName())) {
-			// ...wird er ge‰ndert
+			// ...wird er ge√§ndert
 			countryNameLabel.setText(country.getCountryName());
 		}
 	}
 
 	/**
-	 * Markiert das gew‰hlte Land und deren Nachbarn
+	 * Markiert das gew√§hlte Land und deren Nachbarn
 	 * 
 	 * @param country Country
 	 * @param b boolean
 	 */
 	public void markNeighbourCountrys(Country country, boolean b) {
 
-		// Erstellt einen Farbfilter, der die L‰nder hervorheben soll
+		// Erstellt einen Farbfilter, der die L√§nder hervorheben soll
 		ColorAdjust colorAdjust = new ColorAdjust();
 		colorAdjust.setBrightness(0.7);
 		
-		// Schleife die alle vorherigen Markierungen zur¸cksetzt
+		// Schleife die alle vorherigen Markierungen zur√ºcksetzt
 		for (int i = 0; i < countryArray.length; i++) {
 			countryArray[i].setStrokeWidth(0);
 			countryArray[i].setEffect(null);
 		}
 
-		// Markiert das ausgew‰hlte Land und die benachbarten L‰nder
+		// Markiert das ausgew√§hlte Land und die benachbarten L√§nder
 		for (int i = 0; i < country.getNeighborIdArray().length; i++) {
 			countryArray[country.getNeighborIdArray()[i]-1].setStrokeWidth(5);
 			countryArray[country.getNeighborIdArray()[i]-1].setEffect(colorAdjust);
@@ -564,18 +568,18 @@ public class MatchFX {
 	}
 
 	/**
-	 * Methode f¸r die Einheiten-Informationen der L‰nder (Label)
+	 * Methode f√ºr die Einheiten-Informationen der L√§nder (Label)
 	 * 
-	 * @return gibt das Label mit den Einheiten-Information zur¸ck (Label)
+	 * @return gibt das Label mit den Einheiten-Information zur√ºck (Label)
 	 */
 	public Label[] getCountryUnitsLabelArray() {
 		return countryUnitsLabelArray;
 	}
 	
 	/**
-	 * Methode f¸r die Einheiten-Informationen der L‰nder (Hintergr¸nde)
+	 * Methode f√ºr die Einheiten-Informationen der L√§nder (Hintergr√ºnde)
 	 * 
-	 * @return gibt das Label mit den Einheiten-Information zur¸ck (Hintergr¸nde)
+	 * @return gibt das Label mit den Einheiten-Information zur√ºck (Hintergr√ºnde)
 	 */
 	public Rectangle[] getCountryUnitsBGArray() {
 		return countryUnitsBGArray;
@@ -591,7 +595,7 @@ public class MatchFX {
 	}
 	
 	/**
-	 * Setzt im Spieler-Interface die bereits eroberten L‰nder
+	 * Setzt im Spieler-Interface die bereits eroberten L√§nder
 	 * 
 	 * @param i int
 	 */
@@ -616,9 +620,9 @@ public class MatchFX {
 	}
 	
 	/**
-	 * Der Container f¸r die gesamte Partie-Oberfl‰che
+	 * Der Container f√ºr die gesamte Partie-Oberfl√§che
 	 * 
-	 * @return gibt den Container zur¸ck
+	 * @return gibt den Container zur√ºck
 	 */
 	public Pane getContainer() {
 		return ctn;
@@ -627,7 +631,7 @@ public class MatchFX {
 	/**
 	 * Holt sich das komplette Interface
 	 * 
-	 * @return gibt das Group-Objekt zur¸ck mit allen Objekten
+	 * @return gibt das Group-Objekt zur√ºck mit allen Objekten
 	 */
 	public Group getBattleInterface() {
 		return fightGroup;
@@ -636,7 +640,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Hintergrund von Land A
 	 * 
-	 * @return gibt das Rectangle-Objekt zur¸ck
+	 * @return gibt das Rectangle-Objekt zur√ºck
 	 */
 	public Rectangle getBattleBackgroundA() {
 		return fightCountryOneBG;
@@ -645,25 +649,25 @@ public class MatchFX {
 	/**
 	 * Holt sich den Hintergrund von Land B
 	 * 
-	 * @return gibt das Rectangle-Objekt zur¸ck
+	 * @return gibt das Rectangle-Objekt zur√ºck
 	 */
 	public Rectangle getBattleBackgroundB() {
 		return fightCountryTwoBG;
 	}
 	
 	/**
-	 * Holt sich die W¸rfel von Land A
+	 * Holt sich die W√ºrfel von Land A
 	 * 
-	 * @return gibt das Group-Objekt zur¸ck
+	 * @return gibt das Group-Objekt zur√ºck
 	 */
 	public Group getDicesA() {
 		return dicesGroupA;
 	}
 	
 	/**
-	 * Holt sich die W¸rfel von Land B
+	 * Holt sich die W√ºrfel von Land B
 	 * 
-	 * @return gibt das Group-Objekt zur¸ck
+	 * @return gibt das Group-Objekt zur√ºck
 	 */
 	public Group getDicesB() {
 		return dicesGroupB;
@@ -672,7 +676,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Namen von Land A
 	 * 
-	 * @return gibt das Label-Objekt zur¸ck
+	 * @return gibt das Label-Objekt zur√ºck
 	 */
 	public Label getCountryNameA() {
 		return fightCountryOneLabel;
@@ -681,7 +685,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Namen von Land B
 	 * 
-	 * @return gibt das Label-Objekt zur¸ck
+	 * @return gibt das Label-Objekt zur√ºck
 	 */
 	public Label getCountryNameB() {
 		return fightCountryTwoLabel;
@@ -690,7 +694,7 @@ public class MatchFX {
 	/**
 	 * Holt sich die Einheiten von Land A
 	 * 
-	 * @return gibt das Label-Objekt zur¸ck
+	 * @return gibt das Label-Objekt zur√ºck
 	 */
 	public Label getCountryUnitsA() {
 		return fightCountryOneUnits;
@@ -699,7 +703,7 @@ public class MatchFX {
 	/**
 	 * Holt sich die Einheiten von Land B
 	 * 
-	 * @return gibt das Label-Objekt zur¸ck
+	 * @return gibt das Label-Objekt zur√ºck
 	 */
 	public Label getCountryUnitsB() {
 		return fightCountryTwoUnits;
@@ -708,7 +712,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Bereit-Button des Kampfbildschirms
 	 * 
-	 * @return gibt das Sprite-Objekt zur¸ck
+	 * @return gibt das Sprite-Objekt zur√ºck
 	 */
 	public Sprite getBattleReadyBtn() {
 		return fightBtnReady;
@@ -717,7 +721,7 @@ public class MatchFX {
 	/**
 	 * Holt sich das Eingabefeld von Land A
 	 * 
-	 * @return gibt das TextField-Objekt zur¸ck
+	 * @return gibt das TextField-Objekt zur√ºck
 	 */
 	public TextField getBattleInputA() {
 		return fightCountryOneInput;
@@ -726,7 +730,7 @@ public class MatchFX {
 	/**
 	 * Holt sich das Eingabefeld von Land B
 	 * 
-	 * @return gibt das TextField-Objekt zur¸ck
+	 * @return gibt das TextField-Objekt zur√ºck
 	 */
 	public TextField getBattleInputB() {
 		return fightCountryTwoInput;
@@ -738,7 +742,7 @@ public class MatchFX {
 	 * @param isActive boolean
 	 */
 	public void activateWorldMap(boolean isActive) {
-		// Schleife die alle L‰nder je nach Wahl aktiviert oder deaktiviert
+		// Schleife die alle L√§nder je nach Wahl aktiviert oder deaktiviert
 		for (int i = 0; i < countryArray.length; i++) {
 			countryArray[i].setVisible(isActive);
 			countryUnitsBGArray[i].setVisible(isActive);
@@ -753,7 +757,7 @@ public class MatchFX {
 	/**
 	 * Holt sich die vier Phasen-Buttons
 	 * 
-	 * @return gibt das Group-Objekt zur¸ck
+	 * @return gibt das Group-Objekt zur√ºck
 	 */
 	public Group getPhaseBtnGroup() {
 		return phaseBtnGroup;
@@ -781,7 +785,7 @@ public class MatchFX {
 	/**
 	 * Holt sich die Spielrunde
 	 * 
-	 * @return gibt das GameMechanics-Objekt zur¸ck
+	 * @return gibt das GameMechanics-Objekt zur√ºck
 	 */
 	public GameMechanics getGameMechanics() {
 		return gameMechanics;
@@ -797,9 +801,9 @@ public class MatchFX {
 	}
 
 	/**
-	 * Holt sich alle L‰nder
+	 * Holt sich alle L√§nder
 	 * 
-	 * @return gibt das Land-Array zur¸ck
+	 * @return gibt das Land-Array zur√ºck
 	 */
 	public Country[] getCountryArray() {
 		return countryArray;
@@ -808,7 +812,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Button der ersten Phase
 	 * 
-	 * @return gibt das Sprite-Objekt zur¸ck
+	 * @return gibt das Sprite-Objekt zur√ºck
 	 */
 	public Sprite getPhaseBtn1() {
 		return phaseBtn1;
@@ -817,7 +821,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Button der zweiten Phase
 	 * 
-	 * @return gibt das Sprite-Objekt zur¸ck
+	 * @return gibt das Sprite-Objekt zur√ºck
 	 */
 	public Sprite getPhaseBtn2() {
 		return phaseBtn2;
@@ -826,7 +830,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Button der dritten Phase
 	 * 
-	 * @return gibt das Sprite-Objekt zur¸ck
+	 * @return gibt das Sprite-Objekt zur√ºck
 	 */
 	public Sprite getPhaseBtn3() {
 		return phaseBtn3;
@@ -835,7 +839,7 @@ public class MatchFX {
 	/**
 	 * Holt sich den Button der letzten Phase
 	 * 
-	 * @return gibt das Sprite-Objekt zur¸ck
+	 * @return gibt das Sprite-Objekt zur√ºck
 	 */
 	public Sprite getPhaseBtn4() {
 		return phaseBtn4;
@@ -844,16 +848,16 @@ public class MatchFX {
 	/**
 	 * Holt sich die gesamte Auftrag-Gruppe
 	 * 
-	 * @return gibt das Group-Objekt zur¸ck
+	 * @return gibt das Group-Objekt zur√ºck
 	 */
 	public Group getPlayerInfoAuftragGroup() {
 		return inventoryMissionGroup;
 	}
 
 	/**
-	 * Holt sich die Kampfbildschirm-Gruppe die die Texte enth‰lt
+	 * Holt sich die Kampfbildschirm-Gruppe die die Texte enth√§lt
 	 *
-	 * @return gibt das Group-Objekt zur¸ck
+	 * @return gibt das Group-Objekt zur√ºck
 	 */
 	public Group getFightTextGroup() {
 		return fightTextGroup;
@@ -862,7 +866,7 @@ public class MatchFX {
 	/**
 	 * Kontrolliert ob die Kampfanimation gestartet werden soll
 	 *
-	 * @return gibt den true/false-Wert zur¸ck
+	 * @return gibt den true/false-Wert zur√ºck
 	 */
 	public boolean isFightStarting() {
 		return isFightStarting;
@@ -878,16 +882,16 @@ public class MatchFX {
 	}
 
 	/**
-	 * Kontrolliert ob das w¸rfeln gestartet werden soll
+	 * Kontrolliert ob das w√ºrfeln gestartet werden soll
 	 *
-	 * @return gibt den true/false-Wert zur¸ck
+	 * @return gibt den true/false-Wert zur√ºck
 	 */
 	public boolean isStartDicing() {
 		return isStartDicing;
 	}
 
 	/**
-	 * Setzt den true/false-Wert ob das w¸rfeln gestartet werden soll
+	 * Setzt den true/false-Wert ob das w√ºrfeln gestartet werden soll
 	 *
 	 * @param isStartDicing boolean
 	 */

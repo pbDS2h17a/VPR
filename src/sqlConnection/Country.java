@@ -76,6 +76,17 @@ public class Country extends SVGPath {
 		this.owner = null;
 		this.units = 1;
 	}
+
+	public Country(int id, Player owner) {
+		this.countryId = id;
+		this.countryContinentId = SqlHelper.getCountryContinentId(id);
+		this.countryName = SqlHelper.getCountryName(id);
+		this.neighborIdArray = SqlHelper.getCountryNeighbor(id);
+		super.setContent(SqlHelper.getCountrySVG(id));
+		// null = noch kein Besitzer
+		this.owner = owner;
+		this.units = SqlHelper.getCountryUnits(id, owner.getLobbyId());
+	}
 	
 	/**
 	 * Getter Nachbarländer IDs
@@ -141,8 +152,13 @@ public class Country extends SVGPath {
 	 * @param colorValue String
 	 */
 	public void setColor(String colorValue) {
-		this.setFill(Color.web(colorValue));
-		SqlHelper.insertColor(owner.getPlayerId(),colorValue , owner.getLobbyId());
+		try {
+			SqlHelper.updateColor(owner.getPlayerId(),colorValue , owner.getLobbyId());
+			this.setFill(Color.web(colorValue));
+		} catch (SQLException e) {
+
+		}
+
 	}
 	
 	/**
@@ -159,9 +175,9 @@ public class Country extends SVGPath {
 		// Beseitzer wird auf den neuen Spieler gesetzt
 		this.owner = newOwner;
 		// Dem neuen Besitzer wird das Land hinzugefügt
-		newOwner.addCountry(this);
+		this.owner.addCountry(this);
 		// Der Besitzer des Landes ändert sich
-		SqlHelper.updateCountryOwner(newOwner.getLobbyId(), newOwner.getPlayerId(),  this.countryId);
+		SqlHelper.updateCountryOwner(this.owner.getLobbyId(), this.owner.getPlayerId(),  this.countryId);
 	}
 	
 	/**
@@ -171,6 +187,20 @@ public class Country extends SVGPath {
 	public Player getOwner() {
 //		owner = SqlHelper.getCountyOwner(this.countryId, owner.getLobby());
 		return this.owner;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+
+		stringBuilder.append("Land: ");
+		stringBuilder.append(this.countryName);
+		stringBuilder.append("\n");
+		stringBuilder.append("Besitzer: ");
+		stringBuilder.append(this.owner.getName());
+
+		return stringBuilder.toString();
+
 	}
 
 	

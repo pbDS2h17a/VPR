@@ -28,6 +28,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import sqlConnection.Player;
+import sqlConnection.SqlHelper;
 
 /**
  * Stellt die grafische Benutzeroberfläche für den Chat bereit.
@@ -257,7 +258,10 @@ public class ChatInterface{
 			HBox textHb = new HBox();
 			Text text = new Text(this.cm.formatMessage(message));
 			textHb.getStyleClass().add("chat-message-container");
-			textHb.setBorder(new Border(new BorderStroke(Color.web(this.player.getColorValue()), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 5.0), Insets.EMPTY)));
+			textHb.setBorder(
+					new Border(new BorderStroke(
+							Color.web(cm.getMessagePlayerColor(message) == null ? Player.DEFAULT_COLOR : cm.getMessagePlayerColor(message)),
+							BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 5.0), Insets.EMPTY)));
 			text.getStyleClass().add("chat-message");
 			
 			text.wrappingWidthProperty().set(bp.getPrefWidth());

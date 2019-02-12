@@ -50,7 +50,27 @@ public class ChatManager {
 	 * @return Formatierte Nachricht
 	 */
 	public String formatMessage(List<String> message) {
-		return String.format("%s [%s:%s] %s", message.get(0), message.get(1).substring(8,10), message.get(1).substring(10,12), message.get(2));
+		//(0) player_id
+		//(1) lobby_id
+		//(2) name
+		//(3) timestamp
+		//(4) message
+		return String.format("%s [%s:%s] %s", message.get(2), message.get(3).substring(8,10), message.get(3).substring(10,12), message.get(4));
+	}
+	
+	/**
+	 * Liest die Player-ID aus der jeweiligen Nachricht
+	 * @param message Chat-Nachricht
+	 * @return player_id des Spielers, der die Nachricht abgeschickt hat
+	 */
+	public String getMessagePlayerColor(List<String> message) {
+		try {
+			return SqlHelper.getColorValueFromPlayer(Integer.parseInt(message.get(0)), Integer.parseInt(message.get(1)));
+		}
+		//Wenn der Spieler keine Farbe hat, wird null zurückgegeben
+		catch(NullPointerException n) {
+			return null;
+		}
 	}
 	
 	/**
