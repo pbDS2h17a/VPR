@@ -1,15 +1,11 @@
 package sqlConnection;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.sql.SQLException;
-import java.util.Stack;
 
-public class StartRisiko
+class StartRisiko
 {
 
-	public static void main(String[] args) throws ClassNotFoundException, SQLException
-	{
+	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ArrayList <Continent> continente = new ArrayList <>();
 		

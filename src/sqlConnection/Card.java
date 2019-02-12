@@ -1,38 +1,16 @@
 package sqlConnection;
 
-import java.sql.SQLException;
 
-
-public class Card
+class Card
 {
 	//Attribute
-	private int cardId;
-	private int value;
-	private String countryName;
-	
-	//Getters/Setters
-	public int getCardId()
-	{
-		return cardId;
-	}
+	private final int cardId;
+	private final int value;
+	private final String countryName;
 
-	public void setCardID(int cardId) {
-		this.cardId = cardId;
-	}
-	
 
-	public String getCountryName() {
-		return countryName;
-	}
-
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
-	}
-
-	
 	//Konstruktor
-	public Card(int cardId) throws SQLException 
-	{
+	public Card(int cardId) {
 		this.cardId = cardId;
 		this.value = SqlHelper.getCardValue(cardId);		
 		this.countryName=SqlHelper.getCountryName(cardId);

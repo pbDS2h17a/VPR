@@ -1,7 +1,5 @@
 package gui;
 
-import java.sql.SQLException;
-
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -15,26 +13,20 @@ import sqlConnection.SqlHelper;
  * 
  * @author Kevin Daniels
  */
-public class JoinFX {
+class JoinFX {
 
 	// Globale Variablen
 	private Pane ctn = new Pane();
 	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
-	private Rectangle listBG = new Rectangle(900, 650);
 
-	public void setLobbyIdArray(int[] lobbyIdArray) {
-		this.lobbyIdArray = lobbyIdArray;
-	}
-
-	private int[] lobbyIdArray = SqlHelper.getAllLobbyId();
+	private final int[] lobbyIdArray = SqlHelper.getAllLobbyId();
 	
 	public int[] getLobbyIdArray() {
 		return lobbyIdArray;
 	}
 
-	private Label[] listUsers = new Label[lobbyIdArray.length];
-	private Label listLabel = new Label("Partie aussuchen");
-	
+	private final Label[] listUsers = new Label[lobbyIdArray.length];
+
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
 	 */
@@ -55,7 +47,8 @@ public class JoinFX {
 	    ctn.getChildren().add(btnBack);
 	    
 	    // Liste: Hintergrund für die Lobbys
-	    listBG.setFill(Color.web("rgba(113, 188, 120, .85)"));
+        Rectangle listBG = new Rectangle(900, 650);
+        listBG.setFill(Color.web("rgba(113, 188, 120, .85)"));
 	    listBG.relocate(ctn.getPrefWidth()/2 - listBG.getWidth()/2, ctn.getPrefHeight()/2 - listBG.getHeight()/2);
 	    listBG.setStroke(Color.WHITE);
 	    listBG.setStrokeWidth(5);
@@ -81,7 +74,8 @@ public class JoinFX {
 	    }
 	    
 	    // Liste: Überschrift für die gesamte Liste
-	    listLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
+		Label listLabel = new Label("Partie aussuchen");
+		listLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    listLabel.relocate(listBG.getLayoutX() + 25, listBG.getLayoutY() - 50);
 		ctn.getChildren().add(listLabel);
 	}

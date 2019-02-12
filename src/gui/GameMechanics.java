@@ -12,7 +12,6 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.paint.Color;
 import javafx.util.converter.IntegerStringConverter;
-import network.ChatInterface;
 import sqlConnection.Country;
 import sqlConnection.Player;
 
@@ -26,13 +25,9 @@ import sqlConnection.Player;
  */
 public class GameMechanics {
 
-	public void setPlayerList(ArrayList<Player> playerList) {
-		this.playerList = playerList;
-	}
-
 	// Globale Variablen
-	private ArrayList<Player> playerList;
-	private MatchFX match;
+	private final ArrayList<Player> playerList;
+	private final MatchFX match;
 	private Country countryA = null;
 	private Country countryB = null;
 	private boolean isAssigning = true;
@@ -66,7 +61,6 @@ public class GameMechanics {
 	 * von der Phase unterschiedlich behandelt.
 	 *
 	 * @param index int
-	 * @see MainApp#initializeEventHandlers()
 	 */
 	public void manageCountryClick(int index) {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...
@@ -305,7 +299,7 @@ public class GameMechanics {
 	/**
 	 * Prozedur, die einen Kampf beginnt, wenn zwei passende Länder ausgewählt wurden
 	 */
-	public void startFight() {
+	private void startFight() {
 		// ordnet den Lambda Ausdruck zu
 		UnaryOperator<Change> integerFilter = change -> {
 			// der "neue" (temporäre) String wird gesetzt
@@ -367,14 +361,10 @@ public class GameMechanics {
 
 		// Fügt die Würfel von Land A in eine Liste ein
 		List<Integer> diceListA = new ArrayList<Integer>();
-		for (int i = 0; i < rolledDices[0].length; i++) {
-			diceListA.add(rolledDices[0][i]);
-		}
+		diceListA.addAll(Arrays.asList(rolledDices[0]));
 		// Fügt die Würfel von Land B in eine Liste ein
 		List<Integer> diceListB = new ArrayList<Integer>();
-		for (int i = 0; i < rolledDices[1].length; i++) {
-			diceListB.add(rolledDices[1][i]);
-		}
+		diceListB.addAll(Arrays.asList(rolledDices[1]));
 		
 		/*
 		 * Variablen, die die verlorenen Einheiten speichert
@@ -448,7 +438,7 @@ public class GameMechanics {
 	 * @param cAtk Country
 	 * @param cDef Country
 	 */
-	public void countryAftermath(int[] fightA, int[] fightB, Country cAtk, Country cDef) {
+	private void countryAftermath(int[] fightA, int[] fightB, Country cAtk, Country cDef) {
 		// Wenn alle Einheiten in Land B besiegt wurden...
 		if(cDef.getUnits() - fightB[1] == 0) {
 			// ...wird das Land erobert und erhält die Informationen des Eroberers
@@ -547,11 +537,11 @@ public class GameMechanics {
 		
 		// Würfelt die Würfel für Land A
 		for (int i = 0; i < dicesA.length; i++) {
-			dicesA[i] = randomInt(1, 6);
+			dicesA[i] = randomInt();
 		}
 		// Würfelt die Würfel für Land B
 		for (int i = 0; i < dicesB.length; i++) {
-			dicesB[i] = randomInt(1, 6);
+			dicesB[i] = randomInt();
 		}
 		
 		// Sortiert die Würfel von beiden Ländern vom größten zum kleinsten
@@ -572,10 +562,9 @@ public class GameMechanics {
 		System.out.println();
 		
 		// Speichert die Ergebnisse in ein 2D Array
-		Integer[][] diceResults = {dicesA, dicesB};
-		
+
 		// Gibt das 2D Array zurück
-		return diceResults;
+		return new Integer[][]{dicesA, dicesB};
 	}
 
 	/**
@@ -586,7 +575,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isNeighbour(Country a, Country b) {
+	private boolean isNeighbour(Country a, Country b) {
 		return IntStream.of(a.getNeighborIdArray()).anyMatch(x -> x == b.getCountryId());
 	}
 		
@@ -597,7 +586,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isOwnLand(Country country) {
+	private boolean isOwnLand(Country country) {
         return this.getActivePlayer().equals(country.getOwner());
 
     }
@@ -607,7 +596,7 @@ public class GameMechanics {
 	 * 
 	 * @param activePlayer Player
 	 */
-	public void updatePlayerInterface(Player activePlayer) {
+	private void updatePlayerInterface(Player activePlayer) {
 		this.match.updateActivePlayer(activePlayer.getName(), Color.web(activePlayer.getColorValue()));
 		this.match.setInventoryCountryLabel(activePlayer.getCountryList().size());
 		this.match.setInventoryUnitsLabel(activePlayer.getUnassignedUnits());
@@ -618,7 +607,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt das Player-Objekt zurück
 	 */
-	public Player getActivePlayer() {
+	private Player getActivePlayer() {
 		return playerList.get(activePlayerIndex);
 	}
 
@@ -627,7 +616,7 @@ public class GameMechanics {
 	 * 
 	 * @param i int
 	 */
-	public void setActivePlayerIndex(int i) {
+	private void setActivePlayerIndex(int i) {
 		this.activePlayerIndex = i;
 	}
 
@@ -636,7 +625,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den Index zurück
 	 */
-	public int getActivePlayerIndex() {
+	private int getActivePlayerIndex() {
 		return this.activePlayerIndex;
 	}
 	
@@ -645,7 +634,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt die ArrayList zurück
 	 */
-	public ArrayList<Player> getPlayerList() {
+	private ArrayList<Player> getPlayerList() {
 		return this.playerList;
 	}
 
@@ -654,7 +643,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isAssigning() {
+	private boolean isAssigning() {
 		return isAssigning;
 	}
 	
@@ -663,7 +652,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isAdding() {
+	private boolean isAdding() {
 		return isAdding;
 	}
 
@@ -672,7 +661,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isFighting() {
+	private boolean isFighting() {
 		return isFighting;
 	}
 
@@ -681,7 +670,7 @@ public class GameMechanics {
 	 * 
 	 * @return gibt den true/false-Wert zurück
 	 */
-	public boolean isMoving() {
+	private boolean isMoving() {
 		return isMoving;
 	}
 
@@ -699,7 +688,7 @@ public class GameMechanics {
 	 * 
 	 * @param countryA Country
 	 */
-	public void setCountryA(Country countryA) {
+	private void setCountryA(Country countryA) {
 		this.countryA = countryA;
 	}
 
@@ -717,7 +706,7 @@ public class GameMechanics {
 	 * 
 	 * @param countryB Country
 	 */
-	public void setCountryB(Country countryB) {
+	private void setCountryB(Country countryB) {
 		this.countryB = countryB;
 	}
 
@@ -760,12 +749,10 @@ public class GameMechanics {
 	/**
 	 * Methode, die eine zufällige Ganzzahl ausgibt
 	 * 
-	 * @param min int
-	 * @param max int
 	 * @return gibt eine Zahl zwischen min und max zurück (inklusive)
 	 */
-	private static int randomInt(int min, int max) {
-	    return (int)(Math.random() * (max - min + 1)) + min;
+	private static int randomInt() {
+	    return (int)(Math.random() * (6 - 1 + 1)) + 1;
 	}
 	
 }

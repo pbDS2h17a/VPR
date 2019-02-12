@@ -14,14 +14,12 @@ import javafx.scene.image.ImageView;
  */
 public class Sprite extends ImageView
 {
-	private String imagePath;
-	private Image image;
 	private boolean isButton;
 	private boolean isActive = true;
 	private double vx;
 	private double vy;
 	
-	ColorAdjust colorAdjust = new ColorAdjust();
+	private final ColorAdjust colorAdjust = new ColorAdjust();
 /**
  * Sprite Constructor<br>
  * Sprite wird durch einen Pfad erstellt und Listener werden hinzugefügt
@@ -29,25 +27,18 @@ public class Sprite extends ImageView
  * 			Dateipfad für die Sprite
  */
 	public Sprite(String path) {
-		image = new Image(path);
+        Image image = new Image(path);
 		this.setImage(image);
-		imagePath = path;
+		String imagePath = path;
 		initializeListeners();
 	}
-/**
- * Methode die den Dateipfad für die Sprite zurückgibt
- * @return imagePath
- * 			Dateipfad für die Sprite
- */
-	public String getImagePath() {
-		return imagePath;
-	}
-/**	
+
+    /**
  * Methode die zurückgibt ob die Sprite ein Button ist
  * @return isButton
  * 			true = Sprite ist ein Button
  */
-	public boolean isButtonMode() {
+private boolean isButtonMode() {
 		return this.isButton;
 	}
 /**
@@ -81,27 +72,19 @@ public class Sprite extends ImageView
 	public boolean isActive() {
 		return this.isActive;
 	}
-	
-	public double getVx() {
-		return vx;
-	}
 
-	public double getVy() {
+    public double getVy() {
 		return vy;
 	}
 
-	public void setVx(double vx){
-		this.vx = vx;
-	}
-
-	public void setVy(double vy) {
+    public void setVy(double vy) {
 		this.vy = vy;
 	}
 /**
  * Methode die, beim Erstellen einer Sprite, Events einfügt<br>
  * beim Hovern wird ein Soundeffekt abgespielt
  */
-	public void initializeListeners() {
+private void initializeListeners() {
 		setOnMouseEntered(eventEntered->{
 			if(isButtonMode() && isActive()) {
 				MediaPlayerFX.menuHover.play();

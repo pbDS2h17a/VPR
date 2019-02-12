@@ -15,12 +15,12 @@ public class Player {
 	
 	private String name;
 	private String colorValue;
-	private List<Country> countryList;
-	private int playerId;
-	private int lobbyId;
-	private Lobby lobby;
-	private int slotId;
-	private int unitsPerRound = 9;
+	private final List<Country> countryList;
+	private final int playerId;
+	private final int lobbyId;
+	private final Lobby lobby;
+	private final int slotId;
+	private final int unitsPerRound = 9;
 	private int unassignedUnits = 0;
 	private int card1 = 0;
 	private int card2 = 0;
@@ -98,16 +98,7 @@ public class Player {
 	}
 
 	/**
-	 * setter für die Spieler-Einheiten
-	 * @param die Spielereinheiten als int
-	 */
-	public void setUnitsPerRound(int unitsPerRound) {
-		this.unitsPerRound = unitsPerRound;
-	}
-
-	/**
 	 * Entfernt ein Land von den Länderliste des Spielers
-	 * @param das Land als Country-Objekt
 	 */
 	public void removeCountry(Country country) {
 		this.countryList.remove(country);
@@ -115,7 +106,6 @@ public class Player {
 
 	/**
 	 * Fügt ein Land zu der Länderliste des Spielers hinzu
-	 * @param das Land als Country-Objekt
 	 */
 	public void addCountry(Country country) {
 		this.countryList.add(country);
@@ -155,14 +145,6 @@ public class Player {
 	}
 
 	/**
-	 * setter für den Country-Liste
-	 * @param countryList die countryList als Liste vom Typ Country
-	 */
-	public void setCountryList(List<Country> countryList) {
-		this.countryList = countryList;
-	}
-	
-	/**
 	 * getter für den Spieler-Id
 	 * @return die Id als Integer
 	 */
@@ -176,14 +158,6 @@ public class Player {
 	 */
 	public int getLobbyId() {
 		return lobbyId;
-	}
-
-	/**
-	 * setter für die Lobby-Id des Spielers
-	 * @param lobbyId die Lobby-Id als Integer
-	 */
-	public void setLobbyId(int lobbyId) {
-		this.lobbyId = lobbyId;
 	}
 
 	/**
@@ -228,42 +202,9 @@ public class Player {
 
 	/**
 	 * setter für die nicht vergebenen Einheiten
-	 * @param die Anzahl als int
 	 */
 	public void setUnassignedUnits(int unassignedUnits) {
 		this.unassignedUnits = unassignedUnits;
-	}
-	
-	public int getCard1() {
-		return card1;
-	}
-
-	public void setCard1(int card1) {
-		this.card1 = card1;
-	}
-
-	public int getCard2() {
-		return card2;
-	}
-
-	public void setCard2(int card2) {
-		this.card2 = card2;
-	}
-
-	public int getCard3() {
-		return card3;
-	}
-
-	public void setCard3(int card3) {
-		this.card3 = card3;
-	}
-
-	/**
-	 * getter für die Lobby des Spielers
-	 * @return die Lobby als Lobby-Objekt
-	 */
-	public Lobby getLobby() {
-		return lobby;
 	}
 
 

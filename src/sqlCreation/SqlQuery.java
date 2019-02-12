@@ -9,8 +9,8 @@ import java.sql.Statement;
  * SQL Queries zum Erstellen der Stammdatenbank
  */
 class SqlQuery {
-	private static String splitter = ";";
-	private static Statement stmt = SqlHelper.getStatement();
+	private static final String splitter = ";";
+	private static final Statement stmt = SqlHelper.getStatement();
 	
 	//#################################################################################################################
 	// FILL STATEMENTS

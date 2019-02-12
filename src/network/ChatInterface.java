@@ -1,6 +1,5 @@
 package network;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -47,12 +46,12 @@ public class ChatInterface{
 	/**
 	 * Chatteilnehmer
 	 */
-	private Player player;
+	private final Player player;
 	/**
 	 * Verwendeter Chat
 	 * @see {@link network.ChatManager}
 	 */
-	private ChatManager cm;
+	private final ChatManager cm;
 	/**
 	 * Zeitstempel, für die Zeit, bei der der Spieler dem Chat beigetreten ist. 
 	 */
@@ -60,42 +59,25 @@ public class ChatInterface{
 	/**
 	 * GUI-Element
 	 */
-	private BorderPane bp;
+	private final BorderPane bp;
 	/**
 	 * Nachrichteneingabefeld
 	 */
-	private TextField tf;
-	/**
-	 * Absendebutton
-	 */
-	private Button send;
-	/**
-	 * Zurücksetzen des Chatfensterinhalts
-	 */
-	private Button reset;
-	/**
-	 * GUI-Element
-	 */
-	private HBox hb;
+	private final TextField tf;
 	/**
 	 * Chatverlauf
 	 */
-	private VBox chatHistory;
+	private final VBox chatHistory;
 	/**
 	 * GUI-Element
 	 */
-	private AnchorPane anchor;
-	/**
-	 * GUI-Element
-	 */
-	private ScrollPane scrollWindow;
+	private final ScrollPane scrollWindow;
 	/**
 	 * Zeichenzähler
 	 */
-	private Label charCount;
-	private HBox charCountContainer;
-	private Region fill;
-	
+	private final Label charCount;
+	private final HBox charCountContainer;
+
 	/**
 	 * Erstellt ein Chatfenster
 	 * @param player Am Chat teilnehmender Spieler.
@@ -107,67 +89,79 @@ public class ChatInterface{
 		
 		this.bp = new BorderPane();
 		this.tf = new TextField();
-		this.send = new Button(">");
-		this.reset = new Button("X");
-		this.hb = new HBox();
+		/**
+		 * Absendebutton
+		 */
+		Button send = new Button(">");
+		/**
+		 * Zurücksetzen des Chatfensterinhalts
+		 */
+		Button reset = new Button("X");
+		/**
+		 * GUI-Element
+		 */
+		HBox hb = new HBox();
 		this.chatHistory = new VBox();
-		this.anchor = new AnchorPane();
-		this.scrollWindow = new ScrollPane(this.anchor);
-		this.fill = new Region();
+		/**
+		 * GUI-Element
+		 */
+		AnchorPane anchor = new AnchorPane();
+		this.scrollWindow = new ScrollPane(anchor);
+		Region fill = new Region();
 		this.charCount = new Label("0/255");
 		this.charCountContainer = new HBox();
 		
-		this.hb.getChildren().add(this.tf);
-		this.hb.getChildren().add(this.send);
-		this.hb.getChildren().add(this.reset);
-		this.anchor.getChildren().add(this.chatHistory);
-		this.charCountContainer.getChildren().add(this.fill);
+		hb.getChildren().add(this.tf);
+		hb.getChildren().add(send);
+		hb.getChildren().add(reset);
+		anchor.getChildren().add(this.chatHistory);
+		this.charCountContainer.getChildren().add(fill);
 		this.charCountContainer.getChildren().add(this.charCount);
 		this.chatHistory.getChildren().add(this.charCountContainer);
-		this.bp.setBottom(this.hb);
+		this.bp.setBottom(hb);
 		
 		//Größe und Verhalten der Nodes
-		this.hb.setPrefHeight(40);
-		this.tf.setPrefHeight(this.hb.getPrefHeight());
-		this.send.setMinHeight(40);
-		this.reset.setMinHeight(40);
+		hb.setPrefHeight(40);
+		this.tf.setPrefHeight(hb.getPrefHeight());
+		send.setMinHeight(40);
+		reset.setMinHeight(40);
 		this.tf.setPromptText("Nachricht eingeben...");
 		HBox.setHgrow(this.tf, Priority.ALWAYS);
-		HBox.setHgrow(this.fill, Priority.ALWAYS);
+		HBox.setHgrow(fill, Priority.ALWAYS);
 		this.scrollWindow.setPrefSize(PANE_WIDTH,PANE_HEIGHT);
 		this.scrollWindow.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		this.anchor.setMinSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
+		anchor.setMinSize(this.scrollWindow.getPrefWidth(), this.scrollWindow.getPrefHeight());
 		AnchorPane.setBottomAnchor(this.chatHistory, 5.0);
 		this.bp.setTop(this.scrollWindow);
-		this.send.setMinWidth(80);
+		send.setMinWidth(80);
 		this.charCountContainer.setMinWidth(this.scrollWindow.getPrefWidth());
 		
 		//CSS-Klassen
 		this.bp.getStyleClass().add("chat");
-		this.hb.getStyleClass().add("chat-controls");
+		hb.getStyleClass().add("chat-controls");
 		this.scrollWindow.getStyleClass().add("scroll-window");
 		this.chatHistory.getStyleClass().add("chat-history");
-		this.send.getStyleClass().add("chat-button");
-		this.send.getStyleClass().add("chat-send-button");
-		this.reset.getStyleClass().add("chat-button");
-		this.reset.getStyleClass().add("chat-reset-button");
+		send.getStyleClass().add("chat-button");
+		send.getStyleClass().add("chat-send-button");
+		reset.getStyleClass().add("chat-button");
+		reset.getStyleClass().add("chat-reset-button");
 		this.tf.getStyleClass().add("chat-textfield");
-		this.anchor.getStyleClass().add("chat-anchor"); 
+		anchor.getStyleClass().add("chat-anchor");
 		this.charCountContainer.getStyleClass().add("chat-char-count-container");
 		this.charCount.getStyleClass().add("chat-char-count");
 		
 		//Schriftarten und -farben
 		Font cons20 = Font.font("Console", FontWeight.BOLD, 20);
-		this.send.setFont(cons20);
-		this.send.setTextFill(Color.WHITE);
-		this.reset.setFont(cons20);
-		this.reset.setTextFill(Color.WHITE);
+		send.setFont(cons20);
+		send.setTextFill(Color.WHITE);
+		reset.setFont(cons20);
+		reset.setTextFill(Color.WHITE);
 		this.charCount.setFont(Font.font("Console", 14));
 		this.charCount.setTextFill(new Color(0.8,0.8,0.8,0.6));
 		
 		// Eventhandler
-		this.send.setOnAction(a -> send());
-		this.reset.setOnAction(a -> reset());
+		send.setOnAction(a -> send());
+		reset.setOnAction(a -> reset());
 		this.tf.setOnKeyPressed(k -> {
 			if(k.getCode() == KeyCode.ENTER) send();
 		});
@@ -190,15 +184,14 @@ public class ChatInterface{
 
 	/**
 	 * Schickt die eingegebene Nachricht ab.
-	 * @param tf Inhalt des Textfeldes
 	 */
 	private void send() {
-		if(this.tf.getText() == "") return;
-		try { 
-			cm.sendMessage(this.tf.getText());
-		} catch(SQLException s) {
-				s.printStackTrace();
-			}
+		if(this.tf.getText().equals("")) {
+			return;
+		}
+
+		cm.sendMessage(this.tf.getText());
+
 		this.tf.setText("");
 		this.charCount.setText("0/255");
 	}
@@ -224,12 +217,13 @@ public class ChatInterface{
 	 * Zweiter Task, der im gegebenen Zeitintervall die Datenbank nach neuen Einträgen abfragt und den Chat aktualisiert.
 	 * @return Diesen Task
 	 */
-	public Task<Void> getUpdateTask() {
+	private Task<Void> getUpdateTask() {
 		// Task anlegen, der vom neuen Thread alle 2s ausgeführt werden soll
-		Task<Void> task = new Task<Void>() {
+		return new Task<Void>() {
 			@Override
 			// "The call method actually performs the background thread logic."
 			protected Void call() throws Exception {
+				//noinspection InfiniteLoopStatement
 				while(true) {
 					// Ergebnisse der Query im ResultSet speichern
 					List<List<String>> set =  cm.getChatHistory(timestamp);
@@ -242,7 +236,6 @@ public class ChatInterface{
 				}
 			}
 		};
-		return task;
 	}
 	
 	/**
