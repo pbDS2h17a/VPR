@@ -1,6 +1,9 @@
 package sqlConnection;
 
 import gui.LobbyFX;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 
 import java.util.ArrayList;
 
@@ -75,6 +78,19 @@ public class Lobby {
             players.add(player);
             //System.out.println(player.toString());
         }
+        //message Box falls Lobby voll
+        else{
+        	Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Lobby beitreten Fehler");
+			alert.setHeaderText("Lobby ist voll!");
+			alert.setContentText("Bitte suchen sie sich eine andere Lobby aus, oder Erstellen sie ein eigenens Spiel.");
+			alert.showAndWait().ifPresent(rs -> {
+			    if (rs == ButtonType.OK) {
+			       alert.close();
+			    }
+			});
+        }
+        
     }
 
     /**

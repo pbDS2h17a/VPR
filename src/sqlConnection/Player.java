@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+
 /**
  * @author Lea, PEROSCKU
  * Player-Klasse
@@ -144,6 +148,16 @@ public class Player {
 			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), colorValue);
 		} catch (SQLException e) {
 			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), DEFAULT_COLOR);
+			//Message box für Fehler beim auswählen einer bereits vergebenen Farbe
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Farbauswahl Fehler");
+			alert.setHeaderText("Farbe ist bereits vergeben!");
+			alert.setContentText("Bitte suchen sie sich eine andere Farbe aus.");
+			alert.showAndWait().ifPresent(rs -> {
+			    if (rs == ButtonType.OK) {
+			        alert.close();
+			    }
+			});
 		}
 
 	}
