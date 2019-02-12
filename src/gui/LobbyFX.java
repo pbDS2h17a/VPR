@@ -6,18 +6,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Lobby;
-import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
+ * Beinhaltet die gesamte OberflÃ¤che die beim Klick auf "Spiel erstellen" aufgerufen wird.
+ * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-OberflÃ¤che aufzurufen.
+ * 
  * @author Daniels, Kevin
  * @author pbs2h17ale
  */
@@ -33,7 +31,7 @@ public class LobbyFX {
     private Group groupSlots = new Group();
     private Group groupRoles = new Group();
 	private Label[] labelArray = new Label[MAX_PLAYER];
-    private Label colorLabel = new Label("Farbe auswählen");
+    private Label colorLabel = new Label("Farbe auswÃ¤hlen");
     private Label inputNameLabel = new Label("Name eingeben");
     private Rectangle[] colorRectArray = new Rectangle[MAX_PLAYER];
     private Polygon[] triangleArray = new Polygon[MAX_PLAYER];
@@ -45,46 +43,46 @@ public class LobbyFX {
 	private String[] colors = SqlHelper.getAllColors();
 
 	/**
-	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
+	 * Konstruktor, der alle OberflÃ¤chen-Objekte erstellt und sie in einen gemeinsamen Container eingefÃ¼gt wird.
 	 */
 	public LobbyFX() {
-		// Lobby-Container der in der MainApp ausgegeben wird und alle Objekte fürs beitreten beinhaltet.
+		// Lobby-Container der in der MainApp ausgegeben wird und alle Objekte fÃ¼rs beitreten beinhaltet.
 	    ctn.setCache(true);
 	    ctn.setPrefSize(1920, 1080);
-	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was außerhalb der Form ist wird ausgeblendet.
+	    // Setzt einen Bereich, in dem der Inhalt angezeigt wird. Alles was auÃŸerhalb der Form ist wird ausgeblendet.
 	    ctn.setClip(new Rectangle(ctn.getPrefWidth(), ctn.getPrefHeight()));
 	    ctn.setVisible(false);
 	    
-	    // Zurück-Button, der zum Hauptmenü führt
+	    // ZurÃ¼ck-Button, der zum HauptmenÃ¼ fÃ¼hrt
 	    btnBack.setButtonMode(true);
 	    btnBack.relocate(50, 50);
 	    ctn.getChildren().add(btnBack);
 	    
-	    // Bereit-Button, der das Spiel starten soll und zur Weltkkarte führt
+	    // Bereit-Button, der das Spiel starten soll und zur Weltkkarte fÃ¼hrt
 	    btnReady.relocate(ctn.getPrefWidth() - 400, ctn.getPrefHeight() - 200);
 	    btnReady.setActive(false);
 	    ctn.getChildren().add(btnReady);
 	    
-	    // Eingabefeld für den Spieler-Namen (Hintergrund)
+	    // Eingabefeld fÃ¼r den Spieler-Namen (Hintergrund)
 	    inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight() - 200);		
 	    ctn.getChildren().add(inputNameBG);
-	    // Eingabefeld für den Spieler-Namen (Eingabefeld)
+	    // Eingabefeld fÃ¼r den Spieler-Namen (Eingabefeld)
 	    inputName.setPrefSize(653, 119);
 	    inputName.setStyle("-fx-background-color: transparent; -fx-font-size: 60px; -fx-alignment: center;  -fx-font-weight: bold; -fx-text-fill: white;");
 	    inputName.relocate(inputNameBG.getLayoutX(), inputNameBG.getLayoutY());
 	    ctn.getChildren().add(inputName);
-	    // Eingabefeld für den Spieler-Namen (Bestätigungs-Button)
+	    // Eingabefeld fÃ¼r den Spieler-Namen (BestÃ¤tigungs-Button)
 	    btnCheck.relocate(inputNameBG.getLayoutX() + 653 - 7, ctn.getPrefHeight() - 241);
 	    btnCheck.setButtonMode(true);
 	    ctn.getChildren().add(btnCheck);
-	    // Eingabefeld für den Spieler-Namen (Titel)
+	    // Eingabefeld fÃ¼r den Spieler-Namen (Titel)
 	    inputNameLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    inputNameLabel.relocate(inputNameBG.getLayoutX() + 20, inputNameBG.getLayoutY() - 50);
 	    ctn.getChildren().add(inputNameLabel);
 	    
-	    // Die farbigen Rechtecke die die Farben darstellen soll, die ein Spieler auswählen kann
+	    // Die farbigen Rechtecke die die Farben darstellen soll, die ein Spieler auswÃ¤hlen kann
 	    groupColors.relocate(ctn.getPrefWidth() - 300, 100);
-	    // Schleife die die Quadrate erstellt und sie mit den Farben aus der Datenbank füllt
+	    // Schleife die die Quadrate erstellt und sie mit den Farben aus der Datenbank fÃ¼llt
 	    for(int i = 0; i < colors.length; i++)  {
 	    	colorRectArray[i] = new Rectangle(90, 90);
 	    	colorRectArray[i].setStroke(Color.WHITE);
@@ -92,7 +90,7 @@ public class LobbyFX {
 	    	colorRectArray[i].setStrokeType(StrokeType.INSIDE);
 	    	colorRectArray[i].setFill(Color.web(colors[i]));
 
-	    	// Abfrage, die einen Zeilenumbruch ermöglicht, so dass die Farben in einem 2x4 Grid dargestellt werden können
+	    	// Abfrage, die einen Zeilenumbruch ermÃ¶glicht, so dass die Farben in einem 2x4 Grid dargestellt werden kÃ¶nnen
 	    	if(i > 0) {
 	    		if(i % 2 != 0) {
 	    			colorRectArray[i].relocate(colorRectArray[i-1].getLayoutX() + 90, colorRectArray[i-1].getLayoutY());
@@ -105,21 +103,21 @@ public class LobbyFX {
 	    }
 	    ctn.getChildren().add(groupColors);
 
-	    // Label für die Farben-Gruppe
+	    // Label fÃ¼r die Farben-Gruppe
 	    colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    colorLabel.setRotate(90);
 	    colorLabel.relocate(groupColors.getLayoutX() + 70, groupColors.getLayoutY() + 110);
 	    ctn.getChildren().add(colorLabel);
 	    
-	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Gruppe)
+	    // Slots, die mit Spielern gefÃ¼llt werden mit 2-6 freien PlÃ¤tzen (Gruppe)
 	    groupSlots.relocate(360, 50);
-	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Hintergrund)
+	    // Slots, die mit Spielern gefÃ¼llt werden mit 2-6 freien PlÃ¤tzen (Hintergrund)
 	    for(int i = 0; i < slotViewArray.length; i++) {
 	    	slotViewArray[i] = new Sprite("resources/lobby_player_name.png");
 	    	((Sprite) slotViewArray[i]).setActive(false);
 	    	((Sprite) slotViewArray[i]).setButtonMode(false);
 	    	
-	    	// Abfrage, die einen Zeilenumbruch ermöglicht, so dass die Farben in einem 3x2 Grid dargestellt werden können
+	    	// Abfrage, die einen Zeilenumbruch ermÃ¶glicht, so dass die Farben in einem 3x2 Grid dargestellt werden kÃ¶nnen
 	    	if(i > 0)
 	    		if(i % 3 != 0)
 	    			slotViewArray[i].relocate(slotViewArray[i-1].getLayoutX() + 390, slotViewArray[i-1].getLayoutY());
@@ -186,13 +184,13 @@ public class LobbyFX {
 	}
 
 	/**
-	 * Ändert den Namen eines Slots, basierend auf seiner ID
+	 * Ã„ndert den Namen eines Slots, basierend auf seiner ID
 	 *
 	 * @param slotId int
 	 * @param name String
 	 */
 	public void guiChangePlayerName(int slotId, String name) {
-		// Wenn kein leerer String übergeben wurde...
+		// Wenn kein leerer String Ã¼bergeben wurde...
 		if(!name.isEmpty() && name != null) {
 			// ...wird der Name gesetzt
 			labelArray[slotId].setText(name);
@@ -207,20 +205,20 @@ public class LobbyFX {
 	}
 	
 	/**
-	 * Ändert die Farbe eines Slots, basierend auf seiner ID
+	 * Ã„ndert die Farbe eines Slots, basierend auf seiner ID
 	 *
 	 * @param slotId int
-	 * @param colorValue Farbe
+   * @param colorValue String
 	 */
 	public void guiChangeColor(int slotId, String colorValue) {
-		// Füllt das Dreieck des Slots mit der gewählten Farbe
+		// FÃ¼llt das Dreieck des Slots mit der gewÃ¤hlten Farbe
 		if(colorValue != null) {
 			triangleArray[slotId].setFill(Color.web(colorValue));
 		} else {
 			triangleArray[slotId].setFill(Color.GREY);
 		}
 
-		// Wenn auch schon ein Name übergeben wurde...
+		// Wenn auch schon ein Name Ã¼bergeben wurde...
 		if(!labelArray[slotId].getText().isEmpty()) {
 			// ...wird der Bereit-Button aktiviert
 			btnReady.setActive(true);
@@ -229,7 +227,7 @@ public class LobbyFX {
 	}
 
 	/**
-	 * Fügt einen Spieler im Slot hinzu, basierend auf seiner ID
+	 * FÃ¼gt einen Spieler im Slot hinzu, basierend auf seiner ID
 	 *
 	 * @param slotId int
 	 */
@@ -250,15 +248,15 @@ public class LobbyFX {
 		((Sprite) slotViewArray[slotId]).setActive(false);
 		slotRolesArray[slotId].setVisible(false);
 		((Sprite) slotViewArray[slotId]).setActive(false);
-		// Entfernt die Farbe und den Namen des zu löschenden Spielers
+		// Entfernt die Farbe und den Namen des zu lÃ¶schenden Spielers
 		triangleArray[slotId].setFill(Color.GREY);
 		labelArray[slotId].setText(null);
 	}
 
 	/**
-	 * Der Container für die gesamte Lobby-Oberfläche
+	 * Der Container fÃ¼r die gesamte Lobby-OberflÃ¤che
 	 *
-	 * @return gibt den Container zurück
+	 * @return gibt den Container zurÃ¼ck
 	 */
 	public Pane getContainer() {
 		return ctn;
@@ -274,54 +272,54 @@ public class LobbyFX {
 	}
 	
 	/**
-	 * Methode, die sich die Lobby-Funktionen besorgt
+	 * Methode, die sich die Lobby-Funktionen setzt
 	 *
-	 * @return das Lobby-Objekt mit allen Methoden
+	 * @param lobby Lobby
 	 */
 	public void setLobby(Lobby lobby) {
 		this.lobby = lobby;
 	}
 
 	/**
-	 * Methode für den Bereit-Button der Lobby
+	 * Methode fÃ¼r den Bereit-Button der Lobby
 	 *
-	 * @return gibt das Sprite-Objekt zurück
+	 * @return gibt das Sprite-Objekt zurÃ¼ck
 	 */
 	public Sprite getBtnReady() {
 		return btnReady;
 	}
 
 	/**
-	 * Methode für den Zurück-Button vom Lobby zum Hauptmenü
+	 * Methode fÃ¼r den ZurÃ¼ck-Button vom Lobby zum HauptmenÃ¼
 	 *
-	 * @return gibt das Sprite-Objekt zurück
+	 * @return gibt das Sprite-Objekt zurÃ¼ck
 	 */
 	public Sprite getBtnBack() {
 		return btnBack;
 	}
 	
 	/**
-	 * Methode für den Bestätigen-Button für die Namens-Eingabe
+	 * Methode fÃ¼r den BestÃ¤tigen-Button fÃ¼r die Namens-Eingabe
 	 *
-	 * @return gibt das Sprite-Objekt zurück
+	 * @return gibt das Sprite-Objekt zurÃ¼ck
 	 */
 	public Sprite getBtnCheck() {
 		return btnCheck;
 	}
 
 	/**
-	 * Methode für alle Icons in den Slots für den Spielleiter und Spieler
+	 * Methode fÃ¼r alle Icons in den Slots fÃ¼r den Spielleiter und Spieler
 	 *
-	 * @return gibt alle Icons als Sprite-Array zurück
+	 * @return gibt alle Icons als Sprite-Array zurÃ¼ck
 	 */
 	public Sprite[] getSlotRolesArray() {
 		return slotRolesArray;
 	}
 
 	/**
-	 * Methode für alle Farben die ausgewählt werden können
+	 * Methode fÃ¼r alle Farben die ausgewÃ¤hlt werden kÃ¶nnen
 	 *
-	 * @return gibt alle Farben als Rectangle-Array zurück
+	 * @return gibt alle Farben als Rectangle-Array zurÃ¼ck
 	 */
 	public Rectangle[] getColorRectArray() {
 		return colorRectArray;
@@ -330,16 +328,16 @@ public class LobbyFX {
 	/**
 	 * Methode um sich alle Farben aus der Datenbank zu besorgen
 	 *
-	 * @return gibt alle Farben als String-Array zurück
+	 * @return gibt alle Farben als String-Array zurÃ¼ck
 	 */
 	public String[] getColors() {
 		return colors;
 	}
 
 	/**
-	 * Methode für das Namens-Eingabefeld
+	 * Methode fÃ¼r das Namens-Eingabefeld
 	 *
-	 * @return gibt das Eingabefeld als TextField-Objekt zurück
+	 * @return gibt das Eingabefeld als TextField-Objekt zurÃ¼ck
 	 */
 	public TextField getInputName() {
 		return inputName;
