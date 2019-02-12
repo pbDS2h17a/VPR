@@ -1,5 +1,9 @@
 package sqlConnection;
-
+/**
+ * 
+ * @author pbs2h17apa
+ * Erstellte Objekte sollen einen Kontinent darstellten
+ */
 public class Continent {
 	// Attribute
 	private int continentId;
@@ -9,24 +13,30 @@ public class Continent {
 	private int additionalUnits;
 	
 
-	//Konstruktor
+	/**
+	 * 
+	 * @param continentId: ID die den Kontinent identifiziert
+	 */
 	public Continent(int continentId) {
 		this.continentId = continentId;
 		initalizeContinent();
 	}
 	
+	/**
+	 *  Hilfsfunktion die mittels der continentId den Namen, die Länder und den Bonus des jeweilige Kontinent erfragt
+	 */
 	private void initalizeContinent() {
 		this.name = SqlHelper.getContintentName(continentId);
 		this.countryIdArray = SqlHelper.getContinentCountryIds(continentId) ;
 		this.additionalUnits = SqlHelper.getBonus(continentId);
 	}
-	//Getters/Setters
+
 	public int getId()
 	{
 		return continentId;
 	}
 	
-	// Getters und Setters
+
 	public int getContinentId() {	
 		return continentId;
 	}
@@ -68,6 +78,7 @@ public class Continent {
 		this.additionalUnits = additionalUnits;
 	}
 	
+	// formartierte Ausgabe
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

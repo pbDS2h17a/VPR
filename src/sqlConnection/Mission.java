@@ -1,11 +1,15 @@
 package sqlConnection;
 
 import java.sql.SQLException;
-
+/**
+ * 
+ * @author pbs2h17apa
+ * Klassenobjekte sollen Missionen darstellen
+ */
 public class Mission {
 	public int missionId;
 	public String description;
-	
+		
 	protected int getMission_id() {
 		return missionId;
 	}
@@ -19,7 +23,11 @@ public class Mission {
 		this.description = description;
 	}
 	
-	// Konstruktor
+	/**
+	 * 
+	 * @param missionId: Identifiziert die jeweilige Mission
+	 * @throws SQLException: tritt ein wenn die jeweilige Mission nicht existiert
+	 */
 	protected Mission(int missionId) throws SQLException {		
 		this.missionId = missionId;
 		this.description = SqlHelper.getMissionDescription(missionId);
