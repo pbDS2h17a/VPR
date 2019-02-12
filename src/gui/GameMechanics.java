@@ -26,6 +26,10 @@ import sqlConnection.Player;
  */
 public class GameMechanics {
 
+	public void setPlayerList(ArrayList<Player> playerList) {
+		this.playerList = playerList;
+	}
+
 	// Globale Variablen
 	private ArrayList<Player> playerList;
 	private MatchFX match;
@@ -58,11 +62,11 @@ public class GameMechanics {
 	}
 	
 	/**
-	 * Bei einem Klick auf auf das Land wird der Klick abhängig 
+	 * Bei einem Klick auf auf das Land wird der Klick abhängig
 	 * von der Phase unterschiedlich behandelt.
-	 * 
+	 *
 	 * @param index int
-	 * @see MainApp#initializeEventListener()
+	 * @see MainApp#initializeEventHandlers()
 	 */
 	public void manageCountryClick(int index) {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...

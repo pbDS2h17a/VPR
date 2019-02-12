@@ -91,7 +91,7 @@ public class LobbyFX {
 	    	colorRectArray[i].setStrokeWidth(5);
 	    	colorRectArray[i].setStrokeType(StrokeType.INSIDE);
 	    	colorRectArray[i].setFill(Color.web(colors[i]));
-	    	
+
 	    	// Abfrage, die einen Zeilenumbruch ermöglicht, so dass die Farben in einem 2x4 Grid dargestellt werden können
 	    	if(i > 0) {
 	    		if(i % 2 != 0) {
@@ -104,7 +104,7 @@ public class LobbyFX {
 	    	groupColors.getChildren().add(colorRectArray[i]);
 	    }
 	    ctn.getChildren().add(groupColors);
-	    
+
 	    // Label für die Farben-Gruppe
 	    colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    colorLabel.setRotate(90);
@@ -196,7 +196,6 @@ public class LobbyFX {
 		if(!name.isEmpty() && name != null) {
 			// ...wird der Name gesetzt
 			labelArray[slotId].setText(name);
-			lobby.changePlayerName(slotId, name);
 			// Wenn der Slot auch schon eine Farbe hat...
 			if(triangleArray[slotId].getFill() != Color.GREY) {
 				// ...wird der Bereit-Button aktiviert
@@ -211,11 +210,16 @@ public class LobbyFX {
 	 * Ändert die Farbe eines Slots, basierend auf seiner ID
 	 *
 	 * @param slotId int
-	 * @param paint Paint
+	 * @param colorValue Farbe
 	 */
 	public void guiChangeColor(int slotId, String colorValue) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
-		triangleArray[slotId].setFill(Color.web(colorValue));
+		if(colorValue != null) {
+			triangleArray[slotId].setFill(Color.web(colorValue));
+		} else {
+			triangleArray[slotId].setFill(Color.GREY);
+		}
+
 		// Wenn auch schon ein Name übergeben wurde...
 		if(!labelArray[slotId].getText().isEmpty()) {
 			// ...wird der Bereit-Button aktiviert

@@ -1,5 +1,7 @@
 package sqlConnection;
 
+import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class Player {
 	private int card1 = 0;
 	private int card2 = 0;
 	private int card3 = 0;
+	
+	public static final String DEFAULT_COLOR = String.format("%02x%02x%02x", Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue());
 
 
 	/**
@@ -32,13 +36,14 @@ public class Player {
 	 * @param lobby
 	 */
 	public Player(Lobby lobby, int slotId) {
-		System.out.println("Ein Spieler wurde erstellt");
-		this.name = String.format("Spieler %d", slotId);
+		System.out.println("Ein Spieler wurde Typ A erstellt");
+		this.name = String.format("Spieler %d", slotId+1);
 		this.countryList = new ArrayList<>();
+		this.colorValue = DEFAULT_COLOR;
 		this.lobby = lobby;
 		this.lobbyId = lobby.getLobbyId();
 		this.slotId = slotId;
-		// Spieler in Db einfügen
+		// Spieler in DB einfügen
 		this.playerId = SqlHelper.insertPlayer(name,lobbyId);
 	}
 
@@ -50,6 +55,7 @@ public class Player {
 	 * @param lobby
 	 */
 	public Player(int playerId, String name, Lobby lobby, String colorValue) {
+		System.out.println("Ein Spieler wurde Typ B erstellt");
 		this.playerId = playerId;
 		this.name = name;
 		this.lobby = lobby;
@@ -70,10 +76,12 @@ public class Player {
 	
 	/**
 	 * setter für den Spieler-Namen
-	 * @param den Namen als String
+	 * @param name den Namen als String
 	 */
 	public void setName(String name) {
 		this.name = name;
+		lobby.getLobbyFX().guiChangePlayerName(this.slotId, this.name);
+		SqlHelper.updatePlayerName(this.lobbyId, this.playerId, this.name);
 	}
 
 	/**
@@ -127,11 +135,17 @@ public class Player {
 	
 	/**
 	 * setter für die Spieler-Farbe
-	 * @param die Farbe als String
+	 * @param colorValue die Farbe als String
 	 */
 	public void setColorValue(String colorValue) {
-		this.colorValue = colorValue;
-		SqlHelper.insertColor(this.playerId, this.colorValue, this.lobbyId);
+		try {
+			SqlHelper.updateColor(this.playerId, colorValue, this.lobbyId);
+			this.colorValue = colorValue;
+			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), colorValue);
+		} catch (SQLException e) {
+			lobby.getLobbyFX().guiChangeColor(this.getSlotId(), DEFAULT_COLOR);
+		}
+
 	}
 
 	/**
@@ -144,7 +158,7 @@ public class Player {
 
 	/**
 	 * setter für den Country-Liste
-	 * @param die countryList als Liste vom Typ Country
+	 * @param countryList die countryList als Liste vom Typ Country
 	 */
 	public void setCountryList(List<Country> countryList) {
 		this.countryList = countryList;
@@ -168,7 +182,7 @@ public class Player {
 
 	/**
 	 * setter für die Lobby-Id des Spielers
-	 * @param die Lobby-Id als Integer
+	 * @param lobbyId die Lobby-Id als Integer
 	 */
 	public void setLobbyId(int lobbyId) {
 		this.lobbyId = lobbyId;

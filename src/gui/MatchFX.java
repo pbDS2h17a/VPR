@@ -133,10 +133,6 @@ public class MatchFX {
     		
     		lineArray[i].setStroke(Color.WHITE);
     		lineArray[i].setStrokeWidth(5);
-//    		lineArray[i].setStartX(seaRoutesCoordinates[i][0] + 20);
-//    		lineArray[i].setStartY(seaRoutesCoordinates[i][1] + 20);
-//    		lineArray[i].setEndX(seaRoutesCoordinates[i+1][0] + 20);
-//    		lineArray[i].setEndY(seaRoutesCoordinates[i+1][1] + 20);
     		ctn.getChildren().add(lineArray[i]);
 		}
 
@@ -147,15 +143,15 @@ public class MatchFX {
 
 	    // Schleife um einzelne Länder zu erzeugen
 	    for(int i = 0; i < countryArray.length; i++) {
-				// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
-				countryArray[i] = new Country(i+1);
-		    	countryArray[i].setFill(Color.WHITE);
-		    	countryArray[i].setStroke(Color.WHITE);
-		    	countryArray[i].setStrokeWidth(0);
-		    	countryArray[i].setScaleX(1.02);
-		    	countryArray[i].setScaleY(1.02);
-		    	groupLands.getChildren().add(countryArray[i]);
-	    	}
+			// Fängt mit eins an, da die ID's der Länder in der Datenbank mit eins beginnen
+			countryArray[i] = new Country(i+1);
+			countryArray[i].setFill(Color.WHITE);
+			countryArray[i].setStroke(Color.WHITE);
+			countryArray[i].setStrokeWidth(0);
+			countryArray[i].setScaleX(1.02);
+			countryArray[i].setScaleY(1.02);
+			groupLands.getChildren().add(countryArray[i]);
+		}
 	    
 	    ctn.getChildren().add(groupLands);
 
@@ -464,20 +460,21 @@ public class MatchFX {
 		
 
 		// Die Partie wird begonnen
-		//initializeMatch();
+		//distributeCountries();
 	}
 
     /**
-     * Prozedur, die die Partie beginnt und die Lobby ausliest um die aktuellen Teilnehmer zu integrieren.
+     * Verteilt die Länder
      *
      */
-	public void initializeMatch(LobbyFX lobbyFX) {
+	public void distributeCountries(LobbyFX lobbyFX) {
 		Lobby lobby = lobbyFX.getLobby();
 		int lobbyId = lobby.getLobbyId();
 
 		// Verteilung der Länder auf die Spieler
 		// Länder-Array wird in eine Liste konvertiert
 		ArrayList<Country> countryList = new ArrayList<>(Arrays.asList(countryArray));
+
 
         // Lobbyleader setzen auf ersten Spieler in der Lobby
         lobby.setLobbyLeader(lobby.getPlayers().get(0));
@@ -487,12 +484,14 @@ public class MatchFX {
 		Random rand = new Random();
 		// Verteilung der Länder
 		for (int i = 0; i < countryArray.length; i++) {
+
 			// Zufälliges Land aus der Länder-Liste wird ausgewählt
 			Player currentPlayer = playersInLobby.get(userCount-1);
 			Country randomCountry = countryList.get(rand.nextInt(countryList.size()));
 			// Werte werden zugewiesen
 			randomCountry.setOwner(currentPlayer);
-			randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
+			//randomCountry.setFill(Color.web(currentPlayer.getColorValue()));
+			System.out.println("Länder in DB schreiben");
 			SqlHelper.insertCountryOwner(lobbyId, currentPlayer.getPlayerId(),randomCountry.getCountryId());
 			countryList.remove(randomCountry);
 			// Wenn die Spieler-Liste am Ende angekommen ist...
@@ -505,18 +504,23 @@ public class MatchFX {
 			}
 		}
 
+
 		// Passt die Einheiten-Anzeige der Länder an
+		initializeCountryGUI();
+
+		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
+		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColorValue()));
+	}
+
+	public void initializeCountryGUI() {
 		for (int i = 0; i < countryArray.length; i++) {
 			countryUnitsBGArray[i].setFill(countryArray[i].getFill());
 			countryUnitsLabelArray[i].setText(String.valueOf(countryArray[i].getUnits()));
 			countryArray[i].setUnitLabel(countryUnitsLabelArray[i]);
 			countryArray[i].setRectangle(countryUnitsBGArray[i]);
 		}
-		
-		// Aktualisiert den aktiven Spieler oben links in der Oberfläche
-		updateActivePlayer(playersInLobby.get(0).getName(), Color.web(playersInLobby.get(0).getColorValue()));
 	}
-	
+
 	/**
 	 * Aktualisiert die Land-Informationen mittig unten auf der Weltkarte
 	 * 

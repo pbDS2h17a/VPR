@@ -1,10 +1,13 @@
 package sqlConnection;
 
+import gui.MatchFX;
 import network.ResultSetManager;
 
+import java.awt.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SqlHelper {
@@ -82,8 +85,6 @@ public class SqlHelper {
 	 * (mit Unterstützung der getPlayerName(playerId : int)-Methode).
 	 * @param lobbyId Identifikationsnummer einer Lobby
 	 * @return String Lobbyleadername
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
 	 * @author Jona Petrikowski
 	 * @author Nick Kuhn
 	 */
@@ -212,6 +213,119 @@ public class SqlHelper {
 		}
 		return unitCount;
 	}
+
+	public static int[] getPlayerCountries(int playerId, int lobbyId) {
+		String query = String.format("SELECT country_id FROM country_player WHERE lobby_id = %d AND player_id = %d", lobbyId, playerId);
+		ArrayList<Integer> countryIdList = new ArrayList<>();
+
+		try{
+			ResultSet rs = getStatement().executeQuery(query);
+			// Länder dürfen nicht in WHILE block erstellt werden
+			// Da sie ihre Werte aus der DB Ziehen
+			// ein weiterer BD Zugriff in einem offenem DB Zugriff ist nicht möglich
+			while(rs.next()) {
+				countryIdList.add(rs.getInt(1));
+			}
+			rs.close();
+		}catch(Exception e){
+			System.out.println("Fehler beim holen der Einheiten im Land");
+			e.printStackTrace();
+		}
+
+
+		int[] countryIdArray = countryIdList.stream().mapToInt(i->i).toArray();
+
+		return countryIdArray;
+	}
+
+	public static String getColorValueFromPlayer(int playerId, int lobbyId) {
+		String colorValue = null;
+		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
+				" WHERE player_id = %d AND lobby_id = %d;", playerId, lobbyId );
+
+		try{
+			ResultSet rs = getStatement().executeQuery(queryColor);
+			rs.next();
+			colorValue = rs.getString(1);
+			rs.close();
+		}catch(Exception e){
+			System.out.println("Fehler beim holen der Farbe");
+//			e.printStackTrace();
+		}
+
+		return colorValue;
+	}
+
+
+	/**
+	 * Holt Namen und Farbe eines Spielers in einer Lobby
+	 * @param playerId
+	 * @param lobby
+	 * @return
+	 */
+	public static Player getLobbyPlayerFromId(int playerId, Lobby lobby) {
+		String playerName = null;
+		String colorValue = null;
+		int lobbyId = lobby.getLobbyId();
+
+		String queryPlayer = String.format("SELECT name FROM player WHERE player_id = %d AND lobby_id = %d",
+				playerId, lobbyId);
+
+		try{
+			ResultSet rs = getStatement().executeQuery(queryPlayer);
+			rs.next();
+			playerName = rs.getString(1);
+			rs.close();
+		}catch(Exception e){
+			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
+			e.printStackTrace();
+		}
+
+		colorValue = getColorValueFromPlayer(playerId, lobbyId);
+
+
+
+		return new Player(playerId, playerName, lobby, colorValue);
+	}
+
+//	public static Player getPlayerFromId(int playerId, Lobby lobby) {
+////		int playerId, String name, Lobby lobby, String colorValue
+//		String playerName = null;
+//		String colorValue = null;
+//		Country[] countryArray = null;
+//		int lobbyId = -1;
+//
+//		String queryPlayer = String.format("SELECT name, lobby_id FROM player WHERE player_id = %d", playerId);
+//		try{
+//			ResultSet rs = getStatement().executeQuery(queryPlayer);
+//			rs.next();
+//			playerName = rs.getString(1);
+//			lobbyId = rs.getInt(2);
+//
+//			rs.close();
+//		}catch(Exception e){
+//			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
+//			e.printStackTrace();
+//		}
+//
+//
+//		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
+//				" WHERE player_id = %d AND lobby_id = %d;",playerId, lobbyId );
+//
+//		try{
+//			ResultSet rs = getStatement().executeQuery(queryColor);
+//			rs.next();
+//			colorValue = rs.getString(1);
+//			rs.close();
+//		}catch(Exception e){
+////			System.out.println("Fehler beim holen der Farbe");
+////			e.printStackTrace();
+//		}
+//
+//		return new Player(playerId, playerName, lobby, colorValue, getPlayerCountries(playerId,lobbyId));
+//
+//	}
+
 	/**
 	 * Methode zum Auslesen des Besatzers eines Landes
 	 * @param countryId
@@ -231,12 +345,17 @@ public class SqlHelper {
 				}
 			}
 		}catch(Exception e){
-			System.out.println("Fehler beim holen des Besatzers des Landes");
+			System.out.println("Fehler beim holen des Besitzers des Landes");
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	/**
+	 * Holt Spielerdaten einer Lobby
+	 * @param lobbyId
+	 * @return
+	 */
 	public static Lobby getLobby (int lobbyId) {
 		Lobby lobby = null;
 		String queryLeader = String.format("SELECT leader_id FROM lobby WHERE lobby_id = %d",lobbyId);
@@ -247,34 +366,19 @@ public class SqlHelper {
 			int leaderId = rs.getInt(1);
 			rs.close();
 			
-			lobby = new Lobby(lobbyId, leaderId);
+			lobby = new Lobby(null, lobbyId, leaderId);
 			
 			for (int playerId : SqlHelper.getPlayerIdsFromLobby(lobbyId)) {
-				System.out.println(SqlHelper.getSelectedColorValue(playerId, lobbyId));
-				lobby.addPlayer(new Player(playerId, SqlHelper.getPlayerName(playerId), lobby, SqlHelper.getSelectedColorValue(playerId, lobbyId)));
+				Player tmpPlayer = getLobbyPlayerFromId(playerId, lobby);
+				System.out.println(tmpPlayer.toString());
+				lobby.addPlayer(tmpPlayer);
 			}
 
 		} catch(Exception e){
-			System.out.println("Fehler beim holen des Besitzers des Landes");
-			e.printStackTrace();
+			//System.out.println("Fehler beim holen des Besitzers des Landes");
+			//e.printStackTrace();
 		}
 		return lobby;
-	}
-
-	public static String getSelectedColorValue (int playerId, int lobbyId) {
-		String query = String.format("SELECT c.value FROM color_player cp, color c WHERE cp.color_id = c.color_id AND cp.player_id = %d AND cp.lobby_id = %d",playerId, lobbyId);
-		String colorValue = null;
-		try{
-			ResultSet rs = getStatement().executeQuery(query);
-			rs.next();
-			colorValue = rs.getString(1);
-			rs.close();
-
-		}catch(Exception e){
-			System.out.println("Fehler beim holen der Farbe des Spielers");
-			e.printStackTrace();
-		}
-		return colorValue;
 	}
 
 	/**
@@ -349,7 +453,7 @@ public class SqlHelper {
 	public static int getLastChange(int lobbyId){
 		String query = String.format("SELECT last_change FROM lobby WHERE lobby_id = %d", lobbyId);
 		int lastChange = -1;
-
+		
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
@@ -357,7 +461,7 @@ public class SqlHelper {
 			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Fehler beim lesen des LastChange");
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 
 		return lastChange;
@@ -477,7 +581,7 @@ public class SqlHelper {
 	 * @author Schaumloeffel
 	 */
 	public static List<List<String>> getChatHistory(long timestamp, int lobbyId){
-		String query = String.format("SELECT p.name, c.timestamp, c.message FROM player p, chat c "
+		String query = String.format("SELECT c.player_id, c.lobby_id, p.name, c.timestamp, c.message FROM player p, chat c "
 				+ "WHERE p.player_id = c.player_id AND c.lobby_id = %d AND c.timestamp > %d;", lobbyId, timestamp);
 		List<List<String>> history = null;
 		try {
@@ -519,6 +623,7 @@ public class SqlHelper {
 	}
 
 	public static int getColorId(String colorValue) {
+		System.out.println("Farbwert:"+colorValue);
 		String query = String.format("SELECT color_id FROM color WHERE value = '%s'", colorValue);
 		int colorId = -1;
 		try {
@@ -528,7 +633,7 @@ public class SqlHelper {
 			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Fehler beim auslesen der FarbId");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return colorId;
@@ -547,11 +652,10 @@ public class SqlHelper {
 	 */
 	public static int insertPlayer(String name, int lobbyId) {
 		String query = String.format("INSERT INTO player (name, lobby_id) VALUES('%s', %d);", name, lobbyId);
-		Statement stmt = SqlHelper.getStatement();
 		int id = -1;
 		try {
-			stmt.executeUpdate(query,Statement.RETURN_GENERATED_KEYS);
-			ResultSet rs = stmt.getGeneratedKeys();
+			SqlHelper.getStatement().executeUpdate(query,Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = SqlHelper.getStatement().getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
 			rs.close();
@@ -560,7 +664,7 @@ public class SqlHelper {
 			System.out.println("fillDatabase error");
 			e.printStackTrace();
 		}
-
+		updateLastChange(lobbyId);
 		return id;
 	}
 
@@ -572,11 +676,11 @@ public class SqlHelper {
 	 */
 	public static int insertLobby() {
 		int id = -1;
-		ResultSet rs = null;
+
 		try {
 			// RETURN_GENERATED_KEYS gibt die Id des Autoincrement zurück
 			getStatement().executeUpdate("INSERT INTO lobby (last_change) VALUES (1)", Statement.RETURN_GENERATED_KEYS);
-			rs = getStatement().getGeneratedKeys();
+			ResultSet rs = getStatement().getGeneratedKeys();
 			rs.next();
 			id = rs.getInt(1);
 			rs.close();
@@ -587,16 +691,24 @@ public class SqlHelper {
 		return id;
 	}
 
-    public static void insertColor(int playerId, String colorValue, int lobbyId) {
+    public static void updateColor(int playerId, String colorValue, int lobbyId) throws SQLException {
 
         int colorId = getColorId(colorValue);
 
+     	String delete = String.format("DELETE FROM color_player WHERE player_id = %d",playerId);
+		// Farbe löschen
+		try {
+			getStatement().executeUpdate(delete);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim löschen der Farbe");
+		}
+
+		// Versuche neue Farbe einzufügen
         String sql = String.format("INSERT INTO color_player VALUES(%d, %d, %d);", playerId, colorId, lobbyId);
-        try {
-            getStatement().executeUpdate(sql);
-        } catch (SQLException e) {
-            System.out.println("Fehler beim einfügen der Farbe");
-        }
+
+		getStatement().executeUpdate(sql);
+		updateLastChange(lobbyId);
+
     }
 
 	/**
@@ -614,6 +726,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim senden einer NAchricht");
 			e.printStackTrace();
 		}
+		updateLastChange(lobby_id);
 	}
 
 	/**
@@ -661,10 +774,12 @@ public class SqlHelper {
 		String query = String.format("INSERT INTO country_player VALUES(%d, %d, %d, %d);", playerId, countryId, lobbyId, 1);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Es ist ein Fehler beim einfügen in country_player aufgetreten");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	//###################################################################################################################
@@ -692,6 +807,7 @@ public class SqlHelper {
 			System.out.println("Error deletePlayer");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -699,6 +815,7 @@ public class SqlHelper {
 	 * schreibt bei dem dazugehörigen Player-Datensatz in die Spalte LobbyId die Id der zu joinenden Lobby.
 	 * @param player = Der Spieler als Objekt Player.
 	 * @author Jörg Römmich
+	 * @author Jona Petrikowski
 	 */
 	public static void joinLobby (Player player, int lobbyId) {
 		String queryJoinLobby = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getPlayerId());
@@ -708,6 +825,7 @@ public class SqlHelper {
 			System.out.println("Error joinLobby");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -721,10 +839,12 @@ public class SqlHelper {
 		String query = String.format("UPDATE country_player SET player_id = %d  WHERE country_id = %d AND lobby_id= %d;", playerId, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim updaten vom country owner");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -737,10 +857,12 @@ public class SqlHelper {
 		String query = String.format("UPDATE country_player SET unit_count = %d WHERE country_id = %d AND lobby_id= %d;", amountUnits, countryId, lobbyId);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Fehler beim aktuallisieren der Units");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -756,6 +878,7 @@ public class SqlHelper {
 			System.out.println("Error updateLobbyLeader");
 			e.printStackTrace();
 		}	
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -771,6 +894,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim ändern des Spielers, der 'dran' ist");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -786,6 +910,7 @@ public class SqlHelper {
 			System.out.println("Fehler beim Ändern der Spieler Reihenfolge");
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
@@ -793,8 +918,8 @@ public class SqlHelper {
 	 * @param lobbyId lobby_id
 	 */
 	public static void updateLastChange(int lobbyId) {
-		long currentLastChange = SqlHelper.getLastChange(lobbyId);
-		String query = String.format("UPDATE lobby SET last_change = %d;",(currentLastChange + 1));
+		int currentLastChange = SqlHelper.getLastChange(lobbyId);
+		String query = String.format("UPDATE lobby SET last_change = %d WHERE lobby_id = %d;",(currentLastChange + 1), lobbyId);
 		try {
 			getStatement().executeUpdate(query);
 		} catch (SQLException e) {
@@ -810,14 +935,17 @@ public class SqlHelper {
 	 * @param newPlayerName Neuer Name des Spielers
 	 * @author pbs2h17asc
 	 */
-	public static void updatePlayerName(int player_id, String newPlayerName) {
+	public static void updatePlayerName(int lobbyId, int player_id, String newPlayerName) {
+		System.out.println("Name:"+player_id);
 		String query = String.format("UPDATE player SET name = '%s' WHERE player_id = %d;", newPlayerName, player_id);
 		try {
 			getStatement().executeUpdate(query);
+			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.printf("Fehler beim Schreiben des Spielernamens %s, ID %d ", newPlayerName, player_id);
 			e.printStackTrace();
 		}
+		updateLastChange(lobbyId);
 	}
 
 	/**
