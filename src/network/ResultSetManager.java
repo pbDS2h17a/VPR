@@ -13,9 +13,9 @@ import java.util.List;
 public class ResultSetManager
 {
 	/**
-	 * Konvertiert ein ResultSet in eine List<List<String>>
+	 * Konvertiert ein ResultSet in eine List&lt;List&lt;String&gt;&gt;
 	 * @param r Auszulesendes ResultSet
-	 * @return <List<List<String>> der Abfrageergebniswerte aus dem ResultSet
+	 * @return List&lt;List&lt;String&gt;&gt; der Abfrageergebniswerte aus dem ResultSet
 	 * @throws SQLException
 	 */
 	public static List<List<String>> toList(ResultSet r) throws SQLException
