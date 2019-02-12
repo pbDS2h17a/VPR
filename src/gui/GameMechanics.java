@@ -12,7 +12,6 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.paint.Color;
 import javafx.util.converter.IntegerStringConverter;
-import network.ChatInterface;
 import sqlConnection.Country;
 import sqlConnection.Player;
 
@@ -45,7 +44,7 @@ public class GameMechanics {
 	 * genau richtige Partie erstellt, zugeschnitten auf die Spieler.
 	 * 
 	 * @param match MatchFX
-	 * @param playerList ArrayList<Player>
+	 * @param playerList ArrayList
 	 */
 	public GameMechanics(MatchFX match, ArrayList<Player> playerList) {
 		// Setzt den Aktuellen Spieler zurück
@@ -62,7 +61,6 @@ public class GameMechanics {
 	 * von der Phase unterschiedlich behandelt.
 	 * 
 	 * @param index int
-	 * @see MainApp#initializeEventListener()
 	 */
 	public void manageCountryClick(int index) {
 		// Wenn man in der 0. Phase (einzeln setzen) steckt...

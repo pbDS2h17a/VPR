@@ -64,6 +64,8 @@ public class Sprite extends ImageView {
 	
 	/**
 	 * Sollte der mode false sein wird das Bild zusätzlich ausgegraut
+	 * 
+	 * @param mode boolean
 	 */
 	public void setActive(boolean mode) {
 		if (mode) {

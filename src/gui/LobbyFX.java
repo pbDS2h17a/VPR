@@ -6,18 +6,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Lobby;
-import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
+ * Beinhaltet die gesamte Oberfläche die beim Klick auf "Spiel erstellen" aufgerufen wird.
+ * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfläche aufzurufen.
+ * 
  * @author Daniels, Kevin
  * @author pbs2h17ale
  */
@@ -211,7 +209,7 @@ public class LobbyFX {
 	 * Ändert die Farbe eines Slots, basierend auf seiner ID
 	 *
 	 * @param slotId int
-	 * @param paint Paint
+	 * @param colorValue String
 	 */
 	public void guiChangeColor(int slotId, String colorValue) {
 		// Füllt das Dreieck des Slots mit der gewählten Farbe
@@ -270,9 +268,9 @@ public class LobbyFX {
 	}
 	
 	/**
-	 * Methode, die sich die Lobby-Funktionen besorgt
+	 * Methode, die sich die Lobby-Funktionen setzt
 	 *
-	 * @return das Lobby-Objekt mit allen Methoden
+	 * @param lobby Lobby
 	 */
 	public void setLobby(Lobby lobby) {
 		this.lobby = lobby;

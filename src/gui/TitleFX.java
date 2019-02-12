@@ -4,8 +4,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Beinhaltet die gesamte Oberfläche die beim Klick auf "Spiel beitreten" aufgerufen wird.
- * Man ist hier in der Lage sich eine Lobby auszusuchen um die Lobby-Oberfläche aufzurufen.
+ * Beinhaltet die gesamte Oberfläche die beim Spiel starten erstellt wird. 
+ * Man ist hier in der Lage sich das Tutorial anzusehen, eine Lobby zu erstellen oder einer Lobby beizutreten.
  * 
  * @author Kevin Daniels
  */

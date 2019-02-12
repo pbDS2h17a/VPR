@@ -611,13 +611,11 @@ public class MainApp extends Application {
 	}
 	
 	/**
-	 * Schreibt neue Werte in DB und GUI
-	 * Aktualisiert:
-	 * Besitzer
-	 * Einheiten
-	 * Farbe (Land+Einheiten Icon)
-	 * @param country
-	 * @param lobby
+	 * Schreibt neue Werte in DB und GUI. 
+	 * Aktualisiert Besitzer, Einheiten und Farbe.
+	 * 
+	 * @param country Country
+	 * @param lobby Lobby
 	 */
 	public void updateCountry(Country country, Lobby lobby) {
 		int countryId = country.getCountryId();
@@ -797,8 +795,8 @@ public class MainApp extends Application {
 	/**
 	 * Kommentar
 	 *
-	 * @param TF Textfield
-	 * @param MAX_LENGTH
+	 * @param TF TextField
+	 * @param MAX_LENGTH int
 	 */
 	public static void addTextLimiter(final TextField TF, final int MAX_LENGTH) {
 		//

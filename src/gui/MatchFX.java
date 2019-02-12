@@ -12,7 +12,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-import network.ChatInterface;
 import sqlConnection.Country;
 import sqlConnection.Lobby;
 import sqlConnection.Player;
@@ -469,7 +468,8 @@ public class MatchFX {
 
     /**
      * Prozedur, die die Partie beginnt und die Lobby ausliest um die aktuellen Teilnehmer zu integrieren.
-     *
+     * 
+     * @param lobbyFX LobbyFX
      */
 	public void initializeMatch(LobbyFX lobbyFX) {
 		Lobby lobby = lobbyFX.getLobby();
