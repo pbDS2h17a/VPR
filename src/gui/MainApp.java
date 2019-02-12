@@ -71,7 +71,7 @@ public class MainApp extends Application {
 	    app.setStyle("-fx-background-image:url('resources/bg.png'); -fx-background-size: cover; -fx-background-position: 50% 50%;");
 	    
 	    // Favicon für die Taskleiste
-	    stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("../resources/btn_lobby_host.png")));
+	    // stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("../resources/btn_lobby_host.png")));
 	    
 	    // Spiel-Container der alle Oberflächen sammelt und ausgibt
 	    ctnApp.setPrefSize(1920, 1080);

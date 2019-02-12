@@ -25,7 +25,7 @@ public class SqlHelper {
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
 	private static String[] loginStringArray =  {
-			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
+			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azzTest","pbs2h17azz","Bib12345"
 	};
 
 	//###################################################################################################################
@@ -95,7 +95,6 @@ public class SqlHelper {
 			ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
 			leaderName = SqlHelper.getPlayerName(rs.getInt(1));
-			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Error getAllColors");
 			e.printStackTrace();
@@ -159,12 +158,11 @@ public class SqlHelper {
 
 	public static String getPlayerName(int playerId) {
 		String query = String.format("SELECT name FROM player WHERE player_id = %d",playerId);
-		String playerName = null;
+		String playerName = "Dummy";
 		try {
 			ResultSet rs = getStatement().executeQuery(query);
 			rs.next();
 			playerName = rs.getString(1);
-			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Error getPlayerName");
 			e.printStackTrace();
