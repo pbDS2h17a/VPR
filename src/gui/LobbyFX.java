@@ -6,11 +6,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import sqlConnection.Lobby;
+import sqlConnection.Player;
 import sqlConnection.SqlHelper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Daniels, Kevin
@@ -19,19 +24,25 @@ import sqlConnection.SqlHelper;
 public class LobbyFX {
 
 	// Globale Variablen
-	private final Pane ctn = new Pane();
+	private Pane ctn = new Pane();
     private Lobby lobby = null;
     private final int MAX_PLAYER = 6;
-	private final ImageView[] slotViewArray = new ImageView[MAX_PLAYER];
-    private final TextField inputName = new TextField();
-	private final Label[] labelArray = new Label[MAX_PLAYER];
-	private final Rectangle[] colorRectArray = new Rectangle[MAX_PLAYER];
-    private final Polygon[] triangleArray = new Polygon[MAX_PLAYER];
-    private final Sprite[] slotRolesArray = new Sprite[MAX_PLAYER];
-	private final Sprite btnReady = new Sprite("resources/btn_bereit.png");
-	private final Sprite btnBack = new Sprite("resources/btn_zurueck.png");
-	private final Sprite btnCheck = new Sprite("resources/btn_confirm.png");
-	private final String[] colors = SqlHelper.getAllColors();
+	private ImageView[] slotViewArray = new ImageView[MAX_PLAYER];
+    private TextField inputName = new TextField();
+    private Group groupColors = new Group();
+    private Group groupSlots = new Group();
+    private Group groupRoles = new Group();
+	private Label[] labelArray = new Label[MAX_PLAYER];
+    private Label colorLabel = new Label("Farbe auswählen");
+    private Label inputNameLabel = new Label("Name eingeben");
+    private Rectangle[] colorRectArray = new Rectangle[MAX_PLAYER];
+    private Polygon[] triangleArray = new Polygon[MAX_PLAYER];
+    private Sprite[] slotRolesArray = new Sprite[MAX_PLAYER];
+	private Sprite btnReady = new Sprite("resources/btn_bereit.png");
+	private Sprite btnBack = new Sprite("resources/btn_zurueck.png");
+	private Sprite btnCheck = new Sprite("resources/btn_confirm.png");
+	private Sprite inputNameBG = new Sprite("resources/input_bg.png");
+	private String[] colors = SqlHelper.getAllColors();
 
 	/**
 	 * Konstruktor, der alle Oberflächen-Objekte erstellt und sie in einen gemeinsamen Container eingefügt wird.
@@ -55,8 +66,7 @@ public class LobbyFX {
 	    ctn.getChildren().add(btnReady);
 	    
 	    // Eingabefeld für den Spieler-Namen (Hintergrund)
-		Sprite inputNameBG = new Sprite("resources/input_bg.png");
-		inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight() - 200);
+	    inputNameBG.relocate(ctn.getPrefWidth()/2 - 653/2 - 160, ctn.getPrefHeight() - 200);		
 	    ctn.getChildren().add(inputNameBG);
 	    // Eingabefeld für den Spieler-Namen (Eingabefeld)
 	    inputName.setPrefSize(653, 119);
@@ -68,14 +78,12 @@ public class LobbyFX {
 	    btnCheck.setButtonMode(true);
 	    ctn.getChildren().add(btnCheck);
 	    // Eingabefeld für den Spieler-Namen (Titel)
-		Label inputNameLabel = new Label("Name eingeben");
-		inputNameLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
+	    inputNameLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    inputNameLabel.relocate(inputNameBG.getLayoutX() + 20, inputNameBG.getLayoutY() - 50);
 	    ctn.getChildren().add(inputNameLabel);
 	    
 	    // Die farbigen Rechtecke die die Farben darstellen soll, die ein Spieler auswählen kann
-        Group groupColors = new Group();
-        groupColors.relocate(ctn.getPrefWidth() - 300, 100);
+	    groupColors.relocate(ctn.getPrefWidth() - 300, 100);
 	    // Schleife die die Quadrate erstellt und sie mit den Farben aus der Datenbank füllt
 	    for(int i = 0; i < colors.length; i++)  {
 	    	colorRectArray[i] = new Rectangle(90, 90);
@@ -98,15 +106,13 @@ public class LobbyFX {
 	    ctn.getChildren().add(groupColors);
 
 	    // Label für die Farben-Gruppe
-		Label colorLabel = new Label("Farbe auswählen");
-		colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
+	    colorLabel.setStyle("-fx-font-family: Impact; -fx-text-fill: white; -fx-font-size: 40px");
 	    colorLabel.setRotate(90);
 	    colorLabel.relocate(groupColors.getLayoutX() + 70, groupColors.getLayoutY() + 110);
 	    ctn.getChildren().add(colorLabel);
 	    
 	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Gruppe)
-		Group groupSlots = new Group();
-		groupSlots.relocate(360, 50);
+	    groupSlots.relocate(360, 50);
 	    // Slots, die mit Spielern gefüllt werden mit 2-6 freien Plätzen (Hintergrund)
 	    for(int i = 0; i < slotViewArray.length; i++) {
 	    	slotViewArray[i] = new Sprite("resources/lobby_player_name.png");
@@ -155,8 +161,7 @@ public class LobbyFX {
 	     * Stern -> Spielleiter
 	     * Kreuz -> Spieler
 	     */
-		Group groupRoles = new Group();
-		for(int i = 0; i < slotRolesArray.length; i++) {
+	    for(int i = 0; i < slotRolesArray.length; i++) {
 	    	if(i == 0) {
 	    		slotRolesArray[i] = new Sprite("resources/btn_lobby_host.png");
 	    		slotRolesArray[i].setButtonMode(false);
@@ -188,7 +193,7 @@ public class LobbyFX {
 	 */
 	public void guiChangePlayerName(int slotId, String name) {
 		// Wenn kein leerer String übergeben wurde...
-		if(name != null && !name.isEmpty()) {
+		if(!name.isEmpty() && name != null) {
 			// ...wird der Name gesetzt
 			labelArray[slotId].setText(name);
 			// Wenn der Slot auch schon eine Farbe hat...

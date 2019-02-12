@@ -6,7 +6,7 @@ package sqlCreation;
  * Löscht alle Laufdaten
  * Stellt Stammdaten aus der Resourcedatei wieder her
  */
-class SqlCreator {
+public class SqlCreator {
 	
 	public static void main(String[] args) {
 		// Datei einlesen

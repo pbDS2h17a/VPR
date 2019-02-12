@@ -10,33 +10,33 @@ import javafx.scene.layout.Pane;
  * 
  * @author Nam-Max Liebner
  */
-class MediaPlayerFX {
+public class MediaPlayerFX {
 	
 	// Globale Variablen
 	// Hintergrundmusik
-    private final Sounds menuBackgroundMusic = new Sounds("resources/menuBackgroundMusic.mp3");
-	private final Sounds gameBackgroundMusic = new Sounds("resources/gameBackgroundMusic.mp3");
+	Sounds menuBackgroundMusic = new Sounds("resources/menuBackgroundMusic.mp3");
+	Sounds gameBackgroundMusic = new Sounds("resources/gameBackgroundMusic.mp3");
 	
 	// Button-Sounds
-    private final Sounds menuClick = new Sounds("resources/menuClick.wav");
-	static final Sounds menuHover = new Sounds("resources/menuHover.wav");
+	Sounds menuClick = new Sounds("resources/menuClick.wav");
+	static Sounds menuHover = new Sounds("resources/menuHover.wav");
 	
 	// Volume-Slider
-	final Slider volumeSlider;
+	Slider volumeSlider;
 	
 	// Panethumb für den Sliderthumb
 	Pane paneThumb;
 	
 	// Sprite als Sliderthumb (liegt in der Panethumb)
-    private final Sprite thumb = new Sprite("resources/btn_lobby_host.png");
+	Sprite thumb = new Sprite("resources/btn_lobby_host.png");
 	
 	// Button-Play
-    private final Sprite title_btn_play_mediaPlayer;
+	Sprite title_btn_play_mediaPlayer;
 	// Button-Stop
-	final Sprite title_btn_stop_mediaPlayer;
+	Sprite title_btn_stop_mediaPlayer;
 	
 	// MediaPlayer-Komponentengruppe
-    private final Group mediaPlayerGroup;
+	Group mediaPlayerGroup;
 	
 	public MediaPlayerFX() {
 		// Erstellt Mediaplayer Gruppe (inkludiert alle Komponenten für den Mediaplayer).
@@ -114,9 +114,27 @@ class MediaPlayerFX {
 	public Sprite getPlayBtn() {
 		return title_btn_play_mediaPlayer;
 	}
+	
+	/**
+	 * gibt die Stop-Button Sprite zurück
+	 * 
+	 * @return title_btn_stop_mediaPlayer : Sprite
+	 */
+	public Sprite getStopBtn() {
+		return title_btn_stop_mediaPlayer;
+	}
+	
 
-
-    /**
+	/**
+	 * gibt den Volume Slider zurück
+	 * 
+	 * @return volumeSlider : Slider
+	 */
+	public Slider getSlider() {
+		return volumeSlider;
+	}
+	
+	/**
 	 * Spielt Sound für den Play-Button ab
 	 */
 	public void playBtnSFX() {

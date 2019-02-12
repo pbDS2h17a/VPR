@@ -10,8 +10,8 @@ import java.util.ArrayList;
  */
 public class Lobby {
     private final int MAX_PLAYER_COUNT;
-    private final ArrayList<Player> players;
-    private final int lobbyId;
+    private ArrayList<Player> players;
+    private int lobbyId;
     private int leaderId;
 
     public LobbyFX getLobbyFX() {
@@ -52,15 +52,38 @@ public class Lobby {
         return players;
     }
 
+    public Player getPlayer(int playerId) {
+        for (Player player : players) {
+            if (player.getPlayerId() == playerId) {
+                return  player;
+            }
+        }
+
+        return null;
+    }
+
     public int getLobbyId() {
         return lobbyId;
     }
 
+    public int getMAX_PLAYER_COUNT() {
+        return MAX_PLAYER_COUNT;
+    }
+    
     public void addPlayer(Player player) {
         if (players.size() < MAX_PLAYER_COUNT) {
             players.add(player);
             //System.out.println(player.toString());
         }
+    }
+
+    /**
+     * Entfernt den Spieler aus der Lobby und Datenbank
+     * @param player spieler Objekt
+     */
+    public void removePlayer(Player player) {
+        players.remove(player);
+        SqlHelper.deletePlayer(player.getPlayerId(), lobbyId);
     }
 
     @Override
@@ -97,5 +120,11 @@ public class Lobby {
         }
 		return nextSlot;
 	}
-
+	
+	/**
+	 * Löscht alle Spieler aus der Lobby
+	 */
+	public void clearPlayers() {
+		this.players.clear();
+	}
 }

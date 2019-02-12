@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 
@@ -17,7 +18,7 @@ public class Country extends SVGPath {
 	/**
 	 * Land ID als Integer
 	 */
-	private final int countryId;
+	private int countryId;
 	/**
 	 * Besitzer als Player Objekt
 	 */
@@ -27,13 +28,17 @@ public class Country extends SVGPath {
 	 */
 	private int units;
 	/**
+	 * Kontinent ID des Landes als Integer
+	 */
+	private int countryContinentId;
+	/**
 	 * Name des Landes als String
 	 */
-	private final String countryName;
+	private String countryName;
 	/**
 	 * Nachbar-Array mit Land ID als Integer 
 	 */
-	private final int[] neighborIdArray;
+	private int[] neighborIdArray;
 
 	private Label unitLabel;
 
@@ -63,10 +68,7 @@ public class Country extends SVGPath {
 	 */
 	public Country(int id) {
 		this.countryId = id;
-		/**
-		 * Kontinent ID des Landes als Integer
-		 */
-		int countryContinentId = SqlHelper.getCountryContinentId(id);
+		this.countryContinentId = SqlHelper.getCountryContinentId(id);
 		this.countryName = SqlHelper.getCountryName(id);
 		this.neighborIdArray = SqlHelper.getCountryNeighbor(id);
 		super.setContent(SqlHelper.getCountrySVG(id));
@@ -75,6 +77,17 @@ public class Country extends SVGPath {
 		this.units = 1;
 	}
 
+	public Country(int id, Player owner) {
+		this.countryId = id;
+		this.countryContinentId = SqlHelper.getCountryContinentId(id);
+		this.countryName = SqlHelper.getCountryName(id);
+		this.neighborIdArray = SqlHelper.getCountryNeighbor(id);
+		super.setContent(SqlHelper.getCountrySVG(id));
+		// null = noch kein Besitzer
+		this.owner = owner;
+		this.units = SqlHelper.getCountryUnits(id, owner.getLobbyId());
+	}
+	
 	/**
 	 * Getter Nachbarländer IDs
 	 * @return Int Array mit Land ID's der Nachbarländer
@@ -98,6 +111,14 @@ public class Country extends SVGPath {
 	public String getCountryName() {
 		return this.countryName;
 	}
+	
+	/**
+	 * Getter Kontinent ID
+	 * @return Kontinent ID des Landes
+	 */
+	public int getCountryContinentId(){
+		return this.countryContinentId;
+	}
 
 	/**
 	 * Getter Menge Einheiten
@@ -117,7 +138,15 @@ public class Country extends SVGPath {
 		this.units = units;
 		SqlHelper.updateCountryUnits(owner.getLobbyId(), this.countryId, units);
 	}
-
+	
+	/**
+	 * Getter Farbe des Landes
+	 * @return Farbe des Landes (SVGPath) als Paint Objekt
+	 */
+	public Paint getColor() {
+		return this.getFill();
+	}
+	
 	/**
 	 * Setter Farbe des Landes
 	 * @param colorValue String
@@ -162,12 +191,15 @@ public class Country extends SVGPath {
 
 	@Override
 	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
 
-		return "Land: " +
-				this.countryName +
-				"\n" +
-				"Besitzer: " +
-				this.owner.getName();
+		stringBuilder.append("Land: ");
+		stringBuilder.append(this.countryName);
+		stringBuilder.append("\n");
+		stringBuilder.append("Besitzer: ");
+		stringBuilder.append(this.owner.getName());
+
+		return stringBuilder.toString();
 
 	}
 

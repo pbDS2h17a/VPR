@@ -15,18 +15,19 @@ import javafx.util.Duration;
  * @author Nam-Max Liebner
  */
 
-class Sounds {
+public class Sounds {
 	
 	// Globale Variablen
-	private final MediaPlayer mediaPlayer;
-
+	private MediaPlayer mediaPlayer;
+	private Media musicFile;
+	
 	/**
 	 * Konstruktor.
 	 * @param mediaPath
 	 */
 	public Sounds(String mediaPath){
 		// Path Converter für die Media Source.
-		Media musicFile = new Media(getClass().getClassLoader().getResource(mediaPath).toString());
+		musicFile = new Media(getClass().getClassLoader().getResource(mediaPath).toString());
 		// Erzeugt MediaPlayer mit entsprechendem Source.
 		mediaPlayer = new MediaPlayer(musicFile);
 	}
@@ -58,7 +59,14 @@ class Sounds {
 		       }
 		});
 	}
-
+	
+	/**
+	 * Pausiert den MediaPlayer.
+	 */
+	public void pause(){
+		this.mediaPlayer.pause();
+	}
+	
 	/**
 	 * Stoppt den MediaPlayer.
 	 */

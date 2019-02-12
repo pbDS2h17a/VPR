@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -19,6 +20,9 @@ import sqlConnection.Lobby;
 import sqlConnection.Player;
 import sqlConnection.SqlHelper;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Startet das gesamte Spiel, indem die anderen Oberflächen-Klassen eingebunden werden
  * und die gesamte Scene administriert.
@@ -29,12 +33,15 @@ import sqlConnection.SqlHelper;
  * @author Nam Max Liebner
  */
 public class MainApp extends Application {
-
+	
+	// Globale Variablen
+	private final int APP_WIDTH = 1600;
+	private final int APP_HEIGHT = 900;
 	private Pane paneFrom;
 	private Pane paneTo;
-	private final Pane app = new Pane();
-    private final Pane ctnApp = new Pane();
-	private final Scene scene = new Scene(app);
+	private Pane app = new Pane();
+    private Pane ctnApp = new Pane();
+	private Scene scene = new Scene(app);
 	private boolean isTransitioning = false;
 	private boolean isMatchActive = false;
 	private int diceCounter = 0;
@@ -43,11 +50,11 @@ public class MainApp extends Application {
 	private Player player;
 
     // Spiel-Oberflächen
-	private final TitleFX titleFX = new TitleFX();
-    private final LobbyFX lobbyFX = new LobbyFX();
-    private final JoinFX joinFX = new JoinFX();
-    private final MatchFX matchFX = new MatchFX();
-    private final MediaPlayerFX mpFX = new MediaPlayerFX();
+	private TitleFX titleFX = new TitleFX();
+    private LobbyFX lobbyFX = new LobbyFX();
+    private JoinFX joinFX = new JoinFX();
+    private MatchFX matchFX = new MatchFX();
+    private MediaPlayerFX mpFX = new MediaPlayerFX();
     private ChatInterface chatFX;
 
 	/**
@@ -60,10 +67,7 @@ public class MainApp extends Application {
 	public void start(Stage stage) {
 
 		// Anwendungs-Container der das Spiel darstellt mit der eingestellten Auflösung (1600x900px)
-		// Globale Variablen
-		int APP_WIDTH = 1600;
-		int APP_HEIGHT = 900;
-		app.setPrefSize(APP_WIDTH, APP_HEIGHT);
+	    app.setPrefSize(APP_WIDTH, APP_HEIGHT);
 	    app.setStyle("-fx-background-image:url('resources/bg.png'); -fx-background-size: cover; -fx-background-position: 50% 50%;");
 	    
 	    // Favicon für die Taskleiste
@@ -140,7 +144,7 @@ public class MainApp extends Application {
 	/**
 	 * Prozedur, die alle EventListener startet die für den 
 	 */
-	private void initializeEventHandlers(){
+    public void initializeEventHandlers(){
     	// Wennn der Button zum Spiel erstellen gedrückt wird
 	    titleFX.getBtnCreate().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 	    	// Beendet die Animation des Logos
@@ -386,7 +390,7 @@ public class MainApp extends Application {
 				System.out.println("Lobby beigetreten:"+lobbyFX.getLobby().getLobbyId());
 
 		    	// Startet die Animation für den Übergang zwischen zwei Panes
-				paneTransition(joinFX.getContainer(), lobbyFX.getContainer());
+				paneTransition(joinFX.getUserList()[tmp], joinFX.getContainer(), lobbyFX.getContainer());
 			});
 		}
 		
@@ -502,12 +506,22 @@ public class MainApp extends Application {
 				matchFX.getGameMechanics().manageCountryClick(COUNT);
 		    });
 			
+			// Wenn ein Land oder die Einheiten im Land angeklickt werden
+	    	matchFX.getCountryUnitsBGArray()[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				matchFX.getGameMechanics().manageCountryClick(COUNT);
+		    });
+	    	
+	    	// Wenn ein Land oder die Einheiten im Land angeklickt werden
+	    	matchFX.getCountryUnitsLabelArray()[COUNT].addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				matchFX.getGameMechanics().manageCountryClick(COUNT);
+		    });
+			
 			// Wenn der Cursor auf einem Land oder Einheit des Landes platziert wird
 	    	countryArray[COUNT].addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
 	    		if(matchFX.getGameMechanics().getCountryA() == null) {
-	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
+	    			matchFX.markNeighbourCountrys(countryArray[COUNT], true);
 	    		}
 	    	});
 
@@ -516,7 +530,7 @@ public class MainApp extends Application {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
 	    		if(matchFX.getGameMechanics().getCountryA() == null) {
-	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
+	    			matchFX.markNeighbourCountrys(countryArray[COUNT], true);
 	    		}
 	    	});
 	    	
@@ -525,7 +539,7 @@ public class MainApp extends Application {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
 	    		if(matchFX.getGameMechanics().getCountryA() == null) {
-	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
+	    			matchFX.markNeighbourCountrys(countryArray[COUNT], true);
 	    		}
 	    	});
 	    	
@@ -534,7 +548,7 @@ public class MainApp extends Application {
 	    		// Aktualisiert das Interface
 	    		matchFX.updateCountryInfo(countryArray[COUNT]);
 	    		if(matchFX.getGameMechanics().getCountryA() == null) {
-	    			matchFX.markNeighbourCountrys(countryArray[COUNT]);
+	    			matchFX.markNeighbourCountrys(countryArray[COUNT], true);
 	    		}
 	    	});
 	
@@ -548,7 +562,7 @@ public class MainApp extends Application {
 	 * @param from Pane
 	 * @param to Pane
 	 */
-	private void paneTransition(Sprite trigger, Pane from, Pane to) {
+	public void paneTransition(Sprite trigger, Pane from, Pane to) {
 		// Wenn der gedrückte Button aktiv ist, kann die Animation gestartet werden
 		if(trigger.isActive()) {
 			
@@ -581,11 +595,12 @@ public class MainApp extends Application {
 	/**
 	 * Prozedur, die die ganze Anwendung startet sobald die Scene übergeben wurde
 	 * 
+	 * @param trigger Label
 	 * @param from Pane
 	 * @param to Pane
 	 * @see MainApp#paneTransition(Sprite trigger, Pane from, Pane to)
 	 */
-	private void paneTransition(Pane from, Pane to) {
+	public void paneTransition(Label trigger, Pane from, Pane to) {
 		/*
 		 * Die noch aktive Pane wird mit Daten bestückt,
 		 * die sich während der Animation verändern schrittweise werden
@@ -618,7 +633,7 @@ public class MainApp extends Application {
 	 * @param stage Stage
 	 * @param ctn_app Pane
 	 */
-	private void resizeThat(Stage stage, Pane ctn_app) {
+	public void resizeThat(Stage stage, Pane ctn_app) {
 		 // speichert das gewünschte Seitenverhältnis
 		 double ratio = stage.getWidth() / stage.getHeight();
 		 double scale;
@@ -650,7 +665,7 @@ public class MainApp extends Application {
 	 * Farbe (Land+Einheiten Icon)
 	 * @param country
 	 */
-	private void updateCountry(Country country, Lobby lobby) {
+	public void updateCountry(Country country, Lobby lobby) {
 		int countryId = country.getCountryId();
 		int lobbyId = lobby.getLobbyId();
 		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
@@ -662,11 +677,20 @@ public class MainApp extends Application {
 		country.getRectangle().setFill(country.getFill());
 	}
 
+	public void updateCountryGui(Country country, Lobby lobby) {
+		int countryId = country.getCountryId();
+		int lobbyId = lobby.getLobbyId();
+		int newUnits = SqlHelper.getCountryUnits(countryId,lobbyId);
+
+		country.getUnitLabel().setText(String.valueOf(newUnits));
+		country.setFill(Color.web(country.getOwner().getColorValue()));
+		country.getRectangle().setFill(country.getFill());
+	}
+
 	/**
 	 * Eine Endlosschleife die 60 mal die Sekunde aufgerufen wird um flüssige Animationen zu ermöglichen
-	 * Aktualisiert die GUI basierend auf DB werten
 	 */
-	private void gameLoop() {
+	public void gameLoop() {
 		new AnimationTimer() {
 			private int count = 0;
 			private long currentLastChange = 0;

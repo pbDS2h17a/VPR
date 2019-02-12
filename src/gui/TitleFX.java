@@ -9,14 +9,14 @@ import javafx.scene.shape.Rectangle;
  * 
  * @author Kevin Daniels
  */
-class TitleFX {
+public class TitleFX {
 	
 	// Globale Variablen
 	private Pane ctn = new Pane();
-	private final Sprite logo = new Sprite("resources/logo.png");
-	private final Sprite btnCreate = new Sprite("resources/btn_erstellen.png");
-	private final Sprite btnJoin = new Sprite("resources/btn_beitreten.png");
-	private final Sprite btnTutorial = new Sprite("resources/btn_tutorial.png");
+	private Sprite logo = new Sprite("resources/logo.png");
+	private Sprite btnCreate = new Sprite("resources/btn_erstellen.png");
+	private Sprite btnJoin = new Sprite("resources/btn_beitreten.png");
+	private Sprite btnTutorial = new Sprite("resources/btn_tutorial.png");
 	private boolean isLogoAnimated = true;
 
 	/**

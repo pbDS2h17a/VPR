@@ -1,5 +1,6 @@
 package sqlConnection;
 
+import java.sql.SQLException;
 import java.util.Stack;
 import java.util.ArrayList;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * Klasse zur Erstellung eines gemischten Kartenstapels
  */
 
-class CardStack extends Stack<Card>{
+public class CardStack extends Stack<Card>{	
 	
 	public CardStack() {
 		this.fillCardStack();
@@ -18,12 +19,14 @@ class CardStack extends Stack<Card>{
 	 * 
 	 * @return Geordnete Liste der Klasse Card
 	 */
-    private ArrayList<Card> fillCardList(){
+	public ArrayList<Card> fillCardList(){
 		ArrayList<Card>Cards = new ArrayList<Card>();
 		for (int i = 1; i <= 42; i++) {
-
-			Cards.add(new Card(i));
-
+			try{
+				Cards.add(new Card(i));
+			}catch (SQLException SE){
+				
+			}
 			
 		}		
 		return Cards;
@@ -32,7 +35,7 @@ class CardStack extends Stack<Card>{
 	/**
 	 * Füllt das Objekt per Zufall
 	 */
-    private void fillCardStack(){
+	public void fillCardStack(){
 		
 		ArrayList<Card> orderedCardList = fillCardList();
 		

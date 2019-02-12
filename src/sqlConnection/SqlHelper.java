@@ -1,8 +1,13 @@
 package sqlConnection;
 
+import gui.MatchFX;
 import network.ResultSetManager;
+
+import java.awt.*;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SqlHelper {
@@ -19,7 +24,7 @@ public class SqlHelper {
 	// Private TestDb für home server
 	// "jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	// "jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","12345"
-	private static final String[] loginStringArray =  {
+	private static String[] loginStringArray =  {
 			"jdbc:mysql://mysqlpb.pb.bib.de/pbs2h17azz","pbs2h17azz","Bib12345"
 	};
 
@@ -152,7 +157,7 @@ public class SqlHelper {
 		return lobbyIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
 
-	private static String getPlayerName(int playerId) {
+	public static String getPlayerName(int playerId) {
 		String query = String.format("SELECT name FROM player WHERE player_id = %d",playerId);
 		String playerName = null;
 		try {
@@ -228,10 +233,12 @@ public class SqlHelper {
 		}
 
 
-		return countryIdList.stream().mapToInt(i->i).toArray();
+		int[] countryIdArray = countryIdList.stream().mapToInt(i->i).toArray();
+
+		return countryIdArray;
 	}
 
-	private static String getColorValueFromPlayer(int playerId, int lobbyId) {
+	public static String getColorValueFromPlayer(int playerId, int lobbyId) {
 		String colorValue = null;
 		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
 				" WHERE player_id = %d AND lobby_id = %d;", playerId, lobbyId );
@@ -256,7 +263,7 @@ public class SqlHelper {
 	 * @param lobby
 	 * @return
 	 */
-	private static Player getLobbyPlayerFromId(int playerId, Lobby lobby) {
+	public static Player getLobbyPlayerFromId(int playerId, Lobby lobby) {
 		String playerName = null;
 		String colorValue = null;
 		int lobbyId = lobby.getLobbyId();
@@ -594,7 +601,7 @@ public class SqlHelper {
 	 * @param lobbyId lobby_id
 	 * @return 6 Stelliges int[] mit Spieler Ids
 	 */
-	private static ArrayList<Integer> getPlayerIdsFromLobby(int lobbyId) {
+	public static ArrayList<Integer> getPlayerIdsFromLobby(int lobbyId) {
 		String query = String.format("SELECT player_id FROM player WHERE lobby_id = %d", lobbyId);
 		ArrayList<Integer> playerIdList = new ArrayList<>();
 
@@ -615,7 +622,7 @@ public class SqlHelper {
 		return playerIdList;
 	}
 
-	private static int getColorId(String colorValue) {
+	public static int getColorId(String colorValue) {
 		System.out.println("Farbwert:"+colorValue);
 		String query = String.format("SELECT color_id FROM color WHERE value = '%s'", colorValue);
 		int colorId = -1;
@@ -721,6 +728,39 @@ public class SqlHelper {
 		}
 	}
 
+	/**
+	 * Diese Methode, welche ein Player-Objekt benötigt, der als zukünftiger Host einer Lobby fungiert,
+	 * erstellt einen Lobby-Datensatz, an dessen LeaderId-Spalte die Id des Spielers a.k.a. Host eingetragen wird.
+	 * Des Weiteren wird die Methode joinLobby() mit demselben Player-Objekt aufgerufen.
+	 * @param player = Der Spieler als Objekt Player.
+	 * @see SqlHelper#joinLobby (Player player, int lobbyId)
+	 * @author Jona Petrikowski
+	 * @author Jörg Römmich
+	 */
+	public static void createLobby (Player player) {
+		try{
+			Statement stmt = getStatement();
+			String queryCreateLobbyEntry = String.format("INSERT INTO lobby (leader_id) VALUES (%d);", player.getPlayerId());
+			stmt.executeUpdate(queryCreateLobbyEntry);
+			// zweites Resultset für die autoincremente LobbyId, um diese beim Leader einzutragen
+			String queryGetLobbyId = String.format("SELECT lobby_id FROM lobby WHERE leader_id = %d;", player.getPlayerId());
+			List<List<String>> listWithLobbyId = ResultSetManager.toList(getStatement().executeQuery(queryGetLobbyId));
+			if (listWithLobbyId.get(0).size() == 1) {
+				int lobbyId = Integer.parseInt(listWithLobbyId.get(0).get(0));
+				// ein createLobby() ist für den Leader ein joinLobby()
+				joinLobby(player, lobbyId);
+				System.out.println("createLobby() successfull.");
+			}
+			else {
+				System.out.println("createLobby(). Problem with getting lobby_id from returned ResultSet.");
+			}
+		}catch(Exception e){
+			System.out.println("fehler beim erstellen der Lobby");
+			e.printStackTrace();
+		}
+	}
+
+
 
 	/**
 	 * Methode zum einfügen von Daten in die Tabelle country_player
@@ -745,6 +785,11 @@ public class SqlHelper {
 	// Ändert Werte in der Datenbank
 	//###################################################################################################################
 
+	//TODO Implementieren
+	public static void updateCardsPlayer() {
+
+	}
+
 	/**
 	 * Wird von der Lobby aufgerufen wenn ein Spieler die Lobby verlässt
 	 * Löscht den Spielerdatensatz vollständig
@@ -758,6 +803,22 @@ public class SqlHelper {
 			updateLastChange(lobbyId);
 		} catch (SQLException e) {
 			System.out.println("Error deletePlayer");
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Diese Methode, welche ein Player-Objekt und die LobbyId der zu joinenden Lobby benötigt,
+	 * schreibt bei dem dazugehörigen Player-Datensatz in die Spalte LobbyId die Id der zu joinenden Lobby.
+	 * @param player = Der Spieler als Objekt Player.
+	 * @author Jörg Römmich
+	 */
+	public static void joinLobby (Player player, int lobbyId) {
+		String queryJoinLobby = String.format("UPDATE player SET lobby_id = %d WHERE player_id = %d;", lobbyId, player.getPlayerId());
+		try {
+			getStatement().executeUpdate(queryJoinLobby);
+		} catch (SQLException e) {
+			System.out.println("Error joinLobby");
 			e.printStackTrace();
 		}
 	}
@@ -813,10 +874,40 @@ public class SqlHelper {
 	}
 
 	/**
+	 * Methode zum setzen des Spielers, der aktuell dran ist
+	 * @param lobbyId
+	 * @param playerTurnId
+	 */
+	public static void updatePlayerTurn(int lobbyId, int playerTurnId){
+		String query = String.format("UPDATE lobby SET leader_id = %d WHERE lobby_id=%d",playerTurnId, lobbyId);
+		try {
+			getStatement().executeUpdate(query);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim ändern des Spielers, der 'dran' ist");
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Methode zum setzen der reihenfolge der Spieler
+	 * @param lobbyId
+	 * @param PlayerOrder
+	 */
+	public static void updatePlayerOrder(int lobbyId, String PlayerOrder){
+		String query = String.format("UPDATE lobby SET player_order = %s WHERE lobby_id=%d",PlayerOrder, lobbyId);
+		try {
+			getStatement().executeUpdate(query);
+		} catch (SQLException e) {
+			System.out.println("Fehler beim Ändern der Spieler Reihenfolge");
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Updated lastChange in der Lobby
 	 * @param lobbyId lobby_id
 	 */
-	private static void updateLastChange(int lobbyId) {
+	public static void updateLastChange(int lobbyId) {
 		int currentLastChange = SqlHelper.getLastChange(lobbyId);
 		String query = String.format("UPDATE lobby SET last_change = %d WHERE lobby_id = %d;",(currentLastChange + 1), lobbyId);
 		try {
@@ -843,6 +934,20 @@ public class SqlHelper {
 		} catch (SQLException e) {
 			System.out.printf("Fehler beim Schreiben des Spielernamens %s, ID %d ", newPlayerName, player_id);
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Löscht die Inhalte einer Tabelle (Die Tabelle selbst wird nicht gelöscht!)
+	 * @param tableName TABLE
+	 */
+	public static void clearTable(String tableName) {
+		String query = String.format("TRUNCATE TABLE %s;",tableName);
+		try {
+			getStatement().executeUpdate(query);
+		} catch(SQLException s) {
+			System.out.println("Error clearTable");
+			s.printStackTrace();
 		}
 	}
 

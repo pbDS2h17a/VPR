@@ -1,8 +1,16 @@
 package network;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.print.attribute.standard.DateTimeAtProcessing;
+
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import sqlConnection.SqlHelper;
 
 /**
@@ -11,9 +19,9 @@ import sqlConnection.SqlHelper;
  * @author PeRoScKu
  * @see sqlConnection.SqlHelper
  */
-class ChatManager {
-	private final int lobby_id;
-	private final int player_id;
+public class ChatManager {
+	private int lobby_id;
+	private int player_id;
 	
 	/**
 	 * Konstruktor
@@ -30,8 +38,9 @@ class ChatManager {
 	 * Chatverlauf aus der Datenbank abfragen
 	 * @param timestamp Zeitstempel
 	 * @return Chatverlauf ab dem gegebenen Zeitstempel
+	 * @throws SQLException
 	 */
-	public List<List<String>> getChatHistory(long timestamp) {
+	public List<List<String>> getChatHistory(long timestamp) throws SQLException {
 		return SqlHelper.getChatHistory(timestamp, lobby_id);
 	}
 	
@@ -47,8 +56,9 @@ class ChatManager {
 	/**
 	 * Sendet die Nachricht an die Datenbank
 	 * @param message zu sendende Nachricht
+	 * @throws SQLException
 	 */
-	public void sendMessage(String message) {
+	public void sendMessage(String message) throws SQLException {
 		SqlHelper.sendMessage(message, player_id, lobby_id);
 	}
 	
