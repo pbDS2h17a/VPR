@@ -133,7 +133,7 @@ public class SqlHelper {
 	}
 	/**
 	 * Liest die Lobby IDs aller Lobbies die zurzeit in der Datenbank sind
-	 * @return
+	 * @return Alle LobbyIDs als Integer-Array
 	 */
 	public static int[] getAllLobbyId() {
 		ArrayList<Integer> lobbyIdList = new ArrayList<Integer>();
@@ -260,9 +260,9 @@ public class SqlHelper {
 
 	/**
 	 * Holt Namen und Farbe eines Spielers in einer Lobby
-	 * @param playerId
+	 * @param playerId 
 	 * @param lobby
-	 * @return
+	 * @return Player-Objekt, nach dem gesucht wurde
 	 */
 	public static Player getLobbyPlayerFromId(int playerId, Lobby lobby) {
 		String playerName = null;
@@ -355,7 +355,7 @@ public class SqlHelper {
 	/**
 	 * Holt Spielerdaten einer Lobby
 	 * @param lobbyId
-	 * @return
+	 * @return LobbyID, nach der gesucht wurde
 	 */
 	public static Lobby getLobby (int lobbyId) {
 		Lobby lobby = null;
@@ -447,9 +447,9 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Methode zum auslesen der lastChange in Lobby
+	 * Methode zum Auslesen der lastChange in Lobby
 	 * @param lobbyId lobby_id
-	 * @return
+	 * @return letzte Änderung
 	 */
 	public static int getLastChange(int lobbyId){
 		String query = String.format("SELECT last_change FROM lobby WHERE lobby_id = %d", lobbyId);
@@ -578,7 +578,7 @@ public class SqlHelper {
 	/**
 	 * @param timestamp Zeitpunkt, nach dem Nachrichten angezeigt werden sollen
 	 * @param lobbyId ID der Lobby, aus der die Nachrichten gelesen werden
-	 * @return List<List<String>> Alle gültigen Nachrichten der Chat-History
+	 * @return List&lt;List&lt;String&gt;&gt; Alle gültigen Nachrichten der Chat-History
 	 * @author Schaumloeffel
 	 */
 	public static List<List<String>> getChatHistory(long timestamp, int lobbyId){
