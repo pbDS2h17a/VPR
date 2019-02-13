@@ -650,6 +650,7 @@ public class SqlHelper {
 	 * @param name
 	 * @param lobbyId
 	 * @author pbs2h17ath
+	 * @return PlayerID, im Fehlerfall -1
 	 */
 	public static int insertPlayer(String name, int lobbyId) {
 		String query = String.format("INSERT INTO player (name, lobby_id) VALUES('%s', %d);", name, lobbyId);
@@ -814,7 +815,8 @@ public class SqlHelper {
 	/**
 	 * Diese Methode, welche ein Player-Objekt und die LobbyId der zu joinenden Lobby benötigt,
 	 * schreibt bei dem dazugehörigen Player-Datensatz in die Spalte LobbyId die Id der zu joinenden Lobby.
-	 * @param player = Der Spieler als Objekt Player.
+	 * @param player Der Spieler als Objekt Player
+	 * @param lobbyId Zu joinenden Lobby
 	 * @author Jörg Römmich
 	 * @author Jona Petrikowski
 	 */
@@ -852,6 +854,7 @@ public class SqlHelper {
 	 * Methode zum anpassen der Armeen anzahl
 	 * @param lobbyId
 	 * @param countryId
+	 * @param amountUnits Anzahl zu verteilender Einheiten
 	 * @author pbs2h17ath
 	 */
 	public static void updateCountryUnits(int lobbyId, int countryId, int amountUnits){
@@ -883,7 +886,7 @@ public class SqlHelper {
 	}
 
 	/**
-	 * Methode zum setzen des Spielers, der aktuell dran ist
+	 * Methode zum Setzen des Spielers, der aktuell dran ist
 	 * @param lobbyId
 	 * @param playerTurnId
 	 */
@@ -932,6 +935,7 @@ public class SqlHelper {
 
 	/**
 	 * Gibt dem Spieler den angegebenen Namen
+	 * @param lobbyId
 	 * @param player_id ID des Spielers
 	 * @param newPlayerName Neuer Name des Spielers
 	 * @author pbs2h17asc
