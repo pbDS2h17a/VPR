@@ -36,6 +36,7 @@ public class SqlHelper {
 	//###################################################################################################################
 	/**
 	 * Versucht ein neues Statement zu erstellen
+	 * @author Sebastian Wibbeke
 	 */
 	private static void createStatement() {
 		try {
@@ -53,6 +54,7 @@ public class SqlHelper {
 
 	/**
 	 * Schließt das Statement
+	 * @author Sebastian Wibbeke
 	 */
 	public static void closeStatement() {
 		try {
@@ -69,6 +71,7 @@ public class SqlHelper {
 	 * Checkt ob das Statement vorhande ist (nicht NULL)
 	 * Sonst erstellt es ein neues Statement
 	 * @return aktuelles Statement der Verbindung
+	 * @author Sebastian Wibbeke
 	 */
 	public static Statement getStatement()  {
 		if(stmt == null) {
@@ -109,6 +112,7 @@ public class SqlHelper {
 	/**
 	 * Ließt die werte (Hex String) aller Farben aus der Datenbank aus
 	 * @return StringArray mit Hexwerten
+	 * @author Sebastian Wibbeke
 	 */
 	public static String[] getAllColors() {
 		String[] colorArray;
@@ -134,6 +138,7 @@ public class SqlHelper {
 	/**
 	 * Liest die Lobby IDs aller Lobbies die zurzeit in der Datenbank sind
 	 * @return Alle LobbyIDs als Integer-Array
+	 * @author Sebastian Wibbeke
 	 */
 	public static int[] getAllLobbyId() {
 		ArrayList<Integer> lobbyIdList = new ArrayList<Integer>();
@@ -159,6 +164,12 @@ public class SqlHelper {
 		return lobbyIdList.stream().mapToInt(Integer::intValue).toArray();
 	}
 
+	/**
+	 * Holt den Spielernamen aus der Datenbank und gibt ihn zurück.
+	 * @param playerId int
+	 * @return Spielernamen oder Dummy
+	 * @author Sebastian Wibbeke
+	 */
 	public static String getPlayerName(int playerId) {
 		String query = String.format("SELECT name FROM player WHERE player_id = %d",playerId);
 		String playerName = "Dummy";
@@ -215,6 +226,13 @@ public class SqlHelper {
 		return unitCount;
 	}
 
+	/**
+	 * Gibt die Länder, die ein Spieler in einer Lobby besitzt zurück.
+	 * @param playerId
+	 * @param lobbyId
+	 * @return LänderIDs eines Spielers
+	 * @author Sebastian Wibbeke
+	 */
 	public static int[] getPlayerCountries(int playerId, int lobbyId) {
 		String query = String.format("SELECT country_id FROM country_player WHERE lobby_id = %d AND player_id = %d", lobbyId, playerId);
 		ArrayList<Integer> countryIdList = new ArrayList<>();
@@ -239,6 +257,13 @@ public class SqlHelper {
 		return countryIdArray;
 	}
 
+	/**
+	 * Liest die Spielerfarbe eines Spielers in einer Lobby aus der Datenbank.
+	 * @param playerId
+	 * @param lobbyId
+	 * @return Spielerfarbe als Hexstring
+	 * @author Sebastian Wibbeke
+	 */
 	public static String getColorValueFromPlayer(int playerId, int lobbyId) {
 		String colorValue = null;
 		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
@@ -288,44 +313,6 @@ public class SqlHelper {
 
 		return new Player(playerId, playerName, lobby, colorValue);
 	}
-
-//	public static Player getPlayerFromId(int playerId, Lobby lobby) {
-////		int playerId, String name, Lobby lobby, String colorValue
-//		String playerName = null;
-//		String colorValue = null;
-//		Country[] countryArray = null;
-//		int lobbyId = -1;
-//
-//		String queryPlayer = String.format("SELECT name, lobby_id FROM player WHERE player_id = %d", playerId);
-//		try{
-//			ResultSet rs = getStatement().executeQuery(queryPlayer);
-//			rs.next();
-//			playerName = rs.getString(1);
-//			lobbyId = rs.getInt(2);
-//
-//			rs.close();
-//		}catch(Exception e){
-//			System.out.println("Fehler beim holen des Namen bzw LobbyId des Spielers");
-//			e.printStackTrace();
-//		}
-//
-//
-//		String queryColor = String.format("SELECT c.value FROM color_player cp JOIN color c ON cp.color_id = c.color_id" +
-//				" WHERE player_id = %d AND lobby_id = %d;",playerId, lobbyId );
-//
-//		try{
-//			ResultSet rs = getStatement().executeQuery(queryColor);
-//			rs.next();
-//			colorValue = rs.getString(1);
-//			rs.close();
-//		}catch(Exception e){
-////			System.out.println("Fehler beim holen der Farbe");
-////			e.printStackTrace();
-//		}
-//
-//		return new Player(playerId, playerName, lobby, colorValue, getPlayerCountries(playerId,lobbyId));
-//
-//	}
 
 	/**
 	 * Methode zum Auslesen des Besatzers eines Landes
